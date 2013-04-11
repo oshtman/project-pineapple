@@ -23,6 +23,7 @@ public class MainThread extends Thread{
 		this.running = flag;
 	}
 	
+	@Override
 	public void run(){
 		Canvas canvas;
 		Log.d(TAG, "Starting game loop");
