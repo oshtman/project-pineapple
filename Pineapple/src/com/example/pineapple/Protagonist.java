@@ -101,19 +101,20 @@ public class Protagonist {
 		return health;
 	}
 	
-	public boolean jump(double Vel, double Acc) {
+	public void jump(double Vel, double Acc) {
 		this.setYVel(Vel);
 		this.setYAcc(Acc + this.getYAcc());
-		return true;
 	}
 	
 	//INTE KLAAAR..
-	public void move(double angle) {
-		this.setXAcc(Math.cos(angle));
-		this.setYAcc(Math.sin(angle)); // angle från stickDirectionen!
+	public void move(double angle) {// angle från stickDirectionen!
+		if (Math.abs(angle) < 45)
+		this.setXAcc(1);
 		this.setXVel(this.getXVel() + this.getXAcc());
-		this.setYVel(this.getYVel() + this.getXAcc());
 		this.setXPos(this.getXPos() - this.getXVel());
+
+		this.setYAcc(0); 
+		this.setYVel(this.getYVel() + this.getXAcc());
 		this.setYPos(this.getYPos() - this.getXVel());
 		// ???
 		// this.setXPos(this.getXPos() - this.getXVel() + this.getXAcc());
