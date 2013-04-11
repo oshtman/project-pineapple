@@ -3,6 +3,7 @@
 
     <string name="app_name">Pineapple</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="title">Project Pineapple</string>
+    <string name="play">Play</string>
 
 </resources>
