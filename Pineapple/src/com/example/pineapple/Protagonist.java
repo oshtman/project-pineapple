@@ -88,7 +88,7 @@ public class Protagonist {
 	public void setHealth(int health) {
 		this.health = health;
 	}
-	
+
 	// ACTIONS
 	public void aim(){
 
@@ -101,22 +101,28 @@ public class Protagonist {
 		return health;
 	}
 	
-	public boolean jump(double Vel, double Acc) {
+	//Också testING
+	public void jump(double Vel, double Acc) {
 		this.setYVel(Vel);
 		this.setYAcc(Acc + this.getYAcc());
-		return true;
+		jump(Vel - 1, Acc); //rekursion??
 	}
-	
+
 	//INTE KLAAAR..
-	public void move(double angle) {
-		this.setXAcc(Math.cos(angle));
-		this.setYAcc(Math.sin(angle)); // angle från stickDirectionen!
-		this.setXVel(this.getXVel() + this.getXAcc());
-		this.setYVel(this.getYVel() + this.getXAcc());
-		this.setXPos(this.getXPos() - this.getXVel());
-		this.setYPos(this.getYPos() - this.getXVel());
-		// ???
-		// this.setXPos(this.getXPos() - this.getXVel() + this.getXAcc());
-		// this.setYPos(this.getYPos() - this.getYVel() + this.getXAcc());
+	public void move(double angle) { // angle från stickDirectionen!
+		if (Math.abs(angle) < 45) {
+			this.setXVel(this.getXVel() + 1);
+			this.setXPos(this.getXPos() - this.getXVel());
+			this.setYPos(this.getYPos() - this.getYVel());
+		} else if (angle > 135 && angle < 225) {
+			this.setXVel(this.getXVel() - 1);
+			this.setXPos(this.getXPos() - this.getXVel());
+			this.setYPos(this.getYPos() - this.getYVel());
+		} else if (angle < 135 && angle > 45) {
+			this.jump(-10,1);
+		}
+			// ???
+			// this.setXPos(this.getXPos() - this.getXVel() + this.getXAcc());
+			// this.setYPos(this.getYPos() - this.getYVel() + this.getXAcc());
 	}
 }
