@@ -2,6 +2,7 @@ package com.example.pineapple;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -24,7 +25,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
-		
+		canvas.drawColor(Color.BLUE);
 	}
 	
 	

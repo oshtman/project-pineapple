@@ -28,6 +28,7 @@ public class MainThread extends Thread{
 		Canvas canvas;
 		Log.d(TAG, "Starting game loop");
 		while (running) {
+			Log.d(TAG, "ping");
 			long startTime = System.currentTimeMillis();
 			gamePanel.update();
 			canvas = null;
