@@ -1,8 +1,8 @@
 package com.example.pineapple;
 
 public class Stick {
-	private final int LEFT = 1;
-	private final int RIGHT = 2;
+	public final int LEFT = 1;
+	public final int RIGHT = 2;
 	private int x, y;
 	private int angle;
 	private boolean pointed;
@@ -16,6 +16,8 @@ public class Stick {
 		y = 80;
 		pointed = false;
 	}
+	
+	
 	
 	
 }
