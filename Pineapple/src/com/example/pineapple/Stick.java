@@ -1,7 +1,5 @@
 package com.example.pineapple;
 
-import android.graphics.Canvas;
-
 public class Stick {
 	private final int LEFT = 1;
 	private final int RIGHT = 2;

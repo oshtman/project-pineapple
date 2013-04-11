@@ -74,14 +74,14 @@
 				yAcc = n;
 			}
 			
-			public void setAim() {
+			public void setAim(int angle) {
 				
 			}
 			public double getAim() {
 				return 8;
 			}
 			
-			// ACTION
+			// ACTIONS
 			public void aim(){
 				
 			}
