@@ -5,14 +5,18 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
-	
+	private final String TAG = GamePanel.class.getSimpleName();
+	private final int width = 155;
+	private final int height = 100;
 	private MainThread thread;
 	private Protagonist protagonist;
 	private Ground ground;
+	private double scaleY, scaleX;
 	
 	
 	public GamePanel(Context context){
@@ -21,8 +25,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		setFocusable(true);
 		protagonist = new Protagonist();
 		//Change this later
-		int[] x = {0, 100, 200};
-		int[] y = {100, 200, 100};
+		int[] x = {0, 100, 150};
+		int[] y = {100, 80, 100};
 		ground = new Ground(x, y);
 		thread = new MainThread(this.getHolder(), this);
 	}
@@ -51,11 +55,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		int length = ground.getLength();
 		for(int i = 0; i < length-1; i++){
 			Path p = new Path();
-			p.moveTo(ground.getX(i), ground.getY(i));
-			p.lineTo(ground.getX(i+1), ground.getY(i+1));
-			p.lineTo(ground.getX(i+1), 900);
-			p.lineTo(ground.getX(i), 900);
-			p.lineTo(ground.getX(i), ground.getY(i));
+			p.moveTo((int)(ground.getX(i)*scaleX), (int)(ground.getY(i)*scaleY));
+			p.lineTo((int)(ground.getX(i+1)*scaleX), (int)(ground.getY(i+1)*scaleY));
+			p.lineTo((int)(ground.getX(i+1)*scaleX), (int)(200*scaleY));
+			p.lineTo((int)(ground.getX(i)*scaleX), (int)(200*scaleY));
+			p.lineTo((int)(ground.getX(i)*scaleX), (int)(ground.getY(i)*scaleY));
 			canvas.drawPath(p, new Paint());
 		}
 	}
@@ -70,6 +74,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void surfaceCreated(SurfaceHolder holder) {
 		thread.setRunning(true);
 		thread.start();
+		scaleY = (double)getHeight()/height;
+		scaleX = (double)getWidth()/width;
 	}
 
 	@Override
