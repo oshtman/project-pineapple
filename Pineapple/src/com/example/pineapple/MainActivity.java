@@ -1,6 +1,5 @@
 package com.example.pineapple;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -22,7 +21,6 @@ public class MainActivity extends BaseActivity {
 	}
 	
 	public void startGame(View view){
-		
 		Intent intent = new Intent(this, GameActivity.class);
 		
 		startActivity(intent);
