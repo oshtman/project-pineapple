@@ -7,18 +7,26 @@ public class Protagonist {
 	private double height;
 	private double length;
 //	private bitmap portrait;
-	
+	private double xVel;
+	private double yVel;
+	private double xAcc;
+	private double yAcc;
+	private int health;
 
+	// CONSTRUCTOR
 	public Protagonist(double i,double j){
-		xPos = this.setXPos(i);
-		yPos = this.setYPos(j);
+		this.setXPos(i);
+		this.setYPos(j);
+		health = 100;
 	}
 	
 	public Protagonist(){
-		xPos = this.setXPos(75);
-		yPos = this.setYPos(25);
+		this.setXPos(75);
+		this.setYPos(25);
+		health = 100;
 	}
 	
+	// GET AND SET
 	public double getXPos() {
 		return xPos;
 	}
@@ -27,11 +35,57 @@ public class Protagonist {
 		return yPos;
 	}
 	
-	public  double setXPos(double n) {
-		return n;
+	public double getXVel() {
+		return xVel;
 	}
 	
-	public double setYPos(double n) {
-		return n;
+	public double getYVel() {
+		return yVel;
+	}
+	
+	public double getXAcc() {
+		return xAcc;
+	}
+	
+	public double getYAcc() {
+		return yAcc;
+	}
+	
+	public void setXPos(double n) {
+		xPos = n;
+	}
+	
+	public void setYPos(double n) {
+		yPos = n;
+	}
+	
+	public void setXVel(double n) {
+		xVel = n;
+	}
+	
+	public void setYVel(double n) {
+		yVel = n;
+	}
+	public void setXAcc(double n) {
+		xAcc = n;
+	}
+	
+	public void setYAcc(double n) {
+		yAcc = n;
+	}
+	
+	public void setAim() {
+		
+	}
+	public double getAim() {
+		return 8;
+	}
+	
+	// ACTION
+	public void aim(){
+		
+	}
+	public void fire(){
+		
 	}
 }
