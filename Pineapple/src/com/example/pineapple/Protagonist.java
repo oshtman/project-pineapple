@@ -81,6 +81,7 @@ public class Protagonist {
 		return 8;
 	}
 
+<<<<<<< HEAD
 	public int getHealth() {
 		return health;
 	}
@@ -117,5 +118,17 @@ public class Protagonist {
 		// ???
 		// this.setXPos(this.getXPos() - this.getXVel() + this.getXAcc());
 		// this.setYPos(this.getYPos() - this.getYVel() + this.getXAcc());
+=======
+	// ACTIONS
+	public void aim(){
+
+	}
+	public void fire(){
+
+	}
+	public int reduceHealth(int n) {
+		health = n-1;
+		return health;
+>>>>>>> branch 'master' of https://github.com/oskarwaglund/project-pineapple.git
 	}
 }

@@ -26,5 +26,10 @@ public class GameActivity extends BaseActivity {
 		getMenuInflater().inflate(R.menu.game, menu);
 		return true;
 	}
+	
+	public void onPause(){
+		super.onPause();
+		gamePanel.pause();
+	}
 
 }
