@@ -1,15 +1,23 @@
 package com.example.pineapple;
 
+import com.example.pineapple.GamePanel;
+
 import android.os.Bundle;
-import android.app.Activity;
 import android.view.Menu;
+import android.view.Window;
+import android.view.WindowManager;
 
 public class GameActivity extends BaseActivity {
 
+	GamePanel gamePanel;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_game);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		gamePanel = new GamePanel(this);
+		setContentView(gamePanel);
 	}
 
 	@Override
