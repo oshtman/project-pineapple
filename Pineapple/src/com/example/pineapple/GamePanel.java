@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -11,6 +12,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	private MainThread thread;
 	private Protagonist protagonist;
+	private Ground ground;
 	
 	
 	public GamePanel(Context context){
@@ -18,7 +20,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		getHolder().addCallback(this);
 		setFocusable(true);
 		protagonist = new Protagonist();
-		
+		//Change this later
+		int[] x = {0, 100, 200};
+		int[] y = {100, 200, 100};
+		ground = new Ground(x, y);
 		thread = new MainThread(this.getHolder(), this);
 	}
 	
@@ -31,6 +36,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void render(Canvas canvas){
 		canvas.drawColor(Color.BLUE);
 		renderProtagonist(canvas);
+		renderGround(canvas);
 	}
 	
 	public void pause(){
@@ -39,6 +45,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public void renderProtagonist(Canvas canvas){
 		canvas.drawRect((float)protagonist.getXPos(), (float)protagonist.getYPos(), (float)protagonist.getXPos()+30, (float)protagonist.getYPos()+30, new Paint());
+	}
+	
+	public void renderGround(Canvas canvas){
+		int length = ground.getLength();
+		for(int i = 0; i < length-1; i++){
+			Path p = new Path();
+			p.moveTo(ground.getX(i), ground.getY(i));
+			p.lineTo(ground.getX(i+1), ground.getY(i+1));
+			p.lineTo(ground.getX(i+1), 900);
+			p.lineTo(ground.getX(i), 900);
+			p.lineTo(ground.getX(i), ground.getY(i));
+			canvas.drawPath(p, new Paint());
+		}
 	}
 	
 	@Override
