@@ -33,6 +33,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderProtagonist(canvas);
 	}
 	
+	public void pause(){
+		thread.setRunning(false);
+	}
+	
 	public void renderProtagonist(Canvas canvas){
 		canvas.drawRect((float)protagonist.getXPos(), (float)protagonist.getYPos(), (float)protagonist.getXPos()+30, (float)protagonist.getYPos()+30, new Paint());
 	}
