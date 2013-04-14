@@ -67,8 +67,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
 		canvas.drawColor(Color.WHITE);
-		renderProtagonist(canvas);
 		renderGround(canvas);
+		renderProtagonist(canvas);
 		renderSticks(canvas);
 	}
 	
@@ -79,7 +79,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Draw the protagonist
 	public void renderProtagonist(Canvas canvas){
-		canvas.drawRect((float)((protagonist.getXPos()-protagonistWidth/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonistHeight/2)*scaleY), (float)((protagonist.getXPos()+protagonistWidth/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonistHeight/2)*scaleY), new Paint());
+		Paint p = new Paint();
+		p.setColor(Color.BLUE);
+		canvas.drawRect((float)((protagonist.getXPos()-protagonistWidth/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonistHeight/2)*scaleY), (float)((protagonist.getXPos()+protagonistWidth/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonistHeight/2)*scaleY), p);
 	}
 	
 	//Draws the ground using a Path
@@ -98,7 +100,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Draw the sticks
 	public void renderSticks(Canvas canvas){
-		canvas.drawCircle((float)(leftStick.getX()*scaleX), (float)(leftStick.getY()*scaleY), (float)(leftStick.getRadius()*scaleX), new Paint());
+		Paint p = new Paint();
+		p.setColor(Color.GRAY);
+		canvas.drawCircle((float)(leftStick.getX()*scaleX), (float)(leftStick.getY()*scaleY), (float)(leftStick.getRadius()*scaleX), p);
 	}
 	
 	@Override
