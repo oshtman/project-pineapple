@@ -57,7 +57,7 @@ public class Protagonist {
 	public double getYAcc() {
 		return yAcc;
 	}
-	
+
 	//setmethods for pos, vel, acc
 	public void setXPos(double n) {
 		xPos = n;
@@ -82,12 +82,12 @@ public class Protagonist {
 	public void setYAcc(double n) {
 		yAcc = n;
 	}
-	
+
 	// get and setmethods for actionproperties
 	public void setAim(int angle) {
 		angleAim = angle;
 	}
-	
+
 	public double getAim() {
 		return angleAim;
 	}
@@ -99,7 +99,7 @@ public class Protagonist {
 	public void setHealth(int health) {
 		this.health = health;
 	}
-	
+
 	private double getJumpVel() {
 		return jumpVel;
 	}
@@ -142,41 +142,38 @@ public class Protagonist {
 
 	//Protagonist jump
 	public void jump() {
-			this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
-			this.setYPos(this.getYPos() + this.getYVel());
-			Log.d(TAG, "Jump!!");
+		this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
+		this.setYPos(this.getYPos() + this.getYVel());
+		Log.d(TAG, "Jump!!");
 	}
 
-	//Acceletaring protagonist
-	public void accelerate(double acc) { // angle from stickDirection!
+	//Accelerating protagonist
+	public void accelerate(double acc) { // acc = 0.2?
 		this.setXVel(this.getXVel() + acc);
-		if(this.getXVel() < this.getMaxSpeed()) {
+		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {
 			this.setXVel(this.getMaxSpeed());
+		} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
+			this.setXVel(-this.getMaxSpeed());
 		}
 	}
-	
+
 	//Moving protagonist
 	public void move() {
 		this.setXPos(this.getXPos() + this.getXVel());
 		this.setYPos(this.getYPos() + this.getYVel());
 	}
-	
+
 	//Deaccelerate protagonist (if stick is not pointed)
 	public void slowDown() {
-		//if (this.getXVel() > 0) {
 		this.setXVel(this.getXVel()*0.9);
-		//	} else {
-		//		this.setXVel(this.getXVel() + 0.1);
-		//	}
 		this.setXPos(this.getXPos() + this.getXVel());
 	}
-	
+
 	//Make action from stickAngle
 	public void handleStick(double angle, double acc) {
 		if (angle <= 45 || angle >= 315) {
-			this.accelerate(acc); // acc = 0.2?
+			this.accelerate(acc);
 		} else if (angle >= 135 && angle <= 225) {
-			this.setMaxSpeed(-this.getMaxSpeed());
 			this.accelerate(-acc);
 		} else if (angle > 45 && angle < 135)
 			this.jump();

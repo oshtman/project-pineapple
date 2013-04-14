@@ -16,8 +16,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int height = 100;
 	private final int protagonistHeight = 20;
 	private final int protagonistWidth = (int)(20/1.42); //Change 1.42 to ratio of bitmap
-	private int screenX;
-	private int screenY;
+	private double screenX;
+	private double screenY;
 	private final int screenPadding = 50;
 	private MainThread thread;
 	private Protagonist protagonist;
@@ -32,8 +32,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		setFocusable(true);
 		protagonist = new Protagonist();
 		//Change this later
-		int[] x = {0, 100, 150};
-		int[] y = {100, 80, 100};
+		int[] x = {-300, 0, 100, 150, 300};
+		int[] y = {95, 95, 80, 95, 20};
 		screenX = 0;
 		screenY = 0;
 		ground = new Ground(x, y);
@@ -49,18 +49,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			protagonist.slowDown();
 		}
 		protagonist.move();
-	
-		//Check if the screen has to be moved
+		
 		moveScreen();
+		Log.d(TAG, "The screens position is " + screenX);
 	}
 	
 	//Under construction
 	//Moves the screen if the protagonist is close to the edge of the screen
 	public void moveScreen(){
 		if(protagonist.getXPos() - screenX > width - screenPadding){
-			screenX = (int)(protagonist.getXPos() - width + screenPadding);
-		} else if(protagonist.getXPos() - screenX > screenPadding){
-			screenX = (int)(protagonist.getXPos() - screenPadding);
+			screenX = protagonist.getXPos() - width + screenPadding;
+		} else if(protagonist.getXPos() - screenX < screenPadding){
+			screenX = protagonist.getXPos() - screenPadding;
 		}
 		
 	}
