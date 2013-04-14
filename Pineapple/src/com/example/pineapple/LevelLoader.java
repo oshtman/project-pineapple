@@ -53,7 +53,7 @@ public class LevelLoader {
 		return yGroundArrays.get(level-1);
 	}
 	
-	public int[] getPlatformUpperX(int level, int platform){
+	/*public int[] getPlatformUpperX(int level, int platform){
 		return 
 	}
 	public int[] getPlatformUpperY(int level, int platform){
@@ -64,6 +64,6 @@ public class LevelLoader {
 	}
 	public int[] getPlatformLowerY(int level, int platform){
 
-	}
+	}*/
 	
 }

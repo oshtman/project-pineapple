@@ -29,11 +29,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		super(context);
 		getHolder().addCallback(this);
 		setFocusable(true);
-		protagonist = new Protagonist(width/2, ground.getYFromX(77));//, this);
+		
 		screenX = 0;
 		screenY = 0;
 		levelLoader = new LevelLoader();
 		ground = new Ground(levelLoader.getLevelX(1), levelLoader.getLevelY(1));
+		protagonist = new Protagonist(width/2, ground.getYFromX(77));//, this);
 		leftStick = new Stick(Stick.LEFT);
 		thread = new MainThread(this.getHolder(), this);
 	}
