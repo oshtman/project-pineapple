@@ -13,6 +13,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = GamePanel.class.getSimpleName();
 	private final int width = 155;
 	private final int height = 100;
+	private final int protagonistHeight = 20;
+	private final int protagonistWidth = (int)(20/1.42); //Change 1.42 to ratio of bitmap
 	private MainThread thread;
 	private Protagonist protagonist;
 	private Ground ground;
@@ -50,7 +52,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Draw the protagonist
 	public void renderProtagonist(Canvas canvas){
-		canvas.drawRect((float)protagonist.getXPos(), (float)protagonist.getYPos(), (float)protagonist.getXPos()+30, (float)protagonist.getYPos()+30, new Paint());
+		canvas.drawRect((float)((protagonist.getXPos()-protagonistWidth/2)*scaleX), (float)((protagonist.getYPos()-protagonistHeight/2)*scaleY), (float)((protagonist.getXPos()+protagonistWidth/2)*scaleX), (float)((protagonist.getYPos()+protagonistHeight/2)*scaleY), new Paint());
 	}
 	
 	//Draws the ground using a Path
