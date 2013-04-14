@@ -123,7 +123,7 @@ public class Protagonist {
 
 	//not ready to move..
 	public void move(double angle, double vel, double acc, double maxSpeed) { // angle from stickDirection!
-		if (angle <= 45 && angle >= 315) {
+		if (angle <= 45 || angle >= 315) {
 			this.setXVel(this.getXVel() + 0.2);
 			this.setXPos(this.getXPos() + this.getXVel());
 			this.setYPos(this.getYPos() + this.getYVel());
@@ -142,11 +142,11 @@ public class Protagonist {
 		}
 	}
 	public void slowDown() {
-		if (this.getXVel() > 0) {
-			this.setXVel(this.getXVel() - 0.1);
-		} else {
-			this.setXVel(this.getXVel() + 0.1);
-		}
+		//if (this.getXVel() > 0) {
+			this.setXVel(this.getXVel()*0.9);
+	//	} else {
+	//		this.setXVel(this.getXVel() + 0.1);
+	//	}
 		this.setXPos(this.getXPos() + this.getXVel());
 	}
 }
