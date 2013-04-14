@@ -15,21 +15,21 @@ public class Protagonist {
 	private double yAcc;
 	private int health;
 	private int angleAim;
-	private double jumpVel = -3;
-	private double jumpAcc = 0.1;
+	private double jumpVel = -6;
+	private double jumpAcc = 0.4;
 	private double maxSpeed = 3;
 	private double slideCoefficient = 0.8;
 	private final int height = 20;
 	private final int width = (int)(20/1.42); //Change 1.42 to ratio of bitmap
 	private boolean touchingGround;
-//	private GamePanel gp;
+	private GamePanel gp;
 
 	// CONSTRUCTOR
-	public Protagonist(double i, double j)/*, GamePanel gp)*/ {
+	public Protagonist(double i, double j, GamePanel gp) {
 		this.setXPos(i);
 		this.setYPos(j);
-		health = 100;
-	//	this.gp = gp;
+		this.health = 100;
+		this.gp = gp;
 	}
 
 	// GET AND SET METHODS
@@ -149,15 +149,20 @@ public class Protagonist {
 	// ACTIONS
 	//Protagonist is aiming
 	public void aim(double angle) {
-		
+
 	}
+	
 	//Protagonist is abel to fire
-	public void fire() {
+	public void fire(double angle, Bullet b, double bulletSpeed) {
+		b.setXPos(this.getWidth()/2 + this.getXPos());
+		b.setYPos(this.getYPos());
+		b.setXVel(Math.cos(angle/180*Math.PI)*bulletSpeed);
+		b.setYVel(Math.sin(angle/180*Math.PI)*bulletSpeed);
 	}
 
 	//Protagonist lose health
 	public int reduceHealth(int n) {
-		setHealth(n-1);
+		this.setHealth(n-1);
 		return health;
 	}
 
@@ -169,12 +174,12 @@ public class Protagonist {
 	}
 	// ------------- KEEPING FEET ON THE GROUND (just for now)--------------- //
 	//Protagonist down
-	/*public void down(Ground g) {
+	public void down(Ground g) {
 		this.setYPos(g.getYFromX(this.getXPos()));
 		this.setYVel(0);
 		this.setYAcc(0);
 		Log.d(TAG, "Come down!!");
-	}*/
+	}
 	// ---------------------------------------------------------------------- //
 
 	//Accelerating protagonist
@@ -199,17 +204,17 @@ public class Protagonist {
 	}
 
 	//Make action from stickAngle
-	public void handleStick(double angle, double acc) {
+	public void handleLeftStick(double angle, double acc) {
 		if (angle <= 45 || angle >= 315) {
 			this.accelerate(acc);
 		} else if (angle >= 135 && angle <= 225) {
 			this.accelerate(-acc);
 		} else if (angle > 45 && angle < 135 && this.isTouchingGround()) {
 			this.jump();
-		} //else if (angle > 225 && angle < 315)
-//			this.down(gp.getGround());
+		} else if (angle > 225 && angle < 315)
+			this.down(gp.getGround());
 	}
-	
+
 	//Check if the protagonist is under the ground
 	//If he is, then set him on top of it
 	public void checkGround(Ground g){
@@ -220,7 +225,7 @@ public class Protagonist {
 			touchingGround = true;
 		}
 	}
-	
+
 	//Let gravity work on protagonist
 	public void gravity(){
 		this.setYVel(this.getYVel()+this.getJumpAcc());

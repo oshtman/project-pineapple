@@ -30,7 +30,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private boolean scaledPaths = false;
 	
 	
-	public GamePanel(Context context){
+	public GamePanel(Context context, int level){
 		super(context);
 		getHolder().addCallback(this);
 		setFocusable(true);
@@ -38,10 +38,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		screenY = 0;
 		levelLoader = new LevelLoader();
 		//This has to be adressed later!
-		ground = new Ground(levelLoader.getLevelX(1), levelLoader.getLevelY(1));
 		platforms = new ArrayList<Platform>();
-		platforms.add(new Platform(levelLoader.getPlatformUpperX(1, 1), levelLoader.getPlatformUpperY(1, 1), levelLoader.getPlatformLowerX(1, 1), levelLoader.getPlatformLowerY(1, 1)));
-		protagonist = new Protagonist(width/2, ground.getYFromX(77));//, this);
+		platforms.add(new Platform(levelLoader.getPlatformUpperX(level, 1), levelLoader.getPlatformUpperY(level, 1), levelLoader.getPlatformLowerX(level, 1), levelLoader.getPlatformLowerY(level, 1)));
+		ground = new Ground(levelLoader.getLevelX(level), levelLoader.getLevelY(level));
+		protagonist = new Protagonist(width/2, ground.getYFromX(77), this);
 		leftStick = new Stick(Stick.LEFT);
 		thread = new MainThread(this.getHolder(), this);
 	}
@@ -49,7 +49,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Method that gets called every frame to update the games state
 	public void update(){
 		if(leftStick.isPointed()) {
-			protagonist.handleStick(leftStick.getAngle(), 0.4);
+			protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
 		} else if (Math.abs(protagonist.getXVel()) > 0){
 			protagonist.slowDown();
 		}

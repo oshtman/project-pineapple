@@ -10,13 +10,13 @@ import android.view.WindowManager;
 public class GameActivity extends BaseActivity {
 
 	GamePanel gamePanel;
-	
+	int level = 2;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		gamePanel = new GamePanel(this);
+		gamePanel = new GamePanel(this, level);
 		setContentView(gamePanel);
 	}
 

@@ -4,7 +4,7 @@ public class Bullet {
 
 	private double xPos;
 	private double yPos;
-	private double xVel = 10;
+	private double xVel;
 	private double yVel;
 	
 	//CONSTRUCTOR
@@ -46,10 +46,13 @@ public class Bullet {
 		this.yVel = yVel;
 	}
 	
+	//Moving bullet
+	public void move() {
+		this.setXPos(this.getXPos() + this.getXVel());
+	}
 	//Gravity on bullets
 	public void gravity(double acc) {
 		this.setYVel(this.getYVel() + acc);
 	}
-
 	
 }
