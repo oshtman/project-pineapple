@@ -4,9 +4,6 @@ public class Enemy {
 
 	private double xPos;
 	private double yPos;
-	private double height;
-	private double length;
-	//	private bitmap portrait;
 	private double xVel;
 	private double yVel;
 	private double xAcc;

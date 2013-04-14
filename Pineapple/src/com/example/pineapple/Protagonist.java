@@ -2,11 +2,13 @@ package com.example.pineapple;
 
 import java.util.*;
 
+import android.util.Log;
+
 public class Protagonist {
 
+	private static final String TAG = Protagonist.class.getSimpleName();
 	private double xPos;
 	private double yPos;
-	//	private bitmap portrait;
 	private double xVel;
 	private double yVel;
 	private double xAcc;
@@ -109,35 +111,42 @@ public class Protagonist {
 
 	//and testING
 	public void jump(double vel, double acc) {
-		if(Math.abs(vel - acc) < -1*vel) {
+		if(Math.abs(vel - acc) < -vel) {
 			this.setYVel(vel + acc);
 			this.setYPos(this.getYPos() - this.getYVel());
 			jump(vel - acc, acc);
 		} else { 
+			Log.d(TAG, "Jump!!");
 		}
 	}
 
 
 	//not ready to move..
 	public void move(double angle, double vel, double acc, double maxSpeed) { // angle from stickDirection!
-		if (Math.abs(angle) < 45) {
-			this.setXVel(this.getXVel() + 1);
+		if (angle <= 45 && angle >= 315) {
+			this.setXVel(this.getXVel() + 0.2);
 			this.setXPos(this.getXPos() + this.getXVel());
 			this.setYPos(this.getYPos() + this.getYVel());
 			if(this.getXVel() < maxSpeed) {
 				this.setXVel(maxSpeed);
 			}
-		} else if (angle > 135 && angle < 225) {
-			this.setXVel(this.getXVel() - 1);
+		} else if (angle >= 135 && angle <= 225) {
+			this.setXVel(this.getXVel() - 0.2);
 			this.setXPos(this.getXPos() + this.getXVel());
 			this.setYPos(this.getYPos() + this.getYVel());
-			if(this.getXVel() < maxSpeed) {
-				this.setXVel(maxSpeed);
+			if(this.getXVel() > -maxSpeed) {
+				this.setXVel(-maxSpeed);
 			}
 		} else if (angle < 135 && angle > 45) {
 			this.jump(vel, acc);
 		}
 	}
+public void slowDown() {
+	if (this.getXVel() > 0) {
+		this.setXVel(this.getXVel() - 0.1);
+	} else {
+		this.setXVel(this.getXVel() + 0.1);
+	}
 }
-
+}
 
