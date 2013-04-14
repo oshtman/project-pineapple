@@ -46,8 +46,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(leftStick.isPointed()) {
 			protagonist.move(leftStick.getAngle(), -5, 1, 3);
 		}
-		
-		
+	
 		//Check if the screen has to be moved
 		moveScreen();
 	}
