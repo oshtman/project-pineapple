@@ -50,7 +50,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Check if the screen has to be moved
 		
 		moveScreen();
-		Log.d(TAG, "The screens position is " + screenX);
 	}
 	
 	//Under construction
