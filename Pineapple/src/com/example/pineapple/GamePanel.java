@@ -16,6 +16,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int height = 100;
 	private final int protagonistHeight = 20;
 	private final int protagonistWidth = (int)(20/1.42); //Change 1.42 to ratio of bitmap
+	private int screenX;
+	private int screenY;
+	private final int screenPadding = 50;
 	private MainThread thread;
 	private Protagonist protagonist;
 	private Ground ground;
@@ -31,6 +34,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Change this later
 		int[] x = {0, 100, 150};
 		int[] y = {100, 80, 100};
+		screenX = 0;
+		screenY = 0;
 		ground = new Ground(x, y);
 		leftStick = new Stick(Stick.LEFT);
 		thread = new MainThread(this.getHolder(), this);
@@ -39,6 +44,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Method that gets called every frame to update the games state
 	public void update(){
 		
+		
+		
+		
+		
+		
+		
+		//Check if the screen has to be moved
+		moveScreen();
+	}
+	
+	//Under construction
+	//Moves the screen if the protagonist is close to the edge of the screen
+	public void moveScreen(){
+		if(protagonist.getXPos() - screenX > width - screenPadding){
+			screenX = (int)(protagonist.getXPos() - width + screenPadding);
+		}
 	}
 	
 	//Method that gets called to render the graphics
