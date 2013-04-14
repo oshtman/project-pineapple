@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -19,6 +20,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Protagonist protagonist;
 	private Ground ground;
 	private double scaleY, scaleX;
+	private Stick leftStick;
 	
 	
 	public GamePanel(Context context){
@@ -30,6 +32,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		int[] x = {0, 100, 150};
 		int[] y = {100, 80, 100};
 		ground = new Ground(x, y);
+		leftStick = new Stick(Stick.LEFT);
 		thread = new MainThread(this.getHolder(), this);
 	}
 	
@@ -40,9 +43,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
-		canvas.drawColor(Color.BLUE);
+		canvas.drawColor(Color.WHITE);
 		renderProtagonist(canvas);
 		renderGround(canvas);
+		renderSticks(canvas);
 	}
 	
 	//Pause the game
@@ -67,6 +71,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			p.lineTo((int)(ground.getX(i)*scaleX), (int)(ground.getY(i)*scaleY));
 			canvas.drawPath(p, new Paint());
 		}
+	}
+	
+	//Draw the sticks
+	public void renderSticks(Canvas canvas){
+		canvas.drawCircle((float)(leftStick.getX()*scaleX), (float)(leftStick.getY()*scaleY), (float)(leftStick.getRadius()*scaleX), new Paint());
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent e){
+		int x = (int)(e.getX()/scaleX);
+		int y = (int)(e.getY()/scaleY);
+		
+		leftStick.handleTouch(x, y);
+		Log.d(TAG, leftStick.getAngle()+"");
+		return true;
 	}
 	
 	@Override

@@ -1,8 +1,8 @@
 package com.example.pineapple;
 
 public class Stick {
-	public final int LEFT = 1;
-	public final int RIGHT = 2;
+	public static final int LEFT = 1;
+	public static final int RIGHT = 2;
 	private int x, y;
 	private int angle;
 	private final int radius;
@@ -10,11 +10,11 @@ public class Stick {
 	
 	public Stick(int pos){
 		if(pos == LEFT){
-			x = 20;
+			x = 15;
 		} else {
-			x = 135;
+			x = 140;
 		}
-		y = 80;
+		y = 85;
 		pointed = false;
 		radius = 10;
 	}
@@ -24,9 +24,12 @@ public class Stick {
 		int dx = x - this.x;
 		int dy = y - this.y;
 		double dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-		if(dist <= radius){
+		if(dist <= 2*radius){
 			//Calculate angle of the finger relative to the stick
-			angle = (int)(Math.atan2(dy, dx)*180/Math.PI);
+			angle = (int)(Math.atan2(-dy, dx)*180/Math.PI);
+			if(angle < 0){
+				angle += 360;
+			}
 			//Set the sticks status to pointed
 			pointed = true;
 		}
@@ -35,6 +38,42 @@ public class Stick {
 	public void release(){
 		angle = 0;
 		pointed = false;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public int getAngle() {
+		return angle;
+	}
+
+	public void setAngle(int angle) {
+		this.angle = angle;
+	}
+
+	public boolean isPointed() {
+		return pointed;
+	}
+
+	public void setPointed(boolean pointed) {
+		this.pointed = pointed;
+	}
+
+	public int getRadius() {
+		return radius;
 	}
 	
 	
