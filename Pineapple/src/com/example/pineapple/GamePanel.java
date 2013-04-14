@@ -45,7 +45,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		} else if (Math.abs(protagonist.getXVel()) > 0){
 			protagonist.slowDown();
 		}
+		protagonist.gravity();
 		protagonist.move();
+		protagonist.checkGround(ground);
 		
 		moveScreen();
 	}

@@ -21,6 +21,7 @@ public class Protagonist {
 	private double slideCoefficient = 0.8;
 	private final int height = 20;
 	private final int width = (int)(20/1.42); //Change 1.42 to ratio of bitmap
+	private boolean touchingGround;
 
 	// CONSTRUCTOR
 	public Protagonist(double i,double j) {
@@ -141,6 +142,14 @@ public class Protagonist {
 		return width;
 	}
 
+	public boolean isTouchingGround() {
+		return touchingGround;
+	}
+
+	public void setTouchingGround(boolean touchingGround) {
+		this.touchingGround = touchingGround;
+	}
+
 	// ACTIONS
 	//Protagonist is aiming
 	public void aim(double angle) {
@@ -161,6 +170,7 @@ public class Protagonist {
 
 	//Protagonist jump
 	public void jump() {
+		touchingGround = false;
 		this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
 		Log.d(TAG, "Jump!!");
 	}
@@ -201,7 +211,7 @@ public class Protagonist {
 			this.accelerate(acc);
 		} else if (angle >= 135 && angle <= 225) {
 			this.accelerate(-acc);
-		} else if (angle > 45 && angle < 135) {
+		} else if (angle > 45 && angle < 135 && this.isTouchingGround()) {
 			this.jump();
 		} else if (angle > 225 && angle < 315)
 			this.down();
@@ -214,7 +224,13 @@ public class Protagonist {
 			this.yPos = g.getYFromX(this.xPos)-height/2;
 			this.yVel = 0;
 			this.yAcc = 0;
+			touchingGround = true;
 		}
+	}
+	
+	//Let gravity work on protagonist
+	public void gravity(){
+		this.setYVel(this.getYVel()+this.getJumpAcc());
 	}
 
 }
