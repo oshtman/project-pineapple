@@ -6,11 +6,11 @@ public class LevelLoader {
 	private ArrayList<int[]> xGroundArrays = new ArrayList<int[]>();
 	private ArrayList<int[]> yGroundArrays = new ArrayList<int[]>();
 	
-	//Platform lists for level 1
-	private ArrayList<int[]> pUX1 = new ArrayList<int[]>();
-	private ArrayList<int[]> pUY1 = new ArrayList<int[]>();
-	private ArrayList<int[]> pLX1 = new ArrayList<int[]>();
-	private ArrayList<int[]> pLY1 = new ArrayList<int[]>();
+	//Lists that hold lists for the platforms for each level
+	private ArrayList<ArrayList<int[]>> pUX = new ArrayList<ArrayList<int[]>>();
+	private ArrayList<ArrayList<int[]>> pUY = new ArrayList<ArrayList<int[]>>();
+	private ArrayList<ArrayList<int[]>> pLX = new ArrayList<ArrayList<int[]>>();
+	private ArrayList<ArrayList<int[]>> pLY = new ArrayList<ArrayList<int[]>>();
 	
 	
 	//Put the ground arrays for all levels here!
@@ -24,6 +24,10 @@ public class LevelLoader {
 	
 	//Level 1
 	//Platform 1
+	private ArrayList<int[]> pUX1 = new ArrayList<int[]>();
+	private ArrayList<int[]> pUY1 = new ArrayList<int[]>();
+	private ArrayList<int[]> pLX1 = new ArrayList<int[]>();
+	private ArrayList<int[]> pLY1 = new ArrayList<int[]>();
 	private final int[] pUX1_1 = {30, 40, 50};
 	private final int[] pUY1_1 = {10, 10, 20};
 	private final int[] pLX1_1 = {30, 40, 50};
@@ -43,6 +47,13 @@ public class LevelLoader {
 		pLX1.add(pLX1_1);
 		pLY1.add(pLY1_1);
 		
+		//Add the lists of each level to the list of lists
+		pUX.add(pUX1);
+		pUY.add(pUY1);
+		pLX.add(pLX1);
+		pLY.add(pLY1);
+		
+		
 	}
 	
 	public int[] getLevelX(int level){
@@ -53,17 +64,17 @@ public class LevelLoader {
 		return yGroundArrays.get(level-1);
 	}
 	
-	/*public int[] getPlatformUpperX(int level, int platform){
-		return 
+	public int[] getPlatformUpperX(int level, int platform){
+		return pUX.get(level-1).get(platform-1);
 	}
 	public int[] getPlatformUpperY(int level, int platform){
-
+		return pUY.get(level-1).get(platform-1);
 	}
 	public int[] getPlatformLowerX(int level, int platform){
-
+		return pLX.get(level-1).get(platform-1);
 	}
 	public int[] getPlatformLowerY(int level, int platform){
-
-	}*/
+		return pLY.get(level-1).get(platform-1);
+	}
 	
 }
