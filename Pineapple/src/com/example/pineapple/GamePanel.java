@@ -44,10 +44,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Method that gets called every frame to update the games state
 	public void update(){
 		if(leftStick.isPointed()) {
-			protagonist.move(leftStick.getAngle(), -1, 0.1, 1);
+			protagonist.handleStick(leftStick.getAngle(), 0.2);
 		} else if (Math.abs(protagonist.getXVel()) > 0){
 			protagonist.slowDown();
 		}
+		protagonist.move();
 	
 		//Check if the screen has to be moved
 		moveScreen();
