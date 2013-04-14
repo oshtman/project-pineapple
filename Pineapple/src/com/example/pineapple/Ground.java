@@ -11,6 +11,7 @@ public class Ground {
 	
 	//Get the y position of the ground relative to the given x
 	public double getYFromX(double x){
+		//Find the index to the right of the protagonist
 		int index = 0;
 		while(this.x[index] < x){
 			index++;
@@ -24,6 +25,7 @@ public class Ground {
 	//Get the slope of the ground at given x 
 	//A positive slope means that the ground is declining from left to right
 	public double getSlope(double x){
+		//Find the index to the right of the protagonist
 		int index = 0;
 		while(this.x[index] < x){
 			index++;
