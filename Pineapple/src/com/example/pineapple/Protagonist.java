@@ -18,6 +18,7 @@ public class Protagonist {
 	private double jumpVel = -3;
 	private double jumpAcc = 0.1;
 	private double maxSpeed = 3;
+	private double slideCoefficient = 0.95;
 
 	// CONSTRUCTOR
 	public Protagonist(double i,double j) {
@@ -121,6 +122,14 @@ public class Protagonist {
 	private void setMaxSpeed(double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
+	
+	private double getSlideCoefficient() {
+		return slideCoefficient;
+	}
+
+	private void setSlideCoefficient(double slideCoefficient) {
+		this.slideCoefficient = slideCoefficient;
+	}
 
 	// ACTIONS
 	//Protagonist is aiming
@@ -165,7 +174,7 @@ public class Protagonist {
 
 	//Deaccelerate protagonist (if stick is not pointed)
 	public void slowDown() {
-		this.setXVel(this.getXVel()*0.9);
+		this.setXVel(this.getXVel()*slideCoefficient);
 		this.setXPos(this.getXPos() + this.getXVel());
 	}
 

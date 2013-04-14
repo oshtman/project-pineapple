@@ -23,7 +23,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Protagonist protagonist;
 	private Ground ground;
 	private double scaleY, scaleX;
-	private Stick leftStick;
+	private Stick leftStick, rightStick;
+	private LevelLoader levelLoader;
 	
 	
 	public GamePanel(Context context){
@@ -31,12 +32,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		getHolder().addCallback(this);
 		setFocusable(true);
 		protagonist = new Protagonist();
-		//Change this later
-		int[] x = {-300, 0, 100, 150, 300};
-		int[] y = {95, 95, 80, 95, 20};
 		screenX = 0;
 		screenY = 0;
-		ground = new Ground(x, y);
+		levelLoader = new LevelLoader();
+		ground = new Ground(levelLoader.getLevelX(1), levelLoader.getLevelY(1));
 		leftStick = new Stick(Stick.LEFT);
 		thread = new MainThread(this.getHolder(), this);
 	}
