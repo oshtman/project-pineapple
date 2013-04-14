@@ -22,18 +22,14 @@ public class Protagonist {
 	private final int height = 20;
 	private final int width = (int)(20/1.42); //Change 1.42 to ratio of bitmap
 	private boolean touchingGround;
+//	private GamePanel gp;
 
 	// CONSTRUCTOR
-	public Protagonist(double i,double j) {
+	public Protagonist(double i, double j)/*, GamePanel gp)*/ {
 		this.setXPos(i);
 		this.setYPos(j);
 		health = 100;
-	}
-
-	public Protagonist() {
-		this.setXPos(75);
-		this.setYPos(80);
-		health = 100;
+	//	this.gp = gp;
 	}
 
 	// GET AND SET METHODS
@@ -153,10 +149,7 @@ public class Protagonist {
 	// ACTIONS
 	//Protagonist is aiming
 	public void aim(double angle) {
-		double v[] = new double[360];
-		for (int i=0; i < v.length - 1; i++) {
-			v[i] = Math.PI/v.length*i;
-		}
+		
 	}
 	//Protagonist is abel to fire
 	public void fire() {
@@ -176,12 +169,12 @@ public class Protagonist {
 	}
 	// ------------- KEEPING FEET ON THE GROUND (just for now)--------------- //
 	//Protagonist down
-	public void down() {
-		this.setYPos(80);
+	/*public void down(Ground g) {
+		this.setYPos(g.getYFromX(this.getXPos()));
 		this.setYVel(0);
 		this.setYAcc(0);
 		Log.d(TAG, "Come down!!");
-	}
+	}*/
 	// ---------------------------------------------------------------------- //
 
 	//Accelerating protagonist
@@ -213,8 +206,8 @@ public class Protagonist {
 			this.accelerate(-acc);
 		} else if (angle > 45 && angle < 135 && this.isTouchingGround()) {
 			this.jump();
-		} else if (angle > 225 && angle < 315)
-			this.down();
+		} //else if (angle > 225 && angle < 315)
+//			this.down(gp.getGround());
 	}
 	
 	//Check if the protagonist is under the ground
