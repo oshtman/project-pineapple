@@ -6,8 +6,6 @@ public class Protagonist {
 
 	private double xPos;
 	private double yPos;
-	private double height;
-	private double length;
 	//	private bitmap portrait;
 	private double xVel;
 	private double yVel;
@@ -109,9 +107,9 @@ public class Protagonist {
 		return health;
 	}
 
-	//Också testING
+	//and testING
 	public void jump(double vel, double acc) {
-		if(Math.abs(vel - acc) < vel) {
+		if(Math.abs(vel - acc) < -1*vel) {
 			this.setYVel(vel + acc);
 			this.setYPos(this.getYPos() - this.getYVel());
 			jump(vel - acc, acc);
@@ -120,19 +118,26 @@ public class Protagonist {
 	}
 
 
-	//INTE KLAAAR..
-	public void move(double angle, double vel, double acc) { // angle från stickDirectionen!
+	//not ready to move..
+	public void move(double angle, double vel, double acc, double maxSpeed) { // angle from stickDirection!
 		if (Math.abs(angle) < 45) {
 			this.setXVel(this.getXVel() + 1);
 			this.setXPos(this.getXPos() + this.getXVel());
-			this.setYPos(this.getYPos() - this.getYVel());
+			this.setYPos(this.getYPos() + this.getYVel());
+			if(this.getXVel() < maxSpeed) {
+				this.setXVel(maxSpeed);
+			}
 		} else if (angle > 135 && angle < 225) {
 			this.setXVel(this.getXVel() - 1);
-			this.setXPos(this.getXPos() - this.getXVel());
-			this.setYPos(this.getYPos() - this.getYVel());
+			this.setXPos(this.getXPos() + this.getXVel());
+			this.setYPos(this.getYPos() + this.getYVel());
+			if(this.getXVel() < maxSpeed) {
+				this.setXVel(maxSpeed);
+			}
 		} else if (angle < 135 && angle > 45) {
-			this.jump(vel,acc);
+			this.jump(vel, acc);
 		}
 	}
 }
+
 
