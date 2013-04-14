@@ -16,6 +16,7 @@ public class LevelLoader {
 	//Put the ground arrays for all levels here!
 	private final int[] x1 = {-300, 0, 100, 150, 300};
 	private final int[] y1 = {95, 95, 80, 95, 20};
+
 	
 	
 	//Put the platforms for each level here!
@@ -32,10 +33,19 @@ public class LevelLoader {
 	
 	
 	public LevelLoader(){
+		//level 2 "Valley of whale"
+		int[] x2 = new int[100];
+		int[] y2 = new int[100];
+		for (int i = 0; i<100; i++) {
+			x2[i] = i*20;
+			y2[i] = 50 + (int)(25*Math.cos((double)x2[i]/200*Math.PI));
+		}
+		
 		//Add the ground arrays to their lists
 		xGroundArrays.add(x1);
-		yGroundArrays.add(y1);	
-		
+		yGroundArrays.add(y1);
+		xGroundArrays.add(x2);
+		yGroundArrays.add(y2);
 		
 		//Add the platforms to their respective lists
 		pUX1.add(pUX1_1);

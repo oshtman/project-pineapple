@@ -33,8 +33,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		screenX = 0;
 		screenY = 0;
 		levelLoader = new LevelLoader();
-		ground = new Ground(levelLoader.getLevelX(1), levelLoader.getLevelY(1));
-		protagonist = new Protagonist(width/2, ground.getYFromX(77));//, this);
+		ground = new Ground(levelLoader.getLevelX(2), levelLoader.getLevelY(2));
+		protagonist = new Protagonist(width/2, ground.getYFromX(77), this);
 		leftStick = new Stick(Stick.LEFT);
 		thread = new MainThread(this.getHolder(), this);
 	}
@@ -42,7 +42,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Method that gets called every frame to update the games state
 	public void update(){
 		if(leftStick.isPointed()) {
-			protagonist.handleStick(leftStick.getAngle(), 0.4);
+			protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
 		} else if (Math.abs(protagonist.getXVel()) > 0){
 			protagonist.slowDown();
 		}
