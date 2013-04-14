@@ -133,6 +133,14 @@ public class Protagonist {
 		this.slideCoefficient = slideCoefficient;
 	}
 
+	public int getHeight() {
+		return height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
 	// ACTIONS
 	//Protagonist is aiming
 	public void aim(double angle) {

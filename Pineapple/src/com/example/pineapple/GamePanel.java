@@ -78,7 +78,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderProtagonist(Canvas canvas){
 		Paint p = new Paint();
 		p.setColor(Color.BLUE);
-		canvas.drawRect((float)((protagonist.getXPos()-protagonistWidth/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonistHeight/2)*scaleY), (float)((protagonist.getXPos()+protagonistWidth/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonistHeight/2)*scaleY), p);
+		canvas.drawRect((float)((protagonist.getXPos()-protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonist.getHeight()/2)*scaleY), (float)((protagonist.getXPos()+protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonist.getHeight()/2)*scaleY), p);
 	}
 	
 	//Draws the ground using a Path
