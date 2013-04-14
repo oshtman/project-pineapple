@@ -43,21 +43,24 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderGround(canvas);
 	}
 	
+	//Pause the game
 	public void pause(){
 		thread.setRunning(false);
 	}
 	
+	//Draw the protagonist
 	public void renderProtagonist(Canvas canvas){
 		canvas.drawRect((float)protagonist.getXPos(), (float)protagonist.getYPos(), (float)protagonist.getXPos()+30, (float)protagonist.getYPos()+30, new Paint());
 	}
 	
+	//Draws the ground using a Path
 	public void renderGround(Canvas canvas){
 		int length = ground.getLength();
 		for(int i = 0; i < length-1; i++){
 			Path p = new Path();
 			p.moveTo((int)(ground.getX(i)*scaleX), (int)(ground.getY(i)*scaleY));
 			p.lineTo((int)(ground.getX(i+1)*scaleX), (int)(ground.getY(i+1)*scaleY));
-			p.lineTo((int)(ground.getX(i+1)*scaleX), (int)(200*scaleY));
+			p.lineTo((int)(ground.getX(i+1)*scaleX), (int)(200*scaleY)); //Fix line 63 and 64, (200)
 			p.lineTo((int)(ground.getX(i)*scaleX), (int)(200*scaleY));
 			p.lineTo((int)(ground.getX(i)*scaleX), (int)(ground.getY(i)*scaleY));
 			canvas.drawPath(p, new Paint());
@@ -72,14 +75,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
+		//Start the thread
 		thread.setRunning(true);
 		thread.start();
+		//Calculate the scale that we will use to render the game
 		scaleY = (double)getHeight()/height;
 		scaleX = (double)getWidth()/width;
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
+		//End the thread
 		boolean retry = true;
 		while(retry){
 			try{

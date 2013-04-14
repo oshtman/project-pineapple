@@ -5,7 +5,7 @@ public class Stick {
 	public final int RIGHT = 2;
 	private int x, y;
 	private int angle;
-	private int radius;
+	private final int radius;
 	private boolean pointed;
 	
 	public Stick(int pos){
