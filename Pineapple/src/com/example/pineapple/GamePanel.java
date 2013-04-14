@@ -48,9 +48,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		} else if (Math.abs(protagonist.getXVel()) > 0){
 			protagonist.slowDown();
 		}
-	
 		//Check if the screen has to be moved
+		
 		moveScreen();
+		Log.d(TAG, "The screens position is " + screenX);
 	}
 	
 	//Under construction
@@ -58,7 +59,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void moveScreen(){
 		if(protagonist.getXPos() - screenX > width - screenPadding){
 			screenX = (int)(protagonist.getXPos() - width + screenPadding);
-		} else if(protagonist.getXPos() - screenX > screenPadding){
+		} else if(protagonist.getXPos() - screenX < screenPadding){
 			screenX = (int)(protagonist.getXPos() - screenPadding);
 		}
 		
