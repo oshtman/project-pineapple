@@ -56,6 +56,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void moveScreen(){
 		if(protagonist.getXPos() - screenX > width - screenPadding){
 			screenX = (int)(protagonist.getXPos() - width + screenPadding);
+		} else if(protagonist.getXPos() - screenX > screenPadding){
+			screenX = (int)(protagonist.getXPos() - screenPadding);
 		}
 		
 	}
@@ -75,7 +77,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Draw the protagonist
 	public void renderProtagonist(Canvas canvas){
-		canvas.drawRect((float)((protagonist.getXPos()-protagonistWidth/2)*scaleX), (float)((protagonist.getYPos()-protagonistHeight/2)*scaleY), (float)((protagonist.getXPos()+protagonistWidth/2)*scaleX), (float)((protagonist.getYPos()+protagonistHeight/2)*scaleY), new Paint());
+		canvas.drawRect((float)((protagonist.getXPos()-protagonistWidth/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonistHeight/2)*scaleY), (float)((protagonist.getXPos()+protagonistWidth/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonistHeight/2)*scaleY), new Paint());
 	}
 	
 	//Draws the ground using a Path
@@ -83,11 +85,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		int length = ground.getLength();
 		for(int i = 0; i < length-1; i++){
 			Path p = new Path();
-			p.moveTo((int)(ground.getX(i)*scaleX), (int)(ground.getY(i)*scaleY));
-			p.lineTo((int)(ground.getX(i+1)*scaleX), (int)(ground.getY(i+1)*scaleY));
-			p.lineTo((int)(ground.getX(i+1)*scaleX), (int)(200*scaleY)); //Fix line 63 and 64, (200)
-			p.lineTo((int)(ground.getX(i)*scaleX), (int)(200*scaleY));
-			p.lineTo((int)(ground.getX(i)*scaleX), (int)(ground.getY(i)*scaleY));
+			p.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)(ground.getY(i)*scaleY));
+			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)(ground.getY(i+1)*scaleY));
+			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)(200*scaleY)); //Fix line 63 and 64, (200)
+			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)(200*scaleY));
+			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)(ground.getY(i)*scaleY));
 			canvas.drawPath(p, new Paint());
 		}
 	}
