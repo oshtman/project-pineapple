@@ -40,7 +40,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void update(){
 		if(leftStick.isPointed()) {
 			protagonist.move(leftStick.getAngle(), -1, 0.1, 1);
-		} else {
+		} else if (Math.abs(protagonist.getXVel()) > 0){
 			protagonist.slowDown();
 		}
 	}

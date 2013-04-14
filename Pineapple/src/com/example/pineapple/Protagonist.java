@@ -109,12 +109,12 @@ public class Protagonist {
 		return health;
 	}
 
-	//and testING
+	//and testING with some rekursionish
 	public void jump(double vel, double acc) {
-		if(Math.abs(vel - acc) < -vel) {
+		if(Math.abs(vel + acc) < -vel) {
 			this.setYVel(vel + acc);
-			this.setYPos(this.getYPos() - this.getYVel());
-			jump(vel - acc, acc);
+			this.setYPos(this.getYPos() + this.getYVel());
+			jump(vel + acc, acc);
 		} else { 
 			Log.d(TAG, "Jump!!");
 		}
@@ -141,12 +141,13 @@ public class Protagonist {
 			this.jump(vel, acc);
 		}
 	}
-public void slowDown() {
-	if (this.getXVel() > 0) {
-		this.setXVel(this.getXVel() - 0.1);
-	} else {
-		this.setXVel(this.getXVel() + 0.1);
+	public void slowDown() {
+		if (this.getXVel() > 0) {
+			this.setXVel(this.getXVel() - 0.1);
+		} else {
+			this.setXVel(this.getXVel() + 0.1);
+		}
+		this.setXPos(this.getXPos() + this.getXVel());
 	}
-}
 }
 
