@@ -14,8 +14,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = GamePanel.class.getSimpleName();
 	private final int width = 155;
 	private final int height = 100;
-	private final int protagonistHeight = 20;
-	private final int protagonistWidth = (int)(20/1.42); //Change 1.42 to ratio of bitmap
 	private double screenX;
 	private double screenY;
 	private final int screenPadding = 50;
