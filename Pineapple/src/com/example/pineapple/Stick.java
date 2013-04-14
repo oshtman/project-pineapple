@@ -32,6 +32,8 @@ public class Stick {
 			}
 			//Set the sticks status to pointed
 			pointed = true;
+		} else {
+			release();
 		}
 	}
 	
