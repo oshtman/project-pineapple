@@ -1,8 +1,11 @@
 package com.example.pineapple;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.Log;
@@ -23,17 +26,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double scaleY, scaleX;
 	private Stick leftStick, rightStick;
 	private LevelLoader levelLoader;
+	private ArrayList<Platform> platforms;
+	private boolean scaledPaths = false;
 	
 	
 	public GamePanel(Context context){
 		super(context);
 		getHolder().addCallback(this);
 		setFocusable(true);
-		
 		screenX = 0;
 		screenY = 0;
 		levelLoader = new LevelLoader();
+		//This has to be adressed later!
 		ground = new Ground(levelLoader.getLevelX(1), levelLoader.getLevelY(1));
+		platforms = new ArrayList<Platform>();
+		platforms.add(new Platform(levelLoader.getPlatformUpperX(1, 1), levelLoader.getPlatformUpperY(1, 1), levelLoader.getPlatformLowerX(1, 1), levelLoader.getPlatformLowerY(1, 1)));
 		protagonist = new Protagonist(width/2, ground.getYFromX(77));//, this);
 		leftStick = new Stick(Stick.LEFT);
 		thread = new MainThread(this.getHolder(), this);
@@ -53,7 +60,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		moveScreen();
 	}
 	
-	//Under construction
 	//Moves the screen if the protagonist is close to the edge of the screen
 	public void moveScreen(){
 		if(protagonist.getXPos() - screenX > width - screenPadding){
@@ -68,6 +74,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void render(Canvas canvas){
 		canvas.drawColor(Color.WHITE);
 		renderGround(canvas);
+		renderPlatforms(canvas);
 		renderProtagonist(canvas);
 		renderSticks(canvas);
 	}
@@ -95,6 +102,30 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)(200*scaleY));
 			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)(ground.getY(i)*scaleY));
 			canvas.drawPath(p, new Paint());
+		}
+	}
+	
+	//Draw the platforms
+	public void renderPlatforms(Canvas canvas){
+		/*if(!scaledPaths){
+			Matrix m = new Matrix();
+			m.postScale((float)scaleX, (float)scaleY);
+			for(int i = 0; i < platforms.size(); i++){
+				platforms.get(i).scalePath(scaleX, scaleY);
+			}
+			scaledPaths = true;
+		}*/
+		
+		Paint p = new Paint();
+		p.setColor(Color.CYAN);
+		for(int i = 0; i < platforms.size(); i++){
+			Path path = platforms.get(i).getPath();
+			Path newPath = new Path(path); 
+			Matrix m = new Matrix();
+			m.postTranslate(-(float)screenX, -(float)screenY);
+			m.postScale((float)scaleX, (float)scaleY);
+			newPath.transform(m);
+			canvas.drawPath(newPath, p);
 		}
 	}
 	

@@ -2,7 +2,11 @@ package com.example.pineapple;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 public class LevelLoader {
+	private final String TAG = LevelLoader.class.getSimpleName();
+	
 	private ArrayList<int[]> xGroundArrays = new ArrayList<int[]>();
 	private ArrayList<int[]> yGroundArrays = new ArrayList<int[]>();
 	
@@ -23,15 +27,16 @@ public class LevelLoader {
 	//pUX1_2 means the upper x array for platform 2 on level 1 
 	
 	//Level 1
-	//Platform 1
 	private ArrayList<int[]> pUX1 = new ArrayList<int[]>();
 	private ArrayList<int[]> pUY1 = new ArrayList<int[]>();
 	private ArrayList<int[]> pLX1 = new ArrayList<int[]>();
 	private ArrayList<int[]> pLY1 = new ArrayList<int[]>();
-	private final int[] pUX1_1 = {30, 40, 50};
-	private final int[] pUY1_1 = {10, 10, 20};
-	private final int[] pLX1_1 = {30, 40, 50};
-	private final int[] pLY1_1 = {10, 20, 20};
+	
+	//Platform 1
+	private final int[] pUX1_1 = {0, 10, 50};
+	private final int[] pUY1_1 = {20, 30, 30};
+	private final int[] pLX1_1 = {0, 10, 50};
+	private final int[] pLY1_1 = {20, 40, 30};
 	
 	
 	
@@ -52,7 +57,6 @@ public class LevelLoader {
 		pUY.add(pUY1);
 		pLX.add(pLX1);
 		pLY.add(pLY1);
-		
 		
 	}
 	
