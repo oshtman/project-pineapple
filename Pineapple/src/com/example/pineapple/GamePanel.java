@@ -103,9 +103,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public boolean onTouchEvent(MotionEvent e){
 		int x = (int)(e.getX()/scaleX);
 		int y = (int)(e.getY()/scaleY);
-		
 		leftStick.handleTouch(x, y);
 		Log.d(TAG, leftStick.getAngle()+"");
+		
+		if(e.getAction() == MotionEvent.ACTION_POINTER_UP){
+			leftStick.release();
+		}
 		return true;
 	}
 	
