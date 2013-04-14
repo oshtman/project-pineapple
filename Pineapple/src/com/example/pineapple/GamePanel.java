@@ -16,6 +16,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int height = 100;
 	private final int protagonistHeight = 20;
 	private final int protagonistWidth = (int)(20/1.42); //Change 1.42 to ratio of bitmap
+	private int screenX;
+	private int screenY;
+	private final int screenPadding = 50;
 	private MainThread thread;
 	private Protagonist protagonist;
 	private Ground ground;
@@ -31,6 +34,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Change this later
 		int[] x = {0, 100, 150};
 		int[] y = {100, 80, 100};
+		screenX = 0;
+		screenY = 0;
 		ground = new Ground(x, y);
 		leftStick = new Stick(Stick.LEFT);
 		thread = new MainThread(this.getHolder(), this);
@@ -43,6 +48,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		} else if (Math.abs(protagonist.getXVel()) > 0){
 			protagonist.slowDown();
 		}
+	
+		//Check if the screen has to be moved
+		moveScreen();
+	}
+	
+	//Under construction
+	//Moves the screen if the protagonist is close to the edge of the screen
+	public void moveScreen(){
+		if(protagonist.getXPos() - screenX > width - screenPadding){
+			screenX = (int)(protagonist.getXPos() - width + screenPadding);
+		} else if(protagonist.getXPos() - screenX > screenPadding){
+			screenX = (int)(protagonist.getXPos() - screenPadding);
+		}
+		
 	}
 	
 	//Method that gets called to render the graphics
@@ -60,7 +79,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Draw the protagonist
 	public void renderProtagonist(Canvas canvas){
-		canvas.drawRect((float)((protagonist.getXPos()-protagonistWidth/2)*scaleX), (float)((protagonist.getYPos()-protagonistHeight/2)*scaleY), (float)((protagonist.getXPos()+protagonistWidth/2)*scaleX), (float)((protagonist.getYPos()+protagonistHeight/2)*scaleY), new Paint());
+		canvas.drawRect((float)((protagonist.getXPos()-protagonistWidth/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonistHeight/2)*scaleY), (float)((protagonist.getXPos()+protagonistWidth/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonistHeight/2)*scaleY), new Paint());
 	}
 	
 	//Draws the ground using a Path
@@ -68,11 +87,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		int length = ground.getLength();
 		for(int i = 0; i < length-1; i++){
 			Path p = new Path();
-			p.moveTo((int)(ground.getX(i)*scaleX), (int)(ground.getY(i)*scaleY));
-			p.lineTo((int)(ground.getX(i+1)*scaleX), (int)(ground.getY(i+1)*scaleY));
-			p.lineTo((int)(ground.getX(i+1)*scaleX), (int)(200*scaleY)); //Fix line 63 and 64, (200)
-			p.lineTo((int)(ground.getX(i)*scaleX), (int)(200*scaleY));
-			p.lineTo((int)(ground.getX(i)*scaleX), (int)(ground.getY(i)*scaleY));
+			p.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)(ground.getY(i)*scaleY));
+			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)(ground.getY(i+1)*scaleY));
+			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)(200*scaleY)); //Fix line 63 and 64, (200)
+			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)(200*scaleY));
+			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)(ground.getY(i)*scaleY));
 			canvas.drawPath(p, new Paint());
 		}
 	}
@@ -86,9 +105,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public boolean onTouchEvent(MotionEvent e){
 		int x = (int)(e.getX()/scaleX);
 		int y = (int)(e.getY()/scaleY);
-		
 		leftStick.handleTouch(x, y);
 		Log.d(TAG, leftStick.getAngle()+"");
+		
+		if(e.getAction() == MotionEvent.ACTION_POINTER_UP){
+			leftStick.release();
+			Log.d(TAG, "release me");
+		}
 		return true;
 	}
 	
