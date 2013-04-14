@@ -18,7 +18,7 @@ public class Protagonist {
 	private double jumpVel = -3;
 	private double jumpAcc = 0.1;
 	private double maxSpeed = 3;
-	private double slideCoefficient = 0.95;
+	private double slideCoefficient = 0.8;
 
 	// CONSTRUCTOR
 	public Protagonist(double i,double j) {
@@ -29,7 +29,7 @@ public class Protagonist {
 
 	public Protagonist() {
 		this.setXPos(75);
-		this.setYPos(25);
+		this.setYPos(80);
 		health = 100;
 	}
 
@@ -122,7 +122,7 @@ public class Protagonist {
 	private void setMaxSpeed(double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
-	
+
 	private double getSlideCoefficient() {
 		return slideCoefficient;
 	}
@@ -152,9 +152,17 @@ public class Protagonist {
 	//Protagonist jump
 	public void jump() {
 		this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
-		this.setYPos(this.getYPos() + this.getYVel());
 		Log.d(TAG, "Jump!!");
 	}
+	// ------------- KEEPING FEET ON THE GROUND (just for now)--------------- //
+	//Protagonist down
+	public void down() {
+		this.setYPos(80);
+		this.setYVel(0);
+		this.setYAcc(0);
+		Log.d(TAG, "Come down!!");
+	}
+	// ---------------------------------------------------------------------- //
 
 	//Accelerating protagonist
 	public void accelerate(double acc) { // acc = 0.2?
@@ -175,7 +183,6 @@ public class Protagonist {
 	//Deaccelerate protagonist (if stick is not pointed)
 	public void slowDown() {
 		this.setXVel(this.getXVel()*slideCoefficient);
-		this.setXPos(this.getXPos() + this.getXVel());
 	}
 
 	//Make action from stickAngle
@@ -184,8 +191,10 @@ public class Protagonist {
 			this.accelerate(acc);
 		} else if (angle >= 135 && angle <= 225) {
 			this.accelerate(-acc);
-		} else if (angle > 45 && angle < 135)
+		} else if (angle > 45 && angle < 135) {
 			this.jump();
+		} else if (angle > 225 && angle < 315)
+			this.down();
 	}
 
 }
