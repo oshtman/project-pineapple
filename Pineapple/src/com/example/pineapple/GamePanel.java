@@ -29,7 +29,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		super(context);
 		getHolder().addCallback(this);
 		setFocusable(true);
-		protagonist = new Protagonist();
+		protagonist = new Protagonist(width/2, ground.getYFromX(77));//, this);
 		screenX = 0;
 		screenY = 0;
 		levelLoader = new LevelLoader();
@@ -146,5 +146,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				
 			}
 		}
+	}
+	public Ground getGround() {
+		return ground;
 	}
 }
