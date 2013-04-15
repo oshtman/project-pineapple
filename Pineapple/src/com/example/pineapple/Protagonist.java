@@ -14,7 +14,7 @@ public class Protagonist {
 	private double xAcc;
 	private double yAcc;
 	private int health;
-	private int angleAim;
+	private double angleAim;
 	private double jumpVel = -6;
 	private double jumpAcc = 0.4;
 	private double maxSpeed = 3;
@@ -148,8 +148,8 @@ public class Protagonist {
 
 	// ACTIONS
 	//Protagonist is aiming
-	public void aim(int angle) {
-		this.angleAim = (int)angle;
+	public void aim(double angle) {
+		this.angleAim = angle;
 	}
 
 	//Protagonist lose health

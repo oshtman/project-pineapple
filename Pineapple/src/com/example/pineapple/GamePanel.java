@@ -29,6 +29,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<Platform> platforms;
 	private ArrayList<Bullet> bullets;
 	private boolean scaledPaths = false;
+	private int level;
 	
 	
 	public GamePanel(Context context, int level){
@@ -37,16 +38,24 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		setFocusable(true);
 		screenX = 0;
 		screenY = 0;
+		this.level = level;
 		levelLoader = new LevelLoader();
 		//This has to be adressed later!
-		platforms = new ArrayList<Platform>();
-		platforms.add(new Platform(levelLoader.getPlatformUpperX(level, 1), levelLoader.getPlatformUpperY(level, 1), levelLoader.getPlatformLowerX(level, 1), levelLoader.getPlatformLowerY(level, 1)));
+		loadPlatforms();
 		bullets = new ArrayList<Bullet>();
 		ground = new Ground(levelLoader.getLevelX(level), levelLoader.getLevelY(level));
 		protagonist = new Protagonist(width/2, ground.getYFromX(77), this);
 		leftStick = new Stick(Stick.LEFT);
 		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
+	}
+	
+	//Load the platforms from LevelLoader and add them to the platforms list 
+	public void loadPlatforms(){
+		platforms = new ArrayList<Platform>();
+		for(int i = 1; i <= levelLoader.getNumberOfPlatforms(level); i++){
+			platforms.add(new Platform(levelLoader.getPlatformUpperX(level, i), levelLoader.getPlatformUpperY(level, i), levelLoader.getPlatformLowerX(level, i), levelLoader.getPlatformLowerY(level, i)));
+		}
 	}
 	
 	//Method that gets called every frame to update the games state
@@ -58,10 +67,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		if(rightStick.isPointed()){
 			//Aim
-			int angle = rightStick.getAngle();
+			double angle = rightStick.getAngle();
 			protagonist.aim(angle);
 			//Fire
-			bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/(double)180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/(double)180*Math.PI), angle, 10));
+			bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/180*Math.PI), angle, 10));
 		}
 		moveProtagonist();
 		moveBullets();
@@ -177,8 +186,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Fix this (MultiTouch)
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
-		int x = (int)(e.getX()/scaleX);
-		int y = (int)(e.getY()/scaleY);
+		double x = e.getX()/scaleX;
+		double y = e.getY()/scaleY;
 		leftStick.handleTouch(x, y);
 		rightStick.handleTouch(x, y);
 		Log.d(TAG, leftStick.getAngle()+"");
