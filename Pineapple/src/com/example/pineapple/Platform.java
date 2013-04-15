@@ -132,8 +132,6 @@ public class Platform {
 		if(p.getXPos() + p.getWidth()/2 > upperX[0] && p.getXPos() - p.getWidth() < upperX[upperX.length-1]){
 			int upperBound = (int)(p.getYPos() - p.getHeight()/2);
 			int lowerBound = (int)(p.getYPos() + p.getHeight()/2);
-			Log.d(TAG, "Hero y, upper, lower: " + p.getYPos() + " " + upperBound + " " + lowerBound);
-			Log.d(TAG, upperY[0]+ " " + upperY[upperY.length-1]);
 			for(int y = upperBound; y <= lowerBound; y++){
 				if(side == -1){
 					if(y == upperY[0]){
