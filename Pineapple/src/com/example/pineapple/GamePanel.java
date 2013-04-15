@@ -107,15 +107,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Draw the platforms
 	public void renderPlatforms(Canvas canvas){
-		/*if(!scaledPaths){
-			Matrix m = new Matrix();
-			m.postScale((float)scaleX, (float)scaleY);
-			for(int i = 0; i < platforms.size(); i++){
-				platforms.get(i).scalePath(scaleX, scaleY);
-			}
-			scaledPaths = true;
-		}*/
-		
 		Paint p = new Paint();
 		p.setColor(Color.CYAN);
 		for(int i = 0; i < platforms.size(); i++){

@@ -102,10 +102,4 @@ public class Platform {
 	public Path getPath(){
 		return path;
 	}
-	
-	public void scalePath(double scaleX, double scaleY){
-		Matrix m = new Matrix();
-		m.postScale((float)scaleX, (float)scaleY);
-		path.transform(m);
-	}
 }
