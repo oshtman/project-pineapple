@@ -151,7 +151,7 @@ public class Protagonist {
 	public void aim(int angle) {
 		this.angleAim = (int)angle;
 	}
-	
+
 	//Protagonist lose health
 	public int reduceHealth(int n) {
 		this.setHealth(n-1);
@@ -215,6 +215,23 @@ public class Protagonist {
 			this.yVel = 0;
 			this.yAcc = 0;
 			touchingGround = true;
+		}
+	}
+
+	//Check if protagonist hit platform
+	public void checkPlatform(ArrayList<Platform> al) {
+		for (int i = 0; i < al.size(); i++) {
+			if(al.get(i).spans(this.getXPos())) {
+				if(this.getYPos() - this.getHeight()/2 > al.get(i).getLowerYFromX(this.getXPos())) {
+					this.setYVel(-this.getYVel());
+					this.setYAcc(0);
+				}
+				if(this.getYPos() + this.getHeight()/2 < al.get(i).getUpperYFromX(this.getXPos())) {
+					this.setYVel(0);
+					this.setYAcc(0);
+					touchingGround = true;
+				}
+			}
 		}
 	}
 
