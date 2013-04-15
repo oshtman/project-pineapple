@@ -148,8 +148,8 @@ public class Protagonist {
 
 	// ACTIONS
 	//Protagonist is aiming
-	public void aim(double angle) {
-
+	public void aim(int angle) {
+		this.angleAim = (int)angle;
 	}
 	
 	//Protagonist is abel to fire

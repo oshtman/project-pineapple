@@ -27,6 +27,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Stick leftStick, rightStick;
 	private LevelLoader levelLoader;
 	private ArrayList<Platform> platforms;
+	private ArrayList<Bullet> bullets;
 	private boolean scaledPaths = false;
 	
 	
@@ -40,9 +41,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//This has to be adressed later!
 		platforms = new ArrayList<Platform>();
 		platforms.add(new Platform(levelLoader.getPlatformUpperX(level, 1), levelLoader.getPlatformUpperY(level, 1), levelLoader.getPlatformLowerX(level, 1), levelLoader.getPlatformLowerY(level, 1)));
+		bullets = new ArrayList<Bullet>();
 		ground = new Ground(levelLoader.getLevelX(level), levelLoader.getLevelY(level));
 		protagonist = new Protagonist(width/2, ground.getYFromX(77), this);
 		leftStick = new Stick(Stick.LEFT);
+		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
 	}
 	
@@ -52,6 +55,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
 		} else if (Math.abs(protagonist.getXVel()) > 0){
 			protagonist.slowDown();
+		}
+		if(rightStick.isPointed()){
+			//Aim
+			int angle = rightStick.getAngle();
+			protagonist.aim(angle);
+			//Fire
+			bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()*Math.cos(angle/(double)180*Math.PI), protagonist.getYPos()-protagonist.getWidth()*Math.sin(angle/(double)180*Math.PI), angle, 10));
 		}
 		protagonist.gravity();
 		protagonist.move();
@@ -127,15 +137,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawCircle((float)(leftStick.getX()*scaleX), (float)(leftStick.getY()*scaleY), (float)(leftStick.getRadius()*scaleX), p);
 	}
 	
+	//Fix this (MultiTouch)
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
 		int x = (int)(e.getX()/scaleX);
 		int y = (int)(e.getY()/scaleY);
 		leftStick.handleTouch(x, y);
+		rightStick.handleTouch(x, y);
 		Log.d(TAG, leftStick.getAngle()+"");
 		
 		if(e.getAction() == MotionEvent.ACTION_UP){
 			leftStick.release();
+			rightStick.release();
 			Log.d(TAG, "release me");
 		}
 		return true;
