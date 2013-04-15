@@ -34,11 +34,18 @@ public class LevelLoader {
 	{0, 10, 50},
 	{20, 40, 30}};
 	
+	//Platform 2
+	
 	//Level 2
 	private ArrayList<int[][]> platform2 = new ArrayList<int[][]>();
 	
+	//Platform 1
+	
 	//Level 3
 	private ArrayList<int[][]> platform3 = new ArrayList<int[][]>();
+	
+	//Platform 1
+	
 	
 	public LevelLoader(){
 		//level 2 "Valley of whale"
