@@ -31,6 +31,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private boolean scaledPaths = false;
 	private int level;
 	private HeatMeter heatMeter;
+	private boolean firing = false;
 	
 	
 	public GamePanel(Context context, int level){
@@ -81,7 +82,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			//Fire
 			if(!heatMeter.isCoolingDown()){
 				bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/180*Math.PI), angle, 10));
-				heatMeter.addHeat(0.01);
+				firing = true;
 			}
 		}
 	}
@@ -124,7 +125,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Handles the HeatMeter 
 	public void handleHeatMeter(){
-		if(heatMeter.isCoolingDown()){
+		if(heatMeter.isCoolingDown()){//If the weapon is overheated
+			heatMeter.coolDown();     //Cool down                      (Not able to fire)
+		} else if(firing){			  //Else if the protagonist has fired
+			heatMeter.addHeat(0.01);  //Heat up the weapon
+			firing = false;
+		} else {                      //Otherwise cool down the weapon (Still able to fire)
 			heatMeter.coolDown();
 		}
 	}
@@ -202,7 +208,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Draw the HeatMeter
 	public void renderHeatMeter(Canvas canvas){
-		canvas.drawRect((float)(10*scaleX), (float)(10*scaleY), (float)((10+20*heatMeter.getHeat())*scaleX), (float)(20*scaleY), new Paint());
+		int xPadding = 10;
+		int yPadding = 10;
+		int width = 20;
+		int height = 10;
+		int frameSize = 1;
+		Paint green = new Paint();
+		Paint red = new Paint();
+		Paint black = new Paint();
+		green.setColor(Color.GREEN);
+		red.setColor(Color.RED);
+		
+		canvas.drawRect((float)((xPadding-frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((xPadding+width+frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), black);
+		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width)*scaleX), (float)((yPadding+height)*scaleY), green);
+		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width*heatMeter.getHeat())*scaleX), (float)((yPadding+height)*scaleY), red);
 	}
 	
 	//Fix this (MultiTouch)
