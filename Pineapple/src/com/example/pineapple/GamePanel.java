@@ -107,7 +107,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			} else if(b.checkObstacles(ground, platforms)){
 				bullets.remove(i);
 				i--;
-				Log.d(TAG, "Removed bullet");
 			}
 			
 		}
@@ -213,14 +212,26 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		int width = 20;
 		int height = 10;
 		int frameSize = 1;
+		double blinkInterval = 0.05; //Lower value means faster blinking (Should be at least coolingRate of HeatMeter)
+		
 		Paint green = new Paint();
 		Paint red = new Paint();
-		Paint black = new Paint();
+		Paint frame = new Paint();
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
 		
-		canvas.drawRect((float)((xPadding-frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((xPadding+width+frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), black);
+		//This makes the frame blink red if overheated
+		if(heatMeter.isCoolingDown() && heatMeter.getHeat() % (2*blinkInterval) > blinkInterval){
+			frame.setColor(Color.RED);
+		} else {
+			frame.setColor(Color.BLACK);
+		}
+		
+		//Draw frame
+		canvas.drawRect((float)((xPadding-frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((xPadding+width+frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), frame);
+		//Draw green background
 		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width)*scaleX), (float)((yPadding+height)*scaleY), green);
+		//Draw red indicator that moves with current heat level
 		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width*heatMeter.getHeat())*scaleX), (float)((yPadding+height)*scaleY), red);
 	}
 	
@@ -231,12 +242,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		double y = e.getY()/scaleY;
 		leftStick.handleTouch(x, y);
 		rightStick.handleTouch(x, y);
-		Log.d(TAG, leftStick.getAngle()+"");
 		
 		if(e.getAction() == MotionEvent.ACTION_UP){
 			leftStick.release();
 			rightStick.release();
-			Log.d(TAG, "release me");
 		}
 		
 		
