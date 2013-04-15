@@ -84,10 +84,13 @@ public class Bullet {
 		this.setXPos(this.getXPos() + this.getXVel());
 		this.setYPos(this.getYPos() + this.getYVel());
 	}
+	
 	//Gravity on bullets
 	public void gravity(double acc) {
 		this.setYVel(this.getYVel() + acc);
 	}
+	
+	//Check if bullet hits ground or platform (is in air)
 	public boolean checkObstacles(Ground g, ArrayList<Platform> al) {
 		if (!(this.getYPos() > g.getYFromX(this.getXPos()))) {
 			inAir = false;
