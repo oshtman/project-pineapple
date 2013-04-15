@@ -61,25 +61,36 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			int angle = rightStick.getAngle();
 			protagonist.aim(angle);
 			//Fire
-			bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()*Math.cos(angle/(double)180*Math.PI), protagonist.getYPos()-protagonist.getWidth()*Math.sin(angle/(double)180*Math.PI), angle, 10));
+			bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/(double)180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/(double)180*Math.PI), angle, 10));
 		}
+		moveProtagonist();
+		moveBullets();
+		moveScreen();
+	}
+	
+	public void moveProtagonist(){
 		protagonist.gravity();
 		protagonist.move();
 		protagonist.checkGround(ground);
 		protagonist.checkPlatform(platforms);
+	}
 		
+	public void moveBullets(){
 		for(int i = 0; i < bullets.size(); i++){
 			Bullet b = bullets.get(i);
+			b.gravity(1);
 			b.move();
-			if(b.checkObstacles(ground, platforms)){
+			int leftBound = ground.getX(0);
+			int rightBound = ground.getX(ground.getLength()-1);
+			if(b.getXPos() < leftBound || b.getXPos() > rightBound){
+				bullets.remove(i);
+				i--;
+			} else if(b.checkObstacles(ground, platforms)){
 				bullets.remove(i);
 				i--;
 			}
 			
 		}
-		
-		
-		moveScreen();
 	}
 	
 	//Moves the screen if the protagonist is close to the edge of the screen
@@ -158,7 +169,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(int i = 0; i < bullets.size(); i++){
 			Bullet b = bullets.get(i);
 			int radius = b.getRadius();
-			canvas.drawCircle((float)((b.getXPos()-radius/2.)*scaleX), (float)((b.getYPos()-radius/2.)*scaleY), (float)(radius*scaleX), p);
+			canvas.drawCircle((float)((b.getXPos()-radius/2.-screenX)*scaleX), (float)((b.getYPos()-radius/2.-screenY)*scaleY), (float)(radius*scaleX), p);
 		}
 	}
 	

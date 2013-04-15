@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Bullet {
 
+	private final int SPREAD = 5;
 	private double xPos;
 	private double yPos;
 	private double xVel;
@@ -14,10 +15,11 @@ public class Bullet {
 
 	//CONSTRUCTOR
 	public Bullet(double x, double y, double angle, double bulletSpeed) {
+		angle += Math.random()*SPREAD-SPREAD/2;
 		this.xPos = x;
 		this.yPos = y;
 		this.xVel = Math.cos(angle/180*Math.PI)*bulletSpeed;
-		this.yVel = Math.sin(angle/180*Math.PI)*bulletSpeed;
+		this.yVel = -Math.sin(angle/180*Math.PI)*bulletSpeed;
 		this.angle = angle;
 		this.radius = 3;
 	}
