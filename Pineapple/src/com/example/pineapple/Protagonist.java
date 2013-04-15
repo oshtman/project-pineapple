@@ -222,11 +222,12 @@ public class Protagonist {
 	public void checkPlatform(ArrayList<Platform> al) {
 		for (int i = 0; i < al.size(); i++) {
 			if(al.get(i).spans(this.getXPos())) {
-				if(this.getYPos() - this.getHeight()/2 > al.get(i).getLowerYFromX(this.getXPos())) {
+				//if head is in platform
+				if(this.getYPos() - this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
 					this.setYVel(-this.getYVel());
-					this.setYAcc(0);
 				}
-				if(this.getYPos() + this.getHeight()/2 < al.get(i).getUpperYFromX(this.getXPos())) {
+				//if feet is in platform
+				if(this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight() < al.get(i).getLowerYFromX(this.getXPos())) {
 					this.setYVel(0);
 					this.setYAcc(0);
 					touchingGround = true;
