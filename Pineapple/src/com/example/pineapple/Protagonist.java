@@ -232,14 +232,13 @@ public class Protagonist {
 				}
 				//if feet is in platform
 				if (!(this.getYVel() <= 0) && !headBump && !(this.getYPos() > this.getHeight()/2 + al.get(i).getLowerYFromX(this.getXPos()))) {
-				if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
-		//		if (this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos())) {
-					this.setYPos(al.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
-					this.setYVel(0);
-					this.setYAcc(0);
-					touchingGround = true;
-					Log.d(TAG, "Standing strong!!");					
-				}
+					if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
+						this.setYPos(al.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
+						this.setYVel(0);
+						this.setYAcc(0);
+						touchingGround = true;
+						Log.d(TAG, "Standing strong!!");					
+					}
 				}
 			} //if making move towards edge of platform
 			if (al.get(i).checkSide(this, -1) && getXPos() < al.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > al.get(i).getUpperX()[0] && getXVel() > 0) {
