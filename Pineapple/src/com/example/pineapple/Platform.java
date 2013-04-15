@@ -47,7 +47,7 @@ public class Platform {
 	}
 	
 	//Method that checks if the given x is inside the platforms x boundary
-	public boolean contains(double x){
+	public boolean spans(double x){
 		if(x > upperX[0] && x < upperX[upperX.length-1]){
 			return true;
 		} else {
