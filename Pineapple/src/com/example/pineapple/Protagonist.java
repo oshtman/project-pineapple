@@ -225,15 +225,17 @@ public class Protagonist {
 				//if head is in platform
 				if (this.getYPos() - this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
 					this.setYVel(-this.getYVel());
+					
 				}
 				//if feet is in platform
 				if (this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight() < al.get(i).getLowerYFromX(this.getXPos())) {
 					this.setYVel(0);
 					this.setYAcc(0);
 					touchingGround = true;
+					
 				}
 			} //if making move towards edge of platform
-			if (al.get(i).checkSide(this, -1) || al.get(i).checkSide(this, 1)) {
+			if (al.get(i).checkSide(this, -1) && getXPos() < al.get(i).getUpperX()[0]|| al.get(i).checkSide(this, 1) && getXPos() > al.get(i).getUpperX()[al.get(i).getUpperX().length-1]) {
 				this.setXVel(0);
 			}
 		}
