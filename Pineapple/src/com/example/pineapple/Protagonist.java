@@ -232,9 +232,9 @@ public class Protagonist {
 					this.setYAcc(0);
 					touchingGround = true;
 				}
-			}
+			} //if making move towards edge of platform
 			if (al.get(i).checkSide(this, -1) || al.get(i).checkSide(this, 1)) {
-				this.setXVel(-this.getXVel());
+				this.setXVel(0);
 			}
 		}
 	}
