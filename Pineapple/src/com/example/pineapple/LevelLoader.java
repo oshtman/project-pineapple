@@ -24,8 +24,7 @@ public class LevelLoader {
 	
 	
 	//Put the platforms for each level here!
-	//Variable syntax:
-	//pUX1_2 means the upper x array for platform 2 on level 1 
+	
 	
 	//Level 1
 	private ArrayList<int[]> pUX1 = new ArrayList<int[]>();
@@ -33,6 +32,8 @@ public class LevelLoader {
 	private ArrayList<int[]> pLX1 = new ArrayList<int[]>();
 	private ArrayList<int[]> pLY1 = new ArrayList<int[]>();
 	
+	//Variable syntax:
+	//pUX1_2 means the upper x array for platform 2 on level 1 
 	//Platform 1
 	private final int[] pUX1_1 = {0, 10, 50};
 	private final int[] pUY1_1 = {20, 30, 30};

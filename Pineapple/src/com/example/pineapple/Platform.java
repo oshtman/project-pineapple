@@ -21,7 +21,7 @@ public class Platform {
 	}
 
 	//Get the y position of the ground relative to the given x
-	public double getYFromX(double x){
+	public double getUpperYFromX(double x){
 		//Find the index to the right of the protagonist
 		int index = 0;
 		while(this.upperX[index] < x){
@@ -31,6 +31,28 @@ public class Platform {
 		int diff = this.upperX[index] - this.upperX[index-1];
 		double percent = (x-this.upperX[index-1])/(double)diff;
 		return this.upperY[index-1]+percent*(this.upperY[index]-this.upperY[index-1]);
+	}
+	
+	//Get the y position of the lower part of the platform relative to the given x
+	public double getLowerYFromX(double x){
+		//Find the index to the right of the protagonist
+		int index = 0;
+		while(this.upperX[index] < x){
+			index++;
+		}
+
+		int diff = this.lowerX[index] - this.lowerX[index-1];
+		double percent = (x-this.lowerX[index-1])/(double)diff;
+		return this.lowerY[index-1]+percent*(this.lowerY[index]-this.lowerY[index-1]);
+	}
+	
+	//Method that checks if the given x is inside the platforms x boundary
+	public boolean contains(double x){
+		if(x > upperX[0] && x < upperX[upperX.length-1]){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	//Get the slope of the ground at given x 

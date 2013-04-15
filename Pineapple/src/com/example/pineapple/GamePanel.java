@@ -67,6 +67,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.move();
 		protagonist.checkGround(ground);
 		
+		for(int i = 0; i < bullets.size(); i++){
+			Bullet b = bullets.get(i);
+			b.move();
+			if(b.checkObstacles(ground, platforms)){
+				bullets.remove(i);
+				i--;
+			}
+			
+		}
+		
+		
 		moveScreen();
 	}
 	
