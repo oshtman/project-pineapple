@@ -39,7 +39,6 @@ public class LevelLoader {
 	};
 
 	//Platform 2
-	
 	private final int[][] p1_2 = {
 			{150, 250, 260},
 			{50, 10, 13},
