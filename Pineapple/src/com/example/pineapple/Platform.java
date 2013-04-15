@@ -125,7 +125,7 @@ public class Platform {
 		return path;
 	}
 
-	public boolean checkSides(Protagonist p, int side){ //Direction is 1 if right side, -1 if left side 
+	public boolean checkSide(Protagonist p, int side){ //Direction is 1 if right side, -1 if left side 
 		boolean colliding = false;
 		if(p.getXPos() + p.getWidth()/2 > upperX[0] && p.getXPos() - p.getWidth() < upperX[upperX.length-1]){
 			int upperBound = (int)(p.getYPos() - p.getHeight()/2);
