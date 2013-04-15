@@ -186,7 +186,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Fix this (MultiTouch)
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
-		/*double x = e.getX()/scaleX;
+		double x = e.getX()/scaleX;
 		double y = e.getY()/scaleY;
 		leftStick.handleTouch(x, y);
 		rightStick.handleTouch(x, y);
@@ -196,7 +196,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			leftStick.release();
 			rightStick.release();
 			Log.d(TAG, "release me");
-		}*/
+		}
 		
 		
 		
