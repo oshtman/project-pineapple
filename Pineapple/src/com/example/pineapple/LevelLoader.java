@@ -27,6 +27,11 @@ public class LevelLoader {
 	
 	//Matrix syntax:
 	//p3_1 means platform 1 on level 3
+	//The rows of the matrix represents: 
+	//UpperX
+	//UpperY
+	//LowerX
+	//LowerY
 	//Platform 1
 	private final int[][] p1_1 = {
 	{0, 10, 50},
