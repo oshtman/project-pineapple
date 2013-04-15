@@ -147,6 +147,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		Paint p = new Paint();
 		p.setColor(Color.GRAY);
 		canvas.drawCircle((float)(leftStick.getX()*scaleX), (float)(leftStick.getY()*scaleY), (float)(leftStick.getRadius()*scaleX), p);
+		canvas.drawCircle((float)(rightStick.getX()*scaleX), (float)(rightStick.getY()*scaleY), (float)(rightStick.getRadius()*scaleX), p);
 	}
 	
 	//Draw the bullets
