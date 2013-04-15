@@ -221,17 +221,22 @@ public class Protagonist {
 	//Check if protagonist hit platform
 	public void checkPlatform(ArrayList<Platform> al) {
 		for (int i = 0; i < al.size(); i++) {
-			if(al.get(i).spans(this.getXPos())) {
+			if (al.get(i).spans(this.getXPos())) {
 				//if head is in platform
-				if(this.getYPos() - this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
+				if (this.getYPos() - this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
 					this.setYVel(-this.getYVel());
 				}
 				//if feet is in platform
-				if(this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight() < al.get(i).getLowerYFromX(this.getXPos())) {
+				if (this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight() < al.get(i).getLowerYFromX(this.getXPos())) {
 					this.setYVel(0);
 					this.setYAcc(0);
 					touchingGround = true;
 				}
+			}
+			if (al.get(i).spansY(for (int j = 0; j < this.getHeight(); j++) {this.getYPos() - this.getHeight()/2 + j}) {
+			}
+				if(this.getXVel() > 0 && this.getXPos() + this.getWidth()/2 < al.get(i).getUpperX()[0])
+					
 			}
 		}
 	}
