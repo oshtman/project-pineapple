@@ -4,7 +4,7 @@ public class Stick {
 	public static final int LEFT = 1;
 	public static final int RIGHT = 2;
 	private int x, y;
-	private int angle;
+	private double angle;
 	private final int radius;
 	private boolean pointed;
 	
@@ -20,13 +20,13 @@ public class Stick {
 	}
 	
 	//Happens when the player touches the screen
-	public void handleTouch(int x, int y){
-		int dx = x - this.x;
-		int dy = y - this.y;
+	public void handleTouch(double x, double y){
+		double dx = x - this.x;
+		double dy = y - this.y;
 		double dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 		if(dist <= 2*radius){
 			//Calculate angle of the finger relative to the stick
-			angle = (int)(Math.atan2(-dy, dx)*180/Math.PI);
+			angle = (Math.atan2(-dy, dx)*180/Math.PI);
 			if(angle < 0){
 				angle += 360;
 			}
@@ -58,11 +58,11 @@ public class Stick {
 		this.y = y;
 	}
 
-	public int getAngle() {
+	public double getAngle() {
 		return angle;
 	}
 
-	public void setAngle(int angle) {
+	public void setAngle(double angle) {
 		this.angle = angle;
 	}
 

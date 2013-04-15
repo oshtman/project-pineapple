@@ -58,10 +58,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		if(rightStick.isPointed()){
 			//Aim
-			int angle = rightStick.getAngle();
+			double angle = rightStick.getAngle();
 			protagonist.aim(angle);
 			//Fire
-			bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/(double)180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/(double)180*Math.PI), angle, 10));
+			bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/180*Math.PI), angle, 10));
 		}
 		moveProtagonist();
 		moveBullets();
@@ -177,8 +177,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Fix this (MultiTouch)
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
-		int x = (int)(e.getX()/scaleX);
-		int y = (int)(e.getY()/scaleY);
+		double x = e.getX()/scaleX;
+		double y = e.getY()/scaleY;
 		leftStick.handleTouch(x, y);
 		rightStick.handleTouch(x, y);
 		Log.d(TAG, leftStick.getAngle()+"");
