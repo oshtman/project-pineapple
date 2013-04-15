@@ -17,21 +17,19 @@ public class LevelLoader {
 	private final int[] x1 = {-300, 0, 100, 150, 300};
 	private final int[] y1 = {95, 95, 80, 95, 20};
 
-	
-	
 	//Put the platforms for each level here!
 	
+	//Matrix syntax:
+		//p3_1 means platform 1 on level 3
+		//The rows of the matrix represents: 
+		//UpperX
+		//UpperY
+		//LowerX
+		//LowerY
 	
 	//Level 1
 	private ArrayList<int[][]> platformsLevel1 = new ArrayList<int[][]>();
 	
-	//Matrix syntax:
-	//p3_1 means platform 1 on level 3
-	//The rows of the matrix represents: 
-	//UpperX
-	//UpperY
-	//LowerX
-	//LowerY
 	//Platform 1
 	private final int[][] p1_1 = {
 	{0, 10, 50},
