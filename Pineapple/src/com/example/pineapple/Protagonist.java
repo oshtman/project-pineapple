@@ -152,14 +152,6 @@ public class Protagonist {
 		this.angleAim = (int)angle;
 	}
 	
-	//Protagonist is abel to fire
-	public void fire(double angle, Bullet b, double bulletSpeed) {
-		b.setXPos(this.getWidth()/2 + this.getXPos());
-		b.setYPos(this.getYPos());
-		b.setXVel(Math.cos(angle/180*Math.PI)*bulletSpeed);
-		b.setYVel(Math.sin(angle/180*Math.PI)*bulletSpeed);
-	}
-
 	//Protagonist lose health
 	public int reduceHealth(int n) {
 		this.setHealth(n-1);

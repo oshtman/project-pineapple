@@ -6,11 +6,15 @@ public class Bullet {
 	private double yPos;
 	private double xVel;
 	private double yVel;
+	private double angle;
 	
 	//CONSTRUCTOR
-	public Bullet(double x, double y) {
+	public Bullet(double x, double y, double angle, double bulletSpeed) {
 		this.xPos = x;
 		this.yPos = y;
+		this.xVel = Math.cos(angle/180*Math.PI)*bulletSpeed;
+		this.yVel = Math.sin(angle/180*Math.PI)*bulletSpeed;
+		this.angle = angle;
 	}
 	
 	//GET and SETmethods
@@ -46,9 +50,18 @@ public class Bullet {
 		this.yVel = yVel;
 	}
 	
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
 	//Moving bullet
 	public void move() {
 		this.setXPos(this.getXPos() + this.getXVel());
+		this.setYPos(this.getYPos() + this.getYVel());
 	}
 	//Gravity on bullets
 	public void gravity(double acc) {
