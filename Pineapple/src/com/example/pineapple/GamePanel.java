@@ -30,6 +30,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<Bullet> bullets;
 	private boolean scaledPaths = false;
 	private int level;
+	private HeatMeter heatMeter;
 	
 	
 	public GamePanel(Context context, int level){
@@ -40,7 +41,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		screenY = 0;
 		this.level = level;
 		levelLoader = new LevelLoader();
-		//This has to be adressed later!
+		heatMeter = new HeatMeter(0.01);
 		loadPlatforms();
 		bullets = new ArrayList<Bullet>();
 		ground = new Ground(levelLoader.getLevelX(level), levelLoader.getLevelY(level));
@@ -60,6 +61,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Method that gets called every frame to update the games state
 	public void update(){
+		handleSticks();
+		moveProtagonist();
+		moveBullets();
+		moveScreen();
+		handleHeatMeter();
+	}
+	
+	public void handleSticks(){
 		if(leftStick.isPointed()) {
 			protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
 		} else if (Math.abs(protagonist.getXVel()) > 0){
@@ -70,11 +79,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			double angle = rightStick.getAngle();
 			protagonist.aim(angle);
 			//Fire
-			bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/180*Math.PI), angle, 10));
+			if(!heatMeter.isCoolingDown()){
+				bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/180*Math.PI), angle, 10));
+				heatMeter.addHeat(0.01);
+			}
 		}
-		moveProtagonist();
-		moveBullets();
-		moveScreen();
 	}
 	
 	public void moveProtagonist(){
@@ -113,6 +122,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 	}
 	
+	//Handles the HeatMeter 
+	public void handleHeatMeter(){
+		if(heatMeter.isCoolingDown()){
+			heatMeter.coolDown();
+		}
+	}
+	
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
 		canvas.drawColor(Color.WHITE);
@@ -121,6 +137,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderProtagonist(canvas);
 		renderBullets(canvas);
 		renderSticks(canvas);
+		renderHeatMeter(canvas);
 	}
 	
 	//Pause the game
@@ -181,6 +198,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			int radius = b.getRadius();
 			canvas.drawCircle((float)((b.getXPos()-radius/2.-screenX)*scaleX), (float)((b.getYPos()-radius/2.-screenY)*scaleY), (float)(radius*scaleX), p);
 		}
+	}
+	
+	//Draw the HeatMeter
+	public void renderHeatMeter(Canvas canvas){
+		canvas.drawRect((float)(10*scaleX), (float)(10*scaleY), (float)((10+20*heatMeter.getHeat())*scaleX), (float)(20*scaleY), new Paint());
 	}
 	
 	//Fix this (MultiTouch)

@@ -21,8 +21,18 @@ public class HeatMeter {
 	
 	public void coolDown(){
 		heat -= coolingRate;
-		if(coolingRate <= 0){
+		if(heat <= 0){
 			coolingDown = false;
+			heat = 0;
 		}
 	}
+
+	public boolean isCoolingDown() {
+		return coolingDown;
+	}
+	
+	public double getHeat(){
+		return heat;
+	}
+
 }
