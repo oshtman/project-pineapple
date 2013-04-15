@@ -88,6 +88,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			} else if(b.checkObstacles(ground, platforms)){
 				bullets.remove(i);
 				i--;
+				Log.d(TAG, "Removed bullet");
 			}
 			
 		}

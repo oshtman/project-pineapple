@@ -11,7 +11,7 @@ public class Bullet {
 	private double yVel;
 	private double angle;
 	private int radius;
-	private boolean inAir = true;
+	private boolean colliding;
 
 	//CONSTRUCTOR
 	public Bullet(double x, double y, double angle, double bulletSpeed) {
@@ -65,13 +65,7 @@ public class Bullet {
 		this.angle = angle;
 	}
 
-	public boolean getInAir() {
-		return inAir;
-	}
 
-	public void setInAir(boolean inAir) {
-		this.inAir = inAir;
-	}
 
 	public int getRadius() {
 		return radius;
@@ -94,17 +88,18 @@ public class Bullet {
 	
 	//Check if bullet hits ground or platform (is in air)
 	public boolean checkObstacles(Ground g, ArrayList<Platform> al) {
-		if (!(this.getYPos() > g.getYFromX(this.getXPos()))) {
-			inAir = false;
-		}
-		for (int i = 0; i<al.size(); i++) {
-			if(al.get(i).spans(this.getXPos())) {
-				if (this.getYPos() < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() > al.get(i).getUpperYFromX(this.getXPos())) {
-					inAir = false;
+		if (this.getYPos() > g.getYFromX(this.getXPos())) {
+			colliding = true;
+		} else {
+			for (int i = 0; i<al.size(); i++) {
+				if(al.get(i).spans(this.getXPos())) {
+					if (this.getYPos() < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() > al.get(i).getUpperYFromX(this.getXPos())) {
+						colliding = true;
+					}
 				}
 			}
 		}
-		return inAir;
+		return colliding;
 	}
 
 }
