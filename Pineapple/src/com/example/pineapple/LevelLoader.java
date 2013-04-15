@@ -14,8 +14,8 @@ public class LevelLoader {
 	private ArrayList<ArrayList<int[][]>> platformArrays = new ArrayList<ArrayList<int[][]>>();
 	
 	//Put the ground arrays for all levels here!
-	private final int[] x1 = {-300, 0, 100, 150, 300};
-	private final int[] y1 = {95, 95, 80, 95, 20};
+	private final int[] x1 = {-300, 0,  100, 150, 300};
+	private final int[] y1 = {95,   95, 80,  95,  20};
 
 	//Put the platforms for each level here!
 	
@@ -32,12 +32,20 @@ public class LevelLoader {
 	
 	//Platform 1
 	private final int[][] p1_1 = {
-	{0, 10, 50},
-	{20, 30, 30},
-	{0, 10, 50},
-	{20, 40, 30}};
-	
+			{0, 10, 50},
+			{20, 30, 30},
+			{0, 10, 50},
+			{20, 40, 30}
+	};
+
 	//Platform 2
+	
+	private final int[][] p1_2 = {
+			{150, 250, 260},
+			{50, 10, 13},
+			{150, 220, 260},
+			{50, 25, 13}
+	};
 	
 	//Level 2
 	private ArrayList<int[][]> platform2 = new ArrayList<int[][]>();
@@ -67,6 +75,7 @@ public class LevelLoader {
 		
 		//Add the platforms to their respective lists
 		platformsLevel1.add(p1_1);
+		platformsLevel1.add(p1_2);
 		
 		//Add the lists of each level to the list of lists
 		platformArrays.add(platformsLevel1);
@@ -91,6 +100,10 @@ public class LevelLoader {
 	}
 	public int[] getPlatformLowerY(int level, int platform){
 		return platformArrays.get(level-1).get(platform-1)[3];
+	}
+	
+	public int getNumberOfPlatforms(int level){
+		return platformArrays.get(level-1).size();
 	}
 	
 }
