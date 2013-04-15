@@ -124,4 +124,29 @@ public class Platform {
 	public Path getPath(){
 		return path;
 	}
+
+	public boolean checkSides(Protagonist p, int side){ //Direction is 1 if right side, -1 if left side 
+		boolean colliding = false;
+		if(p.getXPos() + p.getWidth()/2 > upperX[0] && p.getXPos() - p.getWidth() < upperX[upperX.length-1]){
+			int upperBound = (int)(p.getYPos() - p.getHeight()/2);
+			int lowerBound = (int)(p.getYPos() + p.getHeight()/2);
+
+			for(int y = upperBound; y <= lowerBound; y++){
+				if(side == -1){
+					if(y == upperY[0]){
+						colliding = true;
+						break;
+					} 
+				} else {
+					if(y == upperY[upperY.length-1]){
+						colliding = true;
+						break;
+					}
+
+				}
+
+			}
+		}
+		return colliding;
+	}
 }
