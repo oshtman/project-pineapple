@@ -218,7 +218,7 @@ public class Protagonist {
 		}
 	}
 
-	//Check if protagonist hits platform
+	//Check if protagonist hit platform
 	public void checkPlatform(ArrayList<Platform> al) {
 		for (int i = 0; i < al.size(); i++) {
 			if(al.get(i).spans(this.getXPos())) {
