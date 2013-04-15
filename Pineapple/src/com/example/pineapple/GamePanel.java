@@ -97,6 +97,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderGround(canvas);
 		renderPlatforms(canvas);
 		renderProtagonist(canvas);
+		renderBullets(canvas);
 		renderSticks(canvas);
 	}
 	
@@ -146,6 +147,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		Paint p = new Paint();
 		p.setColor(Color.GRAY);
 		canvas.drawCircle((float)(leftStick.getX()*scaleX), (float)(leftStick.getY()*scaleY), (float)(leftStick.getRadius()*scaleX), p);
+	}
+	
+	//Draw the bullets
+	public void renderBullets(Canvas canvas){
+		Paint p = new Paint();
+		p.setColor(Color.RED);
+		for(int i = 0; i < bullets.size(); i++){
+			Bullet b = bullets.get(i);
+			int radius = b.getRadius();
+			canvas.drawCircle((float)((b.getXPos()-radius/2.)*scaleX), (float)((b.getYPos()-radius/2.)*scaleY), (float)(radius*scaleX), p);
+		}
 	}
 	
 	//Fix this (MultiTouch)

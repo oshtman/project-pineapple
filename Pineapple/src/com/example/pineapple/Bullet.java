@@ -7,14 +7,15 @@ public class Bullet {
 	private double xVel;
 	private double yVel;
 	private double angle;
+	private int radius;
 	
-	//CONSTRUCTOR
 	public Bullet(double x, double y, double angle, double bulletSpeed) {
 		this.xPos = x;
 		this.yPos = y;
 		this.xVel = Math.cos(angle/180*Math.PI)*bulletSpeed;
 		this.yVel = Math.sin(angle/180*Math.PI)*bulletSpeed;
 		this.angle = angle;
+		this.radius = 3;
 	}
 	
 	//GET and SETmethods
@@ -56,6 +57,14 @@ public class Bullet {
 
 	public void setAngle(double angle) {
 		this.angle = angle;
+	}
+
+	public int getRadius() {
+		return radius;
+	}
+
+	public void setRadius(int radius) {
+		this.radius = radius;
 	}
 
 	//Moving bullet
