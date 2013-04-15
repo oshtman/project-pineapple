@@ -233,13 +233,12 @@ public class Protagonist {
 					touchingGround = true;
 				}
 			}
-			if (al.get(i).spansY(for (int j = 0; j < this.getHeight(); j++) {this.getYPos() - this.getHeight()/2 + j}) {
-				if(this.getXVel() > 0 && this.getXPos() + this.getWidth()/2 < al.get(i).getUpperX()[0]) {
-					this.setXVel(-this.getXVel);
-				}
+			if (al.get(i).checkSide(this, -1) || al.get(i).checkSide(this, 1)) {
+				this.setXVel(-this.getXVel());
 			}
 		}
 	}
+
 
 	//Let gravity work on protagonist
 	public void gravity(){
