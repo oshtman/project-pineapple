@@ -231,8 +231,9 @@ public class Protagonist {
 					headBump = true;
 				}
 				//if feet is in platform
-				if (!headBump && !(this.getYPos() > this.getHeight()/2 + al.get(i).getLowerYFromX(this.getXPos()))) {
+				if (!(this.getYVel() <= 0) && !headBump && !(this.getYPos() > this.getHeight()/2 + al.get(i).getLowerYFromX(this.getXPos()))) {
 				if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
+		//		if (this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos())) {
 					this.setYPos(al.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 					this.setYVel(0);
 					this.setYAcc(0);
@@ -241,9 +242,13 @@ public class Protagonist {
 				}
 				}
 			} //if making move towards edge of platform
-			if (al.get(i).checkSide(this, -1) && getXPos() < al.get(i).getUpperX()[0]|| al.get(i).checkSide(this, 1) && getXPos() > al.get(i).getUpperX()[al.get(i).getUpperX().length-1]) {
+			if (al.get(i).checkSide(this, -1) && getXPos() < al.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > al.get(i).getUpperX()[0] && getXVel() > 0) {
 				this.setXVel(0);
-				Log.d(TAG, "Thorn in my side!!");
+				this.setXPos(al.get(i).getUpperX()[0] - getWidth()/2);
+			}
+			if(al.get(i).checkSide(this, 1) && getXPos() > al.get(i).getUpperX()[al.get(i).getUpperX().length-1] && getXPos() - getWidth()/2 < al.get(i).getUpperX()[al.get(i).getUpperX().length-1] && getXVel() < 0){
+				this.setXVel(0);
+				this.setXPos(al.get(i).getUpperX()[al.get(i).getUpperX().length-1] + getWidth()/2);
 			}
 		}
 	}
