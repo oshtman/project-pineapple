@@ -1,5 +1,7 @@
 package com.example.pineapple;
 
+import java.util.ArrayList;
+
 public class Bullet {
 
 	private double xPos;
@@ -7,7 +9,8 @@ public class Bullet {
 	private double xVel;
 	private double yVel;
 	private double angle;
-	
+	private boolean inAir = true;
+
 	//CONSTRUCTOR
 	public Bullet(double x, double y, double angle, double bulletSpeed) {
 		this.xPos = x;
@@ -16,7 +19,7 @@ public class Bullet {
 		this.yVel = Math.sin(angle/180*Math.PI)*bulletSpeed;
 		this.angle = angle;
 	}
-	
+
 	//GET and SETmethods
 	public double getXPos() {
 		return xPos;
@@ -33,7 +36,7 @@ public class Bullet {
 	public void setYPos(double yPos) {
 		this.yPos = yPos;
 	}
-	
+
 	public double getXVel() {
 		return xVel;
 	}
@@ -49,13 +52,21 @@ public class Bullet {
 	public void setYVel(double yVel) {
 		this.yVel = yVel;
 	}
-	
+
 	public double getAngle() {
 		return angle;
 	}
 
 	public void setAngle(double angle) {
 		this.angle = angle;
+	}
+
+	public boolean getInAir() {
+		return inAir;
+	}
+
+	public void setInAir(boolean inAir) {
+		this.inAir = inAir;
 	}
 
 	//Moving bullet
@@ -67,5 +78,17 @@ public class Bullet {
 	public void gravity(double acc) {
 		this.setYVel(this.getYVel() + acc);
 	}
-	
+	public boolean checkObstacles(Ground g, ArrayList<Platform> al) {
+		if (!(this.getYPos() > g.getYFromX(this.getXPos()))) {
+			return inAir = false;
+		}
+		for (int i = 0; i<al.size(); i++) {
+			if(al.get(i).spans(this.getXPos())) {
+				if (this.getYPos() < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() > al.get(i).getUpperYFromX(this.getXPos())) {
+					return inAir = false;
+				}
+			}
+		}
+	}
+
 }
