@@ -234,9 +234,9 @@ public class Protagonist {
 				}
 			}
 			if (al.get(i).spansY(for (int j = 0; j < this.getHeight(); j++) {this.getYPos() - this.getHeight()/2 + j}) {
-			}
-				if(this.getXVel() > 0 && this.getXPos() + this.getWidth()/2 < al.get(i).getUpperX()[0])
-					
+				if(this.getXVel() > 0 && this.getXPos() + this.getWidth()/2 < al.get(i).getUpperX()[0]) {
+					this.setXVel(-this.getXVel);
+				}
 			}
 		}
 	}
