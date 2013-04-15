@@ -1,7 +1,7 @@
 package com.example.pineapple;
 
-import android.graphics.Matrix;
 import android.graphics.Path;
+import android.util.Log;
 
 public class Platform {
 	private final String TAG = Platform.class.getSimpleName();
@@ -124,13 +124,16 @@ public class Platform {
 	public Path getPath(){
 		return path;
 	}
-
+	
+	//Checks if the protagonist collides with one of the sides of a platform
 	public boolean checkSide(Protagonist p, int side){ //Direction is 1 if right side, -1 if left side 
 		boolean colliding = false;
+		//Checks if the protagonist is in the platforms x-domain
 		if(p.getXPos() + p.getWidth()/2 > upperX[0] && p.getXPos() - p.getWidth() < upperX[upperX.length-1]){
 			int upperBound = (int)(p.getYPos() - p.getHeight()/2);
 			int lowerBound = (int)(p.getYPos() + p.getHeight()/2);
-
+			Log.d(TAG, "Hero y, upper, lower: " + p.getYPos() + " " + upperBound + " " + lowerBound);
+			Log.d(TAG, upperY[0]+ " " + upperY[upperY.length-1]);
 			for(int y = upperBound; y <= lowerBound; y++){
 				if(side == -1){
 					if(y == upperY[0]){
@@ -142,9 +145,7 @@ public class Platform {
 						colliding = true;
 						break;
 					}
-
 				}
-
 			}
 		}
 		return colliding;

@@ -226,7 +226,7 @@ public class Protagonist {
 				//Log.d(TAG, "Warning: Platform, platform!!");
 				if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos())) {
 					this.setYVel(-this.getYVel());
-					Log.d(TAG, "Headache!!");
+					Log.d(TAG, "Headache!!");					
 				}
 				//if feet is in platform
 				if (this.getYPos() + this.getHeight()/2 < al.get(i).getUpperYFromX(this.getXPos())) {
@@ -234,13 +234,12 @@ public class Protagonist {
 					this.setYVel(0);
 					this.setYAcc(0);
 					touchingGround = true;
-					Log.d(TAG, "Standing!!");
+					Log.d(TAG, "Standing!!");					
 				}
 			} //if making move towards edge of platform
-			if (al.get(i).checkSide(this, -1) || al.get(i).checkSide(this, 1)) {
-	//			this.setXVel(0);
+			if (al.get(i).checkSide(this, -1) && getXPos() < al.get(i).getUpperX()[0]|| al.get(i).checkSide(this, 1) && getXPos() > al.get(i).getUpperX()[al.get(i).getUpperX().length-1]) {
+				this.setXVel(0);
 				Log.d(TAG, "Thorn in my side!!");
-
 			}
 		}
 	}
