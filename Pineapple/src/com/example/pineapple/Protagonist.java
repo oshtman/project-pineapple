@@ -207,6 +207,23 @@ public class Protagonist {
 			this.down(gp.getGround());
 	}
 
+	public void checkSlope(Ground ground, ArrayList<Platform> platforms){
+		if(touchingGround){ 
+			if(getYPos()+getHeight()/2 - ground.getYFromX(getXPos()) > -5){ //On ground
+				double slope = ground.getSlope(this.getXPos());
+				if(Math.abs(slope) > 1)
+					setXVel(getXVel()+slope);
+				Log.d(TAG, "Standing on ground");
+			} else { //On platform
+				int i = 0;
+				while(!(platforms.get(i).getUpperX()[0] < getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] > getXPos())){
+					i++;
+				}
+				Log.d(TAG, "Standing on platform" + i);
+			}
+		}
+	}
+
 	//Check if the protagonist is under the ground
 	//If he is, then set him on top of it
 	public void checkGround(Ground g){

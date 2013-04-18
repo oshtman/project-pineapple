@@ -58,6 +58,10 @@ public class LevelLoader {
 					{50, 25, 13}
 			};
 			platforms.add(p2);
+			
+			
+			
+			break;
 		case 2:
 			ground = new int[2][100];
 			
@@ -66,7 +70,7 @@ public class LevelLoader {
 				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
 			}
 			
-			
+			break;
 		}
 	
 	}

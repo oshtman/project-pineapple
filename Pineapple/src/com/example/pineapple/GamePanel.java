@@ -95,7 +95,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public void moveProtagonist(){
 		protagonist.gravity();
+		protagonist.checkSlope(ground, platforms);
 		protagonist.move();
+		
 		protagonist.checkGround(ground);
 		protagonist.checkPlatform(platforms);
 	}
