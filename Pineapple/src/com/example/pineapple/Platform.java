@@ -151,7 +151,7 @@ public class Platform {
 	//Checks if the enemy collides with one of the sides of a platform
 		public boolean checkSide(Enemy e, int side){ //Direction is 1 if right side, -1 if left side 
 			boolean colliding = false;
-			//Checks if the protagonist is in the platforms x-domain
+			//Checks if the enemy is in the platforms x-domain
 			if(e.getXPos() + e.getWidth()/2 > upperX[0] && e.getXPos() - e.getWidth() < upperX[upperX.length-1]){
 				int upperBound = (int)(e.getYPos() - e.getHeight()/2);
 				int lowerBound = (int)(e.getYPos() + e.getHeight()/2);

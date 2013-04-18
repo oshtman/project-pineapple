@@ -26,6 +26,7 @@ public class Enemy {
 	private double slideCoefficient = 0.8;
 	private double typeAcc;
 	private boolean touchingGround;
+	private int type;
 
 	//CONSTRUCTORS
 	public Enemy(double i, double j, GamePanel gp, int type) {
