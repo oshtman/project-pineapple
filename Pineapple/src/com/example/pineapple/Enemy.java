@@ -6,6 +6,7 @@ import android.util.Log;
 
 public class Enemy {
 
+	private static final String TAG = Enemy.class.getSimpleName();
 	private double xPos;
 	private double yPos;
 	private double xVel;
@@ -18,38 +19,41 @@ public class Enemy {
 	private int width = (int)(20/1.42); //Change 1.42 to ratio of bitmap
 	private double scaleNinja;
 	private double scaleTank;
-	private double baseSpeed = 1;
-	private boolean touchingGround;
+	private double baseAcc = 1;
 	private double jumpVel = -6;
 	private double jumpAcc = 0.4;
 	private double maxSpeed = 3;
 	private double slideCoefficient = 0.8;
-	private double ninjaAcc;
-	private double tankAcc;
+	private double typeAcc;
+	private boolean touchingGround;
 
 	//CONSTRUCTORS
 	public Enemy(double i, double j, GamePanel gp, int type) {
 		//type 1 is normal
 		if (type == 1) {
 			setHealth(0.5);
+			this.typeAcc = 0.2*baseAcc;
+
 		}
 		//type 2 is ninja
 		else if (type == 2) {
 			this.setHealth(0.1);
 			this.height = (int)(this.height*scaleNinja);
 			this.width = (int)((20/1.42)*scaleNinja); //Change 1.42 to ratio of bitmap
-			this.ninjaSpeed = 2*baseSpeed;
+			this.typeAcc = 2*baseAcc;
 			this.maxSpeed = 2*maxSpeed;
 			this.jumpVel = 2*jumpVel;
 			this.jumpAcc = 2*jumpAcc;
-
 		}
 		//type 3 is tank
 		else if (type == 3) {
 			this.setHealth(1);
 			this.height = (int)(this.height*scaleTank);
 			this.width = (int)((20/1.42)*scaleTank); //Change 1.42 to ratio of bitmap
-
+			this.typeAcc = 0.1*baseAcc;
+			this.maxSpeed = 0.5*maxSpeed;
+			this.jumpVel = 0.5*jumpVel;
+			this.jumpAcc = 0.5*jumpAcc;
 		}
 		this.setXPos(i);
 		this.setYPos(j);
@@ -105,7 +109,7 @@ public class Enemy {
 	}
 	
 	//Get and set enemy properties
-	public int getHealth() {
+	public double getHealth() {
 		return health;
 	}
 
@@ -113,10 +117,25 @@ public class Enemy {
 		this.health = d;
 	}
 	
-	private double getMaxSpeed() {
+	public double getMaxSpeed() {
 		return maxSpeed;
 	}
+	
+	public double getJumpAcc() {
+		return jumpAcc;
+	}
 
+	public int getWidth() {
+		return width;
+	}
+	public double getTypeAcc() {
+		return typeAcc;
+	}
+	
+	public int getHeight() {
+		return height;
+	}
+	
 	//ENEMY ACTION
 	//moving
 	public void move() {
@@ -153,7 +172,7 @@ public class Enemy {
 				//Log.d(TAG, "Warning: Platform, platform!!");
 				if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
 					this.setYVel(-this.getYVel());
-					Log.d(TAG, "Headache!!");
+					Log.d(TAG, "Enemy hit irs head!!");
 				} else {
 					//if feet is in platform
 					if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
@@ -162,7 +181,7 @@ public class Enemy {
 							this.setYVel(0);
 							this.setYAcc(0);
 							touchingGround = true;
-							Log.d(TAG, "Standing strong!!");					
+							Log.d(TAG, "Enemy over, and out!!");					
 						}
 					}
 				}
@@ -182,6 +201,5 @@ public class Enemy {
 	public void gravity(){
 		this.setYVel(this.getYVel()+this.getJumpAcc());
 	}
-
 
 }

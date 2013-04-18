@@ -148,4 +148,28 @@ public class Platform {
 		}
 		return colliding;
 	}
+	//Checks if the enemy collides with one of the sides of a platform
+		public boolean checkSide(Enemy e, int side){ //Direction is 1 if right side, -1 if left side 
+			boolean colliding = false;
+			//Checks if the protagonist is in the platforms x-domain
+			if(e.getXPos() + e.getWidth()/2 > upperX[0] && e.getXPos() - e.getWidth() < upperX[upperX.length-1]){
+				int upperBound = (int)(e.getYPos() - e.getHeight()/2);
+				int lowerBound = (int)(e.getYPos() + e.getHeight()/2);
+				for(int y = upperBound; y <= lowerBound; y++){
+					if(side == -1){
+						if(y == upperY[0]){
+							colliding = true;
+							break;
+						} 
+					} else {
+						if(y == upperY[upperY.length-1]){
+							colliding = true;
+							break;
+						}
+					}
+				}
+			}
+			return colliding;
+		}
+
 }
