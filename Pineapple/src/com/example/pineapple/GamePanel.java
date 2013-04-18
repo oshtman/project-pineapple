@@ -44,7 +44,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		screenX = 0;
 		screenY = 0;
 		this.level = level;
-		levelLoader = new LevelLoader();
+		levelLoader = new LevelLoader(level);
 		heatMeter = new HeatMeter(0.01);
 		loadPlatforms();
 		bullets = new ArrayList<Bullet>();
@@ -61,8 +61,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the platforms from LevelLoader and add them to the platforms list 
 	public void loadPlatforms(){
 		platforms = new ArrayList<Platform>();
-		for(int i = 1; i <= levelLoader.getNumberOfPlatforms(level); i++){
-			platforms.add(new Platform(levelLoader.getPlatformUpperX(level, i), levelLoader.getPlatformUpperY(level, i), levelLoader.getPlatformLowerX(level, i), levelLoader.getPlatformLowerY(level, i)));
+		for(int i = 1; i <= levelLoader.getNumberOfPlatforms(); i++){
+			platforms.add(new Platform(levelLoader.getPlatformUpperX(i), levelLoader.getPlatformUpperY(i), levelLoader.getPlatformLowerX(i), levelLoader.getPlatformLowerY(i)));
 		}
 	}
 	
