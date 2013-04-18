@@ -32,6 +32,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int level;
 	private HeatMeter heatMeter;
 	private boolean firing = false;
+	private Paint green = new Paint();
+	private Paint red = new Paint();
+	private Paint frame = new Paint();
 	
 	
 	public GamePanel(Context context, int level){
@@ -41,7 +44,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		screenX = 0;
 		screenY = 0;
 		this.level = level;
-		levelLoader = new LevelLoader();
+		levelLoader = new LevelLoader(level);
 		heatMeter = new HeatMeter(0.01);
 		loadPlatforms();
 		bullets = new ArrayList<Bullet>();
@@ -50,13 +53,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		leftStick = new Stick(Stick.LEFT);
 		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
+		
+		green.setColor(Color.GREEN);
+		red.setColor(Color.RED);
 	}
 	
 	//Load the platforms from LevelLoader and add them to the platforms list 
 	public void loadPlatforms(){
 		platforms = new ArrayList<Platform>();
-		for(int i = 1; i <= levelLoader.getNumberOfPlatforms(level); i++){
-			platforms.add(new Platform(levelLoader.getPlatformUpperX(level, i), levelLoader.getPlatformUpperY(level, i), levelLoader.getPlatformLowerX(level, i), levelLoader.getPlatformLowerY(level, i)));
+		for(int i = 1; i <= levelLoader.getNumberOfPlatforms(); i++){
+			platforms.add(new Platform(levelLoader.getPlatformUpperX(i), levelLoader.getPlatformUpperY(i), levelLoader.getPlatformLowerX(i), levelLoader.getPlatformLowerY(i)));
 		}
 	}
 	
@@ -143,6 +149,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderBullets(canvas);
 		renderSticks(canvas);
 		renderHeatMeter(canvas);
+		renderHealthMeter(canvas);
 	}
 	
 	//Pause the game
@@ -214,12 +221,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		int frameSize = 1;
 		double blinkInterval = 0.05; //Lower value means faster blinking (Should be at least coolingRate of HeatMeter)
 		
-		Paint green = new Paint();
-		Paint red = new Paint();
-		Paint frame = new Paint();
-		green.setColor(Color.GREEN);
-		red.setColor(Color.RED);
-		
 		//This makes the frame blink red if overheated
 		if(heatMeter.isCoolingDown() && heatMeter.getHeat() % (2*blinkInterval) > blinkInterval){
 			frame.setColor(Color.RED);
@@ -227,12 +228,29 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			frame.setColor(Color.BLACK);
 		}
 		
+		//Draw in top right corner
+		//Draw frame
+		canvas.drawRect((float)((this.width - width - xPadding - frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((this.width - xPadding + frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), frame);
+		//Draw green background
+		canvas.drawRect((float)((this.width - width - xPadding)*scaleX), (float)(yPadding*scaleY), (float)((this.width - xPadding)*scaleX), (float)((yPadding+height)*scaleY), green);
+		//Draw red indicator that moves with current heat level
+		canvas.drawRect((float)((this.width - width - xPadding)*scaleX), (float)(yPadding*scaleY), (float)((this.width - xPadding - width*(1-heatMeter.getHeat()))*scaleX), (float)((yPadding+height)*scaleY), red);
+	}
+	
+	public void renderHealthMeter(Canvas canvas){
+		int xPadding = 10;
+		int yPadding = 10;
+		int width = 20;
+		int height = 10;
+		int frameSize = 1;
+		
+		//Draw in top left corner
 		//Draw frame
 		canvas.drawRect((float)((xPadding-frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((xPadding+width+frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), frame);
 		//Draw green background
-		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width)*scaleX), (float)((yPadding+height)*scaleY), green);
+		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width)*scaleX), (float)((yPadding+height)*scaleY), red);
 		//Draw red indicator that moves with current heat level
-		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width*heatMeter.getHeat())*scaleX), (float)((yPadding+height)*scaleY), red);
+		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width*protagonist.getHealth())*scaleX), (float)((yPadding+height)*scaleY), green);
 	}
 	
 	//Fix this (MultiTouch)
@@ -247,8 +265,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			leftStick.release();
 			rightStick.release();
 		}
-		
-		
 		
 		return true;
 	}
@@ -282,6 +298,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
+	
+	
 	public Ground getGround() {
 		return ground;
 	}
