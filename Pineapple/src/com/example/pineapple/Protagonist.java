@@ -13,7 +13,7 @@ public class Protagonist {
 	private double yVel;
 	private double xAcc;
 	private double yAcc;
-	private int health;
+	private double health;
 	private double angleAim;
 	private double jumpVel = -6;
 	private double jumpAcc = 0.4;
@@ -28,7 +28,7 @@ public class Protagonist {
 	public Protagonist(double i, double j, GamePanel gp) {
 		this.setXPos(i);
 		this.setYPos(j);
-		this.health = 100;
+		this.health = 1;
 		this.gp = gp;
 	}
 
@@ -92,11 +92,11 @@ public class Protagonist {
 		return angleAim;
 	}
 
-	public int getHealth() {
+	public double getHealth() {
 		return health;
 	}
 
-	public void setHealth(int health) {
+	public void setHealth(double health) {
 		this.health = health;
 	}
 
@@ -153,8 +153,8 @@ public class Protagonist {
 	}
 
 	//Protagonist lose health
-	public int reduceHealth(int n) {
-		this.setHealth(n-1);
+	public double reduceHealth(double n) {
+		this.setHealth(getHealth()-n);
 		return health;
 	}
 
