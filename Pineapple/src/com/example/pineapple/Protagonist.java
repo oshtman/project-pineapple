@@ -215,11 +215,12 @@ public class Protagonist {
 					setXVel(getXVel()+slope);
 				//Log.d(TAG, "Standing on ground");
 			} else { //On platform
-				int i = 0;
-				while(!(platforms.get(i).getUpperX()[0] < getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] > getXPos())){
-					i++;
+				for(int i = 0; i < platforms.size(); i++){
+					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
+						Log.d(TAG, "Standing on platform " + (i+1));
+					}
 				}
-				Log.d(TAG, "Standing on platform" + i);
+				
 			}
 		}
 	}

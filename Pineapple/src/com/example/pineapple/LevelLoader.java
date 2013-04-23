@@ -44,9 +44,9 @@ public class LevelLoader {
 			//Platform 1
 			p1 = new int[][]{
 					{0, 10, 50},
-					{20, 30, 30},
+					{40, 50, 50},
 					{0, 10, 50},
-					{20, 40, 30}
+					{40, 60, 50}
 			};
 			platforms.add(p1);
 

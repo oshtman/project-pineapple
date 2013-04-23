@@ -309,13 +309,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 id=e.getPointerId(index);
                 x = (int) e.getX(index)/scaleX;
                 y = (int) e.getY(index)/scaleY; 
-                if(rightStick.isPointed() && id == rightStickId) {
+                if(id == rightStickId) {
                 	if(x > width/2){
         				rightStick.handleTouch(x, y);
         				rightStickId = id;
         			} 
                 }
-                else if(leftStick.isPointed() && id == leftStickId){
+                else if(id == leftStickId){
                 	if(x < width/2){
                 		leftStick.handleTouch(x, y);
                 		leftStickId = id;
