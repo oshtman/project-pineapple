@@ -262,7 +262,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width*protagonist.getHealth())*scaleX), (float)((yPadding+height)*scaleY), green);
 	}
 	
-	//Fix this (MultiTouch)
+
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
 		double x;
