@@ -213,7 +213,7 @@ public class Protagonist {
 				double slope = ground.getSlope(this.getXPos());
 				if(Math.abs(slope) > 1)
 					setXVel(getXVel()+slope);
-				Log.d(TAG, "Standing on ground");
+				//Log.d(TAG, "Standing on ground");
 			} else { //On platform
 				int i = 0;
 				while(!(platforms.get(i).getUpperX()[0] < getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] > getXPos())){

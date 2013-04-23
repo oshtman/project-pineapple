@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -15,6 +16,10 @@ import android.view.SurfaceView;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = GamePanel.class.getSimpleName();
+	private final int INVALID_POINTER_ID = -1;
+	private int mActivePointerId = INVALID_POINTER_ID;
+	private int leftStickId = INVALID_POINTER_ID;
+	private int rightStickId = INVALID_POINTER_ID;
 	private final int width = 155;
 	private final int height = 100;
 	private double screenX;
@@ -73,6 +78,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		moveBullets();
 		moveScreen();
 		handleHeatMeter();
+		//Log.d(TAG, mActivePointerId + "");
+		
 	}
 	
 	public void handleSticks(){
@@ -248,7 +255,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 		//Draw in top left corner
 		//Draw frame
-		canvas.drawRect((float)((xPadding-frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((xPadding+width+frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), frame);
+		canvas.drawRect((float)((xPadding-frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((xPadding+width+frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), new Paint());
 		//Draw green background
 		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width)*scaleX), (float)((yPadding+height)*scaleY), red);
 		//Draw red indicator that moves with current heat level
@@ -258,16 +265,79 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Fix this (MultiTouch)
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
-		double x = e.getX()/scaleX;
-		double y = e.getY()/scaleY;
-		leftStick.handleTouch(x, y);
-		rightStick.handleTouch(x, y);
+		double x;
+		double y;
 		
-		if(e.getAction() == MotionEvent.ACTION_UP){
-			leftStick.release();
+		int index = e.getActionIndex();
+	    int id = e.getPointerId(index);
+		
+		switch(e.getActionMasked()){
+		
+		case MotionEvent.ACTION_DOWN:
+			x = e.getX()/scaleX;
+			y = e.getY()/scaleY;
+			
+			if(x > width/2){
+				rightStick.handleTouch(x, y);
+				rightStickId = id;
+			} else {
+				leftStick.handleTouch(x, y);
+				leftStickId = id;
+			}
+			
+			break;
+			
+		case MotionEvent.ACTION_POINTER_DOWN:
+			
+			x = e.getX(index)/scaleX;
+			y = e.getY(index)/scaleY;
+			
+			
+			if(x > width/2){
+				rightStick.handleTouch(x, y);
+				rightStickId = id;
+			} else {
+				leftStick.handleTouch(x, y);
+				leftStickId = id;
+			}
+			
+			break;
+			
+		case MotionEvent.ACTION_MOVE:
+
+			for(index=0; index<e.getPointerCount(); index++) {
+                id=e.getPointerId(index);
+                x = (int) e.getX(index)/scaleX;
+                y = (int) e.getY(index)/scaleY; 
+                if(rightStick.isPointed() && id == rightStickId) {
+                	if(x > width/2){
+        				rightStick.handleTouch(x, y);
+        				rightStickId = id;
+        			} 
+                }
+                else if(leftStick.isPointed() && id == leftStickId){
+                	if(x < width/2){
+                		leftStick.handleTouch(x, y);
+                		leftStickId = id;
+                	}
+                }
+            }
+			break;
+
+		case MotionEvent.ACTION_UP:
 			rightStick.release();
+			leftStick.release();
+			
+			break;
+
+
+		case MotionEvent.ACTION_POINTER_UP:
+			if(id == leftStickId)
+                leftStick.release();
+			if(id == rightStickId)
+                rightStick.release();
+	        break;
 		}
-		
 		return true;
 	}
 	
