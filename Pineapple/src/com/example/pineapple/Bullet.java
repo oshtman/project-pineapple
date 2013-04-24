@@ -104,7 +104,7 @@ public class Bullet {
 	
 	//Check if the passed enemy gets hit by this bullet
 	public boolean collideEnemy(Enemy e){
-		//Add more precise hitcheck later
+		//Add more precise hitcheck later!
 		if(getXPos() - getRadius() < e.getXPos() + e.getWidth() && getXPos() + getRadius() > e.getXPos() - e.getWidth() &&
 				getYPos() - getRadius() < e.getYPos() + e.getHeight() && getYPos() + getRadius() > e.getYPos() - e.getHeight())
 			return true;
