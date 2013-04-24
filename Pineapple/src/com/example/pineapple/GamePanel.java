@@ -127,6 +127,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			Enemy enemy = enemies.get(i);
 			
 			enemy.gravity();
+			enemy.accelerate(protagonist);
 			enemy.move();
 			enemy.checkGround(ground);
 			enemy.checkPlatform(platforms);

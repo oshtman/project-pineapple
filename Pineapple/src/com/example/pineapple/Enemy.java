@@ -152,6 +152,12 @@ public class Enemy {
 			this.setXVel(-this.getMaxSpeed());
 		}
 	}
+	
+	//General method to make the enemy move against the protagonist
+	public void accelerate(Protagonist p){
+		//Fix constants later...
+		this.accelerate(0.1*Math.signum(p.getXPos() - this.getXPos()));
+	}
 
 	//Check if the enemy is under the ground
 	//If enemy is, then set enemy on top of it
