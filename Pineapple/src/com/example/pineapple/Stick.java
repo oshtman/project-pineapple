@@ -24,7 +24,7 @@ public class Stick {
 		double dx = x - this.x;
 		double dy = y - this.y;
 		double dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-		if(dist <= 2*radius){
+		if(dist <= 3*radius){
 			//Calculate angle of the finger relative to the stick
 			angle = (Math.atan2(-dy, dx)*180/Math.PI);
 			if(angle < 0){

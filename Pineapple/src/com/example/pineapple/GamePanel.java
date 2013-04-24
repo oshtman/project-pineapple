@@ -79,7 +79,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		enemies = new ArrayList<Enemy>();
 		for(int i = 0; i < levelLoader.getNumberOfEnemies(); i++){
 			int[] enemyData = levelLoader.getEnemyData(i);
-			enemies.add(new Enemy(enemyData[0], enemyData[1], this, 1));
+			enemies.add(new Enemy(enemyData[0], enemyData[1], enemyData[2], enemyData[3], this));
 		}
 	}
 	
@@ -92,7 +92,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		moveScreen();
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
-		//Log.d(TAG, "Angle:" + leftStick.getAngle());
 	}
 	
 	public void handleSticks(){
@@ -184,7 +183,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					bullets.remove(i);//Remove the bullet from the game
 					i--;
 					
-					enemy.takeDamage(0.05); //Reduce the enemies health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 5
+					enemy.takeDamage(0.05); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
 					
 					if(enemy.getHealth() <= 0)//If the enemy is dead
 						enemies.remove(j);
@@ -370,7 +369,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         			} 
                 }
                 else if(id == leftStickId){
-                	Log.d(TAG, leftStickId + " " + id);
                 	if(x < width/2){
                 		leftStick.handleTouch(x, y);
                 		leftStickId = id;

@@ -103,17 +103,14 @@ public class Bullet {
 		}
 		return colliding;
 	}
-	
+
 	//Check if the passed enemy gets hit by this bullet
 	public boolean collideEnemy(Enemy e){
 		//Add more precise hitcheck later!
-		Log.d("lol", (getXPos() + getRadius()) + " " +  (e.getXPos() - e.getWidth()/2));
 		if(getXPos() - getRadius() < e.getXPos() + e.getWidth()/2 && getXPos() + getRadius() > e.getXPos() - e.getWidth()/2 &&
-				getYPos() - getRadius() < e.getYPos() + e.getHeight()/2 && getYPos() + getRadius() > e.getYPos() - e.getHeight()/2){
+				getYPos() - getRadius() < e.getYPos() + e.getHeight()/2 && getYPos() + getRadius() > e.getYPos() - e.getHeight()/2)
 			return true;
-		} else {
+		else 
 			return false;
-		}
 	}
-
 }
