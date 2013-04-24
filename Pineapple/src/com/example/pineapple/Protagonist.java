@@ -7,6 +7,7 @@ import android.util.Log;
 public class Protagonist {
 
 	private static final String TAG = Protagonist.class.getSimpleName();
+	private final double slopeThreshold = 0.7; //How much slope it takes to move the protagonist
 	private double xPos;
 	private double yPos;
 	private double xVel;
@@ -211,12 +212,15 @@ public class Protagonist {
 		if(touchingGround){ 
 			if(getYPos()+getHeight()/2 - ground.getYFromX(getXPos()) > -5){ //On ground
 				double slope = ground.getSlope(this.getXPos());
-				if(Math.abs(slope) > 1)
+				if(Math.abs(slope) > slopeThreshold)
 					setXVel(getXVel()+slope);
 				//Log.d(TAG, "Standing on ground");
 			} else { //On platform
 				for(int i = 0; i < platforms.size(); i++){
 					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
+						double slope = platforms.get(i).getSlope(this.getXPos());
+						if(Math.abs(slope) > slopeThreshold)
+							setXVel(getXVel()+slope);
 						Log.d(TAG, "Standing on platform " + (i+1));
 					}
 				}
