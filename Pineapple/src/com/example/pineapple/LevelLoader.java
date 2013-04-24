@@ -18,7 +18,7 @@ public class LevelLoader {
 	private int[][] p6;
 	
 	//Matrix syntax:
-		//p3_1 means platform 1 on level 3
+		//p1 means platform 1
 		//The rows of the matrix represents: 
 		//UpperX
 		//UpperY
@@ -27,6 +27,11 @@ public class LevelLoader {
 	
 	//List for platforms
 	private ArrayList<int[][]> platforms = new ArrayList<int[][]>();
+	
+	//List for enemy-info 
+	//A row should contain {startX, startY, spawnX?, type}
+	//spawnX is the x position the protagonist has to reach in order for the enemy to spawn
+	private ArrayList<int[]> enemies = new ArrayList<int[]>();
 	
 	
 	
@@ -59,6 +64,8 @@ public class LevelLoader {
 			};
 			platforms.add(p2);
 			
+			//Enemies
+			enemies.add(new int[]{100, 20, 80, 1});
 			
 			
 			break;
@@ -98,6 +105,10 @@ public class LevelLoader {
 	
 	public int getNumberOfPlatforms(){
 		return platforms.size();
+	}
+	
+	public int[] getEnemyData(int level){
+		return enemies.get(level-1);
 	}
 	
 }

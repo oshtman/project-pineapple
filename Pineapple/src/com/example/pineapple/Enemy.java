@@ -137,13 +137,13 @@ public class Enemy {
 	}
 	
 	//ENEMY ACTION
-	//moving
+	//Moving
 	public void move() {
 		this.xPos = this.getXPos() + this.getXVel();
 		this.yPos = this.getYPos() + this.getYVel();
 	}
 
-	//Accelerating protagonist
+	//Accelerating
 	public void accelerate(double acc) { // acc = 0.2?
 		this.setXVel(this.getXVel() + acc);
 		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {
