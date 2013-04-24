@@ -161,6 +161,7 @@ public class Protagonist {
 
 	//Protagonist jump
 	public void jump() {
+		//Perhaps a steep slope shouldn't allow jumping???
 		touchingGround = false;
 		this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
 		Log.d(TAG, "Jump!!");
@@ -178,7 +179,7 @@ public class Protagonist {
 	//Accelerating protagonist
 	public void accelerate(double acc) { // acc = 0.2?
 		this.setXVel(this.getXVel() + acc);
-		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {
+		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {//Double code, also in checkSLope
 			this.setXVel(this.getMaxSpeed());
 		} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
 			this.setXVel(-this.getMaxSpeed());
@@ -219,12 +220,21 @@ public class Protagonist {
 				for(int i = 0; i < platforms.size(); i++){
 					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
 						double slope = platforms.get(i).getSlope(this.getXPos());
-						if(Math.abs(slope) > slopeThreshold)
+						if(Math.abs(slope) > slopeThreshold){
 							setXVel(getXVel()+slope);
-						Log.d(TAG, "Standing on platform " + (i+1));
+							Log.d(TAG, "Standing on platform " + (i+1));
+						}
 					}
+
 				}
-				
+			}
+			
+			//Check if the speed has to be reduced
+			//This doesn't look good in game
+			if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) { //Double code, also in accelerate
+				this.setXVel(this.getMaxSpeed());
+			} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
+				this.setXVel(-this.getMaxSpeed());
 			}
 		}
 	}
