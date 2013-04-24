@@ -2,6 +2,8 @@ package com.example.pineapple;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 public class Bullet {
 
 	private final int SPREAD = 5;
@@ -105,11 +107,13 @@ public class Bullet {
 	//Check if the passed enemy gets hit by this bullet
 	public boolean collideEnemy(Enemy e){
 		//Add more precise hitcheck later!
-		if(getXPos() - getRadius() < e.getXPos() + e.getWidth() && getXPos() + getRadius() > e.getXPos() - e.getWidth() &&
-				getYPos() - getRadius() < e.getYPos() + e.getHeight() && getYPos() + getRadius() > e.getYPos() - e.getHeight())
+		Log.d("lol", (getXPos() + getRadius()) + " " +  (e.getXPos() - e.getWidth()/2));
+		if(getXPos() - getRadius() < e.getXPos() + e.getWidth()/2 && getXPos() + getRadius() > e.getXPos() - e.getWidth()/2 &&
+				getYPos() - getRadius() < e.getYPos() + e.getHeight()/2 && getYPos() + getRadius() > e.getYPos() - e.getHeight()/2){
 			return true;
-		else 
+		} else {
 			return false;
+		}
 	}
 
 }

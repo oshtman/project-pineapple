@@ -91,7 +91,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		moveBullets();
 		moveScreen();
 		handleHeatMeter();
-
+		handleBulletEnemyCollisions();
 		//Log.d(TAG, "Angle:" + leftStick.getAngle());
 	}
 	
@@ -170,6 +170,26 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			firing = false;
 		} else {                      //Otherwise cool down the weapon (Still able to fire)
 			heatMeter.coolDown();
+		}
+	}
+	
+	//Check collision between enemies and bullets
+	public void handleBulletEnemyCollisions(){
+		for(int i = 0; i < bullets.size(); i++){//All bullets
+			Bullet bullet = bullets.get(i);
+			for(int j = 0; j < enemies.size(); j++){//All enemies
+				Enemy enemy = enemies.get(j);
+				if(bullet.collideEnemy(enemy)){//If collision detected
+					bullets.remove(i);//Remove the bullet from the game
+					i--;
+					
+					enemy.takeDamage(0.05); //Reduce the enemies health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 5
+					
+					if(enemy.getHealth() <= 0)//If the enemy is dead
+						enemies.remove(j);
+					break;
+				}
+			}
 		}
 	}
 	

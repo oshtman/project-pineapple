@@ -201,5 +201,9 @@ public class Enemy {
 	public void gravity(){
 		this.setYVel(this.getYVel()+this.getJumpAcc());
 	}
+	
+	public void takeDamage(double damage){
+		this.setHealth(this.getHealth()-damage);
+	}
 
 }
