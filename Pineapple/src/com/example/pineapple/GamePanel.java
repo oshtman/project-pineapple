@@ -16,10 +16,9 @@ import android.view.SurfaceView;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = GamePanel.class.getSimpleName();
-	private final int INVALID_POINTER_ID = -1;
-	private int mActivePointerId = INVALID_POINTER_ID;
-	private int leftStickId = INVALID_POINTER_ID;
-	private int rightStickId = INVALID_POINTER_ID;
+	private final int INVALID_POINTER = -1;
+	private int leftStickId = INVALID_POINTER;
+	private int rightStickId = INVALID_POINTER;
 	private final int width = 155;
 	private final int height = 100;
 	private double screenX;
@@ -33,7 +32,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private LevelLoader levelLoader;
 	private ArrayList<Platform> platforms;
 	private ArrayList<Bullet> bullets;
-	private boolean scaledPaths = false;
+	private ArrayList<Enemy> enemies;
 	private int level;
 	private HeatMeter heatMeter;
 	private boolean firing = false;
@@ -46,18 +45,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		super(context);
 		getHolder().addCallback(this);
 		setFocusable(true);
-		screenX = 0;
-		screenY = 0;
+		
+		//screenX = 0;
+		//screenY = 0;
 		this.level = level;
+				
+		//Create game components
 		levelLoader = new LevelLoader(level);
 		heatMeter = new HeatMeter(0.01);
-		loadPlatforms();
 		bullets = new ArrayList<Bullet>();
 		ground = new Ground(levelLoader.getLevelX(level), levelLoader.getLevelY(level));
 		protagonist = new Protagonist(width/2, ground.getYFromX(77), this);
 		leftStick = new Stick(Stick.LEFT);
 		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
+		
+		loadPlatforms();
+		loadEnemies();
 		
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
@@ -66,8 +70,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the platforms from LevelLoader and add them to the platforms list 
 	public void loadPlatforms(){
 		platforms = new ArrayList<Platform>();
-		for(int i = 1; i <= levelLoader.getNumberOfPlatforms(); i++){
+		for(int i = 0; i < levelLoader.getNumberOfPlatforms(); i++){
 			platforms.add(new Platform(levelLoader.getPlatformUpperX(i), levelLoader.getPlatformUpperY(i), levelLoader.getPlatformLowerX(i), levelLoader.getPlatformLowerY(i)));
+		}
+	}
+	
+	public void loadEnemies(){
+		enemies = new ArrayList<Enemy>();
+		for(int i = 0; i < levelLoader.getNumberOfEnemies(); i++){
+			int[] enemyData = levelLoader.getEnemyData(i);
+			enemies.add(new Enemy(enemyData[0], enemyData[1], this, 1));
 		}
 	}
 	
@@ -75,11 +87,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void update(){
 		handleSticks();
 		moveProtagonist();
+		moveEnemies();
 		moveBullets();
 		moveScreen();
 		handleHeatMeter();
-		//Log.d(TAG, mActivePointerId + "");
-		
+
+		//Log.d(TAG, "Angle:" + leftStick.getAngle());
 	}
 	
 	public void handleSticks(){
@@ -107,6 +120,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 		protagonist.checkGround(ground);
 		protagonist.checkPlatform(platforms);
+	}
+	
+	public void moveEnemies(){
+		for(int i = 0; i < enemies.size(); i++){
+			Enemy enemy = enemies.get(i);
+			
+			enemy.gravity();
+			enemy.move();
+			enemy.checkGround(ground);
+			enemy.checkPlatform(platforms);
+		}
 	}
 		
 	public void moveBullets(){
@@ -154,6 +178,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawColor(Color.WHITE);
 		renderGround(canvas);
 		renderPlatforms(canvas);
+		renderEnemies(canvas);
 		renderProtagonist(canvas);
 		renderBullets(canvas);
 		renderSticks(canvas);
@@ -164,6 +189,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Pause the game
 	public void pause(){
 		thread.setRunning(false);
+	}
+	
+	//Draw the enemies
+	public void renderEnemies(Canvas canvas){
+		for(int i = 0; i < enemies.size(); i++){
+			canvas.drawRect((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()/2)*scaleY), (float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()+enemies.get(i).getHeight()/2)*scaleY), red);
+		}
 	}
 	
 	//Draw the protagonist
@@ -309,6 +341,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
                 id=e.getPointerId(index);
                 x = (int) e.getX(index)/scaleX;
                 y = (int) e.getY(index)/scaleY; 
+               
                 if(id == rightStickId) {
                 	if(x > width/2){
         				rightStick.handleTouch(x, y);
@@ -316,6 +349,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
         			} 
                 }
                 else if(id == leftStickId){
+                	Log.d(TAG, leftStickId + " " + id);
                 	if(x < width/2){
                 		leftStick.handleTouch(x, y);
                 		leftStickId = id;
@@ -327,15 +361,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		case MotionEvent.ACTION_UP:
 			rightStick.release();
 			leftStick.release();
+			leftStickId = INVALID_POINTER;
+			rightStickId = INVALID_POINTER;
 			
 			break;
 
 
 		case MotionEvent.ACTION_POINTER_UP:
-			if(id == leftStickId)
+			if(id == leftStickId){
                 leftStick.release();
-			if(id == rightStickId)
+                leftStickId = INVALID_POINTER;
+			}
+			if(id == rightStickId){
                 rightStick.release();
+                rightStickId = INVALID_POINTER;
+			}
 	        break;
 		}
 		return true;

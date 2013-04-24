@@ -91,24 +91,29 @@ public class LevelLoader {
 	}
 	
 	public int[] getPlatformUpperX(int platform){
-		return platforms.get(platform-1)[0];
+		return platforms.get(platform)[0];
 	}
 	public int[] getPlatformUpperY(int platform){
-		return platforms.get(platform-1)[1];
+		return platforms.get(platform)[1];
 	}
 	public int[] getPlatformLowerX(int platform){
-		return platforms.get(platform-1)[2];
+		return platforms.get(platform)[2];
 	}
 	public int[] getPlatformLowerY(int platform){
-		return platforms.get(platform-1)[3];
+		return platforms.get(platform)[3];
 	}
 	
 	public int getNumberOfPlatforms(){
 		return platforms.size();
 	}
 	
-	public int[] getEnemyData(int level){
-		return enemies.get(level-1);
+	public int[] getEnemyData(int enemy){
+		return enemies.get(enemy);
 	}
+	
+	public int getNumberOfEnemies(){
+		return enemies.size();
+	}
+	
 	
 }
