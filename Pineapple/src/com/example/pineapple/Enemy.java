@@ -26,16 +26,17 @@ public class Enemy {
 	private double slideCoefficient = 0.8;
 	private double typeAcc;
 	private boolean touchingGround;
-	private int type;
+	private final int type;
+	private final double spawnX;
 	private boolean spawned;
 
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
+		this.type = type;
 		//type 1 is normal
 		if (type == 1) {
 			setHealth(0.5);
 			this.typeAcc = 0.2*baseAcc;
-
 		}
 		//type 2 is ninja
 		else if (type == 2) {
@@ -59,6 +60,7 @@ public class Enemy {
 		}
 		this.setXPos(i);
 		this.setYPos(j);
+		this.spawnX = spawnX;
 	}
 
 	//GET AND SET
@@ -146,6 +148,10 @@ public class Enemy {
 		return spawned;
 	}
 	
+	public double getSpawnX(){
+		return spawnX;
+	}
+	
 	//ENEMY ACTION
 	//Moving
 	public void move() {
@@ -223,6 +229,9 @@ public class Enemy {
 		this.setHealth(this.getHealth()-damage);
 	}
 	
+	public void spawn(){
+		spawned = true;
+	}
 	
 
 }

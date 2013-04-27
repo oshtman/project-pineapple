@@ -184,12 +184,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void moveEnemies(){
 		for(int i = 0; i < enemies.size(); i++){
 			Enemy enemy = enemies.get(i);
-			
-			enemy.gravity();
-			enemy.accelerate(protagonist);
-			enemy.move();
-			enemy.checkGround(ground);
-			enemy.checkPlatform(platforms);
+			if(enemy.hasSpawned()){
+				enemy.gravity();
+				enemy.accelerate(protagonist);
+				enemy.move();
+				enemy.checkGround(ground);
+				enemy.checkPlatform(platforms);
+			} else {
+				if(protagonist.getXPos() > enemy.getSpawnX()){
+					enemy.spawn();
+				}
+			}
 		}
 	}
 		
@@ -239,7 +244,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			Bullet bullet = bullets.get(i);
 			for(int j = 0; j < enemies.size(); j++){//All enemies
 				Enemy enemy = enemies.get(j);
-				if(bullet.collideEnemy(enemy)){//If collision detected
+				if(bullet.collideEnemy(enemy) && enemy.hasSpawned()){//If collision detected
 					bullets.remove(i);//Remove the bullet from the game
 					i--;
 					
@@ -263,13 +268,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.setXVel(-protagonist.getXVel());
 				protagonist.setYVel(-5);
 				protagonist.reduceHealth(0.05); //Change this constant
+				protagonist.setTouchingGround(false);
 			}
 		}
 	}
 	
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
-		canvas.drawColor(Color.WHITE);
+		canvas.drawColor(Color.rgb(135, 206, 250));
 		renderSun(canvas);
 		renderTree(canvas, (float)(-screenX));
 		renderTree(canvas, (float)(50*scaleX - screenX));
@@ -288,7 +294,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw the enemies
 	public void renderEnemies(Canvas canvas){
 		for(int i = 0; i < enemies.size(); i++){
-			canvas.drawRect((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()/2)*scaleY), (float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()+enemies.get(i).getHeight()/2)*scaleY), red);
+			if(enemies.get(i).hasSpawned())
+				canvas.drawRect((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()/2)*scaleY), (float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()+enemies.get(i).getHeight()/2)*scaleY), red);
 		}
 	}
 	
