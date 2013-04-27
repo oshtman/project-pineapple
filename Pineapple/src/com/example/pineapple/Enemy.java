@@ -26,6 +26,7 @@ public class Enemy {
 	private double slideCoefficient = 0.8;
 	private double typeAcc;
 	private boolean touchingGround;
+	private int type;
 	private boolean spawned;
 
 	//CONSTRUCTORS
@@ -187,7 +188,7 @@ public class Enemy {
 				//Log.d(TAG, "Warning: Platform, platform!!");
 				if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
 					this.setYVel(-this.getYVel());
-					Log.d(TAG, "Enemy hit irs head!!");
+					Log.d(TAG, "Enemy hit the head!!");
 				} else {
 					//if feet is in platform
 					if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {

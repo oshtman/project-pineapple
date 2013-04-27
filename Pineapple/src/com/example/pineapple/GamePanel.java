@@ -358,7 +358,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Draw red indicator that moves with current heat level
 		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width*protagonist.getHealth())*scaleX), (float)((yPadding+height)*scaleY), green);
 	}
-	
+
+	public void renderSun(Canvas canvas){
+		float x = 20;
+		float y = 20;
+		float radius = 10;
+		Paint p = new Paint();
+		p.setColor(Color.YELLOW);
+		
+		canvas.drawCircle(x, y, radius, p);
+	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
