@@ -258,6 +258,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		p.setColor(Color.BLUE);
 		canvas.drawRect((float)((protagonist.getXPos()-protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonist.getHeight()/2)*scaleY), (float)((protagonist.getXPos()+protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonist.getHeight()/2)*scaleY), p);
 		
+		//Draw all the protagonist parts
 		Matrix m = new Matrix();
 		m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset) - screenY)*scaleY));
 		canvas.drawBitmap(bodyBitmap, m, null);
