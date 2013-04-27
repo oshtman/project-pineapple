@@ -3,12 +3,13 @@ package com.example.pineapple;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -17,6 +18,29 @@ import android.view.SurfaceView;
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = GamePanel.class.getSimpleName();
 	private final int INVALID_POINTER = -1;
+	
+	//Scaling coefficients, from an imagined rectangle around the protagonist
+	//Use this to fine tune the placement of the parts of the protagonist
+	private final double bodyXScale = 0.833;
+	private final double bodyYScale = 0.667;
+	private final double bodyXOffset = 0.133;
+	private final double bodyYOffset = 0.244; 
+	
+	private final double eyeMouthXScale = 0.867;
+	private final double eyeMouthYScale = 0.567;
+	private final double eyeMouthXOffset = 0.05;
+	private final double eyeMouthYOffset = 0.044; 
+	
+	private final double footXScale = 0.45;
+	private final double footYScale = 0.156;
+	private final double footXOffset = 0.35;
+	private final double footYOffset = 0.844; 
+	
+	private final double weaponXScale = 0.7;
+	private final double weaponYScale = 0.378;
+	private final double weaponXOffset = 0.8;
+	private final double weaponYOffset = 0.411; 
+	
 	private int leftStickId = INVALID_POINTER;
 	private int rightStickId = INVALID_POINTER;
 	private final int width = 155;
@@ -40,6 +64,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint red = new Paint();
 	private Paint frame = new Paint();
 	private double time;
+	
+	//Bitmaps
+	private Bitmap bodyBitmap;
+	private Bitmap footBitmap;
+	private Bitmap eyeMouthBitmap;
+	private Bitmap weaponBitmap;
+	//private Bitmap irisBitmap;
 	
 	
 	public GamePanel(Context context, int level){
@@ -66,6 +97,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
+		
+		
 	}
 	
 	//Load the platforms from LevelLoader and add them to the platforms list 
@@ -123,6 +156,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.checkPlatform(platforms);
 	}
 	
+	//Move all the enemies and check for obstacles etc
 	public void moveEnemies(){
 		for(int i = 0; i < enemies.size(); i++){
 			Enemy enemy = enemies.get(i);
@@ -230,6 +264,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		Paint p = new Paint();
 		p.setColor(Color.BLUE);
 		canvas.drawRect((float)((protagonist.getXPos()-protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonist.getHeight()/2)*scaleY), (float)((protagonist.getXPos()+protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonist.getHeight()/2)*scaleY), p);
+		
+		//Draw all the protagonist parts
+		Matrix m = new Matrix();
+		m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset) - screenY)*scaleY));
+		canvas.drawBitmap(bodyBitmap, m, null);
+		m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-eyeMouthYOffset) - screenY)*scaleY));
+		canvas.drawBitmap(eyeMouthBitmap, m, null);
+		m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-footXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-footYOffset) - screenY)*scaleY));
+		canvas.drawBitmap(footBitmap, m, null);
+		m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-weaponXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-weaponYOffset) - screenY)*scaleY));
+		canvas.drawBitmap(weaponBitmap, m, null);
 	}
 	
 	//Draws the ground using a Path
@@ -436,12 +481,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		//Start the thread
-		thread.setRunning(true);
-		thread.start();
 		//Calculate the scale that we will use to render the game
 		scaleY = (double)getHeight()/height;
 		scaleX = (double)getWidth()/width;
+		
+		//Load Bitmaps
+		bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_body), (int)(protagonist.getWidth()*scaleX*bodyXScale), (int)(protagonist.getHeight()*scaleY*bodyYScale), true);
+		eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_eye_mouth), (int)(protagonist.getWidth()*scaleX*eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*eyeMouthYScale), true);
+		footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_foot), (int)(protagonist.getWidth()*scaleX*footXScale), (int)(protagonist.getHeight()*scaleY*footYScale), true);
+		weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_hand_gun), (int)(protagonist.getWidth()*scaleX*weaponXScale), (int)(protagonist.getHeight()*scaleY*weaponYScale), true);
+		//Start the thread
+		thread.setRunning(true);
+		thread.start();
 	}
 
 	@Override

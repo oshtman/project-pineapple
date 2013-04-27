@@ -6,7 +6,7 @@ import android.util.Log;
 
 public class Bullet {
 
-	private final int SPREAD = 5;
+	private final int SPREAD = 10;
 	private double xPos;
 	private double yPos;
 	private double xVel;
@@ -66,8 +66,6 @@ public class Bullet {
 	public void setAngle(double angle) {
 		this.angle = angle;
 	}
-
-
 
 	public int getRadius() {
 		return radius;

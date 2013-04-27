@@ -8,6 +8,8 @@ public class Protagonist {
 
 	private static final String TAG = Protagonist.class.getSimpleName();
 	private final double slopeThreshold = 0.7; //How much slope it takes to move the protagonist
+
+
 	private double xPos;
 	private double yPos;
 	private double xVel;
@@ -20,8 +22,8 @@ public class Protagonist {
 	private double jumpAcc = 0.4;
 	private double maxSpeed = 3;
 	private double slideCoefficient = 0.8;
-	private final int height = 20;
-	private final int width = (int)(20/1.42); //Change 1.42 to ratio of bitmap
+	private final int height = 15;
+	private final int width = (int)(height/1.5); //Change 1.42 to ratio of bitmap
 	private boolean touchingGround;
 	private GamePanel gp;
 
@@ -108,6 +110,7 @@ public class Protagonist {
 	private void setJumpVel(double jumpVel) {
 		this.jumpVel = jumpVel;
 	}
+	
 	private double getJumpAcc() {
 		return jumpAcc;
 	}
