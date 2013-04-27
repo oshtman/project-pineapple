@@ -224,8 +224,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					
 					enemy.takeDamage(0.05); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
 					
-					if(enemy.getHealth() <= 0)//If the enemy is dead
+					if(enemy.getHealth() <= 0){//If the enemy is dead
 						enemies.remove(j);
+						Log.d(TAG, "Enemy down!!");
+					}
 					break;
 				}
 			}
@@ -235,10 +237,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
 		canvas.drawColor(Color.WHITE);
-		renderTree(canvas, (float)screenX);
-		renderTree(canvas, (float)(50 - screenX));
-		renderTree(canvas, (float)(100 - screenX));
 		renderSun(canvas);
+		renderTree(canvas, (float)(-screenX));
+		renderTree(canvas, (float)(50*scaleX - screenX));
+		renderTree(canvas, (float)(100*scaleX - screenX));
 		renderGround(canvas);
 		renderPlatforms(canvas);
 		renderEnemies(canvas);
@@ -383,10 +385,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw the sun, moving in time
 	public void renderSun(Canvas canvas){
-		float x = (float)(width*scaleX/3);
-		float y = (float)(150 + 50*Math.sin(time/100));
-		//float y = (float)(height/2 + height/3*scaleY*Math.sin(Math.PI + time/100));
-		float radius = 40;
+		float x = (float)(width*scaleX/3);//Make generalll
+		float y = (float)((50 + 50*Math.sin(Math.PI + time/500))*scaleY);//Make generalll
+		float radius = 60;
 		Paint p = new Paint();
 		p.setColor(Color.YELLOW);
 		
@@ -395,12 +396,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Draw some trees
 	public void renderTree(Canvas canvas, float x){
+		//x is centre of tree?
 		float y = (float)(100*scaleY); //Make generalll
-		float treeHeight = (float)(50*scaleY);//Make generalll
-		Paint p = new Paint();
-		p.setColor(Color.GREEN);
+		float trunkHeight = (float)(height/4*scaleY);//Make generalll
+		float trunkWidth = (float)(5*scaleX);//Make generalll
+		float radius = 100;
+		Paint trunk = new Paint();
+		trunk.setColor(Color.DKGRAY);
+		Paint top = new Paint();
+		top.setColor(Color.GREEN);
 		
-		canvas.drawRect(x, y-treeHeight, 50, treeHeight, p);
+		canvas.drawCircle(x, y - trunkHeight - radius/2, radius, top);
+		canvas.drawRect(x - trunkWidth/2, y - trunkHeight, x + trunkWidth/2, y, trunk);
 	}
 
 	@Override
