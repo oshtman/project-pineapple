@@ -39,6 +39,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint green = new Paint();
 	private Paint red = new Paint();
 	private Paint frame = new Paint();
+	private double time;
 	
 	
 	public GamePanel(Context context, int level){
@@ -92,6 +93,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		moveScreen();
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
+		this.time++;
 	}
 	
 	public void handleSticks(){
@@ -196,6 +198,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
 		canvas.drawColor(Color.WHITE);
+		renderSun(canvas);
 		renderGround(canvas);
 		renderPlatforms(canvas);
 		renderEnemies(canvas);
@@ -204,6 +207,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderSticks(canvas);
 		renderHeatMeter(canvas);
 		renderHealthMeter(canvas);
+		
 	}
 	
 	//Pause the game
@@ -314,10 +318,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width*protagonist.getHealth())*scaleX), (float)((yPadding+height)*scaleY), green);
 	}
 
+	//Draw the sun, moving in time
 	public void renderSun(Canvas canvas){
-		float x = 20;
-		float y = 20;
-		float radius = 10;
+		float x = (float)(width*scaleX/3);
+		float y = (float)(150 + 50*Math.sin(time/100));
+		//float y = (float)(height/2 + height/3*scaleY*Math.sin(Math.PI + time/100));
+		float radius = 40;
 		Paint p = new Paint();
 		p.setColor(Color.YELLOW);
 		
