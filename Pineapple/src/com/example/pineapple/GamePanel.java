@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -15,6 +16,9 @@ import android.view.SurfaceView;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = GamePanel.class.getSimpleName();
+	private final int INVALID_POINTER = -1;
+	private int leftStickId = INVALID_POINTER;
+	private int rightStickId = INVALID_POINTER;
 	private final int width = 155;
 	private final int height = 100;
 	private double screenX;
@@ -28,7 +32,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private LevelLoader levelLoader;
 	private ArrayList<Platform> platforms;
 	private ArrayList<Bullet> bullets;
-	private boolean scaledPaths = false;
+	private ArrayList<Enemy> enemies;
 	private int level;
 	private HeatMeter heatMeter;
 	private boolean firing = false;
@@ -41,18 +45,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		super(context);
 		getHolder().addCallback(this);
 		setFocusable(true);
-		screenX = 0;
-		screenY = 0;
+		
+		//screenX = 0;
+		//screenY = 0;
 		this.level = level;
+				
+		//Create game components
 		levelLoader = new LevelLoader(level);
 		heatMeter = new HeatMeter(0.01);
-		loadPlatforms();
 		bullets = new ArrayList<Bullet>();
 		ground = new Ground(levelLoader.getLevelX(level), levelLoader.getLevelY(level));
 		protagonist = new Protagonist(width/2, ground.getYFromX(77), this);
 		leftStick = new Stick(Stick.LEFT);
 		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
+		
+		loadPlatforms();
+		loadEnemies();
 		
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
@@ -61,8 +70,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the platforms from LevelLoader and add them to the platforms list 
 	public void loadPlatforms(){
 		platforms = new ArrayList<Platform>();
-		for(int i = 1; i <= levelLoader.getNumberOfPlatforms(); i++){
+		for(int i = 0; i < levelLoader.getNumberOfPlatforms(); i++){
 			platforms.add(new Platform(levelLoader.getPlatformUpperX(i), levelLoader.getPlatformUpperY(i), levelLoader.getPlatformLowerX(i), levelLoader.getPlatformLowerY(i)));
+		}
+	}
+	
+	public void loadEnemies(){
+		enemies = new ArrayList<Enemy>();
+		for(int i = 0; i < levelLoader.getNumberOfEnemies(); i++){
+			int[] enemyData = levelLoader.getEnemyData(i);
+			enemies.add(new Enemy(enemyData[0], enemyData[1], enemyData[2], enemyData[3], this));
 		}
 	}
 	
@@ -70,9 +87,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void update(){
 		handleSticks();
 		moveProtagonist();
+		moveEnemies();
 		moveBullets();
 		moveScreen();
 		handleHeatMeter();
+		handleBulletEnemyCollisions();
 	}
 	
 	public void handleSticks(){
@@ -95,9 +114,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public void moveProtagonist(){
 		protagonist.gravity();
+		protagonist.checkSlope(ground, platforms);
 		protagonist.move();
+		
 		protagonist.checkGround(ground);
 		protagonist.checkPlatform(platforms);
+	}
+	
+	public void moveEnemies(){
+		for(int i = 0; i < enemies.size(); i++){
+			Enemy enemy = enemies.get(i);
+			
+			enemy.gravity();
+			enemy.accelerate(protagonist);
+			enemy.move();
+			enemy.checkGround(ground);
+			enemy.checkPlatform(platforms);
+		}
 	}
 		
 	public void moveBullets(){
@@ -140,11 +173,32 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 	
+	//Check collision between enemies and bullets
+	public void handleBulletEnemyCollisions(){
+		for(int i = 0; i < bullets.size(); i++){//All bullets
+			Bullet bullet = bullets.get(i);
+			for(int j = 0; j < enemies.size(); j++){//All enemies
+				Enemy enemy = enemies.get(j);
+				if(bullet.collideEnemy(enemy)){//If collision detected
+					bullets.remove(i);//Remove the bullet from the game
+					i--;
+					
+					enemy.takeDamage(0.05); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
+					
+					if(enemy.getHealth() <= 0)//If the enemy is dead
+						enemies.remove(j);
+					break;
+				}
+			}
+		}
+	}
+	
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
 		canvas.drawColor(Color.WHITE);
 		renderGround(canvas);
 		renderPlatforms(canvas);
+		renderEnemies(canvas);
 		renderProtagonist(canvas);
 		renderBullets(canvas);
 		renderSticks(canvas);
@@ -155,6 +209,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Pause the game
 	public void pause(){
 		thread.setRunning(false);
+	}
+	
+	//Draw the enemies
+	public void renderEnemies(Canvas canvas){
+		for(int i = 0; i < enemies.size(); i++){
+			canvas.drawRect((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()/2)*scaleY), (float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()+enemies.get(i).getHeight()/2)*scaleY), red);
+		}
 	}
 	
 	//Draw the protagonist
@@ -246,26 +307,105 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 		//Draw in top left corner
 		//Draw frame
-		canvas.drawRect((float)((xPadding-frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((xPadding+width+frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), frame);
+		canvas.drawRect((float)((xPadding-frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((xPadding+width+frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), new Paint());
 		//Draw green background
 		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width)*scaleX), (float)((yPadding+height)*scaleY), red);
 		//Draw red indicator that moves with current heat level
 		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width*protagonist.getHealth())*scaleX), (float)((yPadding+height)*scaleY), green);
 	}
-	
-	//Fix this (MultiTouch)
+
+	public void renderSun(Canvas canvas){
+		float x = 20;
+		float y = 20;
+		float radius = 10;
+		Paint p = new Paint();
+		p.setColor(Color.YELLOW);
+		
+		canvas.drawCircle(x, y, radius, p);
+	}
+
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
-		double x = e.getX()/scaleX;
-		double y = e.getY()/scaleY;
-		leftStick.handleTouch(x, y);
-		rightStick.handleTouch(x, y);
+		double x;
+		double y;
 		
-		if(e.getAction() == MotionEvent.ACTION_UP){
-			leftStick.release();
+		int index = e.getActionIndex();
+	    int id = e.getPointerId(index);
+		
+		switch(e.getActionMasked()){
+		
+		case MotionEvent.ACTION_DOWN:
+			x = e.getX()/scaleX;
+			y = e.getY()/scaleY;
+			
+			if(x > width/2){
+				rightStick.handleTouch(x, y);
+				rightStickId = id;
+			} else {
+				leftStick.handleTouch(x, y);
+				leftStickId = id;
+			}
+			
+			break;
+			
+		case MotionEvent.ACTION_POINTER_DOWN:
+			
+			x = e.getX(index)/scaleX;
+			y = e.getY(index)/scaleY;
+			
+			
+			if(x > width/2){
+				rightStick.handleTouch(x, y);
+				rightStickId = id;
+			} else {
+				leftStick.handleTouch(x, y);
+				leftStickId = id;
+			}
+			
+			break;
+			
+		case MotionEvent.ACTION_MOVE:
+
+			for(index=0; index<e.getPointerCount(); index++) {
+                id=e.getPointerId(index);
+                x = (int) e.getX(index)/scaleX;
+                y = (int) e.getY(index)/scaleY; 
+               
+                if(id == rightStickId) {
+                	if(x > width/2){
+        				rightStick.handleTouch(x, y);
+        				rightStickId = id;
+        			} 
+                }
+                else if(id == leftStickId){
+                	if(x < width/2){
+                		leftStick.handleTouch(x, y);
+                		leftStickId = id;
+                	}
+                }
+            }
+			break;
+
+		case MotionEvent.ACTION_UP:
 			rightStick.release();
+			leftStick.release();
+			leftStickId = INVALID_POINTER;
+			rightStickId = INVALID_POINTER;
+			
+			break;
+
+
+		case MotionEvent.ACTION_POINTER_UP:
+			if(id == leftStickId){
+                leftStick.release();
+                leftStickId = INVALID_POINTER;
+			}
+			if(id == rightStickId){
+                rightStick.release();
+                rightStickId = INVALID_POINTER;
+			}
+	        break;
 		}
-		
 		return true;
 	}
 	

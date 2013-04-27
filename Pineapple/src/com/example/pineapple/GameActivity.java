@@ -10,7 +10,7 @@ import android.view.WindowManager;
 public class GameActivity extends BaseActivity {
 
 	GamePanel gamePanel;
-	int level = 2;
+	int level = 1;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

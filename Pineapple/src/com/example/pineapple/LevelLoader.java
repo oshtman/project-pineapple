@@ -18,7 +18,7 @@ public class LevelLoader {
 	private int[][] p6;
 	
 	//Matrix syntax:
-		//p3_1 means platform 1 on level 3
+		//p1 means platform 1
 		//The rows of the matrix represents: 
 		//UpperX
 		//UpperY
@@ -27,6 +27,11 @@ public class LevelLoader {
 	
 	//List for platforms
 	private ArrayList<int[][]> platforms = new ArrayList<int[][]>();
+	
+	//List for enemy-info 
+	//A row should contain {startX, startY, spawnX?, type}
+	//spawnX is the x position the protagonist has to reach in order for the enemy to spawn
+	private ArrayList<int[]> enemies = new ArrayList<int[]>();
 	
 	
 	
@@ -37,16 +42,16 @@ public class LevelLoader {
 		case 1: 
 			//
 			ground = new int[][]{
-					{-300, 0,  100, 150, 300},
-					{95,   95, 80,  95,  20 }
+					{-310, -300, 0,  100, 150, 300},
+					{40, 95,   95, 80,  95,  20 }
 			};
 
 			//Platform 1
 			p1 = new int[][]{
 					{0, 10, 50},
-					{20, 30, 30},
+					{40, 50, 50},
 					{0, 10, 50},
-					{20, 40, 30}
+					{40, 60, 50}
 			};
 			platforms.add(p1);
 
@@ -58,6 +63,12 @@ public class LevelLoader {
 					{50, 25, 13}
 			};
 			platforms.add(p2);
+			
+			//Enemies
+			enemies.add(new int[]{100, 20, 80, 2});
+			enemies.add(new int[]{100, 30, 80, 3});
+			
+			break;
 		case 2:
 			ground = new int[2][100];
 			
@@ -66,7 +77,7 @@ public class LevelLoader {
 				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
 			}
 			
-			
+			break;
 		}
 	
 	}
@@ -80,20 +91,29 @@ public class LevelLoader {
 	}
 	
 	public int[] getPlatformUpperX(int platform){
-		return platforms.get(platform-1)[0];
+		return platforms.get(platform)[0];
 	}
 	public int[] getPlatformUpperY(int platform){
-		return platforms.get(platform-1)[1];
+		return platforms.get(platform)[1];
 	}
 	public int[] getPlatformLowerX(int platform){
-		return platforms.get(platform-1)[2];
+		return platforms.get(platform)[2];
 	}
 	public int[] getPlatformLowerY(int platform){
-		return platforms.get(platform-1)[3];
+		return platforms.get(platform)[3];
 	}
 	
 	public int getNumberOfPlatforms(){
 		return platforms.size();
 	}
+	
+	public int[] getEnemyData(int enemy){
+		return enemies.get(enemy);
+	}
+	
+	public int getNumberOfEnemies(){
+		return enemies.size();
+	}
+	
 	
 }

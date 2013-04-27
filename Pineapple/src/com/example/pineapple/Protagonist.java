@@ -7,6 +7,7 @@ import android.util.Log;
 public class Protagonist {
 
 	private static final String TAG = Protagonist.class.getSimpleName();
+	private final double slopeThreshold = 0.7; //How much slope it takes to move the protagonist
 	private double xPos;
 	private double yPos;
 	private double xVel;
@@ -160,6 +161,7 @@ public class Protagonist {
 
 	//Protagonist jump
 	public void jump() {
+		//Perhaps a steep slope shouldn't allow jumping???
 		touchingGround = false;
 		this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
 		Log.d(TAG, "Jump!!");
@@ -177,7 +179,7 @@ public class Protagonist {
 	//Accelerating protagonist
 	public void accelerate(double acc) { // acc = 0.2?
 		this.setXVel(this.getXVel() + acc);
-		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {
+		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {//Double code, also in checkSLope
 			this.setXVel(this.getMaxSpeed());
 		} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
 			this.setXVel(-this.getMaxSpeed());
@@ -205,6 +207,36 @@ public class Protagonist {
 			this.jump();
 		} else if (angle > 225 && angle < 315)
 			this.down(gp.getGround());
+	}
+
+	public void checkSlope(Ground ground, ArrayList<Platform> platforms){
+		if(touchingGround){ 
+			if(getYPos()+getHeight()/2 - ground.getYFromX(getXPos()) > -5){ //On ground
+				double slope = ground.getSlope(this.getXPos());
+				if(Math.abs(slope) > slopeThreshold)
+					setXVel(getXVel()+slope);
+				//Log.d(TAG, "Standing on ground");
+			} else { //On platform
+				for(int i = 0; i < platforms.size(); i++){
+					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
+						double slope = platforms.get(i).getSlope(this.getXPos());
+						if(Math.abs(slope) > slopeThreshold){
+							setXVel(getXVel()+slope);
+							Log.d(TAG, "Standing on platform " + (i+1));
+						}
+					}
+
+				}
+			}
+			
+			//Check if the speed has to be reduced
+			//This doesn't look good in game
+			if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) { //Double code, also in accelerate
+				this.setXVel(this.getMaxSpeed());
+			} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
+				this.setXVel(-this.getMaxSpeed());
+			}
+		}
 	}
 
 	//Check if the protagonist is under the ground
