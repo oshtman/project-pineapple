@@ -67,8 +67,6 @@ public class Bullet {
 		this.angle = angle;
 	}
 
-
-
 	public int getRadius() {
 		return radius;
 	}
