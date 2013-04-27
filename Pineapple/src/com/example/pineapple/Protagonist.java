@@ -26,6 +26,8 @@ public class Protagonist {
 	private final int width = (int)(height/1.5); //Change 1.42 to ratio of bitmap
 	private boolean touchingGround;
 	private GamePanel gp;
+	private int stepCount;
+	private final int numberOfSteps = 10;
 
 	// CONSTRUCTOR
 	public Protagonist(double i, double j, GamePanel gp) {
@@ -33,6 +35,7 @@ public class Protagonist {
 		this.setYPos(j);
 		this.health = 1;
 		this.gp = gp;
+		this.stepCount = 0;
 	}
 
 	// GET AND SET METHODS
@@ -142,6 +145,14 @@ public class Protagonist {
 		return width;
 	}
 
+	public int getStepCount(){
+		return stepCount;
+	}
+	
+	public int getNumberOfSteps() {
+		return numberOfSteps;
+	}
+
 	public boolean isTouchingGround() {
 		return touchingGround;
 	}
@@ -204,8 +215,10 @@ public class Protagonist {
 	public void handleLeftStick(double angle, double acc) {
 		if (angle <= 45 || angle >= 315) {
 			this.accelerate(acc);
+			step(1);
 		} else if (angle >= 135 && angle <= 225) {
 			this.accelerate(-acc);
+			step(1);
 		} else if (angle > 45 && angle < 135 && this.isTouchingGround()) {
 			this.jump();
 		} else if (angle > 225 && angle < 315)
@@ -290,6 +303,15 @@ public class Protagonist {
 	//Let gravity work on protagonist
 	public void gravity(){
 		this.setYVel(this.getYVel()+this.getJumpAcc());
+	}
+	
+	public void step(int step){
+		stepCount += step;
+		if(stepCount >= numberOfSteps){
+			stepCount = -numberOfSteps;
+		} else if(stepCount <= -numberOfSteps){
+			stepCount = numberOfSteps;
+		}
 	}
 
 }

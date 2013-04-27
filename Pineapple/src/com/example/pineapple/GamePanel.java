@@ -31,10 +31,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final double eyeMouthXOffset = 0.05;
 	private final double eyeMouthYOffset = 0.044; 
 	
+	private final double footXAxis = 0.30;
+	private final double footYAxis = 0.5;
+	private final double footRadius = 0.35;
 	private final double footXScale = 0.45;
 	private final double footYScale = 0.156;
-	private final double footXOffset = 0.35;
-	private final double footYOffset = 0.844; 
+	//private final double footXOffset = 0.35;
+	//private final double footYOffset = 0.844; 
 	
 	private final double weaponXScale = 0.7;
 	private final double weaponYScale = 0.378;
@@ -264,17 +267,29 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		Paint p = new Paint();
 		p.setColor(Color.BLUE);
 		canvas.drawRect((float)((protagonist.getXPos()-protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonist.getHeight()/2)*scaleY), (float)((protagonist.getXPos()+protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonist.getHeight()/2)*scaleY), p);
-		
+		float angle = (float)(180/Math.PI*Math.sin((double)protagonist.getStepCount()/protagonist.getNumberOfSteps()*Math.PI));
 		//Draw all the protagonist parts
 		Matrix m = new Matrix();
+		//Draw back foot
+		m.setRotate(-angle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
+		m.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-footXAxis) - protagonist.getWidth()*footRadius*Math.sin(-angle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(footYAxis-0.5) + protagonist.getHeight()*footRadius*Math.cos(-angle*Math.PI/180) - screenY)*scaleY));
+		canvas.drawBitmap(footBitmap, m, null);
+		
+		//Draw body
 		m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset) - screenY)*scaleY));
 		canvas.drawBitmap(bodyBitmap, m, null);
+		//Draw eyes and mouth
 		m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-eyeMouthYOffset) - screenY)*scaleY));
 		canvas.drawBitmap(eyeMouthBitmap, m, null);
-		m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-footXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-footYOffset) - screenY)*scaleY));
+		//Draw front foot
+		m.setRotate(angle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
+		m.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-footXAxis) - protagonist.getWidth()*footRadius*Math.sin(angle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(footYAxis-0.5) + protagonist.getHeight()*footRadius*Math.cos(angle*Math.PI/180) - screenY)*scaleY));
 		canvas.drawBitmap(footBitmap, m, null);
+		//Draw weapon
 		m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-weaponXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-weaponYOffset) - screenY)*scaleY));
 		canvas.drawBitmap(weaponBitmap, m, null);
+		
+		Log.d(TAG, "" + protagonist.getHeight()*footRadius*Math.cos(angle*Math.PI/180));
 	}
 	
 	//Draws the ground using a Path
