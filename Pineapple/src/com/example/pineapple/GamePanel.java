@@ -121,6 +121,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.checkPlatform(platforms);
 	}
 	
+	//Move all the enemies and check for obstacles etc
 	public void moveEnemies(){
 		for(int i = 0; i < enemies.size(); i++){
 			Enemy enemy = enemies.get(i);

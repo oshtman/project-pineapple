@@ -6,7 +6,7 @@ import android.util.Log;
 
 public class Bullet {
 
-	private final int SPREAD = 5;
+	private final int SPREAD = 10;
 	private double xPos;
 	private double yPos;
 	private double xVel;

@@ -108,6 +108,7 @@ public class Protagonist {
 	private void setJumpVel(double jumpVel) {
 		this.jumpVel = jumpVel;
 	}
+	
 	private double getJumpAcc() {
 		return jumpAcc;
 	}
