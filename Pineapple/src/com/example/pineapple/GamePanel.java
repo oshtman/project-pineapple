@@ -146,6 +146,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		moveScreen();
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
+		handleProtagonistEnemyCollisions();
 		this.time++;
 	}
 	
@@ -174,6 +175,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.move();
 		protagonist.faceDirection(leftStick, rightStick);
 		protagonist.breathe();
+		protagonist.invincibility();
 		protagonist.checkGround(ground);
 		protagonist.checkPlatform(platforms);
 	}
@@ -249,6 +251,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					}
 					break;
 				}
+			}
+		}
+	}
+	
+	//Check collision between enemies and protagonist
+	public void handleProtagonistEnemyCollisions(){
+		for(int i = 0; i < enemies.size(); i++){
+			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible()){
+				protagonist.setInvincible(true);
+				protagonist.setXVel(-protagonist.getXVel());
+				protagonist.setYVel(-5);
+				protagonist.reduceHealth(0.05); //Change this constant
 			}
 		}
 	}
@@ -572,7 +586,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 		//Start the thread
 		thread.setRunning(true);
-		thread.start();
+		try{thread.start();} catch(IllegalThreadStateException e){}
 	}
 
 	@Override

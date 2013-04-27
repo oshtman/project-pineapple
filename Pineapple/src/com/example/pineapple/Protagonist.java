@@ -31,6 +31,9 @@ public class Protagonist {
 	private int breathCount = 0;
 	private final int breathMax = 20;
 	private boolean facingRight = true;
+	private boolean invincible;
+	private int invincibilityCount;
+	private final int maxInvincibilityCount = 25;
 
 	// CONSTRUCTOR
 	public Protagonist(double i, double j, GamePanel gp) {
@@ -186,6 +189,14 @@ public class Protagonist {
 
 	public int getBreathMax() {
 		return breathMax;
+	}
+
+	public boolean isInvincible() {
+		return invincible;
+	}
+
+	public void setInvincible(boolean invincible) {
+		this.invincible = invincible;
 	}
 
 	// ACTIONS
@@ -365,5 +376,22 @@ public class Protagonist {
 			breathCount = 0;
 		}
 	}
+	
+	public void invincibility(){
+		if(invincible){
+			invincibilityCount++;
+			if(invincibilityCount >= maxInvincibilityCount ){
+				invincible = false;
+				invincibilityCount = 0;
+			}
+		}
+	}
 
+	public boolean collide(Enemy e){
+		if(getXPos() - getWidth()/2 < e.getXPos() + e.getWidth()/2 && getXPos() + getWidth()/2 > e.getXPos() - e.getWidth()/2 &&
+				getYPos() - getWidth()/2 < e.getYPos() + e.getHeight()/2 && getYPos() + getWidth()/2 > e.getYPos() - e.getHeight()/2)
+			return true;
+		else 
+			return false;
+	}
 }
