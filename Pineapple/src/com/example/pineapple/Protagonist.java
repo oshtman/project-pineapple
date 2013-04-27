@@ -29,6 +29,7 @@ public class Protagonist {
 	private int stepCount;
 	private final int numberOfSteps = 10;
 	private boolean facingRight = true;
+	private boolean onPlatform = false;
 
 	// CONSTRUCTOR
 	public Protagonist(double i, double j, GamePanel gp) {
@@ -114,7 +115,7 @@ public class Protagonist {
 	private void setJumpVel(double jumpVel) {
 		this.jumpVel = jumpVel;
 	}
-	
+
 	private double getJumpAcc() {
 		return jumpAcc;
 	}
@@ -149,11 +150,11 @@ public class Protagonist {
 	public void setStepCount(int step){
 		stepCount = step;
 	}
-	
+
 	public int getStepCount(){
 		return stepCount;
 	}
-	
+
 	public int getNumberOfSteps() {
 		return numberOfSteps;
 	}
@@ -193,13 +194,25 @@ public class Protagonist {
 		this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
 		Log.d(TAG, "Jump!!");
 	}
-	// ------------- KEEPING FEET ON THE GROUND (just for now)--------------- //
+	// ------------- KEEPING FEET ON THE GROUND (just for now) DASHING--------------- //
 	//Protagonist down
-	public void down(Ground g) {
-		this.setYPos(g.getYFromX(this.getXPos()));
-		this.setYVel(0);
-		this.setYAcc(0);
-		Log.d(TAG, "Come down!!");
+	public void down(Ground g, ArrayList<Platform> platforms) {
+		this.checkOverPlatform(platforms);
+		for(int i = 0; i < platforms.size(); i++){
+			if (platforms.get(i).spans(this.getXPos()) && platforms.get(i).getUpperYFromX(this.getXPos()) > this.getYPos() + this.getHeight()/2){	
+				this.setYVel(0);
+				this.setYAcc(0);
+				this.setYPos(platforms.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
+				Log.d(TAG, "Coming down 2 u!! #onPlatform");
+				onPlatform = true;
+			} else if (!onPlatform){
+				this.setYVel(0);
+				this.setYAcc(0);
+				this.setYPos(g.getYFromX(this.getXPos()));
+				Log.d(TAG, "Coming down 2 u!! #hitGround");
+			}
+		}
+
 	}
 	// ---------------------------------------------------------------------- //
 
@@ -235,9 +248,10 @@ public class Protagonist {
 		} else if (angle > 45 && angle < 135 && this.isTouchingGround()) {
 			this.jump();
 		} else if (angle > 225 && angle < 315)
-			this.down(gp.getGround());
+			this.down(gp.getGround(), gp.getPlatforms());
 	}
 
+	//Check slope under protagonist
 	public void checkSlope(Ground ground, ArrayList<Platform> platforms){
 		if(touchingGround){ 
 			if(getYPos()+getHeight()/2 - ground.getYFromX(getXPos()) > -5){ //On ground
@@ -257,7 +271,7 @@ public class Protagonist {
 
 				}
 			}
-			
+
 			//Check if the speed has to be reduced
 			//This doesn't look good in game
 			if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) { //Double code, also in accelerate
@@ -276,6 +290,7 @@ public class Protagonist {
 			this.yVel = 0;
 			this.yAcc = 0;
 			touchingGround = true;
+			onPlatform = false;
 		}
 	}
 
@@ -284,7 +299,6 @@ public class Protagonist {
 		for (int i = 0; i < al.size(); i++) {
 			if (al.get(i).spans(this.getXPos())) {
 				//if head is in platform
-				//Log.d(TAG, "Warning: Platform, platform!!");
 				if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
 					this.setYVel(-this.getYVel());
 					Log.d(TAG, "Headache!!");
@@ -296,7 +310,7 @@ public class Protagonist {
 							this.setYVel(0);
 							this.setYAcc(0);
 							touchingGround = true;
-							Log.d(TAG, "Standing strong!!");					
+							Log.d(TAG, "Standing strong!!");
 						}
 					}
 				}
@@ -312,12 +326,25 @@ public class Protagonist {
 		}
 	}
 
+	//
+	public void checkOverPlatform(ArrayList<Platform> platforms) {
+		for (int i = 0; i < platforms.size(); i++) {
+			if (platforms.get(i).spans(this.getXPos()) && platforms.get(i).getUpperYFromX(this.getXPos()) >= this.getYPos() + this.getHeight()/2){
+				onPlatform = true;
+				break;
+			} else {
+				onPlatform = false;
+			}
+		}
+	}
+
 
 	//Let gravity work on protagonist
 	public void gravity(){
 		this.setYVel(this.getYVel()+this.getJumpAcc());
 	}
-	
+
+	//For making footmotion
 	public void step(int step){
 		stepCount += step;
 		if(stepCount >= numberOfSteps){
@@ -326,7 +353,8 @@ public class Protagonist {
 			stepCount = numberOfSteps;
 		}
 	}
-	
+
+	//Facing a direction
 	public void faceDirection(Stick left, Stick right){
 		if(right.isPointed()){
 			if(right.getAngle() <= 90 || right.getAngle() > 270){
