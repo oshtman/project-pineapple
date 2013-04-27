@@ -38,7 +38,6 @@ public class Stick {
 	}
 	
 	public void release(){
-		angle = 0;
 		pointed = false;
 	}
 
