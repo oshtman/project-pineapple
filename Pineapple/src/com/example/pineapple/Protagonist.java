@@ -28,8 +28,14 @@ public class Protagonist {
 	private GamePanel gp;
 	private int stepCount;
 	private final int numberOfSteps = 10;
+	private int breathCount = 0;
+	private final int breathMax = 20;
 	private boolean facingRight = true;
 	private boolean onPlatform = false;
+	private boolean invincible;
+	private int invincibilityCount;
+	private final int maxInvincibilityCount = 25;
+	private boolean readyToJump = true;
 
 	// CONSTRUCTOR
 	public Protagonist(double i, double j, GamePanel gp) {
@@ -175,6 +181,26 @@ public class Protagonist {
 		this.facingRight = facingRight;
 	}
 
+	public int getBreathCount() {
+		return breathCount;
+	}
+
+	public void setBreathCount(int breathCount) {
+		this.breathCount = breathCount;
+	}
+
+	public int getBreathMax() {
+		return breathMax;
+	}
+
+	public boolean isInvincible() {
+		return invincible;
+	}
+
+	public void setInvincible(boolean invincible) {
+		this.invincible = invincible;
+	}
+
 	// ACTIONS
 	//Protagonist is aiming
 	public void aim(double angle) {
@@ -189,7 +215,6 @@ public class Protagonist {
 
 	//Protagonist jump
 	public void jump() {
-		//Perhaps a steep slope shouldn't allow jumping???
 		touchingGround = false;
 		this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
 		Log.d(TAG, "Jump!!");
@@ -239,6 +264,8 @@ public class Protagonist {
 
 	//Make action from stickAngle
 	public void handleLeftStick(double angle, double acc) {
+		if(!readyToJump)
+			Log.d(TAG, "Not ready");
 		if (angle <= 45 || angle >= 315) {
 			this.accelerate(acc);
 			step(1);
@@ -246,7 +273,8 @@ public class Protagonist {
 			this.accelerate(-acc);
 			step(1);
 		} else if (angle > 45 && angle < 135 && this.isTouchingGround()) {
-			this.jump();
+			if(readyToJump) //If the protagonist isn't standing in a steep slope
+				this.jump();
 		} else if (angle > 225 && angle < 315)
 			this.down(gp.getGround(), gp.getPlatforms());
 	}
@@ -254,21 +282,24 @@ public class Protagonist {
 	//Check slope under protagonist
 	public void checkSlope(Ground ground, ArrayList<Platform> platforms){
 		if(touchingGround){ 
+			readyToJump = true;
 			if(getYPos()+getHeight()/2 - ground.getYFromX(getXPos()) > -5){ //On ground
 				double slope = ground.getSlope(this.getXPos());
-				if(Math.abs(slope) > slopeThreshold)
+				if(Math.abs(slope) > slopeThreshold){
 					setXVel(getXVel()+slope);
-				//Log.d(TAG, "Standing on ground");
+					readyToJump = false;
+				}
 			} else { //On platform
 				for(int i = 0; i < platforms.size(); i++){
 					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
 						double slope = platforms.get(i).getSlope(this.getXPos());
 						if(Math.abs(slope) > slopeThreshold){
 							setXVel(getXVel()+slope);
-							Log.d(TAG, "Standing on platform " + (i+1));
+							readyToJump = false;
+							Log.d(TAG, "HEJ");
+							break;
 						}
 					}
-
 				}
 			}
 
@@ -344,7 +375,8 @@ public class Protagonist {
 		this.setYVel(this.getYVel()+this.getJumpAcc());
 	}
 
-	//For making footmotion
+	
+	//Keeps track of the protagonist's step (used for rendering)
 	public void step(int step){
 		stepCount += step;
 		if(stepCount >= numberOfSteps){
@@ -354,7 +386,7 @@ public class Protagonist {
 		}
 	}
 
-	//Facing a direction
+	//Which way the protagonist should be rendered
 	public void faceDirection(Stick left, Stick right){
 		if(right.isPointed()){
 			if(right.getAngle() <= 90 || right.getAngle() > 270){
@@ -372,5 +404,32 @@ public class Protagonist {
 			}
 		}
 	}
+	
+	//Keeps track of the protagonist's breathing (used for rendering)
+	public void breathe(){
+		breathCount++;
+		if(breathCount >= breathMax){
+			breathCount = 0;
+		}
+	}
+	
+	//Keeps track of the protagonist's invincibility when damaged
+	public void invincibility(){
+		if(invincible){
+			invincibilityCount++;
+			if(invincibilityCount >= maxInvincibilityCount ){
+				invincible = false;
+				invincibilityCount = 0;
+			}
+		}
+	}
 
+	//Check collision with enemy
+	public boolean collide(Enemy e){
+		if(getXPos() - getWidth()/2 < e.getXPos() + e.getWidth()/2 && getXPos() + getWidth()/2 > e.getXPos() - e.getWidth()/2 &&
+				getYPos() - getWidth()/2 < e.getYPos() + e.getHeight()/2 && getYPos() + getWidth()/2 > e.getYPos() - e.getHeight()/2)
+			return true;
+		else 
+			return false;
+	}
 }

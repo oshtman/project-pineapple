@@ -24,7 +24,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final double bodyXScale = 0.833;
 	private final double bodyYScale = 0.667;
 	private final double bodyXOffset = 0.133;
-	private final double bodyYOffset = 0.244; 
+	private final double bodyYOffset = 0.264; 
 	
 	private final double eyeMouthXScale = 0.867;
 	private final double eyeMouthYScale = 0.567;
@@ -51,6 +51,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final double pupilXScale = 0.417;
 	private final double pupilYScale = 0.056;
 	private final double pupilRadius = 0.08;
+	
+	//Miscellaneous constants for rendering
+	private final double breathOffset = 0.03;
+	private final float jumpFeetAngle = 45;
 	
 	private int leftStickId = INVALID_POINTER;
 	private int rightStickId = INVALID_POINTER;
@@ -142,6 +146,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		moveScreen();
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
+		handleProtagonistEnemyCollisions();
 		this.time++;
 	}
 	
@@ -169,6 +174,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.checkSlope(ground, platforms);
 		protagonist.move();
 		protagonist.faceDirection(leftStick, rightStick);
+		protagonist.breathe();
+		protagonist.invincibility();
 		protagonist.checkGround(ground);
 		protagonist.checkPlatform(platforms);
 	}
@@ -177,12 +184,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void moveEnemies(){
 		for(int i = 0; i < enemies.size(); i++){
 			Enemy enemy = enemies.get(i);
-			
-			enemy.gravity();
-			enemy.accelerate(protagonist);
-			enemy.move();
-			enemy.checkGround(ground);
-			enemy.checkPlatform(platforms);
+			if(enemy.hasSpawned()){
+				enemy.gravity();
+				enemy.accelerate(protagonist);
+				enemy.move();
+				enemy.checkGround(ground);
+				enemy.checkPlatform(platforms);
+			} else {
+				if(protagonist.getXPos() > enemy.getSpawnX()){
+					enemy.spawn();
+				}
+			}
 		}
 	}
 		
@@ -232,7 +244,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			Bullet bullet = bullets.get(i);
 			for(int j = 0; j < enemies.size(); j++){//All enemies
 				Enemy enemy = enemies.get(j);
-				if(bullet.collideEnemy(enemy)){//If collision detected
+				if(bullet.collideEnemy(enemy) && enemy.hasSpawned()){//If collision detected
 					bullets.remove(i);//Remove the bullet from the game
 					i--;
 					
@@ -248,9 +260,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 	
+	//Check collision between enemies and protagonist
+	public void handleProtagonistEnemyCollisions(){
+		for(int i = 0; i < enemies.size(); i++){
+			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible()){
+				protagonist.setInvincible(true);
+				protagonist.setXVel(-protagonist.getXVel());
+				protagonist.setYVel(-5);
+				protagonist.reduceHealth(0.05); //Change this constant
+				protagonist.setTouchingGround(false);
+			}
+		}
+	}
+	
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
-		canvas.drawColor(Color.WHITE);
+		canvas.drawColor(Color.rgb(135, 206, 250));
 		renderSun(canvas);
 		renderTree(canvas, (float)(-screenX));
 		renderTree(canvas, (float)(50*scaleX - screenX));
@@ -269,7 +294,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw the enemies
 	public void renderEnemies(Canvas canvas){
 		for(int i = 0; i < enemies.size(); i++){
-			canvas.drawRect((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()/2)*scaleY), (float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()+enemies.get(i).getHeight()/2)*scaleY), red);
+			if(enemies.get(i).hasSpawned())
+				canvas.drawRect((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()/2)*scaleY), (float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()+enemies.get(i).getHeight()/2)*scaleY), red);
 		}
 	}
 	
@@ -279,7 +305,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		p.setColor(Color.BLUE);
 		canvas.drawRect((float)((protagonist.getXPos()-protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonist.getHeight()/2)*scaleY), (float)((protagonist.getXPos()+protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonist.getHeight()/2)*scaleY), p);*/
 		float aimAngle = (float)rightStick.getAngle();
-		float feetAngle = (float)(180/Math.PI*Math.sin((double)protagonist.getStepCount()/protagonist.getNumberOfSteps()*Math.PI));
+		float feetAngle;
+		if(protagonist.isTouchingGround()){
+			feetAngle = (float)(180/Math.PI*Math.sin((double)protagonist.getStepCount()/protagonist.getNumberOfSteps()*Math.PI));
+		} else {
+			feetAngle = jumpFeetAngle;
+		}
 		//Draw all the protagonist parts
 		Matrix m = new Matrix();
 		if(protagonist.isFacingRight()){
@@ -288,7 +319,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			m.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-footXAxis-backFootOffset) - protagonist.getWidth()*footRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(footYAxis-0.5) + protagonist.getHeight()*footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(footBitmap, m, null);
 			//Draw body
-			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset) - screenY)*scaleY));
+			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset + breathOffset*Math.sin((double)protagonist.getBreathCount()/protagonist.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
 			canvas.drawBitmap(bodyBitmap, m, null);
 			//Draw eyes and mouth
 			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-eyeMouthYOffset) - screenY)*scaleY));
@@ -310,7 +341,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			m.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-footXAxis+backFootOffset) - protagonist.getWidth()*footRadius*Math.sin(Math.PI-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(footYAxis-0.5) + protagonist.getHeight()*footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(footBitmapFlipped, m, null);
 			//Draw body
-			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset) - screenY)*scaleY));
+			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset + breathOffset*Math.sin((double)protagonist.getBreathCount()/protagonist.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
 			canvas.drawBitmap(bodyBitmapFlipped, m, null);
 			//Draw eyes and mouth
 			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-eyeMouthYOffset) - screenY)*scaleY));
@@ -562,7 +593,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 		//Start the thread
 		thread.setRunning(true);
-		thread.start();
+		try{thread.start();} catch(IllegalThreadStateException e){}
 	}
 
 	@Override
