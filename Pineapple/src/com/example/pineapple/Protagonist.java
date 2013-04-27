@@ -28,6 +28,7 @@ public class Protagonist {
 	private GamePanel gp;
 	private int stepCount;
 	private final int numberOfSteps = 10;
+	private boolean facingRight = true;
 
 	// CONSTRUCTOR
 	public Protagonist(double i, double j, GamePanel gp) {
@@ -145,6 +146,10 @@ public class Protagonist {
 		return width;
 	}
 
+	public void setStepCount(int step){
+		stepCount = step;
+	}
+	
 	public int getStepCount(){
 		return stepCount;
 	}
@@ -159,6 +164,14 @@ public class Protagonist {
 
 	public void setTouchingGround(boolean touchingGround) {
 		this.touchingGround = touchingGround;
+	}
+
+	public boolean isFacingRight() {
+		return facingRight;
+	}
+
+	public void setFacingRight(boolean facingRight) {
+		this.facingRight = facingRight;
 	}
 
 	// ACTIONS
@@ -311,6 +324,24 @@ public class Protagonist {
 			stepCount = -numberOfSteps;
 		} else if(stepCount <= -numberOfSteps){
 			stepCount = numberOfSteps;
+		}
+	}
+	
+	public void faceDirection(Stick left, Stick right){
+		if(right.isPointed()){
+			if(right.getAngle() <= 90 || right.getAngle() > 270){
+				facingRight = true;
+			} else {
+				facingRight = false;
+			}
+		} else {
+			if(left.getAngle() <= 90 || left.getAngle() > 270){
+				facingRight = true;
+				right.setAngle(0);
+			} else {
+				facingRight = false;
+				right.setAngle(180);
+			}
 		}
 	}
 
