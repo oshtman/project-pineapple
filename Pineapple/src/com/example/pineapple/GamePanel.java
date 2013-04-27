@@ -221,10 +221,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					
 					enemy.takeDamage(0.05); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
 					
-					if(enemy.getHealth() <= 0)//If the enemy is dead
+					if(enemy.getHealth() <= 0){//If the enemy is dead
 						enemies.remove(j);
 						Log.d(TAG, "Enemy down!!");
-					
+					}
 					break;
 				}
 			}
