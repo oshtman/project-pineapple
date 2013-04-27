@@ -24,7 +24,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final double bodyXScale = 0.833;
 	private final double bodyYScale = 0.667;
 	private final double bodyXOffset = 0.133;
-	private final double bodyYOffset = 0.244; 
+	private final double bodyYOffset = 0.264; 
 	
 	private final double eyeMouthXScale = 0.867;
 	private final double eyeMouthYScale = 0.567;
@@ -51,6 +51,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final double pupilXScale = 0.417;
 	private final double pupilYScale = 0.056;
 	private final double pupilRadius = 0.08;
+	
+	//Miscellaneous constants for rendering
+	private final double breathOffset = 0.03;
+	private final float jumpFeetAngle = 45;
 	
 	private int leftStickId = INVALID_POINTER;
 	private int rightStickId = INVALID_POINTER;
@@ -169,6 +173,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.checkSlope(ground, platforms);
 		protagonist.move();
 		protagonist.faceDirection(leftStick, rightStick);
+		protagonist.breathe();
 		protagonist.checkGround(ground);
 		protagonist.checkPlatform(platforms);
 	}
@@ -279,7 +284,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		p.setColor(Color.BLUE);
 		canvas.drawRect((float)((protagonist.getXPos()-protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonist.getHeight()/2)*scaleY), (float)((protagonist.getXPos()+protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonist.getHeight()/2)*scaleY), p);*/
 		float aimAngle = (float)rightStick.getAngle();
-		float feetAngle = (float)(180/Math.PI*Math.sin((double)protagonist.getStepCount()/protagonist.getNumberOfSteps()*Math.PI));
+		float feetAngle;
+		if(protagonist.isTouchingGround()){
+			feetAngle = (float)(180/Math.PI*Math.sin((double)protagonist.getStepCount()/protagonist.getNumberOfSteps()*Math.PI));
+		} else {
+			feetAngle = jumpFeetAngle;
+		}
 		//Draw all the protagonist parts
 		Matrix m = new Matrix();
 		if(protagonist.isFacingRight()){
@@ -288,7 +298,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			m.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-footXAxis-backFootOffset) - protagonist.getWidth()*footRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(footYAxis-0.5) + protagonist.getHeight()*footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(footBitmap, m, null);
 			//Draw body
-			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset) - screenY)*scaleY));
+			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset + breathOffset*Math.sin((double)protagonist.getBreathCount()/protagonist.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
 			canvas.drawBitmap(bodyBitmap, m, null);
 			//Draw eyes and mouth
 			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-eyeMouthYOffset) - screenY)*scaleY));
@@ -310,7 +320,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			m.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-footXAxis+backFootOffset) - protagonist.getWidth()*footRadius*Math.sin(Math.PI-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(footYAxis-0.5) + protagonist.getHeight()*footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(footBitmapFlipped, m, null);
 			//Draw body
-			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset) - screenY)*scaleY));
+			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-bodyYOffset + breathOffset*Math.sin((double)protagonist.getBreathCount()/protagonist.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
 			canvas.drawBitmap(bodyBitmapFlipped, m, null);
 			//Draw eyes and mouth
 			m.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-eyeMouthYOffset) - screenY)*scaleY));

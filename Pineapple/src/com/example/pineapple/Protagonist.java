@@ -28,6 +28,8 @@ public class Protagonist {
 	private GamePanel gp;
 	private int stepCount;
 	private final int numberOfSteps = 10;
+	private int breathCount = 0;
+	private final int breathMax = 20;
 	private boolean facingRight = true;
 
 	// CONSTRUCTOR
@@ -172,6 +174,18 @@ public class Protagonist {
 
 	public void setFacingRight(boolean facingRight) {
 		this.facingRight = facingRight;
+	}
+
+	public int getBreathCount() {
+		return breathCount;
+	}
+
+	public void setBreathCount(int breathCount) {
+		this.breathCount = breathCount;
+	}
+
+	public int getBreathMax() {
+		return breathMax;
 	}
 
 	// ACTIONS
@@ -342,6 +356,13 @@ public class Protagonist {
 				facingRight = false;
 				right.setAngle(180);
 			}
+		}
+	}
+	
+	public void breathe(){
+		breathCount++;
+		if(breathCount >= breathMax){
+			breathCount = 0;
 		}
 	}
 
