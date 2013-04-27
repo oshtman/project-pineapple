@@ -198,6 +198,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
 		canvas.drawColor(Color.WHITE);
+		renderTree(canvas, (float)screenX);
+		renderTree(canvas, (float)(50 - screenX));
+		renderTree(canvas, (float)(100 - screenX));
 		renderSun(canvas);
 		renderGround(canvas);
 		renderPlatforms(canvas);
@@ -328,6 +331,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		p.setColor(Color.YELLOW);
 		
 		canvas.drawCircle(x, y, radius, p);
+	}
+	
+	//Draw some trees
+	public void renderTree(Canvas canvas, float x){
+		float y = (float)(100*scaleY); //Make generalll
+		float treeHeight = (float)(50*scaleY);//Make generalll
+		Paint p = new Paint();
+		p.setColor(Color.GREEN);
+		
+		canvas.drawRect(x, y-treeHeight, 50, treeHeight, p);
 	}
 
 	@Override
