@@ -62,7 +62,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int height = 100;
 	private double screenX;
 	private double screenY;
-	private final int screenPadding = 50;
+	private final int screenXPadding = 50;
+	private final int screenYPadding = 20;
 	private MainThread thread;
 	private Protagonist protagonist;
 	private Ground ground;
@@ -217,10 +218,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Moves the screen if the protagonist is close to the edge of the screen
 	public void moveScreen(){
-		if(protagonist.getXPos() - screenX > width - screenPadding){
-			screenX = protagonist.getXPos() - width + screenPadding;
-		} else if(protagonist.getXPos() - screenX < screenPadding){
-			screenX = protagonist.getXPos() - screenPadding;
+		if(protagonist.getXPos() - screenX > width - screenXPadding){
+			screenX = protagonist.getXPos() - width + screenXPadding;
+		} else if(protagonist.getXPos() - screenX < screenXPadding){
+			screenX = protagonist.getXPos() - screenXPadding;
+		}
+		if(protagonist.getYPos() - screenY > height - screenYPadding){
+			screenY = protagonist.getYPos() - height + screenYPadding;
+		} else if(protagonist.getYPos() - screenY < screenYPadding){
+			screenY = protagonist.getYPos() - screenYPadding;
 		}
 		
 	}
@@ -294,7 +300,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderEnemies(Canvas canvas){
 		for(int i = 0; i < enemies.size(); i++){
 			if(enemies.get(i).hasSpawned())
-				canvas.drawRect((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()/2)*scaleY), (float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()+enemies.get(i).getHeight()/2)*scaleY), red);
+				canvas.drawRect((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()/2-screenY)*scaleY), (float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()+enemies.get(i).getHeight()/2-screenY)*scaleY), red);
 		}
 	}
 	
@@ -328,7 +334,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			m.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-footXAxis) - protagonist.getWidth()*footRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(footYAxis-0.5) + protagonist.getHeight()*footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(footBitmap, m, null);
 			//Draw pupils
-			m.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(pupilXOffset-0.5)+protagonist.getWidth()*pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(pupilYOffset-0.5)-protagonist.getHeight()*pupilRadius*Math.sin(aimAngle*Math.PI/180))*scaleY));
+			m.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(pupilXOffset-0.5)+protagonist.getWidth()*pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(pupilYOffset-0.5)-protagonist.getHeight()*pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(pupilBitmap, m, null);
 			//Draw weapon
 			m.setRotate(-aimAngle, weaponBitmap.getWidth()/2, weaponBitmap.getHeight()/2);
@@ -350,7 +356,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			m.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-footXAxis) - protagonist.getWidth()*footRadius*Math.sin(Math.PI+feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(footYAxis-0.5) + protagonist.getHeight()*footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(footBitmapFlipped, m, null);
 			//Draw pupils
-			m.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(pupilXOffset-0.5)+protagonist.getWidth()*pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(pupilYOffset-0.5)-protagonist.getHeight()*pupilRadius*Math.sin(aimAngle*Math.PI/180))*scaleY));
+			m.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(pupilXOffset-0.5)+protagonist.getWidth()*pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(pupilYOffset-0.5)-protagonist.getHeight()*pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(pupilBitmapFlipped, m, null);
 			//Draw weapon
 			m.setRotate(180-aimAngle, weaponBitmapFlipped.getWidth()/2, weaponBitmapFlipped.getHeight()/2);
@@ -366,11 +372,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		int length = ground.getLength();
 		for(int i = 0; i < length-1; i++){
 			Path p = new Path();
-			p.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)(ground.getY(i)*scaleY));
-			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)(ground.getY(i+1)*scaleY));
-			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)(200*scaleY)); //Fix line 63 and 64, (200)
-			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)(200*scaleY));
-			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)(ground.getY(i)*scaleY));
+			p.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
+			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY));
+			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((200-screenY)*scaleY)); //Fix line 63 and 64, (200)
+			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((200-screenY)*scaleY));
+			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
 			canvas.drawPath(p, new Paint());
 		}
 	}

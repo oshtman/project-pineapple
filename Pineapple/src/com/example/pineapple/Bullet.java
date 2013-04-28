@@ -23,7 +23,7 @@ public class Bullet {
 		this.xVel = Math.cos(angle/180*Math.PI)*bulletSpeed;
 		this.yVel = -Math.sin(angle/180*Math.PI)*bulletSpeed;
 		this.angle = angle;
-		this.radius = 3;
+		this.radius = 2;
 	}
 
 	//GET and SETmethods
