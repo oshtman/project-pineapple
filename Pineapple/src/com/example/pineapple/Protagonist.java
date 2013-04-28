@@ -296,7 +296,6 @@ public class Protagonist {
 						if(Math.abs(slope) > slopeThreshold){
 							setXVel(getXVel()+slope);
 							readyToJump = false;
-							Log.d(TAG, "HEJ");
 							break;
 						}
 					}

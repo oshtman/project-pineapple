@@ -86,6 +86,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap eyeMouthBitmap;
 	private Bitmap weaponBitmap;
 	private Bitmap pupilBitmap;
+	private Bitmap stickBitmap;
 	
 	private Bitmap bodyBitmapFlipped;
 	private Bitmap footBitmapFlipped;
@@ -137,6 +138,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Method that gets called every frame to update the games state
 	public void update(){
+		protagonist.checkSlope(ground, platforms);
 		handleSticks();
 		moveProtagonist();
 		moveEnemies();
@@ -169,7 +171,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public void moveProtagonist(){
 		protagonist.gravity();
-		protagonist.checkSlope(ground, platforms);
 		protagonist.move();
 		protagonist.faceDirection(leftStick, rightStick);
 		protagonist.breathe();
@@ -391,10 +392,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	//Draw the sticks
 	public void renderSticks(Canvas canvas){
-		Paint p = new Paint();
-		p.setColor(Color.GRAY);
-		canvas.drawCircle((float)(leftStick.getX()*scaleX), (float)(leftStick.getY()*scaleY), (float)(leftStick.getRadius()*scaleX), p);
-		canvas.drawCircle((float)(rightStick.getX()*scaleX), (float)(rightStick.getY()*scaleY), (float)(rightStick.getRadius()*scaleX), p);
+		canvas.drawBitmap(stickBitmap, (float)((leftStick.getX()-leftStick.getRadius())*scaleX), (float)((leftStick.getY()-leftStick.getRadius())*scaleY), null);
+		canvas.drawBitmap(stickBitmap, (float)((rightStick.getX()-rightStick.getRadius())*scaleX), (float)((rightStick.getY()-rightStick.getRadius())*scaleY), null);
 	}
 	
 	//Draw the bullets
@@ -579,7 +578,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_foot), (int)(protagonist.getWidth()*scaleX*footXScale), (int)(protagonist.getHeight()*scaleY*footYScale), true);
 		weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_hand_gun), (int)(protagonist.getWidth()*scaleX*weaponXScale), (int)(protagonist.getHeight()*scaleY*weaponYScale), true);
 		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*pupilXScale), (int)(protagonist.getHeight()*scaleY*pupilYScale), true);
-		
+		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		Matrix m = new Matrix();
 		m.setScale(-1, 1);
 		
