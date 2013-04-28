@@ -270,6 +270,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.reduceHealth(0.05); //Change this constant
 				protagonist.setTouchingGround(false);
 			}
+			//Dashmove
+			Log.d(TAG, "" + enemies.get(i).getHealth());
+			enemies.get(i).takeDashDamage(protagonist);
+			Log.d(TAG, "" + enemies.get(i).getHealth());
 		}
 	}
 	

@@ -111,11 +111,11 @@ public class Enemy {
 	public void setYAcc(double n) {
 		yAcc = n;
 	}
-	
+
 	public void setSpawed(boolean flag){
 		spawned = flag;
 	}
-	
+
 	//Get and set enemy properties
 	public double getHealth() {
 		return health;
@@ -124,11 +124,11 @@ public class Enemy {
 	public void setHealth(double d) {
 		this.health = d;
 	}
-	
+
 	public double getMaxSpeed() {
 		return maxSpeed;
 	}
-	
+
 	public double getJumpAcc() {
 		return jumpAcc;
 	}
@@ -139,19 +139,19 @@ public class Enemy {
 	public double getTypeAcc() {
 		return typeAcc;
 	}
-	
+
 	public int getHeight() {
 		return height;
 	}
-	
+
 	public boolean hasSpawned(){
 		return spawned;
 	}
-	
+
 	public double getSpawnX(){
 		return spawnX;
 	}
-	
+
 	//ENEMY ACTION
 	//Moving
 	public void move() {
@@ -168,7 +168,7 @@ public class Enemy {
 			this.setXVel(-this.getMaxSpeed());
 		}
 	}
-	
+
 	//General method to make the enemy move against the protagonist
 	public void accelerate(Protagonist p){
 		//Fix constants later...
@@ -223,15 +223,25 @@ public class Enemy {
 	public void gravity(){
 		this.setYVel(this.getYVel()+this.getJumpAcc());
 	}
-	
+
 	//Reduce the enemy's health
 	public void takeDamage(double damage){
 		this.setHealth(this.getHealth()-damage);
 	}
-	
+
+	//Reduce enemy health when dashing
+	public void takeDashDamage(Protagonist p){
+		if(p.isDashBonus()){
+			this.setHealth(this.getHealth()/2);
+			p.setDashBonus(false);
+		}
+	}
+
+
+
 	public void spawn(){
 		spawned = true;
 	}
-	
+
 
 }

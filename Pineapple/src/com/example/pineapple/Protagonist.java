@@ -36,6 +36,7 @@ public class Protagonist {
 	private int invincibilityCount;
 	private final int maxInvincibilityCount = 25;
 	private boolean readyToJump = true;
+	private boolean dashBonus = false;
 
 	// CONSTRUCTOR
 	public Protagonist(double i, double j, GamePanel gp) {
@@ -201,6 +202,14 @@ public class Protagonist {
 		this.invincible = invincible;
 	}
 
+	public boolean isDashBonus() {
+		return dashBonus;
+	}
+
+	public void setDashBonus(boolean dashBonus) {
+		this.dashBonus = dashBonus;
+	}
+
 	// ACTIONS
 	//Protagonist is aiming
 	public void aim(double angle) {
@@ -222,6 +231,7 @@ public class Protagonist {
 	// ------------- KEEPING FEET ON THE GROUND (just for now) DASHING--------------- //
 	//Protagonist down
 	public void down(Ground g, ArrayList<Platform> platforms) {
+		double startHeight = this.getYPos();
 		this.checkOverPlatform(platforms);
 		for(int i = 0; i < platforms.size(); i++){
 			if (platforms.get(i).spans(this.getXPos()) && platforms.get(i).getUpperYFromX(this.getXPos()) > this.getYPos() + this.getHeight()/2){	
@@ -237,7 +247,10 @@ public class Protagonist {
 				Log.d(TAG, "Coming down 2 u!! #hitGround");
 			}
 		}
-
+		if(this.getYPos() - startHeight > 2*this.getHeight()) {
+			dashBonus = true;
+			invincible = true;
+		}
 	}
 	// ---------------------------------------------------------------------- //
 
@@ -413,7 +426,7 @@ public class Protagonist {
 		}
 	}
 	
-	//Keeps track of the protagonist's invincibility when damaged
+	//Keeps track of the protagonist's invincibility when damaged or dashing
 	public void invincibility(){
 		if(invincible){
 			invincibilityCount++;
