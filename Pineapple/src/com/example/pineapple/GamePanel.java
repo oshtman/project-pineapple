@@ -250,7 +250,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					
 					if(enemy.getHealth() <= 0){//If the enemy is dead
 						enemies.remove(j);
-						Log.d(TAG, "Enemy down!!");
+						Log.d(TAG, "Enemy down.");
 					}
 					break;
 				}
@@ -611,6 +611,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public Ground getGround() {
 		return ground;
+	}
+	
+	public ArrayList<Platform> getPlatforms() {
+		return platforms;
 	}
 	
 	//Pause the game
