@@ -63,20 +63,6 @@ public class Enemy {
 		this.spawnX = spawnX;
 	}
 	//------------------------------------------------------------------------------------------------//
-	//ENEMY ACTION
-	//Reduce the enemy's health
-	public void takeDamage(double damage){
-		this.setHealth(this.getHealth()-damage);
-	}
-
-	//Reduce enemy health when dashing
-	public void takeDashDamage(Protagonist p){
-		if(p.isDashBonus()){
-			this.setHealth(this.getHealth()/2);
-			p.setDashBonus(false);
-		}
-	}
-	//------------------------------------------------------------------------------------------------//
 	//HOW TO MAKE ENEMY MOVE
 	//Move enemy
 	public void move() {
@@ -98,6 +84,20 @@ public class Enemy {
 	public void accelerate(Protagonist p){
 		//Fix constants later...
 		this.accelerate(typeAcc*Math.signum(p.getXPos() - this.getXPos()));
+	}
+	//------------------------------------------------------------------------------------------------//
+	//ENEMY ACTIONS
+	//Reduce the enemy's health
+	public void takeDamage(double damage){
+		this.setHealth(this.getHealth()-damage);
+	}
+
+	//Reduce enemy health when dashing
+	public void takeDashDamage(Protagonist p){
+		if(p.isDashBonus()){
+			this.setHealth(this.getHealth()/2);
+			p.setDashBonus(false);
+		}
 	}
 	//------------------------------------------------------------------------------------------------//
 	//CHECK-METHODS FOR ENEMY AND SURROUNDING
@@ -160,7 +160,7 @@ public class Enemy {
 	public double getXPos() {
 		return xPos;
 	}
-	
+
 	public void setXPos(double xPos) {
 		this.xPos = xPos;
 	}
@@ -168,7 +168,7 @@ public class Enemy {
 	public double getYPos() {
 		return yPos;
 	}
-	
+
 	public void setYPos(double yPos) {
 		this.yPos = yPos;
 	}
@@ -221,7 +221,7 @@ public class Enemy {
 	public double getJumpAcc() {
 		return jumpAcc;
 	}
-	
+
 	public double getTypeAcc() {
 		return typeAcc;
 	}
@@ -229,7 +229,7 @@ public class Enemy {
 	public double getSpawnX(){
 		return spawnX;
 	}
-	
+
 	public int getWidth() {
 		return width;
 	}
@@ -237,7 +237,7 @@ public class Enemy {
 	public int getHeight() {
 		return height;
 	}
-	
+
 	//Booleans
 	public void setSpawed(boolean flag){
 		spawned = flag;
