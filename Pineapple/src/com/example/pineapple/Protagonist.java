@@ -112,14 +112,14 @@ public class Protagonist {
 		for(int i = 0; i < platforms.size(); i++){
 			if (platforms.get(i).spans(this.getXPos()) && platforms.get(i).getUpperYFromX(this.getXPos()) > this.getYPos() + this.getHeight()/2  && abelToPerformDash && !touchingGround){	
 
-				//this.setYPos(platforms.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
+				/////this.setYPos(platforms.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 				Log.d(TAG, "Coming down 2 u!! #onPlatform");
 				overPlatform = true;
 				abelToPerformDash = false;
 				//Check if protagonist would pass platform in a frame, if yes set protagonist on platform
 				Log.d(TAG, "" + this.getYVel());
 
-				while(platforms.get(i).getUpperYFromX(this.getXPos()) - this.getXPos() > this.getYVel()){
+				if(platforms.get(i).getUpperYFromX(this.getXPos()) - this.getXPos() > this.getYVel()){
 					this.setYAcc(15); //Set constant
 					this.setYVel(this.getYAcc() + this.getYVel());
 					Log.d(TAG, "speeed " + this.getYVel());
@@ -467,5 +467,4 @@ public class Protagonist {
 		this.dashBonus = dashBonus;
 	}
 	//------------------------------------------------------------------------------------------------//
-
 }
