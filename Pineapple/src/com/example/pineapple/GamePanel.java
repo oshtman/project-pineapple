@@ -177,6 +177,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.invincibility();
 		protagonist.checkGround(ground);
 		protagonist.checkPlatform(platforms);
+		protagonist.dashing(ground, platforms);
 	}
 
 	//Move all the enemies and check for obstacles etc
