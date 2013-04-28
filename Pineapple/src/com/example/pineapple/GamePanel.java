@@ -368,16 +368,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 	
 	//Draws the ground using a Path
+	//Draw only the parts which are visible on the screen
 	public void renderGround(Canvas canvas){
-		int length = ground.getLength();
-		for(int i = 0; i < length-1; i++){
+		int i = 0;
+		while(ground.getX(i+1) < screenX){
+			i++;
+		}
+		int startIndex = i;
+		while(ground.getX(i) < screenX + width){
+			i++;
+			if(i == ground.getLength()-2)
+				break;
+		}
+		int stopIndex = i;
+		for(i = startIndex; i <= stopIndex; i++){
 			Path p = new Path();
 			p.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
 			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY));
 			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((200-screenY)*scaleY)); //Fix line 63 and 64, (200)
 			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((200-screenY)*scaleY));
 			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
-			canvas.drawPath(p, new Paint());
+			canvas.drawPath(p, green);
 		}
 	}
 	

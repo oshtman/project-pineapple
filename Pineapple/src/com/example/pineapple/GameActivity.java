@@ -3,12 +3,15 @@ package com.example.pineapple;
 import com.example.pineapple.GamePanel;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class GameActivity extends BaseActivity {
-
+	private final String TAG = GameActivity.class.getSimpleName();
+	
+	
 	GamePanel gamePanel;
 	int level = 1;
 	@Override
@@ -26,10 +29,26 @@ public class GameActivity extends BaseActivity {
 		getMenuInflater().inflate(R.menu.game, menu);
 		return true;
 	}
+
+	public void onDestroy(){
+		Log.d(TAG, "Destroying...");
+		super.onDestroy();
+	}
+	
+	public void onStop(){
+		Log.d(TAG, "Stopping...");
+		super.onStop();
+	}
 	
 	public void onPause(){
-		super.onPause();
+		Log.d(TAG, "Pausing...");
 		gamePanel.pause();
+		super.onPause();
+	}
+	
+	public void onResume(){
+		Log.d(TAG, "Resuming...");
+		super.onResume();
 	}
 
 }
