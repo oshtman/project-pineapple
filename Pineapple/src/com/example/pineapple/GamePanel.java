@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -491,20 +492,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawCircle(x, y, radius, p);
 	}
 
-	//Draw some trees
+	//Draw trees
 	public void renderTrees(Canvas canvas){
 		//x is centre of tree?
 		Paint trunk = new Paint();
 		trunk.setColor(Color.DKGRAY);
 		Paint top = new Paint();
 		top.setColor(Color.GREEN);
+		Paint border = new Paint();
+		border.setStyle(Style.STROKE);
 		for(int i = 0; i < trees.size(); i++){
-			float y = (float)(100*scaleY); //Make generalll
-			float trunkHeight = (float)(height/4*scaleY);//Make generalll
+			float y = (float)(100); //Make generalll
+			float trunkHeight = (float)(height/4);//Make generalll
 			float trunkWidth = (float)(5);//Make generalll
-			float radius = 100;
-			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), y - trunkHeight - radius/2, radius, top);
-			canvas.drawRect((float)((trees.get(i) - trunkWidth/2 - screenX/4)*scaleX), y - trunkHeight, (float)((trees.get(i) + trunkWidth/2 - (float)(screenX/4))*scaleX), y, trunk);
+			float radius = 20;
+			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleX), (float)(radius*scaleX), top);
+			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleX), (float)(radius*scaleX), border);
+			canvas.drawRect((float)((trees.get(i) - trunkWidth/2 - screenX/4)*scaleX), (float)((y - trunkHeight)*scaleY), (float)((trees.get(i) + trunkWidth/2 - (float)(screenX/4))*scaleX), (float)(y*scaleY), trunk);
 		}
 		
 
