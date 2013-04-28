@@ -73,6 +73,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<Platform> platforms;
 	private ArrayList<Bullet> bullets;
 	private ArrayList<Enemy> enemies;
+	private ArrayList<Integer> trees;
 	private int level;
 	private HeatMeter heatMeter;
 	private boolean firing = false;
@@ -89,6 +90,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap pupilBitmap;
 	private Bitmap stickBitmap;
 	private Bitmap[] bulletBitmaps;
+	
 	private Bitmap bodyBitmapFlipped;
 	private Bitmap footBitmapFlipped;
 	private Bitmap eyeMouthBitmapFlipped;
@@ -113,6 +115,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		loadPlatforms();
 		loadEnemies();
+		loadTrees();
 
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
@@ -134,6 +137,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			int[] enemyData = levelLoader.getEnemyData(i);
 			enemies.add(new Enemy(enemyData[0], enemyData[1], enemyData[2], enemyData[3], this));
 		}
+	}
+	
+	public void loadTrees(){
+		trees = levelLoader.getTrees();
+		
 	}
 
 	//Method that gets called every frame to update the games state
@@ -287,9 +295,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void render(Canvas canvas){
 		canvas.drawColor(Color.rgb(135, 206, 250));
 		renderSun(canvas);
-		renderTree(canvas, (float)(-screenX));
-		renderTree(canvas, (float)(50*scaleX - screenX));
-		renderTree(canvas, (float)(100*scaleX - screenX));
+		renderTrees(canvas);
 		renderGround(canvas);
 		renderPlatforms(canvas);
 		renderEnemies(canvas);
@@ -486,19 +492,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	//Draw some trees
-	public void renderTree(Canvas canvas, float x){
+	public void renderTrees(Canvas canvas){
 		//x is centre of tree?
-		float y = (float)(100*scaleY); //Make generalll
-		float trunkHeight = (float)(height/4*scaleY);//Make generalll
-		float trunkWidth = (float)(5*scaleX);//Make generalll
-		float radius = 100;
 		Paint trunk = new Paint();
 		trunk.setColor(Color.DKGRAY);
 		Paint top = new Paint();
 		top.setColor(Color.GREEN);
+		for(int i = 0; i < trees.size(); i++){
+			float y = (float)(100*scaleY); //Make generalll
+			float trunkHeight = (float)(height/4*scaleY);//Make generalll
+			float trunkWidth = (float)(5);//Make generalll
+			float radius = 100;
+			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), y - trunkHeight - radius/2, radius, top);
+			canvas.drawRect((float)((trees.get(i) - trunkWidth/2 - screenX/4)*scaleX), y - trunkHeight, (float)((trees.get(i) + trunkWidth/2 - (float)(screenX/4))*scaleX), y, trunk);
+		}
+		
 
-		canvas.drawCircle(x, y - trunkHeight - radius/2, radius, top);
-		canvas.drawRect(x - trunkWidth/2, y - trunkHeight, x + trunkWidth/2, y, trunk);
+		
 	}
 
 	@Override
