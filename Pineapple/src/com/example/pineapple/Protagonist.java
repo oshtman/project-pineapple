@@ -8,8 +8,6 @@ public class Protagonist {
 
 	private static final String TAG = Protagonist.class.getSimpleName();
 	private final double slopeThreshold = 0.7; //How much slope it takes to move the protagonist
-
-
 	private double xPos;
 	private double yPos;
 	private double xVel;
@@ -47,7 +45,7 @@ public class Protagonist {
 		this.stepCount = 0;
 	}	
 	//------------------------------------------------------------------------------------------------//
-	// ACTIONS
+	//ACTIONS
 	//Protagonist is aiming
 	public void aim(double angle) {
 		this.angleAim = angle;
@@ -65,7 +63,7 @@ public class Protagonist {
 		this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
 		Log.d(TAG, "Jump!!");
 	}
-	
+
 	//Protagonist dash
 	public void down(Ground g, ArrayList<Platform> platforms) {
 		double startHeight = this.getYPos();
@@ -90,13 +88,13 @@ public class Protagonist {
 		}
 	}
 	//------------------------------------------------------------------------------------------------//
-	//MAKE PROTAGONIST MOVABLE
+	//HOW TO MAKE PROTAGONIST MOVE
 	//Moving protagonist
 	public void move() {
 		this.setXPos(this.getXPos() + this.getXVel());
 		this.setYPos(this.getYPos() + this.getYVel());
 	}
-	
+
 	//Accelerating protagonist
 	public void accelerate(double acc) { // acc = 0.2?
 		this.setXVel(this.getXVel() + acc);
@@ -283,7 +281,7 @@ public class Protagonist {
 	}
 	//------------------------------------------------------------------------------------------------//
 	//GET AND SET METHODS
-	//Methods for pos, vel, acc
+	//Methods for position, velocity, acceleration
 	public double getXPos() {
 		return xPos;
 	}
@@ -331,8 +329,8 @@ public class Protagonist {
 	public void setYAcc(double n) {
 		yAcc = n;
 	}
-	
-	//Methods for action
+
+	//Methods for properties
 	public void setAim(int angle) {
 		angleAim = angle;
 	}
@@ -411,7 +409,7 @@ public class Protagonist {
 	public int getBreathMax() {
 		return breathMax;
 	}
-	
+
 	//Booleans
 	public boolean isTouchingGround() {
 		return touchingGround;
@@ -444,4 +442,6 @@ public class Protagonist {
 	public void setDashBonus(boolean dashBonus) {
 		this.dashBonus = dashBonus;
 	}
+	//------------------------------------------------------------------------------------------------//
+
 }

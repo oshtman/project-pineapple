@@ -29,7 +29,7 @@ public class Enemy {
 	private final int type;
 	private final double spawnX;
 	private boolean spawned;
-
+	//------------------------------------------------------------------------------------------------//
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
 		this.type = type;
@@ -62,104 +62,29 @@ public class Enemy {
 		this.setYPos(j);
 		this.spawnX = spawnX;
 	}
-
-	//GET AND SET
-	//Get and set enemy pos, vel, acc
-	public double getXPos() {
-		return xPos;
-	}
-
-	public double getYPos() {
-		return yPos;
-	}
-
-	public double getXVel() {
-		return xVel;
-	}
-
-	public double getYVel() {
-		return yVel;
-	}
-
-	public double getXAcc() {
-		return xAcc;
-	}
-
-	public double getYAcc() {
-		return yAcc;
-	}
-
-	public void setXPos(double n) {
-		xPos = n;
-	}
-
-	public void setYPos(double n) {
-		yPos = n;
-	}
-
-	public void setXVel(double n) {
-		xVel = n;
-	}
-
-	public void setYVel(double n) {
-		yVel = n;
-	}
-	public void setXAcc(double n) {
-		xAcc = n;
-	}
-
-	public void setYAcc(double n) {
-		yAcc = n;
-	}
-
-	public void setSpawed(boolean flag){
-		spawned = flag;
-	}
-
-	//Get and set enemy properties
-	public double getHealth() {
-		return health;
-	}
-
-	public void setHealth(double d) {
-		this.health = d;
-	}
-
-	public double getMaxSpeed() {
-		return maxSpeed;
-	}
-
-	public double getJumpAcc() {
-		return jumpAcc;
-	}
-
-	public int getWidth() {
-		return width;
-	}
-	public double getTypeAcc() {
-		return typeAcc;
-	}
-
-	public int getHeight() {
-		return height;
-	}
-
-	public boolean hasSpawned(){
-		return spawned;
-	}
-
-	public double getSpawnX(){
-		return spawnX;
-	}
-
+	//------------------------------------------------------------------------------------------------//
 	//ENEMY ACTION
-	//Moving
+	//Reduce the enemy's health
+	public void takeDamage(double damage){
+		this.setHealth(this.getHealth()-damage);
+	}
+
+	//Reduce enemy health when dashing
+	public void takeDashDamage(Protagonist p){
+		if(p.isDashBonus()){
+			this.setHealth(this.getHealth()/2);
+			p.setDashBonus(false);
+		}
+	}
+	//------------------------------------------------------------------------------------------------//
+	//HOW TO MAKE ENEMY MOVE
+	//Move enemy
 	public void move() {
 		this.xPos = this.getXPos() + this.getXVel();
 		this.yPos = this.getYPos() + this.getYVel();
 	}
 
-	//Accelerating
+	//Accelerating enemy
 	public void accelerate(double acc) { // acc = 0.2?
 		this.setXVel(this.getXVel() + acc);
 		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {
@@ -174,9 +99,9 @@ public class Enemy {
 		//Fix constants later...
 		this.accelerate(typeAcc*Math.signum(p.getXPos() - this.getXPos()));
 	}
-
-	//Check if the enemy is under the ground
-	//If enemy is, then set enemy on top of it
+	//------------------------------------------------------------------------------------------------//
+	//CHECK-METHODS FOR ENEMY AND SURROUNDING
+	//Check if the enemy is standing on the ground (make sure enemy is)
 	public void checkGround(Ground g){
 		if(this.yPos + height/2 > g.getYFromX(this.xPos)){
 			this.yPos = g.getYFromX(this.xPos)-height/2;
@@ -218,30 +143,107 @@ public class Enemy {
 			}
 		}
 	}
-
+	//------------------------------------------------------------------------------------------------//
+	//OTHER PROPERTIES
 	//Let gravity work on enemy
 	public void gravity(){
 		this.setYVel(this.getYVel()+this.getJumpAcc());
 	}
 
-	//Reduce the enemy's health
-	public void takeDamage(double damage){
-		this.setHealth(this.getHealth()-damage);
-	}
-
-	//Reduce enemy health when dashing
-	public void takeDashDamage(Protagonist p){
-		if(p.isDashBonus()){
-			this.setHealth(this.getHealth()/2);
-			p.setDashBonus(false);
-		}
-	}
-
-
-
+	//Spawn enemy
 	public void spawn(){
 		spawned = true;
 	}
+	//------------------------------------------------------------------------------------------------//
+	//GET AND SET METHODS
+	//Methods for position, velocity, acceleration
+	public double getXPos() {
+		return xPos;
+	}
+	
+	public void setXPos(double xPos) {
+		this.xPos = xPos;
+	}
 
+	public double getYPos() {
+		return yPos;
+	}
+	
+	public void setYPos(double yPos) {
+		this.yPos = yPos;
+	}
 
+	public double getXVel() {
+		return xVel;
+	}
+
+	public void setXVel(double xVel) {
+		this.xVel = xVel;
+	}
+
+	public double getYVel() {
+		return yVel;
+	}
+
+	public void setYVel(double yVel) {
+		this.yVel = yVel;
+	}
+
+	public double getXAcc() {
+		return xAcc;
+	}	
+
+	public void setXAcc(double xAcc) {
+		this.xAcc = xAcc;
+	}
+
+	public double getYAcc() {
+		return yAcc;
+	}
+
+	public void setYAcc(double yAcc) {
+		this.yAcc = yAcc;
+	}
+
+	//Methods for properties
+	public double getHealth() {
+		return health;
+	}
+
+	public void setHealth(double d) {
+		this.health = d;
+	}
+
+	public double getMaxSpeed() {
+		return maxSpeed;
+	}
+
+	public double getJumpAcc() {
+		return jumpAcc;
+	}
+	
+	public double getTypeAcc() {
+		return typeAcc;
+	}
+
+	public double getSpawnX(){
+		return spawnX;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+	
+	//Booleans
+	public void setSpawed(boolean flag){
+		spawned = flag;
+	}
+	public boolean hasSpawned(){
+		return spawned;
+	}
+	//------------------------------------------------------------------------------------------------//
 }
