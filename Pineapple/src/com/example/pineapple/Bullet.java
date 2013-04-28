@@ -12,8 +12,10 @@ public class Bullet {
 	private double xVel;
 	private double yVel;
 	private double angle;
-	private int radius;
+	private static int radius = 2;
 	private boolean colliding;
+	private int rotation;
+	private int type;
 
 	//CONSTRUCTOR
 	public Bullet(double x, double y, double angle, double bulletSpeed) {
@@ -23,7 +25,8 @@ public class Bullet {
 		this.xVel = Math.cos(angle/180*Math.PI)*bulletSpeed;
 		this.yVel = -Math.sin(angle/180*Math.PI)*bulletSpeed;
 		this.angle = angle;
-		this.radius = 2;
+		rotation = (int)(Math.random()*360);
+		type = (int)(Math.random()*3);
 	}
 
 	//GET and SETmethods
@@ -67,18 +70,27 @@ public class Bullet {
 		this.angle = angle;
 	}
 
-	public int getRadius() {
+	public static int getRadius() {
 		return radius;
 	}
-
-	public void setRadius(int radius) {
-		this.radius = radius;
+	
+	public int getRotation(){
+		return rotation;
 	}
+	
+	public int getType(){
+		return type;
+	}
+
+	/*public static void setRadius(int radius) {
+		this.radius = radius;
+	}*/
 
 	//Moving bullet
 	public void move() {
 		this.setXPos(this.getXPos() + this.getXVel());
 		this.setYPos(this.getYPos() + this.getYVel());
+		this.rotation += 20;
 	}
 	
 	//Gravity on bullets
