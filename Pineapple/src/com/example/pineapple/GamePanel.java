@@ -11,6 +11,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -83,6 +84,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint frame = new Paint();
 	private double time;
 
+	//Ground rendering variables 
+	private int xGap, yGap, numberOfPatches, foliageSize = 4;
+	private double gap; 
+	private Paint groundPaint = new Paint();
+	
 	//Bitmaps
 	private Bitmap bodyBitmap;
 	private Bitmap footBitmap;
@@ -120,7 +126,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
-
+		groundPaint.setColor(Color.rgb(10, 250, 10));
 
 	}
 
@@ -297,10 +303,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawColor(Color.rgb(135, 206, 250));
 		renderSun(canvas);
 		renderTrees(canvas);
-		renderGround(canvas);
 		renderPlatforms(canvas);
 		renderEnemies(canvas);
 		renderProtagonist(canvas);
+		renderGround(canvas);
 		renderBullets(canvas);
 		renderSticks(canvas);
 		renderHeatMeter(canvas);
@@ -400,11 +406,24 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((200-screenY)*scaleY)); //Fix line 63 and 64, (200)
 			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((200-screenY)*scaleY));
 			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
-			canvas.drawPath(p, green);
+			canvas.drawPath(p, groundPaint);
 			Paint groundLine = new Paint();
 			groundLine.setStrokeWidth((float)(3*scaleY));
-			canvas.drawLine((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY), (int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY), new Paint());
+			//canvas.drawLine((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY), (int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY), new Paint());
+			
 		}
+		//Experiment
+		
+		for(i = startIndex; i <= stopIndex; i++){
+			xGap = (ground.getX(i+1)-ground.getX(i));
+			yGap = (ground.getY(i+1)-ground.getY(i));
+			gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));
+			numberOfPatches = (int)(gap/foliageSize/2+2);
+			for(int j = 0; j < numberOfPatches; j++){
+				canvas.drawOval(new RectF((float)((ground.getX(i)+xGap*j/numberOfPatches - foliageSize - screenX)*scaleX), (float)((ground.getY(i)+yGap*j/numberOfPatches-foliageSize - screenY)*scaleY), (float)((ground.getX(i)+xGap*j/numberOfPatches+foliageSize - screenX)*scaleX), (float)((ground.getY(i)+yGap*j/numberOfPatches+foliageSize - screenY)*scaleY)), groundPaint);
+			}
+		}
+		
 	}
 
 	//Draw the platforms
