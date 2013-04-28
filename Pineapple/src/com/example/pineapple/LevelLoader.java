@@ -33,6 +33,9 @@ public class LevelLoader {
 	//spawnX is the x position the protagonist has to reach in order for the enemy to spawn
 	private ArrayList<int[]> enemies = new ArrayList<int[]>();
 	
+	//List for trees
+	private ArrayList<Integer> trees = new ArrayList<Integer>();
+	
 	
 	
 	public LevelLoader(int level){
@@ -68,6 +71,10 @@ public class LevelLoader {
 			enemies.add(new int[]{100, 20, 80, 2});
 			enemies.add(new int[]{100, 30, 80, 3});
 			
+			//Trees
+			trees.add(0);
+			trees.add(50);
+			trees.add(100);
 			break;
 		case 2:
 			ground = new int[2][100];
@@ -115,5 +122,12 @@ public class LevelLoader {
 		return enemies.size();
 	}
 	
+	public ArrayList<Integer> getTrees(){
+		return trees;
+	}
+	
+	public int getNumberOfTrees(){
+		return trees.size();
+	}
 	
 }

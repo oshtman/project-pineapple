@@ -9,7 +9,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -73,6 +75,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<Platform> platforms;
 	private ArrayList<Bullet> bullets;
 	private ArrayList<Enemy> enemies;
+	private ArrayList<Integer> trees;
 	private int level;
 	private HeatMeter heatMeter;
 	private boolean firing = false;
@@ -81,6 +84,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint frame = new Paint();
 	private double time;
 
+	//Ground rendering variables 
+	private int xGap, yGap, numberOfPatches, foliageSize = 4;
+	private double gap; 
+	private Paint groundPaint = new Paint();
+	
 	//Bitmaps
 	private Bitmap bodyBitmap;
 	private Bitmap footBitmap;
@@ -89,6 +97,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap pupilBitmap;
 	private Bitmap stickBitmap;
 	private Bitmap[] bulletBitmaps;
+	
 	private Bitmap bodyBitmapFlipped;
 	private Bitmap footBitmapFlipped;
 	private Bitmap eyeMouthBitmapFlipped;
@@ -113,10 +122,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		loadPlatforms();
 		loadEnemies();
+		loadTrees();
 
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
-
+		groundPaint.setColor(Color.rgb(10, 250, 10));
 
 	}
 
@@ -134,6 +144,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			int[] enemyData = levelLoader.getEnemyData(i);
 			enemies.add(new Enemy(enemyData[0], enemyData[1], enemyData[2], enemyData[3], this));
 		}
+	}
+	
+	public void loadTrees(){
+		trees = levelLoader.getTrees();
+		
 	}
 
 	//Method that gets called every frame to update the games state
@@ -288,13 +303,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void render(Canvas canvas){
 		canvas.drawColor(Color.rgb(135, 206, 250));
 		renderSun(canvas);
-		renderTree(canvas, (float)(-screenX));
-		renderTree(canvas, (float)(50*scaleX - screenX));
-		renderTree(canvas, (float)(100*scaleX - screenX));
-		renderGround(canvas);
+		renderTrees(canvas);
 		renderPlatforms(canvas);
 		renderEnemies(canvas);
 		renderProtagonist(canvas);
+		renderGround(canvas);
 		renderBullets(canvas);
 		renderSticks(canvas);
 		renderHeatMeter(canvas);
@@ -394,11 +407,24 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((200-screenY)*scaleY)); //Fix line 63 and 64, (200)
 			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((200-screenY)*scaleY));
 			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
-			canvas.drawPath(p, green);
+			canvas.drawPath(p, groundPaint);
 			Paint groundLine = new Paint();
 			groundLine.setStrokeWidth((float)(3*scaleY));
-			canvas.drawLine((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY), (int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY), new Paint());
+			//canvas.drawLine((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY), (int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY), new Paint());
+			
 		}
+		//Experiment
+		
+		for(i = startIndex; i <= stopIndex; i++){
+			xGap = (ground.getX(i+1)-ground.getX(i));
+			yGap = (ground.getY(i+1)-ground.getY(i));
+			gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));
+			numberOfPatches = (int)(gap/foliageSize/2+2);
+			for(int j = 0; j < numberOfPatches; j++){
+				canvas.drawOval(new RectF((float)((ground.getX(i)+xGap*j/numberOfPatches - foliageSize - screenX)*scaleX), (float)((ground.getY(i)+yGap*j/numberOfPatches-foliageSize - screenY)*scaleY), (float)((ground.getX(i)+xGap*j/numberOfPatches+foliageSize - screenX)*scaleX), (float)((ground.getY(i)+yGap*j/numberOfPatches+foliageSize - screenY)*scaleY)), groundPaint);
+			}
+		}
+		
 	}
 
 	//Draw the platforms
@@ -486,20 +512,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawCircle(x, y, radius, p);
 	}
 
-	//Draw some trees
-	public void renderTree(Canvas canvas, float x){
+	//Draw trees
+	public void renderTrees(Canvas canvas){
 		//x is centre of tree?
-		float y = (float)(100*scaleY); //Make generalll
-		float trunkHeight = (float)(height/4*scaleY);//Make generalll
-		float trunkWidth = (float)(5*scaleX);//Make generalll
-		float radius = 100;
 		Paint trunk = new Paint();
 		trunk.setColor(Color.DKGRAY);
 		Paint top = new Paint();
 		top.setColor(Color.GREEN);
+		Paint border = new Paint();
+		border.setStyle(Style.STROKE);
+		for(int i = 0; i < trees.size(); i++){
+			float y = (float)(100); //Make generalll
+			float trunkHeight = (float)(height/4);//Make generalll
+			float trunkWidth = (float)(5);//Make generalll
+			float radius = 20;
+			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleX), (float)(radius*scaleX), top);
+			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleX), (float)(radius*scaleX), border);
+			canvas.drawRect((float)((trees.get(i) - trunkWidth/2 - screenX/4)*scaleX), (float)((y - trunkHeight)*scaleY), (float)((trees.get(i) + trunkWidth/2 - (float)(screenX/4))*scaleX), (float)(y*scaleY), trunk);
+		}
+		
 
-		canvas.drawCircle(x, y - trunkHeight - radius/2, radius, top);
-		canvas.drawRect(x - trunkWidth/2, y - trunkHeight, x + trunkWidth/2, y, trunk);
+		
 	}
 
 	@Override
