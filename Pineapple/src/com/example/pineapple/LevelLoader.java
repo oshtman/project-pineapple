@@ -77,12 +77,26 @@ public class LevelLoader {
 			trees.add(100);
 			break;
 		case 2:
-			ground = new int[2][100];
+			//Ground
+			ground = new int[2][500];
 			
-			for (int i = 0; i<100; i++) {
+			for (int i = 0; i<500; i++) {
 				ground[0][i] = i*20;
 				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
 			}
+			//Enemies
+			enemies.add(new int[]{200, 0, 100, 3});
+			enemies.add(new int[]{200, 0, 150, 3});
+			enemies.add(new int[]{200, 0, 200, 3});
+			enemies.add(new int[]{200, 0, 250, 3});
+			enemies.add(new int[]{200, 0, 300, 3});
+			enemies.add(new int[]{200, 0, 350, 3});
+			enemies.add(new int[]{200, 20, 100, 2});
+			enemies.add(new int[]{200, 20, 150, 2});
+			enemies.add(new int[]{200, 20, 200, 2});
+			enemies.add(new int[]{200, 20, 250, 2});
+			enemies.add(new int[]{200, 20, 300, 2});
+			enemies.add(new int[]{200, 20, 350, 2});
 			
 			break;
 		}
