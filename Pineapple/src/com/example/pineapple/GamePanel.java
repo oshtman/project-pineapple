@@ -88,6 +88,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int numberOfPatches, foliageSize = 2;
 	private double xGap, yGap, gap, groundAngle; 
 	private Paint groundPaint = new Paint();
+	private Path groundPath;
 	
 	//Bitmaps
 	private Bitmap bodyBitmap;
@@ -96,7 +97,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap weaponBitmap;
 	private Bitmap pupilBitmap;
 	private Bitmap stickBitmap;
-	private Bitmap[] bulletBitmaps;
+	private Bitmap bulletBitmap;
 	
 	private Bitmap bodyBitmapFlipped;
 	private Bitmap footBitmapFlipped;
@@ -427,36 +428,53 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}*/
 		
 		//Spikes
-		Path p = new Path();
+		groundPath = new Path();
 		for(i = startIndex; i <= stopIndex; i++){
 			xGap = (ground.getX(i+1)-ground.getX(i));
 			yGap = (ground.getY(i+1)-ground.getY(i));
 			gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));
 			numberOfPatches = (int)(gap/foliageSize/2+2);
 			groundAngle = Math.atan(ground.getSlope((ground.getX(i)+ground.getX(i+1))/2));
-			p.moveTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
+			groundPath.moveTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
 			for(int j = 0; j < numberOfPatches; j++){
-				p.lineTo((float)((ground.getX(i)+xGap*(j+0.5)/numberOfPatches+foliageSize*Math.sin(groundAngle)-screenX)*scaleX), (float)((ground.getY(i)+yGap/numberOfPatches*(j+0.5)-foliageSize*Math.cos(groundAngle)-screenY)*scaleY));
-				p.lineTo((float)((ground.getX(i)+xGap*(j+1)/numberOfPatches - screenX)*scaleX), (float)((ground.getY(i)+yGap/numberOfPatches*(j+1)-screenY)*scaleY));
+				groundPath.lineTo((float)((ground.getX(i)+xGap*(j+0.5)/numberOfPatches+foliageSize*Math.sin(groundAngle)-screenX)*scaleX), (float)((ground.getY(i)+yGap/numberOfPatches*(j+0.5)-foliageSize*Math.cos(groundAngle)-screenY)*scaleY));
+				groundPath.lineTo((float)((ground.getX(i)+xGap*(j+1)/numberOfPatches - screenX)*scaleX), (float)((ground.getY(i)+yGap/numberOfPatches*(j+1)-screenY)*scaleY));
 			}
-			p.lineTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
-			canvas.drawPath(p, groundPaint);
+			groundPath.lineTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
+			canvas.drawPath(groundPath, groundPaint);
 		}
 		
 	}
 
 	//Draw the platforms
 	public void renderPlatforms(Canvas canvas){
-		Paint p = new Paint();
-		p.setColor(Color.CYAN);
 		for(int i = 0; i < platforms.size(); i++){
-			Path path = platforms.get(i).getPath();
-			Path newPath = new Path(path); 
-			Matrix m = new Matrix();
-			m.postTranslate(-(float)screenX, -(float)screenY);
-			m.postScale((float)scaleX, (float)scaleY);
-			newPath.transform(m);
-			canvas.drawPath(newPath, p);
+			if(platforms.get(i).getUpperX()[0] < screenX+width && platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] > screenX){
+				Path path = platforms.get(i).getPath();
+				Path newPath = new Path(path); 
+				Matrix m = new Matrix();
+				m.postTranslate(-(float)screenX, -(float)screenY);
+				m.postScale((float)scaleX, (float)scaleY);
+				newPath.transform(m);
+				canvas.drawPath(newPath, groundPaint);
+				//Draw platform details
+				//Spikes on top
+				groundPath = new Path();
+				for(int k = 0; k < platforms.get(i).getUpperX().length-1; k++){
+					xGap = (platforms.get(i).getUpperX()[k+1]-platforms.get(i).getUpperX()[k]);
+					yGap = (platforms.get(i).getUpperY()[k+1]-platforms.get(i).getUpperY()[k]);
+					gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));
+					numberOfPatches = (int)(gap/foliageSize/2+2);
+					groundAngle = Math.atan(platforms.get(i).getSlope((platforms.get(i).getUpperX()[k]+platforms.get(i).getUpperX()[k+1])/2));
+					groundPath.moveTo((float)((platforms.get(i).getUpperX()[k]-screenX)*scaleX), (float)((platforms.get(i).getUpperY()[k]-screenY)*scaleY));
+					for(int j = 0; j < numberOfPatches; j++){
+						groundPath.lineTo((float)((platforms.get(i).getUpperX()[k]+xGap*(j+0.5)/numberOfPatches+foliageSize*Math.sin(groundAngle)-screenX)*scaleX), (float)((platforms.get(i).getUpperY()[k]+yGap/numberOfPatches*(j+0.5)-foliageSize*Math.cos(groundAngle)-screenY)*scaleY));
+						groundPath.lineTo((float)((platforms.get(i).getUpperX()[k]+xGap*(j+1)/numberOfPatches - screenX)*scaleX), (float)((platforms.get(i).getUpperY()[k]+yGap/numberOfPatches*(j+1)-screenY)*scaleY));
+					}
+					groundPath.lineTo((float)((platforms.get(i).getUpperX()[k]-screenX)*scaleX), (float)((platforms.get(i).getUpperY()[k]-screenY)*scaleY));
+					canvas.drawPath(groundPath, groundPaint);
+				}
+			}
 		}
 	}
 
@@ -472,9 +490,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(int i = 0; i < bullets.size(); i++){
 			Bullet b = bullets.get(i);
 			Matrix m = new Matrix();
-			m.setRotate(b.getRotation(), bulletBitmaps[0].getWidth()/2, bulletBitmaps[0].getHeight()/2);
+			m.setRotate((float)(180/Math.PI*Math.atan2(b.getYVel(), b.getXVel())), (float)(bulletBitmap.getWidth()/2), (float)(bulletBitmap.getHeight()/2));
 			m.postTranslate((float)((b.getXPos()-radius/2.-screenX)*scaleX), (float)((b.getYPos()-radius/2.-screenY)*scaleY));
-			canvas.drawBitmap(bulletBitmaps[b.getType()], m, null);
+			canvas.drawBitmap(bulletBitmap, m, null);
 		}
 	}
 
@@ -657,12 +675,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_hand_gun), (int)(protagonist.getWidth()*scaleX*weaponXScale), (int)(protagonist.getHeight()*scaleY*weaponYScale), true);
 		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*pupilXScale), (int)(protagonist.getHeight()*scaleY*pupilYScale), true);
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
-		bulletBitmaps = new Bitmap[]{
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet1), (int)(2*Bullet.getRadius()*scaleX), (int)(2*Bullet.getRadius()*scaleX), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet2), (int)(2*Bullet.getRadius()*scaleX), (int)(2*Bullet.getRadius()*scaleX), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet3), (int)(2*Bullet.getRadius()*scaleX), (int)(2*Bullet.getRadius()*scaleX), true)
-		};
-
+		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
+				
 		Matrix m = new Matrix();
 		m.setScale(-1, 1);
 

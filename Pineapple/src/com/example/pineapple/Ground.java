@@ -31,7 +31,6 @@ public class Ground {
 		//Find the index to the right of the protagonist
 		int index = 0;
 		while(this.x[index] < x){
-			Log.d(TAG, index+"");
 			index++;
 			
 		}
