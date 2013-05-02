@@ -98,12 +98,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap pupilBitmap;
 	private Bitmap stickBitmap;
 	private Bitmap bulletBitmap;
+	private Bitmap tankBodyBitmap;
+	private Bitmap droneBodyBitmap;
+	private Bitmap ninjaBodyBitmap;
 	
 	private Bitmap bodyBitmapFlipped;
 	private Bitmap footBitmapFlipped;
 	private Bitmap eyeMouthBitmapFlipped;
 	private Bitmap weaponBitmapFlipped;
 	private Bitmap pupilBitmapFlipped;
+	private Bitmap tankBodyBitmapFlipped;
+	private Bitmap droneBodyBitmapFlipped;
+	private Bitmap ninjaBodyBitmapFlipped;
 
 	public GamePanel(Context context, int level){
 		super(context);
@@ -318,9 +324,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw the enemies
 	public void renderEnemies(Canvas canvas){
+		Matrix m = new Matrix();
 		for(int i = 0; i < enemies.size(); i++){
-			if(enemies.get(i).hasSpawned())
-				canvas.drawRect((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()/2-screenY)*scaleY), (float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()+enemies.get(i).getHeight()/2-screenY)*scaleY), red);
+			if(enemies.get(i).hasSpawned()){
+				m.setTranslate((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()/2-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()/2-screenY)*scaleY));
+				switch(enemies.get(i).getType()){
+				case 1:
+					canvas.drawBitmap(droneBodyBitmap, m, null);
+					break;
+				case 2:
+					canvas.drawBitmap(ninjaBodyBitmap, m, null);
+					break;
+				case 3:
+					canvas.drawBitmap(tankBodyBitmap, m, null);
+					break;
+				}
+			}
 		}
 	}
 
@@ -676,16 +695,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*pupilXScale), (int)(protagonist.getHeight()*scaleY*pupilYScale), true);
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
-				
+		tankBodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*scaleY), true);		
+		
+		//Scale down tank bitmaps to drone and ninja sizes
+		//Drone
 		Matrix m = new Matrix();
+		m.setScale((float)(1/Enemy.getScaleTank()), (float)(1/Enemy.getScaleTank()));
+		droneBodyBitmap = Bitmap.createBitmap(tankBodyBitmap, 0, 0, tankBodyBitmap.getWidth(), tankBodyBitmap.getHeight(), m, false);
+		//Ninja
+		m.setScale((float)Enemy.getScaleNinja(), (float)Enemy.getScaleNinja());
+		ninjaBodyBitmap = Bitmap.createBitmap(droneBodyBitmap, 0, 0, droneBodyBitmap.getWidth(), droneBodyBitmap.getHeight(), m, false);
+		
+		//Flip images
 		m.setScale(-1, 1);
 
 		bodyBitmapFlipped = Bitmap.createBitmap(bodyBitmap, 0, 0, bodyBitmap.getWidth(), bodyBitmap.getHeight(), m, false);
 		eyeMouthBitmapFlipped = Bitmap.createBitmap(eyeMouthBitmap, 0, 0, eyeMouthBitmap.getWidth(), eyeMouthBitmap.getHeight(), m, false);
 		footBitmapFlipped = Bitmap.createBitmap(footBitmap, 0, 0, footBitmap.getWidth(), footBitmap.getHeight(), m, false);
 		weaponBitmapFlipped = Bitmap.createBitmap(weaponBitmap, 0, 0, weaponBitmap.getWidth(), weaponBitmap.getHeight(), m, false);
-		pupilBitmapFlipped = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*pupilXScale), (int)(protagonist.getHeight()*scaleY*pupilYScale), true);
-
+		pupilBitmapFlipped = Bitmap.createBitmap(pupilBitmap, 0, 0, pupilBitmap.getWidth(), pupilBitmap.getHeight(), m, false);
+		tankBodyBitmapFlipped = Bitmap.createBitmap(tankBodyBitmap, 0, 0, tankBodyBitmap.getWidth(), tankBodyBitmap.getHeight(), m, false);
+		
 		//Start the thread
 		thread.setRunning(true);
 		try{thread.start();} catch(IllegalThreadStateException e){}

@@ -15,10 +15,11 @@ public class Enemy {
 	private double yAcc;
 	private double health;
 	private GamePanel gp;
-	private int height = 20;
-	private int width = (int)(height/1.42); //Change 1.42 to ratio of bitmap
-	private double scaleNinja = 0.8;
-	private double scaleTank = 1.2;
+	private static int baseHeight = 14;
+	private static int baseWidth = (int)(baseHeight*1.5); //Change 1.42 to ratio of bitmap
+	private int height, width;
+	private static double scaleNinja = 0.8;
+	private static double scaleTank = 1.2;
 	private double baseAcc = 1;
 	private double jumpVel = -6;
 	private double jumpAcc = 0.4;
@@ -33,6 +34,8 @@ public class Enemy {
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
 		this.type = type;
+		this.height = baseHeight;
+		this.width = baseWidth;
 		//type 1 is normal
 		if (type == 1) {
 			setHealth(0.5);
@@ -42,7 +45,7 @@ public class Enemy {
 		else if (type == 2) {
 			this.setHealth(0.1);
 			this.height = (int)(this.height*scaleNinja);
-			this.width = (int)((height/1.42)*scaleNinja); //Change 1.42 to ratio of bitmap
+			this.width = (int)(this.width*scaleNinja); //Change 1.42 to ratio of bitmap
 			this.typeAcc = 2*baseAcc;
 			this.maxSpeed = 1.3*maxSpeed;
 			this.jumpVel = 2*jumpVel;
@@ -52,7 +55,7 @@ public class Enemy {
 		else if (type == 3) {
 			this.setHealth(1);
 			this.height = (int)(this.height*scaleTank);
-			this.width = (int)((height/1.42)*scaleTank); //Change 1.42 to ratio of bitmap
+			this.width = (int)(this.width*scaleTank); //Change 1.42 to ratio of bitmap
 			this.typeAcc = 0.1*baseAcc;
 			this.maxSpeed = 0.5*maxSpeed;
 			this.jumpVel = 0.5*jumpVel;
@@ -237,7 +240,24 @@ public class Enemy {
 	public int getHeight() {
 		return height;
 	}
+	
+	public static double getScaleTank(){
+		return scaleTank;
+	}
+	
+	public static double getScaleNinja(){
+		return scaleNinja;
+	}
 
+	public static int getBaseHeight() {
+		return baseHeight;
+	}
+	public static int getBaseWidth() {
+		return baseWidth;
+	}
+	public int getType() {
+		return type;
+	}
 	//Booleans
 	public void setSpawed(boolean flag){
 		spawned = flag;
