@@ -85,8 +85,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double time;
 
 	//Ground rendering variables 
-	private int xGap, yGap, numberOfPatches, foliageSize = 4;
-	private double gap; 
+	private int numberOfPatches, foliageSize = 2;
+	private double xGap, yGap, gap, groundAngle; 
 	private Paint groundPaint = new Paint();
 	
 	//Bitmaps
@@ -413,9 +413,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			//canvas.drawLine((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY), (int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY), new Paint());
 			
 		}
-		//Experiment
+		//Experiment (Different ground details)
+		//Balls
 		
-		for(i = startIndex; i <= stopIndex; i++){
+		/*for(i = startIndex; i <= stopIndex; i++){
 			xGap = (ground.getX(i+1)-ground.getX(i));
 			yGap = (ground.getY(i+1)-ground.getY(i));
 			gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));
@@ -423,6 +424,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			for(int j = 0; j < numberOfPatches; j++){
 				canvas.drawOval(new RectF((float)((ground.getX(i)+xGap*j/numberOfPatches - foliageSize - screenX)*scaleX), (float)((ground.getY(i)+yGap*j/numberOfPatches-foliageSize - screenY)*scaleY), (float)((ground.getX(i)+xGap*j/numberOfPatches+foliageSize - screenX)*scaleX), (float)((ground.getY(i)+yGap*j/numberOfPatches+foliageSize - screenY)*scaleY)), groundPaint);
 			}
+		}*/
+		
+		//Spikes
+		Path p = new Path();
+		for(i = startIndex; i <= stopIndex; i++){
+			xGap = (ground.getX(i+1)-ground.getX(i));
+			yGap = (ground.getY(i+1)-ground.getY(i));
+			gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));
+			numberOfPatches = (int)(gap/foliageSize/2+2);
+			groundAngle = Math.atan(ground.getSlope((ground.getX(i)+ground.getX(i+1))/2));
+			p.moveTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
+			for(int j = 0; j < numberOfPatches; j++){
+				p.lineTo((float)((ground.getX(i)+xGap*(j+0.5)/numberOfPatches+foliageSize*Math.sin(groundAngle)-screenX)*scaleX), (float)((ground.getY(i)+yGap/numberOfPatches*(j+0.5)-foliageSize*Math.cos(groundAngle)-screenY)*scaleY));
+				p.lineTo((float)((ground.getX(i)+xGap*(j+1)/numberOfPatches - screenX)*scaleX), (float)((ground.getY(i)+yGap/numberOfPatches*(j+1)-screenY)*scaleY));
+			}
+			p.lineTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
+			canvas.drawPath(p, groundPaint);
 		}
 		
 	}
@@ -685,5 +703,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Pause the game
 	public void pause(){
 		thread.setRunning(false);
+	}
+	
+	//Resume the game
+	public void resume(){
+		thread.setRunning(true);
 	}
 }

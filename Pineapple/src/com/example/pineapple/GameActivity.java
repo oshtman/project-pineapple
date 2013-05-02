@@ -48,6 +48,7 @@ public class GameActivity extends BaseActivity {
 	
 	public void onResume(){
 		Log.d(TAG, "Resuming...");
+		gamePanel.resume();
 		super.onResume();
 	}
 

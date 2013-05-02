@@ -1,6 +1,9 @@
 package com.example.pineapple;
 
+import android.util.Log;
+
 public class Ground {
+	private final String TAG = Ground.class.getSimpleName();
 	int[] x, y; //x- and y-values for the ground
 	int type;
 	
@@ -28,7 +31,9 @@ public class Ground {
 		//Find the index to the right of the protagonist
 		int index = 0;
 		while(this.x[index] < x){
+			Log.d(TAG, index+"");
 			index++;
+			
 		}
 		return (this.y[index] - this.y[index-1])/((double)this.x[index] - this.x[index-1]);
 		
