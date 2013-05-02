@@ -141,7 +141,7 @@ public class Protagonist {
 		}
 	}
 
-	//Method take protagonist to platform alt ground by acceleration
+	//Method take protagonist to platform alt ground by acceleration (dashing)
 	public void dashing(Ground g, ArrayList<Platform> platforms){
 		//If dashing above platform
 		if(dashingPlatform){
@@ -160,7 +160,7 @@ public class Protagonist {
 		} else if (dashingGround){
 			this.setYAcc(15); //Set constant
 			this.setYVel(this.getYAcc() + this.getYVel());
-			if(touchingGround){ //Seems to fail every time?
+			if(touchingGround){
 				dashingGround = false;
 			}
 		}		
@@ -226,7 +226,7 @@ public class Protagonist {
 			this.yAcc = 0;
 			touchingGround = true;
 			overPlatform = false;
-			dashingGround = false;
+			dashBonus = false;
 		}
 	}
 

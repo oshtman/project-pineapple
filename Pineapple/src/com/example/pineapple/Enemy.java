@@ -97,9 +97,7 @@ public class Enemy {
 
 	//Reduce enemy health when dashing and bumps enemy away
 	public void takeDashDamage(Protagonist p){
-		if(p.isDashBonus()){
 			this.setHealth(this.getHealth()/2 + this.getHealth()/10);
-			p.setDashBonus(false);
 			int sign;
 			if (Math.random() > 0.5){
 				sign = 1;
@@ -108,7 +106,6 @@ public class Enemy {
 			}
 			setXVel(-getXVel() + sign*getXVel()/10);
 			setYVel(jumpVel);
-		}
 	}
 	//------------------------------------------------------------------------------------------------//
 	//CHECK-METHODS FOR ENEMY AND SURROUNDING

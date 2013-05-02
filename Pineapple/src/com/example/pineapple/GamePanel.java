@@ -263,10 +263,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void handleProtagonistEnemyCollisions(){
 		for(int i = 0; i < enemies.size(); i++){
 			//Dashmove
-			if(protagonist.collide(enemies.get(i)) && protagonist.isDashBonus()){
-				Log.d(TAG,"" + enemies.get(i).getHealth());
+			//if(protagonist.collide(enemies.get(i)) && protagonist.isDashBonus()){
+			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*1.5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight() && protagonist.isDashBonus()){
 				enemies.get(i).takeDashDamage(protagonist);
-				Log.d(TAG,"" + enemies.get(i).getHealth());
 			}
 			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible()){
 				protagonist.setInvincible(true);
