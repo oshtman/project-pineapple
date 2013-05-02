@@ -333,12 +333,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					int feetAngle = (int)(20*Math.sin(time/3));
 					int eyeAngle = (int)(360*Math.sin(time/20));;
 					//Back arm
+					m.setRotate(armAngle, 0, (float)(enemyLeftArmBitmap[enemies.get(i).getType()-1].getHeight()*0.9));
+					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyArmXAxis) + enemies.get(i).getWidth()*Const.enemyArmRadius*Math.cos(armAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyArmYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyArmRadius*Math.sin(armAngle*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyLeftArmBitmap[enemies.get(i).getType()-1], m, null);
+					//Back foot
 					m.setRotate(feetAngle, enemyFootBitmap[enemies.get(i).getType()-1].getWidth()/2, enemyFootBitmap[enemies.get(i).getType()-1].getHeight()/2);
 					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - enemies.get(i).getWidth()*Const.enemyFootRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyFootYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyFootRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyFootBitmap[enemies.get(i).getType()-1], m, null);
-					//Back foot
-					m.setRotate(-feetAngle, enemyFootBitmap[enemies.get(i).getType()-1].getWidth()/2, enemyFootBitmap[enemies.get(i).getType()-1].getHeight()/2);
-					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - enemies.get(i).getWidth()*Const.enemyFootRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyFootYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyFootRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
 					canvas.drawBitmap(enemyFootBitmap[enemies.get(i).getType()-1], m, null);
 					//Body
 					m.setTranslate((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()*(0.5-Const.enemyBodyXOffset)-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()*(0.5-Const.enemyBodyYOffset)-screenY)*scaleY));
@@ -347,14 +347,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					m.setTranslate((float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()*(0.5-Const.enemyEyeMouthXOffset)-screenX)*scaleX)-enemyEyeMouthBitmap[enemies.get(i).getType()-1].getWidth(), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()*(0.5-Const.enemyEyeMouthYOffset)-screenY)*scaleY));
 					canvas.drawBitmap(enemyEyeMouthBitmapFlipped[enemies.get(i).getType()-1], m, null);
 					//Front arm
-					m.setRotate(armAngle, 0, (float)(enemyLeftArmBitmap[enemies.get(i).getType()-1].getHeight()*0.9));
-					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyArmXAxis) + enemies.get(i).getWidth()*Const.enemyArmRadius*Math.cos(armAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyArmYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyArmRadius*Math.sin(armAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyLeftArmBitmap[enemies.get(i).getType()-1], m, null);
-					//Front foot
 					m.setRotate(-armAngle, enemyRightArmBitmap[enemies.get(i).getType()-1].getWidth(), (float)(enemyRightArmBitmap[enemies.get(i).getType()-1].getHeight()*0.9));
 					m.postTranslate((float)((enemies.get(i).getXPos() + enemies.get(i).getWidth()*(0.5-Const.enemyArmXAxis) - enemies.get(i).getWidth()*Const.enemyArmRadius*Math.cos(-armAngle*Math.PI/180) - screenX)*scaleX)-enemyRightArmBitmap[enemies.get(i).getType()-1].getWidth(), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyArmYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyArmRadius*Math.sin(armAngle*Math.PI/180) - screenY)*scaleY));
 					canvas.drawBitmap(enemyRightArmBitmap[enemies.get(i).getType()-1], m, null);
-					
+					//Front foot
+					m.setRotate(-feetAngle, enemyFootBitmap[enemies.get(i).getType()-1].getWidth()/2, enemyFootBitmap[enemies.get(i).getType()-1].getHeight()/2);
+					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - enemies.get(i).getWidth()*Const.enemyFootRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyFootYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyFootRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyFootBitmap[enemies.get(i).getType()-1], m, null);
 					//Pupils
 					m.setTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(Const.enemyPupilXOffset-0.5)+enemies.get(i).getWidth()*Const.enemyPupilRadius*Math.cos(eyeAngle*Math.PI/180)-screenX)*scaleX)-enemyPupilBitmap[enemies.get(i).getType()-1].getWidth(), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyPupilYOffset-0.5)-enemies.get(i).getHeight()*Const.enemyPupilRadius*Math.sin(eyeAngle*Math.PI/180) - screenY)*scaleY));
 					canvas.drawBitmap(enemyPupilBitmap[enemies.get(i).getType()-1], m, null);
