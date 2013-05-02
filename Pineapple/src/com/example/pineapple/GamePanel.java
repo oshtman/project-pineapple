@@ -22,7 +22,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int INVALID_POINTER = -1;
 
 	
-
 	private int leftStickId = INVALID_POINTER;
 	private int rightStickId = INVALID_POINTER;
 	private final int width = 155;
@@ -745,7 +744,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		enemyPupilBitmap[0] = Bitmap.createBitmap(enemyPupilBitmap[2], 0, 0, enemyPupilBitmap[2].getWidth(), enemyPupilBitmap[2].getHeight(), m, false);
 		
 		//Ninja
-		m.setScale((float)Enemy.getScaleNinja(), (float)Enemy.getScaleNinja());
+		m.setScale((float)(Enemy.getScaleNinja()/Enemy.getScaleTank()), (float)(Enemy.getScaleNinja()/Enemy.getScaleTank()));
 		enemyBodyBitmap[1] = Bitmap.createBitmap(enemyBodyBitmap[0], 0, 0, enemyBodyBitmap[0].getWidth(), enemyBodyBitmap[0].getHeight(), m, false);
 		enemyEyeMouthBitmap[1] = Bitmap.createBitmap(enemyEyeMouthBitmap[0], 0, 0, enemyEyeMouthBitmap[0].getWidth(), enemyEyeMouthBitmap[0].getHeight(), m, false);
 		enemyLeftArmBitmap[1] = Bitmap.createBitmap(enemyLeftArmBitmap[0], 0, 0, enemyLeftArmBitmap[0].getWidth(), enemyLeftArmBitmap[0].getHeight(), m, false);

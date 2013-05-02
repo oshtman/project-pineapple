@@ -68,7 +68,7 @@ public class LevelLoader {
 			platforms.add(p2);
 			
 			//Enemies
-			enemies.add(new int[]{100, 20, 80, 2});
+			enemies.add(new int[]{100, 20, 80, 1});
 			//enemies.add(new int[]{100, 30, 80, 3});
 			
 			//Trees
