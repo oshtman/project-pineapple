@@ -28,6 +28,8 @@ public class Enemy {
 	private double typeAcc;
 	private boolean touchingGround;
 	private final int type;
+	private int leftArmAngle, rightArmAngle, armAngleCounter = 0;
+	private int pupilAngle;
 	private final double spawnX;
 	private boolean spawned;
 	//------------------------------------------------------------------------------------------------//
@@ -40,6 +42,8 @@ public class Enemy {
 		if (type == 1) {
 			setHealth(0.5);
 			this.typeAcc = 0.2*baseAcc;
+			leftArmAngle = -45;
+			rightArmAngle = 45;
 		}
 		//type 2 is ninja
 		else if (type == 2) {
@@ -163,6 +167,33 @@ public class Enemy {
 		spawned = true;
 	}
 	//------------------------------------------------------------------------------------------------//
+	//RENDER PROPERTIES
+	//Look at the protagonist
+	public void lookAt(Protagonist p){
+		pupilAngle = (int)(180/Math.PI*Math.atan2(p.getYPos()-getYPos(), p.getXPos() - getXPos()));
+	}
+	
+	//Wave arms
+	public void waveArms(){
+		armAngleCounter++;
+		switch(type){
+		case 1:
+			leftArmAngle = (int)(60*Math.sin(armAngleCounter/5.));
+			rightArmAngle = -leftArmAngle;
+			break;
+
+		case 2:
+			leftArmAngle = (int)(60*Math.sin(armAngleCounter/5.));
+			rightArmAngle = -leftArmAngle;
+			break;
+
+		case 3:
+			leftArmAngle = (int)(60*Math.sin(armAngleCounter/5.));
+			rightArmAngle = -leftArmAngle;
+			break;
+		}
+	}
+	//------------------------------------------------------------------------------------------------//
 	//GET AND SET METHODS
 	//Methods for position, velocity, acceleration
 	public double getXPos() {
@@ -262,6 +293,15 @@ public class Enemy {
 	}
 	public int getType() {
 		return type;
+	}
+	public int getLeftArmAngle() {
+		return leftArmAngle;
+	}
+	public int getRightArmAngle() {
+		return rightArmAngle;
+	}
+	public int getPupilAngle(){
+		return pupilAngle;
 	}
 	//Booleans
 	public void setSpawed(boolean flag){

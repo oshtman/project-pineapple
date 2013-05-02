@@ -22,7 +22,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int INVALID_POINTER = -1;
 
 	
-
 	private int leftStickId = INVALID_POINTER;
 	private int rightStickId = INVALID_POINTER;
 	private final int width = 155;
@@ -184,6 +183,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				enemy.move();
 				enemy.checkGround(ground);
 				enemy.checkPlatform(platforms);
+				enemy.waveArms();
+				enemy.lookAt(protagonist);
 			} else {
 				if(protagonist.getXPos() > enemy.getSpawnX()){
 					enemy.spawn();
@@ -267,7 +268,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*1.5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight() && protagonist.isDashBonus()){
 				enemies.get(i).takeDashDamage(protagonist);
 			}
-			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible()){
+			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && enemies.get(i).hasSpawned()){
 				protagonist.setInvincible(true);
 				protagonist.setXVel(-protagonist.getXVel());
 				protagonist.setYVel(-5);
@@ -298,67 +299,64 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		Matrix m = new Matrix();
 		for(int i = 0; i < enemies.size(); i++){
 			if(enemies.get(i).hasSpawned()){
-				if(enemies.get(i).getXVel() < 0){
-					int armAngle = 0;
+				Enemy e = enemies.get(i);
+				if(e.getXVel() < 0){
 					int feetAngle = (int)(20*Math.sin(time/3));
-					int eyeAngle = (int)(360*Math.sin(time/20));;
 					//Back arm
-					m.setRotate(-armAngle, enemyRightArmBitmap[enemies.get(i).getType()-1].getWidth(), (float)(enemyRightArmBitmap[enemies.get(i).getType()-1].getHeight()*0.9));
-					m.postTranslate((float)((enemies.get(i).getXPos() + enemies.get(i).getWidth()*(0.5-Const.enemyArmXAxis) - enemies.get(i).getWidth()*Const.enemyArmRadius*Math.cos(-armAngle*Math.PI/180) - screenX)*scaleX)-enemyRightArmBitmap[enemies.get(i).getType()-1].getWidth(), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyArmYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyArmRadius*Math.sin(armAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyRightArmBitmap[enemies.get(i).getType()-1], m, null);
+					m.setRotate(e.getLeftArmAngle(), enemyRightArmBitmap[e.getType()-1].getWidth(), (float)(enemyRightArmBitmap[e.getType()-1].getHeight()*0.9));
+					m.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyArmXAxis) - e.getWidth()*Const.enemyArmRadius*Math.cos(-e.getLeftArmAngle()*Math.PI/180) - screenX)*scaleX)-enemyRightArmBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + e.getHeight()*Const.enemyArmRadius*Math.sin(-e.getLeftArmAngle()*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyRightArmBitmap[e.getType()-1], m, null);
 					//Back foot
-					m.setRotate(-feetAngle, enemyFootBitmap[enemies.get(i).getType()-1].getWidth()/2, enemyFootBitmap[enemies.get(i).getType()-1].getHeight()/2);
-					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - enemies.get(i).getWidth()*Const.enemyFootRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyFootYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyFootRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyFootBitmap[enemies.get(i).getType()-1], m, null);
+					m.setRotate(-feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
+					m.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyFootBitmap[e.getType()-1], m, null);
 					//Body
-					m.setTranslate((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()*(0.5-Const.enemyBodyXOffset)-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()*(0.5-Const.enemyBodyYOffset)-screenY)*scaleY));
-					canvas.drawBitmap(enemyBodyBitmap[enemies.get(i).getType()-1], m, null);
+					m.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyBodyXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyBodyYOffset)-screenY)*scaleY));
+					canvas.drawBitmap(enemyBodyBitmap[e.getType()-1], m, null);
 					//Eyes and mouth
-					m.setTranslate((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()*(0.5-Const.enemyEyeMouthXOffset)-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()*(0.5-Const.enemyEyeMouthYOffset)-screenY)*scaleY));
-					canvas.drawBitmap(enemyEyeMouthBitmap[enemies.get(i).getType()-1], m, null);
+					m.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyEyeMouthXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyEyeMouthYOffset)-screenY)*scaleY));
+					canvas.drawBitmap(enemyEyeMouthBitmap[e.getType()-1], m, null);
 					//Front arm
-					m.setRotate(armAngle, 0, (float)(enemyLeftArmBitmap[enemies.get(i).getType()-1].getHeight()*0.9));
-					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyArmXAxis) + enemies.get(i).getWidth()*Const.enemyArmRadius*Math.cos(armAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyArmYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyArmRadius*Math.sin(armAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyLeftArmBitmap[enemies.get(i).getType()-1], m, null);
+					m.setRotate(e.getRightArmAngle(), 0, (float)(enemyLeftArmBitmap[e.getType()-1].getHeight()*0.9));
+					m.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyArmXAxis) + e.getWidth()*Const.enemyArmRadius*Math.cos(e.getRightArmAngle()*Math.PI/180) - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + e.getHeight()*Const.enemyArmRadius*Math.sin(e.getRightArmAngle()*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyLeftArmBitmap[e.getType()-1], m, null);
 					//Front foot
-					m.setRotate(feetAngle, enemyFootBitmap[enemies.get(i).getType()-1].getWidth()/2, enemyFootBitmap[enemies.get(i).getType()-1].getHeight()/2);
-					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - enemies.get(i).getWidth()*Const.enemyFootRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyFootYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyFootRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyFootBitmap[enemies.get(i).getType()-1], m, null);
+					m.setRotate(feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
+					m.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyFootBitmap[e.getType()-1], m, null);
 					//Pupils
-					m.setTranslate((float)((enemies.get(i).getXPos() + enemies.get(i).getWidth()*(Const.enemyPupilXOffset-0.5)+enemies.get(i).getWidth()*Const.enemyPupilRadius*Math.cos(eyeAngle*Math.PI/180)-screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyPupilYOffset-0.5)-enemies.get(i).getHeight()*Const.enemyPupilRadius*Math.sin(eyeAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyPupilBitmap[enemies.get(i).getType()-1], m, null);
+					m.setTranslate((float)((e.getXPos() + e.getWidth()*(Const.enemyPupilXOffset-0.5)+e.getWidth()*Const.enemyPupilRadius*Math.cos(e.getPupilAngle()*Math.PI/180)-screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyPupilYOffset-0.5)+e.getHeight()*Const.enemyPupilRadius*Math.sin(e.getPupilAngle()*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyPupilBitmap[e.getType()-1], m, null);
 				} else {
-					int armAngle = 0;
 					int feetAngle = (int)(20*Math.sin(time/3));
-					int eyeAngle = (int)(360*Math.sin(time/20));;
 					//Back arm
-					m.setRotate(armAngle, 0, (float)(enemyLeftArmBitmap[enemies.get(i).getType()-1].getHeight()*0.9));
-					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyArmXAxis) + enemies.get(i).getWidth()*Const.enemyArmRadius*Math.cos(armAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyArmYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyArmRadius*Math.sin(armAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyLeftArmBitmap[enemies.get(i).getType()-1], m, null);
+					m.setRotate(e.getRightArmAngle(), 0, (float)(enemyLeftArmBitmap[e.getType()-1].getHeight()*0.9));
+					m.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyArmXAxis) + e.getWidth()*Const.enemyArmRadius*Math.cos(e.getRightArmAngle()*Math.PI/180) - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + e.getHeight()*Const.enemyArmRadius*Math.sin(e.getRightArmAngle()*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyLeftArmBitmap[e.getType()-1], m, null);
 					//Back foot
-					m.setRotate(feetAngle, enemyFootBitmap[enemies.get(i).getType()-1].getWidth()/2, enemyFootBitmap[enemies.get(i).getType()-1].getHeight()/2);
-					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - enemies.get(i).getWidth()*Const.enemyFootRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyFootYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyFootRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyFootBitmap[enemies.get(i).getType()-1], m, null);
+					m.setRotate(feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
+					m.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyFootBitmap[e.getType()-1], m, null);
 					//Body
-					m.setTranslate((float)((enemies.get(i).getXPos()-enemies.get(i).getWidth()*(0.5-Const.enemyBodyXOffset)-screenX)*scaleX), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()*(0.5-Const.enemyBodyYOffset)-screenY)*scaleY));
-					canvas.drawBitmap(enemyBodyBitmapFlipped[enemies.get(i).getType()-1], m, null);
+					m.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyBodyXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyBodyYOffset)-screenY)*scaleY));
+					canvas.drawBitmap(enemyBodyBitmapFlipped[e.getType()-1], m, null);
 					//Eyes and mouth
-					m.setTranslate((float)((enemies.get(i).getXPos()+enemies.get(i).getWidth()*(0.5-Const.enemyEyeMouthXOffset)-screenX)*scaleX)-enemyEyeMouthBitmap[enemies.get(i).getType()-1].getWidth(), (float)((enemies.get(i).getYPos()-enemies.get(i).getHeight()*(0.5-Const.enemyEyeMouthYOffset)-screenY)*scaleY));
-					canvas.drawBitmap(enemyEyeMouthBitmapFlipped[enemies.get(i).getType()-1], m, null);
+					m.setTranslate((float)((e.getXPos()+e.getWidth()*(0.5-Const.enemyEyeMouthXOffset)-screenX)*scaleX)-enemyEyeMouthBitmap[e.getType()-1].getWidth(), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyEyeMouthYOffset)-screenY)*scaleY));
+					canvas.drawBitmap(enemyEyeMouthBitmapFlipped[e.getType()-1], m, null);
 					//Front arm
-					m.setRotate(-armAngle, enemyRightArmBitmap[enemies.get(i).getType()-1].getWidth(), (float)(enemyRightArmBitmap[enemies.get(i).getType()-1].getHeight()*0.9));
-					m.postTranslate((float)((enemies.get(i).getXPos() + enemies.get(i).getWidth()*(0.5-Const.enemyArmXAxis) - enemies.get(i).getWidth()*Const.enemyArmRadius*Math.cos(-armAngle*Math.PI/180) - screenX)*scaleX)-enemyRightArmBitmap[enemies.get(i).getType()-1].getWidth(), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyArmYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyArmRadius*Math.sin(armAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyRightArmBitmap[enemies.get(i).getType()-1], m, null);
+					m.setRotate(e.getLeftArmAngle(), enemyRightArmBitmap[e.getType()-1].getWidth(), (float)(enemyRightArmBitmap[e.getType()-1].getHeight()*0.9));
+					m.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyArmXAxis) - e.getWidth()*Const.enemyArmRadius*Math.cos(-e.getLeftArmAngle()*Math.PI/180) - screenX)*scaleX)-enemyRightArmBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + e.getHeight()*Const.enemyArmRadius*Math.sin(-e.getLeftArmAngle()*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyRightArmBitmap[e.getType()-1], m, null);
 					//Front foot
-					m.setRotate(-feetAngle, enemyFootBitmap[enemies.get(i).getType()-1].getWidth()/2, enemyFootBitmap[enemies.get(i).getType()-1].getHeight()/2);
-					m.postTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - enemies.get(i).getWidth()*Const.enemyFootRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyFootYAxis-0.5) + enemies.get(i).getHeight()*Const.enemyFootRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyFootBitmap[enemies.get(i).getType()-1], m, null);
+					m.setRotate(-feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
+					m.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyFootBitmap[e.getType()-1], m, null);
 					//Pupils
-					m.setTranslate((float)((enemies.get(i).getXPos() - enemies.get(i).getWidth()*(Const.enemyPupilXOffset-0.5)+enemies.get(i).getWidth()*Const.enemyPupilRadius*Math.cos(eyeAngle*Math.PI/180)-screenX)*scaleX)-enemyPupilBitmap[enemies.get(i).getType()-1].getWidth(), (float)((enemies.get(i).getYPos() + enemies.get(i).getHeight()*(Const.enemyPupilYOffset-0.5)-enemies.get(i).getHeight()*Const.enemyPupilRadius*Math.sin(eyeAngle*Math.PI/180) - screenY)*scaleY));
-					canvas.drawBitmap(enemyPupilBitmap[enemies.get(i).getType()-1], m, null);
+					m.setTranslate((float)((e.getXPos() - e.getWidth()*(Const.enemyPupilXOffset-0.5)+e.getWidth()*Const.enemyPupilRadius*Math.cos(e.getPupilAngle()*Math.PI/180)-screenX)*scaleX)-enemyPupilBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyPupilYOffset-0.5)+e.getHeight()*Const.enemyPupilRadius*Math.sin(e.getPupilAngle()*Math.PI/180) - screenY)*scaleY));
+					canvas.drawBitmap(enemyPupilBitmap[e.getType()-1], m, null);
 				}
 
-				switch(enemies.get(i).getType()){
+				switch(e.getType()){
 				case 1:
 					
 					break;
@@ -726,31 +724,29 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
+		
+		//Drone
+		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
+		enemyEyeMouthBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyEyeMouthYScale*scaleY), true);
+		enemyLeftArmBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm), (int)(Enemy.getBaseWidth()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyArmYScale*scaleY), true);
+		enemyFootBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot), (int)(Enemy.getBaseWidth()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyFootYScale*scaleY), true);
+		enemyPupilBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil), (int)(Enemy.getBaseWidth()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyPupilYScale*scaleY), true);
+		
+		//Ninja
+		enemyBodyBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyBodyYScale*scaleY), true);	
+		enemyEyeMouthBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyEyeMouthYScale*scaleY), true);
+		enemyLeftArmBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyArmYScale*scaleY), true);
+		enemyFootBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyFootYScale*scaleY), true);
+		enemyPupilBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyPupilYScale*scaleY), true);
+		
+		//Tank
 		enemyBodyBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyBodyYScale*scaleY), true);	
 		enemyEyeMouthBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyEyeMouthYScale*scaleY), true);
 		enemyLeftArmBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyArmYScale*scaleY), true);
 		enemyFootBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyFootYScale*scaleY), true);
 		enemyPupilBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyPupilYScale*scaleY), true);
 		
-		
-		//Scale down tank bitmaps to drone and ninja sizes
-		//Drone
 		Matrix m = new Matrix();
-		m.setScale((float)(1/Enemy.getScaleTank()), (float)(1/Enemy.getScaleTank()));
-		enemyBodyBitmap[0] = Bitmap.createBitmap(enemyBodyBitmap[2], 0, 0, enemyBodyBitmap[2].getWidth(), enemyBodyBitmap[2].getHeight(), m, false);
-		enemyEyeMouthBitmap[0] = Bitmap.createBitmap(enemyEyeMouthBitmap[2], 0, 0, enemyEyeMouthBitmap[2].getWidth(), enemyEyeMouthBitmap[2].getHeight(), m, false);
-		enemyLeftArmBitmap[0] = Bitmap.createBitmap(enemyLeftArmBitmap[2], 0, 0, enemyLeftArmBitmap[2].getWidth(), enemyLeftArmBitmap[2].getHeight(), m, false);
-		enemyFootBitmap[0] = Bitmap.createBitmap(enemyFootBitmap[2], 0, 0, enemyFootBitmap[2].getWidth(), enemyFootBitmap[2].getHeight(), m, false);
-		enemyPupilBitmap[0] = Bitmap.createBitmap(enemyPupilBitmap[2], 0, 0, enemyPupilBitmap[2].getWidth(), enemyPupilBitmap[2].getHeight(), m, false);
-		
-		//Ninja
-		m.setScale((float)Enemy.getScaleNinja(), (float)Enemy.getScaleNinja());
-		enemyBodyBitmap[1] = Bitmap.createBitmap(enemyBodyBitmap[0], 0, 0, enemyBodyBitmap[0].getWidth(), enemyBodyBitmap[0].getHeight(), m, false);
-		enemyEyeMouthBitmap[1] = Bitmap.createBitmap(enemyEyeMouthBitmap[0], 0, 0, enemyEyeMouthBitmap[0].getWidth(), enemyEyeMouthBitmap[0].getHeight(), m, false);
-		enemyLeftArmBitmap[1] = Bitmap.createBitmap(enemyLeftArmBitmap[0], 0, 0, enemyLeftArmBitmap[0].getWidth(), enemyLeftArmBitmap[0].getHeight(), m, false);
-		enemyFootBitmap[1] = Bitmap.createBitmap(enemyFootBitmap[0], 0, 0, enemyFootBitmap[0].getWidth(), enemyFootBitmap[0].getHeight(), m, false);
-		enemyPupilBitmap[1] = Bitmap.createBitmap(enemyPupilBitmap[0], 0, 0, enemyPupilBitmap[0].getWidth(), enemyPupilBitmap[0].getHeight(), m, false);
-		
 		//Flip images
 		m.setScale(-1, 1);
 
