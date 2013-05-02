@@ -267,7 +267,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				enemies.get(i).takeDashDamage(protagonist);
 				Log.d(TAG,"" + enemies.get(i).getHealth());
 			}
-			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible()){
+			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && enemies.get(i).hasSpawned()){
 				protagonist.setInvincible(true);
 				protagonist.setXVel(-protagonist.getXVel());
 				protagonist.setYVel(-5);
