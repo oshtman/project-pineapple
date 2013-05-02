@@ -47,6 +47,8 @@ public class Protagonist {
 		this.health = 1;
 		this.gp = gp;
 		this.stepCount = 0;
+		Log.d(TAG, "Me");
+
 	}
 	//------------------------------------------------------------------------------------------------//
 	//HOW TO MAKE PROTAGONIST MOVE
