@@ -69,7 +69,7 @@ public class LevelLoader {
 			
 			//Enemies
 			enemies.add(new int[]{100, 20, 80, 2});
-			enemies.add(new int[]{100, 30, 80, 3});
+			//enemies.add(new int[]{100, 30, 80, 3});
 			
 			//Trees
 			trees.add(0);

@@ -46,8 +46,8 @@ public class Enemy {
 			this.setHealth(0.1);
 			this.height = (int)(this.height*scaleNinja);
 			this.width = (int)(this.width*scaleNinja); //Change 1.42 to ratio of bitmap
-			this.typeAcc = 2*baseAcc;
-			this.maxSpeed = 1.3*maxSpeed;
+			this.typeAcc = 0.6*baseAcc;
+			this.maxSpeed = 1*maxSpeed;
 			this.jumpVel = 2*jumpVel;
 			this.jumpAcc = 2*jumpAcc;
 		}

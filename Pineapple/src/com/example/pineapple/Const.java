@@ -19,9 +19,7 @@ public class Const {
 		public static final double footXScale = 0.45;
 		public static final double footYScale = 0.156;
 		public static final double backFootOffset = 0.1;
-		//public static final double footXOffset = 0.35;
-		//public static final double footYOffset = 0.844; 
-
+		
 		public static final double weaponXScale = 0.7;
 		public static final double weaponYScale = 0.378;
 		public static final double weaponXAxis = 0.3;
@@ -34,7 +32,40 @@ public class Const {
 		public static final double pupilYScale = 0.056;
 		public static final double pupilRadius = 0.08;
 
-		//Miscellaneous constants for rendering
+		//Miscellaneous constants for protagonist rendering
 		public static final double breathOffset = 0.03;
 		public static final float jumpFeetAngle = 45;
+		
+		//Enemy constants
+		
+		public static final double enemyBodyXScale = 0.9;
+		public static final double enemyBodyYScale = 0.9;
+		public static final double enemyBodyXOffset = 0.05;
+		public static final double enemyBodyYOffset = 0.05; 
+
+		public static final double enemyEyeMouthXScale = 0.327;
+		public static final double enemyEyeMouthYScale = 0.5;
+		public static final double enemyEyeMouthXOffset = 0.194;
+		public static final double enemyEyeMouthYOffset = 0.3; 
+
+		public static final double enemyFootXAxis = 0.20;
+		public static final double enemyFootYAxis = 0.6;
+		public static final double enemyFootRadius = 0.35;
+		public static final double enemyFootXScale = 0.45;
+		public static final double enemyFootYScale = 0.156;
+		//public static final double enemyBackFootOffset = 0.1;
+
+		public static final double enemyPupilXOffset = 0.25;
+		public static final double enemyPupilYOffset = 0.4;
+		public static final double enemyPupilXScale = 0.15;
+		public static final double enemyPupilYScale = 0.056;
+		public static final double enemyPupilRadius = 0.04;
+		
+		public static final double enemyArmXAxis = 0.5;
+		public static final double enemyArmYAxis = 0.2;
+		public static final double enemyArmXScale = 0.694;
+		public static final double enemyArmYScale = 0.413;
+		public static final double enemyArmRadius = 0.3;
+
+		
 }
