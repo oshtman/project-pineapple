@@ -95,11 +95,19 @@ public class Enemy {
 		this.setHealth(this.getHealth()-damage);
 	}
 
-	//Reduce enemy health when dashing
+	//Reduce enemy health when dashing and bumps enemy away
 	public void takeDashDamage(Protagonist p){
 		if(p.isDashBonus()){
-			this.setHealth(this.getHealth()/2);
+			this.setHealth(this.getHealth()/2 + this.getHealth()/10);
 			p.setDashBonus(false);
+			int sign;
+			if (Math.random() > 0.5){
+				sign = 1;
+			}	else {
+				sign = -1;
+			}
+			setXVel(-getXVel() + sign*getXVel()/10);
+			setYVel(jumpVel);
 		}
 	}
 	//------------------------------------------------------------------------------------------------//

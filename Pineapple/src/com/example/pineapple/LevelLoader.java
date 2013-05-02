@@ -85,19 +85,13 @@ public class LevelLoader {
 				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
 			}
 			//Enemies
-			enemies.add(new int[]{200, 0, 100, 3});
-			enemies.add(new int[]{200, 0, 150, 3});
-			enemies.add(new int[]{200, 0, 200, 3});
-			enemies.add(new int[]{200, 0, 250, 3});
-			enemies.add(new int[]{200, 0, 300, 3});
-			enemies.add(new int[]{200, 0, 350, 3});
-			enemies.add(new int[]{200, 20, 100, 2});
-			enemies.add(new int[]{200, 20, 150, 2});
-			enemies.add(new int[]{200, 20, 200, 2});
-			enemies.add(new int[]{200, 20, 250, 2});
-			enemies.add(new int[]{200, 20, 300, 2});
-			enemies.add(new int[]{200, 20, 350, 2});
-			
+			 for (int j = 1; j <= 25; j++){
+				 int spawnPoint = j*50 + 100;
+			enemies.add(new int[]{spawnPoint + 100, 10, spawnPoint + 40, 1});
+			enemies.add(new int[]{spawnPoint + 100, 20, spawnPoint + 20, 2});
+			enemies.add(new int[]{spawnPoint + 100, 0, spawnPoint, 3});
+
+			 }
 			break;
 		}
 	
