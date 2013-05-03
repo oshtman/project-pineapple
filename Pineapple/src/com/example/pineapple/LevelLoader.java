@@ -36,7 +36,7 @@ public class LevelLoader {
 	
 	//List for trees
 	private ArrayList<Integer> trees = new ArrayList<Integer>();
-	
+	private ArrayList<int[]> rocks = new ArrayList<int[]>();	
 	
 	
 	public LevelLoader(int level){
@@ -76,6 +76,11 @@ public class LevelLoader {
 			trees.add(0);
 			trees.add(50);
 			trees.add(100);
+			//Rocks
+			rocks.add(new int[]{20, 1});
+			rocks.add(new int[]{80, 2});
+			rocks.add(new int[]{120, 3});
+			
 			break;
 		case 2:
 			//Ground
@@ -145,6 +150,14 @@ public class LevelLoader {
 	}
 	
 	public int getNumberOfTrees(){
+		return trees.size();
+	}
+	
+	public ArrayList<int[]> getRocks(){
+		return rocks;
+	}
+	
+	public int getNumberOfRocks(){
 		return trees.size();
 	}
 	

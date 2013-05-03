@@ -40,6 +40,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<Bullet> bullets;
 	private ArrayList<Enemy> enemies;
 	private ArrayList<Integer> trees;
+	private ArrayList<int[]> rocks;
 	private int level;
 	private HeatMeter heatMeter;
 	private boolean firing = false;
@@ -63,6 +64,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap stickBitmap;
 	private Bitmap bulletBitmap;
 	private Bitmap treeBitmap;
+	private Bitmap[] rockBitmap;
 	
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -102,6 +104,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadPlatforms();
 		loadEnemies();
 		loadTrees();
+		loadRocks();
 		
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
@@ -127,7 +130,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public void loadTrees(){
 		trees = levelLoader.getTrees();
-		
+	}
+	
+	public void loadRocks(){
+		rocks = levelLoader.getRocks();
 	}
 
 	//Method that gets called every frame to update the games state
@@ -285,6 +291,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawColor(Color.rgb(135, 206, 250)); //Sky
 		renderSun(canvas);
 		renderTrees(canvas);
+		renderRocks(canvas);
 		renderPlatforms(canvas);
 		renderEnemies(canvas);
 		renderProtagonist(canvas);
@@ -630,6 +637,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		
 	}
+	
+	//Draw rocks
+	public void renderRocks(Canvas canvas){
+		for(int i = 0; i < rocks.size(); i++){
+			canvas.drawBitmap(rockBitmap[rocks.get(i)[1]-1], (float)((rocks.get(i)[0]-screenX)*scaleX)-rockBitmap[0].getWidth()/2, (float)((ground.getYFromX(rocks.get(i)[0])-screenY)*scaleY)-rockBitmap[0].getHeight()/2, null);
+		}
+	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
@@ -737,6 +751,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
 		treeBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tree_1), (int)(100*scaleX), (int)(100*scaleY), true);
+		rockBitmap = new Bitmap[]{
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_1), (int)(15*scaleX), (int)(15*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_2), (int)(15*scaleX), (int)(15*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_3), (int)(15*scaleX), (int)(15*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_4), (int)(15*scaleX), (int)(15*scaleY), true),
+		};
 		
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
