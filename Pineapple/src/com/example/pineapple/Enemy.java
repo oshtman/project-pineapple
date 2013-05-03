@@ -13,7 +13,7 @@ public class Enemy {
 	private double yVel;
 	private double xAcc;
 	private double yAcc;
-	private double health;
+	private double health = 1;
 	private GamePanel gp;
 	private static int baseHeight = 14;
 	private static int baseWidth = (int)(baseHeight*1.5); //Change 1.5 to ratio of bitmap
@@ -27,12 +27,20 @@ public class Enemy {
 	private double slideCoefficient = 0.8;
 	private double typeAcc;
 	private boolean touchingGround;
+	private boolean onPlatform;
 	private final int type;
 	private int leftArmAngle, rightArmAngle, armAngleCounter = 0;
 	private int pupilAngle;
 	private final double spawnX;
 	private boolean spawned;
+<<<<<<< HEAD
 	private final double slopeThreshold = 0.7;
+=======
+	private double dashDistance;
+	private double dashPowerConstant;
+	private double healthLostByDashConstant = 0.5;
+	private double damageGrade;
+>>>>>>> branch 'master' of https://github.com/oskarwaglund/project-pineapple.git
 	//------------------------------------------------------------------------------------------------//
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
@@ -41,30 +49,32 @@ public class Enemy {
 		this.width = baseWidth;
 		//type 1 is normal
 		if (type == 1) {
-			setHealth(0.5);
+			this.damageGrade = 1;
 			this.typeAcc = 0.2*baseAcc;
 			leftArmAngle = -45;
 			rightArmAngle = 45;
 		}
 		//type 2 is ninja
 		else if (type == 2) {
-			this.setHealth(0.1);
 			this.height = (int)(this.height*scaleNinja);
 			this.width = (int)(this.width*scaleNinja);
 			this.typeAcc = 0.6*baseAcc;
 			this.maxSpeed = 1*maxSpeed;
 			this.jumpVel = 2*jumpVel;
 			this.jumpAcc = 2*jumpAcc;
+			this.damageGrade = 1.5;
+
 		}
 		//type 3 is tank
 		else if (type == 3) {
-			this.setHealth(1);
 			this.height = (int)(this.height*scaleTank);
 			this.width = (int)(this.width*scaleTank);
 			this.typeAcc = 0.1*baseAcc;
 			this.maxSpeed = 0.5*maxSpeed;
 			this.jumpVel = 0.5*jumpVel;
 			this.jumpAcc = 0.5*jumpAcc;
+			this.damageGrade = 0.5;
+
 		}
 		this.setXPos(i);
 		this.setYPos(j);
@@ -134,15 +144,24 @@ public class Enemy {
 
 	//Reduce enemy health when dashing and bumps enemy away
 	public void takeDashDamage(Protagonist p){
-			this.setHealth(this.getHealth()/2 + this.getHealth()/10);
-			int sign;
-			if (Math.random() > 0.5){
-				sign = 1;
-			}	else {
-				sign = -1;
-			}
-			setXVel(-getXVel() + sign*getXVel()/10);
-			setYVel(jumpVel);
+		dashDistance = Math.abs(p.getXPos() - this.getXPos());
+		if(dashDistance < p.getWidth())
+			dashPowerConstant = 1;
+		else if (dashDistance < p.getWidth()*2 && dashDistance > p.getWidth())
+			dashPowerConstant = 0.75;
+		else
+			dashPowerConstant = 0.5;	
+		this.setHealth(this.getHealth() - healthLostByDashConstant*dashPowerConstant*damageGrade);
+		int sign;
+		if (Math.random() > 0.5){
+			sign = 1;
+		}	else {
+			sign = -1;
+		}
+
+		setXVel(-getXVel() + sign*getXVel()/10);
+		setYVel(jumpVel*dashPowerConstant);
+		this.setTouchingGround(false);
 	}
 	//------------------------------------------------------------------------------------------------//
 	//CHECK-METHODS FOR ENEMY AND SURROUNDING
@@ -157,35 +176,43 @@ public class Enemy {
 	}
 
 	//Check if enemy hit platform
-	public void checkPlatform(ArrayList<Platform> al) {
-		for (int i = 0; i < al.size(); i++) {
-			if (al.get(i).spans(this.getXPos())) {
+	public void checkPlatform(ArrayList<Platform> platforms) {
+		for (int i = 0; i < platforms.size(); i++) {
+			if (platforms.get(i).spans(this.getXPos())) {
 				//if head is in platform
 				//Log.d(TAG, "Warning: Platform, platform!!");
-				if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
+				if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
 					this.setYVel(-this.getYVel());
 					Log.d(TAG, "Enemy hit the head!!");
 				} else {
 					//if feet is in platform
-					if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
-						if (this.getYPos() + this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos())) {
-							this.setYPos(al.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
+					if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
+						if (this.getYPos() + this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos())) {
+							this.setYPos(platforms.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 							this.setYVel(0);
 							this.setYAcc(0);
 							touchingGround = true;
+							onPlatform = true;
 							Log.d(TAG, "Enemy over, and out!!");					
 						}
 					}
 				}
 			} //if making move towards edge of platform
-			if (al.get(i).checkSide(this, -1) && getXPos() < al.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > al.get(i).getUpperX()[0] && getXVel() > 0) {
+			if (platforms.get(i).checkSide(this, -1) && getXPos() < platforms.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > platforms.get(i).getUpperX()[0] && getXVel() > 0) {
 				this.setXVel(0);
-				this.setXPos(al.get(i).getUpperX()[0] - getWidth()/2);
+				this.setXPos(platforms.get(i).getUpperX()[0] - getWidth()/2);
 			}
-			if(al.get(i).checkSide(this, 1) && getXPos() > al.get(i).getUpperX()[al.get(i).getUpperX().length-1] && getXPos() - getWidth()/2 < al.get(i).getUpperX()[al.get(i).getUpperX().length-1] && getXVel() < 0){
+			if(platforms.get(i).checkSide(this, 1) && getXPos() > platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] && getXPos() - getWidth()/2 < platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] && getXVel() < 0){
 				this.setXVel(0);
-				this.setXPos(al.get(i).getUpperX()[al.get(i).getUpperX().length-1] + getWidth()/2);
+				this.setXPos(platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] + getWidth()/2);
 			}
+		}
+	}
+
+	public void checkAirborne(Ground g, ArrayList<Platform> platforms){
+		if(Math.abs(this.yPos + height/2 - g.getYFromX(this.xPos)) > this.yPos && !onPlatform){
+			touchingGround = false;
+			onPlatform = false;
 		}
 	}
 	//------------------------------------------------------------------------------------------------//
@@ -205,7 +232,7 @@ public class Enemy {
 	public void lookAt(Protagonist p){
 		pupilAngle = (int)(180/Math.PI*Math.atan2(p.getYPos()-getYPos(), p.getXPos() - getXPos()));
 	}
-	
+
 	//Wave arms
 	public void waveArms(){
 		armAngleCounter++;
@@ -286,6 +313,9 @@ public class Enemy {
 		this.health = d;
 	}
 
+	public double getDamageGrade() {
+		return damageGrade;
+	}
 	public double getMaxSpeed() {
 		return maxSpeed;
 	}
@@ -309,11 +339,11 @@ public class Enemy {
 	public int getHeight() {
 		return height;
 	}
-	
+
 	public static double getScaleTank(){
 		return scaleTank;
 	}
-	
+
 	public static double getScaleNinja(){
 		return scaleNinja;
 	}
@@ -342,6 +372,12 @@ public class Enemy {
 	}
 	public boolean hasSpawned(){
 		return spawned;
+	}
+	public boolean isTouchingGround() {
+		return touchingGround;
+	}
+	public void setTouchingGround(boolean touchingGround) {
+		this.touchingGround = touchingGround;
 	}
 	//------------------------------------------------------------------------------------------------//
 }

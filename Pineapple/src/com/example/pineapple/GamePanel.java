@@ -48,6 +48,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint red = new Paint();
 	private Paint frame = new Paint();
 	private double time;
+	private double bulletDamage = 0.05;
 
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
@@ -191,8 +192,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				enemy.move();
 				enemy.checkGround(ground);
 				enemy.checkPlatform(platforms);
+				enemy.checkAirborne(ground, platforms);
 				enemy.waveArms();
 				enemy.lookAt(protagonist);
+				Log.d(TAG, "" + enemies.get(i).getHealth());
 			} else {
 				if(protagonist.getXPos() > enemy.getSpawnX()){
 					enemy.spawn();
@@ -256,7 +259,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					bullets.remove(i);//Remove the bullet from the game
 					i--;
 
-					enemy.takeDamage(0.05); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
+					enemy.takeDamage(bulletDamage*enemies.get(j).getDamageGrade()); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
 
 					if(enemy.getHealth() <= 0){//If the enemy is dead
 						enemies.remove(j);
@@ -273,8 +276,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(int i = 0; i < enemies.size(); i++){
 			//Dashmove
 			//if(protagonist.collide(enemies.get(i)) && protagonist.isDashBonus()){
-			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*1.5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight() && protagonist.isDashBonus()){
+			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*3 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*1.5 && protagonist.isDashBonus() && enemies.get(i).isTouchingGround()){
 				enemies.get(i).takeDashDamage(protagonist);
+				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
+					enemies.remove(i);
+					Log.d(TAG, "Enemy down. Splash.");
+				}
 			}
 			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && enemies.get(i).hasSpawned()){
 				protagonist.setInvincible(true);
@@ -606,7 +613,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderSun(Canvas canvas){
 		float x = (float)(width*scaleX/3);//Make generalll
 		float y = (float)((50 + 50*Math.sin(Math.PI + time/500))*scaleY);//Make generalll
-		float radius = 60;
+		float radius = (float)(width/20*scaleX);
 		Paint p = new Paint();
 		p.setColor(Color.YELLOW);
 
@@ -627,8 +634,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			float trunkHeight = (float)(height/4);//Make generalll
 			float trunkWidth = (float)(5);//Make generalll
 			float radius = 20;
-			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleX), (float)(radius*scaleX), top);
-			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleX), (float)(radius*scaleX), border);
+			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleY), (float)(radius*scaleX), top);
+			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleY), (float)(radius*scaleX), border);
 			canvas.drawRect((float)((trees.get(i) - trunkWidth/2 - screenX/4)*scaleX), (float)((y - trunkHeight)*scaleY), (float)((trees.get(i) + trunkWidth/2 - (float)(screenX/4))*scaleX), (float)(y*scaleY), trunk);
 		}
 		*/
