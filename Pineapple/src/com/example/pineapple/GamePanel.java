@@ -62,6 +62,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap pupilBitmap;
 	private Bitmap stickBitmap;
 	private Bitmap bulletBitmap;
+	private Bitmap treeBitmap;
 	
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -605,7 +606,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw trees
 	public void renderTrees(Canvas canvas){
 		//x is centre of tree?
-		Paint trunk = new Paint();
+		/*Paint trunk = new Paint();
 		trunk.setColor(Color.DKGRAY);
 		Paint top = new Paint();
 		top.setColor(Color.GREEN);
@@ -620,8 +621,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleX), (float)(radius*scaleX), border);
 			canvas.drawRect((float)((trees.get(i) - trunkWidth/2 - screenX/4)*scaleX), (float)((y - trunkHeight)*scaleY), (float)((trees.get(i) + trunkWidth/2 - (float)(screenX/4))*scaleX), (float)(y*scaleY), trunk);
 		}
-		
-
+		*/
+		for(int i = 0; i < trees.size(); i++){
+			canvas.drawBitmap(treeBitmap, (float)((trees.get(i) - treeBitmap.getWidth()/2 - screenX)*scaleX), (float)(0*scaleY - screenY/2), null);
+		}
 		
 	}
 
@@ -730,6 +733,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
+		treeBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tree_1), (int)(100*scaleX), (int)(100*scaleY), true);
 		
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
