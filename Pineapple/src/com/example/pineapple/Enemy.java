@@ -27,6 +27,7 @@ public class Enemy {
 	private double slideCoefficient = 0.8;
 	private double typeAcc;
 	private boolean touchingGround;
+	private boolean onPlatform;
 	private final int type;
 	private int leftArmAngle, rightArmAngle, armAngleCounter = 0;
 	private int pupilAngle;
@@ -110,6 +111,7 @@ public class Enemy {
 			}
 			setXVel(-getXVel() + sign*getXVel()/10);
 			setYVel(jumpVel);
+			this.setTouchingGround(false);
 	}
 	//------------------------------------------------------------------------------------------------//
 	//CHECK-METHODS FOR ENEMY AND SURROUNDING
@@ -124,35 +126,43 @@ public class Enemy {
 	}
 
 	//Check if enemy hit platform
-	public void checkPlatform(ArrayList<Platform> al) {
-		for (int i = 0; i < al.size(); i++) {
-			if (al.get(i).spans(this.getXPos())) {
+	public void checkPlatform(ArrayList<Platform> platforms) {
+		for (int i = 0; i < platforms.size(); i++) {
+			if (platforms.get(i).spans(this.getXPos())) {
 				//if head is in platform
 				//Log.d(TAG, "Warning: Platform, platform!!");
-				if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
+				if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
 					this.setYVel(-this.getYVel());
 					Log.d(TAG, "Enemy hit the head!!");
 				} else {
 					//if feet is in platform
-					if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > al.get(i).getUpperYFromX(this.getXPos())) {
-						if (this.getYPos() + this.getHeight()/2 < al.get(i).getLowerYFromX(this.getXPos())) {
-							this.setYPos(al.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
+					if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
+						if (this.getYPos() + this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos())) {
+							this.setYPos(platforms.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 							this.setYVel(0);
 							this.setYAcc(0);
 							touchingGround = true;
+							onPlatform = true;
 							Log.d(TAG, "Enemy over, and out!!");					
 						}
 					}
 				}
 			} //if making move towards edge of platform
-			if (al.get(i).checkSide(this, -1) && getXPos() < al.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > al.get(i).getUpperX()[0] && getXVel() > 0) {
+			if (platforms.get(i).checkSide(this, -1) && getXPos() < platforms.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > platforms.get(i).getUpperX()[0] && getXVel() > 0) {
 				this.setXVel(0);
-				this.setXPos(al.get(i).getUpperX()[0] - getWidth()/2);
+				this.setXPos(platforms.get(i).getUpperX()[0] - getWidth()/2);
 			}
-			if(al.get(i).checkSide(this, 1) && getXPos() > al.get(i).getUpperX()[al.get(i).getUpperX().length-1] && getXPos() - getWidth()/2 < al.get(i).getUpperX()[al.get(i).getUpperX().length-1] && getXVel() < 0){
+			if(platforms.get(i).checkSide(this, 1) && getXPos() > platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] && getXPos() - getWidth()/2 < platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] && getXVel() < 0){
 				this.setXVel(0);
-				this.setXPos(al.get(i).getUpperX()[al.get(i).getUpperX().length-1] + getWidth()/2);
+				this.setXPos(platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] + getWidth()/2);
 			}
+		}
+	}
+	
+	public void checkAirborne(Ground g, ArrayList<Platform> platforms){
+		if(Math.abs(this.yPos + height/2 - g.getYFromX(this.xPos)) > this.yPos && !onPlatform){
+			touchingGround = false;
+			onPlatform = false;
 		}
 	}
 	//------------------------------------------------------------------------------------------------//
@@ -309,6 +319,12 @@ public class Enemy {
 	}
 	public boolean hasSpawned(){
 		return spawned;
+	}
+	public boolean isTouchingGround() {
+		return touchingGround;
+	}
+	public void setTouchingGround(boolean touchingGround) {
+		this.touchingGround = touchingGround;
 	}
 	//------------------------------------------------------------------------------------------------//
 }

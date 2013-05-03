@@ -183,6 +183,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				enemy.move();
 				enemy.checkGround(ground);
 				enemy.checkPlatform(platforms);
+				enemy.checkAirborne(ground, platforms);
 				enemy.waveArms();
 				enemy.lookAt(protagonist);
 			} else {
@@ -265,7 +266,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(int i = 0; i < enemies.size(); i++){
 			//Dashmove
 			//if(protagonist.collide(enemies.get(i)) && protagonist.isDashBonus()){
-			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*1.5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight() && protagonist.isDashBonus()){
+			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*1.5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*1.5 && protagonist.isDashBonus() && enemies.get(i).isTouchingGround()){
 				enemies.get(i).takeDashDamage(protagonist);
 			}
 			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && enemies.get(i).hasSpawned()){
@@ -589,7 +590,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderSun(Canvas canvas){
 		float x = (float)(width*scaleX/3);//Make generalll
 		float y = (float)((50 + 50*Math.sin(Math.PI + time/500))*scaleY);//Make generalll
-		float radius = (float)(60*scaleX);
+		float radius = (float)(width/20*scaleX);
 		Paint p = new Paint();
 		p.setColor(Color.YELLOW);
 
