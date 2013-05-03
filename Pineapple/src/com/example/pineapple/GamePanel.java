@@ -589,7 +589,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderSun(Canvas canvas){
 		float x = (float)(width*scaleX/3);//Make generalll
 		float y = (float)((50 + 50*Math.sin(Math.PI + time/500))*scaleY);//Make generalll
-		float radius = 60;
+		float radius = (float)(60*scaleX);
 		Paint p = new Paint();
 		p.setColor(Color.YELLOW);
 
@@ -610,8 +610,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			float trunkHeight = (float)(height/4);//Make generalll
 			float trunkWidth = (float)(5);//Make generalll
 			float radius = 20;
-			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleX), (float)(radius*scaleX), top);
-			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleX), (float)(radius*scaleX), border);
+			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleY), (float)(radius*scaleX), top);
+			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleY), (float)(radius*scaleX), border);
 			canvas.drawRect((float)((trees.get(i) - trunkWidth/2 - screenX/4)*scaleX), (float)((y - trunkHeight)*scaleY), (float)((trees.get(i) + trunkWidth/2 - (float)(screenX/4))*scaleX), (float)(y*scaleY), trunk);
 		}
 		
