@@ -55,7 +55,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double xGap, yGap, gap, groundAngle; 
 	private Paint groundPaint = new Paint();
 	private Path groundPath;
-	private Matrix renderMatrix;
+	private Matrix renderMatrix = new Matrix();
 	
 	//Bitmaps
 	private Bitmap bodyBitmap;
@@ -313,7 +313,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw the enemies
 	public void renderEnemies(Canvas canvas){
-		renderMatrix = new Matrix();
+		;
 		for(int i = 0; i < enemies.size(); i++){
 			if(enemies.get(i).hasSpawned()){
 				Enemy e = enemies.get(i);
@@ -402,7 +402,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			feetAngle = Const.jumpFeetAngle;
 		}
 		//Draw all the protagonist parts
-		renderMatrix = new Matrix();
+		;
 		if(protagonist.isFacingRight()){
 			//Draw back foot
 			renderMatrix.setRotate(-feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
@@ -525,8 +525,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(platforms.get(i).getUpperX()[0] < screenX+width && platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] > screenX){
 				Path path = platforms.get(i).getPath();
 				Path newPath = new Path(path); 
-				renderMatrix = new Matrix();
-				renderMatrix.postTranslate(-(float)screenX, -(float)screenY);
+				renderMatrix.setTranslate(-(float)screenX, -(float)screenY);
 				renderMatrix.postScale((float)scaleX, (float)scaleY);
 				newPath.transform(renderMatrix);
 				canvas.drawPath(newPath, groundPaint);
@@ -562,7 +561,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		int radius = Bullet.getRadius();
 		for(int i = 0; i < bullets.size(); i++){
 			Bullet b = bullets.get(i);
-			renderMatrix = new Matrix();
+			;
 			renderMatrix.setRotate((float)(180/Math.PI*Math.atan2(b.getYVel(), b.getXVel())), (float)(bulletBitmap.getWidth()/2), (float)(bulletBitmap.getHeight()/2));
 			renderMatrix.postTranslate((float)((b.getXPos()-radius/2.-screenX)*scaleX), (float)((b.getYPos()-radius/2.-screenY)*scaleY));
 			canvas.drawBitmap(bulletBitmap, renderMatrix, null);
@@ -649,7 +648,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw rocks
 	public void renderRocks(Canvas canvas){
 		for(int i = 0; i < rocks.size(); i++){
-			canvas.drawBitmap(rockBitmap[rocks.get(i)[1]-1], (float)((rocks.get(i)[0]-screenX)*scaleX)-rockBitmap[0].getWidth()/2, (float)((ground.getYFromX(rocks.get(i)[0])-screenY)*scaleY)-rockBitmap[0].getHeight()/2, null);
+			groundAngle = (Math.atan(ground.getSlope(rocks.get(i)[0])));
+			renderMatrix.setScale((float)(rocks.get(i)[2]/Const.maxRockSize), (float)(rocks.get(i)[2]/Const.maxRockSize));
+			renderMatrix.postRotate((float)(groundAngle*180/Math.PI), (float)(rocks.get(i)[2]/2*scaleX), (float)(rocks.get(i)[2]/2*scaleY));
+			renderMatrix.postTranslate((float)((rocks.get(i)[0]-screenX-rocks.get(i)[2]/2)*scaleX), (float)((ground.getYFromX(rocks.get(i)[0])-screenY-rocks.get(i)[2]*Const.partOfRockVisible)*scaleY));
+			canvas.drawBitmap(rockBitmap[rocks.get(i)[1]-1], renderMatrix, null);
 		}
 	}
 

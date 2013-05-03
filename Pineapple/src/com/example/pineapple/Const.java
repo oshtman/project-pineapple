@@ -68,4 +68,5 @@ public class Const {
 		public static final double enemyArmRadius = 0.3;
 
 		public static final double maxRockSize = 30;
+		public static final double partOfRockVisible = 0.8;
 }

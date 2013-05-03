@@ -80,7 +80,10 @@ public class LevelLoader {
 			//Rocks
 			rocks.add(new int[]{20, 1, 20});
 			rocks.add(new int[]{80, 2, 15});
-			rocks.add(new int[]{120, 3, 25});
+			rocks.add(new int[]{160, 3, 15});
+			rocks.add(new int[]{180, 3, 20});
+			rocks.add(new int[]{200, 3, 25});
+			rocks.add(new int[]{220, 3, 30});
 			
 			break;
 		case 2:
