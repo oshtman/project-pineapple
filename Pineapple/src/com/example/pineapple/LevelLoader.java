@@ -34,8 +34,9 @@ public class LevelLoader {
 	//spawnX is the x position the protagonist has to reach in order for the enemy to spawn
 	private ArrayList<int[]> enemies = new ArrayList<int[]>();
 	
-	//List for trees
+	//List for trees (just an x-position)
 	private ArrayList<Integer> trees = new ArrayList<Integer>();
+	//List for rocks {x position, type, size}
 	private ArrayList<int[]> rocks = new ArrayList<int[]>();	
 	
 	
@@ -77,9 +78,9 @@ public class LevelLoader {
 			trees.add(50);
 			trees.add(100);
 			//Rocks
-			rocks.add(new int[]{20, 1});
-			rocks.add(new int[]{80, 2});
-			rocks.add(new int[]{120, 3});
+			rocks.add(new int[]{20, 1, 20});
+			rocks.add(new int[]{80, 2, 15});
+			rocks.add(new int[]{120, 3, 25});
 			
 			break;
 		case 2:
