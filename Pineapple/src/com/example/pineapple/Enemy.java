@@ -32,6 +32,7 @@ public class Enemy {
 	private int pupilAngle;
 	private final double spawnX;
 	private boolean spawned;
+	private final double slopeThreshold = 0.7;
 	//------------------------------------------------------------------------------------------------//
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
@@ -91,6 +92,36 @@ public class Enemy {
 	public void accelerate(Protagonist p){
 		//Fix constants later...
 		this.accelerate(typeAcc*Math.signum(p.getXPos() - this.getXPos()));
+	}
+	
+	//Check the slope and adjust speed accordingly
+	public void checkSlope(Ground ground, ArrayList<Platform> platforms){
+		if(touchingGround){ 
+			if(getYPos()+getHeight()/2 - ground.getYFromX(getXPos()) > -5){ //On ground
+				double slope = ground.getSlope(this.getXPos());
+				if(Math.abs(slope) > slopeThreshold){
+					setXVel(getXVel()+slope);
+				}
+			} else { //On platform
+				for(int i = 0; i < platforms.size(); i++){
+					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
+						double slope = platforms.get(i).getSlope(this.getXPos());
+						if(Math.abs(slope) > slopeThreshold){
+							setXVel(getXVel()+slope);
+							break;
+						}
+					}
+				}
+			}
+
+			//Check if the speed has to be reduced
+			//This doesn't look good in game
+			if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) { //Double code, also in accelerate
+				this.setXVel(this.getMaxSpeed());
+			} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
+				this.setXVel(-this.getMaxSpeed());
+			}
+		}
 	}
 	//------------------------------------------------------------------------------------------------//
 	//ENEMY ACTIONS
