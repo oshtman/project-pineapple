@@ -33,14 +33,11 @@ public class Enemy {
 	private int pupilAngle;
 	private final double spawnX;
 	private boolean spawned;
-<<<<<<< HEAD
 	private final double slopeThreshold = 0.7;
-=======
 	private double dashDistance;
 	private double dashPowerConstant;
 	private double healthLostByDashConstant = 0.5;
 	private double damageGrade;
->>>>>>> branch 'master' of https://github.com/oskarwaglund/project-pineapple.git
 	//------------------------------------------------------------------------------------------------//
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {

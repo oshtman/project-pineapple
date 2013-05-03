@@ -9,7 +9,7 @@ public class LevelLoader {
 	
 	//Ground arrays for level
 	private int[][] ground;
-	private int[] startPos = new int[]{0, 0}; //x- and y-position of protagonist when the level begins
+	private int[] startPos = new int[]{10, 0}; //x- and y-position of protagonist when the level begins
 	
 	private int[][] p1;
 	private int[][] p2;
