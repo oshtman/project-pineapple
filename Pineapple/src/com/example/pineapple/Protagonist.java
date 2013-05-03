@@ -61,7 +61,7 @@ public class Protagonist {
 	//Accelerating protagonist
 	public void accelerate(double acc) { // acc = 0.2?
 		this.setXVel(this.getXVel() + acc);
-		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {//Double code, also in checkSLope
+		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {//Double code, also in checkSlope
 			this.setXVel(this.getMaxSpeed());
 		} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
 			this.setXVel(-this.getMaxSpeed());
@@ -192,7 +192,7 @@ public class Protagonist {
 				double slope = ground.getSlope(this.getXPos());
 				if(Math.abs(slope) > slopeThreshold){
 					setXVel(getXVel()+slope);
-					setYPos(getYPos()+slope*getXVel());
+					setYVel(slope*getXVel());
 					readyToJump = false;
 				}
 			} else { //On platform
@@ -201,7 +201,7 @@ public class Protagonist {
 						double slope = platforms.get(i).getSlope(this.getXPos());
 						if(Math.abs(slope) > slopeThreshold){
 							setXVel(getXVel()+slope);
-							setYPos(getYPos()+slope*getXVel());
+							setYVel(slope*getXVel());
 							readyToJump = false;
 							break;
 						}

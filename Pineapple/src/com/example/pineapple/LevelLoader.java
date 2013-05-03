@@ -101,6 +101,7 @@ public class LevelLoader {
 				ground[0][i] = i*20;
 				ground[1][i] = 100-(int)(600*Math.exp(-ground[0][i]/100.));
 			}
+			enemies.add(new int[]{20, -40, -40, 1});
 			break;
 		}
 

@@ -16,7 +16,7 @@ public class Enemy {
 	private double health;
 	private GamePanel gp;
 	private static int baseHeight = 14;
-	private static int baseWidth = (int)(baseHeight*1.5); //Change 1.42 to ratio of bitmap
+	private static int baseWidth = (int)(baseHeight*1.5); //Change 1.5 to ratio of bitmap
 	private int height, width;
 	private static double scaleNinja = 0.8;
 	private static double scaleTank = 1.2;
@@ -50,7 +50,7 @@ public class Enemy {
 		else if (type == 2) {
 			this.setHealth(0.1);
 			this.height = (int)(this.height*scaleNinja);
-			this.width = (int)(this.width*scaleNinja); //Change 1.42 to ratio of bitmap
+			this.width = (int)(this.width*scaleNinja);
 			this.typeAcc = 0.6*baseAcc;
 			this.maxSpeed = 1*maxSpeed;
 			this.jumpVel = 2*jumpVel;
@@ -60,7 +60,7 @@ public class Enemy {
 		else if (type == 3) {
 			this.setHealth(1);
 			this.height = (int)(this.height*scaleTank);
-			this.width = (int)(this.width*scaleTank); //Change 1.42 to ratio of bitmap
+			this.width = (int)(this.width*scaleTank);
 			this.typeAcc = 0.1*baseAcc;
 			this.maxSpeed = 0.5*maxSpeed;
 			this.jumpVel = 0.5*jumpVel;
