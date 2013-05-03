@@ -192,6 +192,7 @@ public class Protagonist {
 				double slope = ground.getSlope(this.getXPos());
 				if(Math.abs(slope) > slopeThreshold){
 					setXVel(getXVel()+slope);
+					setYPos(getYPos()+slope*getXVel());
 					readyToJump = false;
 				}
 			} else { //On platform
@@ -200,8 +201,8 @@ public class Protagonist {
 						double slope = platforms.get(i).getSlope(this.getXPos());
 						if(Math.abs(slope) > slopeThreshold){
 							setXVel(getXVel()+slope);
+							setYPos(getYPos()+slope*getXVel());
 							readyToJump = false;
-							Log.d(TAG, "HEJ");
 							break;
 						}
 					}

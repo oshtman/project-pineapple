@@ -94,7 +94,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		heatMeter = new HeatMeter(0.01);
 		bullets = new ArrayList<Bullet>();
 		ground = new Ground(levelLoader.getLevelX(level), levelLoader.getLevelY(level));
-		protagonist = new Protagonist(width/2, ground.getYFromX(77), this);
+		protagonist = new Protagonist(levelLoader.getStartX(), levelLoader.getStartY(), this);
 		leftStick = new Stick(Stick.LEFT);
 		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
@@ -102,7 +102,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadPlatforms();
 		loadEnemies();
 		loadTrees();
-
+		
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
 		groundPaint.setColor(Color.rgb(10, 250, 10));

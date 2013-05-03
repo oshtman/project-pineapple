@@ -9,6 +9,7 @@ public class LevelLoader {
 	
 	//Ground arrays for level
 	private int[][] ground;
+	private int[] startPos = new int[]{0, 0}; //x- and y-position of protagonist when the level begins
 	
 	private int[][] p1;
 	private int[][] p2;
@@ -39,14 +40,14 @@ public class LevelLoader {
 	
 	
 	public LevelLoader(int level){
-		
+
 		switch(level){
-		
+
 		case 1: 
 			//
 			ground = new int[][]{
-					{-350, -300, 0,  100, 150, 300, 400, 420, 480},
-					{40,   95,   95, 80,  95,  20,  150, 140, 135}
+					{-350, -50, -40, -10, 0, 100, 150, 300, 400, 420, 480},
+					{40,   95,   130,  130,   95,  80,  95,  20,  150, 140, 135}
 			};
 
 			//Platform 1
@@ -66,11 +67,11 @@ public class LevelLoader {
 					{50, 25, 13}
 			};
 			platforms.add(p2);
-			
+
 			//Enemies
 			enemies.add(new int[]{100, 20, 80, 1});
 			//enemies.add(new int[]{100, 30, 80, 3});
-			
+
 			//Trees
 			trees.add(0);
 			trees.add(50);
@@ -79,24 +80,32 @@ public class LevelLoader {
 		case 2:
 			//Ground
 			ground = new int[2][500];
-			
+
 			for (int i = 0; i<500; i++) {
 				ground[0][i] = i*20;
 				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
 			}
 			//Enemies
-			 for (int j = 1; j <= 25; j++){
-				 int spawnPoint = j*50 + 100;
-			enemies.add(new int[]{spawnPoint + 100, 10, spawnPoint + 40, 1});
-			enemies.add(new int[]{spawnPoint + 100, 20, spawnPoint + 20, 2});
-			enemies.add(new int[]{spawnPoint + 100, 0, spawnPoint, 3});
+			for (int j = 1; j <= 25; j++){
+				int spawnPoint = j*50 + 100;
+				enemies.add(new int[]{spawnPoint + 100, 10, spawnPoint + 40, 1});
+				enemies.add(new int[]{spawnPoint + 100, 20, spawnPoint + 20, 2});
+				enemies.add(new int[]{spawnPoint + 100, 0, spawnPoint, 3});
 
-			 }
+			}
+			break;
+		case 3:
+			startPos = new int[]{10, -20};
+			ground = new int[2][20];
+			for (int i = 0; i<20; i++) {
+				ground[0][i] = i*20;
+				ground[1][i] = 100-(int)(600*Math.exp(-ground[0][i]/100.));
+			}
 			break;
 		}
-	
+
 	}
-	
+
 	public int[] getLevelX(int index){
 		return ground[0];
 	}
@@ -136,6 +145,14 @@ public class LevelLoader {
 	
 	public int getNumberOfTrees(){
 		return trees.size();
+	}
+	
+	public int getStartX(){
+		return startPos[0];
+	}
+	
+	public int getStartY(){
+		return startPos[1];
 	}
 	
 }

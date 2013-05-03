@@ -101,6 +101,7 @@ public class Enemy {
 				double slope = ground.getSlope(this.getXPos());
 				if(Math.abs(slope) > slopeThreshold){
 					setXVel(getXVel()+slope);
+					setYPos(getYPos()+slope*getXVel());
 				}
 			} else { //On platform
 				for(int i = 0; i < platforms.size(); i++){
@@ -108,6 +109,7 @@ public class Enemy {
 						double slope = platforms.get(i).getSlope(this.getXPos());
 						if(Math.abs(slope) > slopeThreshold){
 							setXVel(getXVel()+slope);
+							setYPos(getYPos()+slope*getXVel());
 							break;
 						}
 					}
