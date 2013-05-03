@@ -13,7 +13,7 @@ public class Enemy {
 	private double yVel;
 	private double xAcc;
 	private double yAcc;
-	private double health;
+	private double health = 1;
 	private GamePanel gp;
 	private static int baseHeight = 14;
 	private static int baseWidth = (int)(baseHeight*1.5); //Change 1.42 to ratio of bitmap
@@ -33,6 +33,10 @@ public class Enemy {
 	private int pupilAngle;
 	private final double spawnX;
 	private boolean spawned;
+	private double dashDistance;
+	private double dashPowerConstant;
+	private double healthLostByDashConstant = 0.5;
+	private double damageGrade;
 	//------------------------------------------------------------------------------------------------//
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
@@ -41,30 +45,32 @@ public class Enemy {
 		this.width = baseWidth;
 		//type 1 is normal
 		if (type == 1) {
-			setHealth(0.5);
+			this.damageGrade = 1;
 			this.typeAcc = 0.2*baseAcc;
 			leftArmAngle = -45;
 			rightArmAngle = 45;
 		}
 		//type 2 is ninja
 		else if (type == 2) {
-			this.setHealth(0.1);
 			this.height = (int)(this.height*scaleNinja);
 			this.width = (int)(this.width*scaleNinja); //Change 1.42 to ratio of bitmap
 			this.typeAcc = 0.6*baseAcc;
 			this.maxSpeed = 1*maxSpeed;
 			this.jumpVel = 2*jumpVel;
 			this.jumpAcc = 2*jumpAcc;
+			this.damageGrade = 1.5;
+
 		}
 		//type 3 is tank
 		else if (type == 3) {
-			this.setHealth(1);
 			this.height = (int)(this.height*scaleTank);
 			this.width = (int)(this.width*scaleTank); //Change 1.42 to ratio of bitmap
 			this.typeAcc = 0.1*baseAcc;
 			this.maxSpeed = 0.5*maxSpeed;
 			this.jumpVel = 0.5*jumpVel;
 			this.jumpAcc = 0.5*jumpAcc;
+			this.damageGrade = 0.5;
+
 		}
 		this.setXPos(i);
 		this.setYPos(j);
@@ -102,16 +108,24 @@ public class Enemy {
 
 	//Reduce enemy health when dashing and bumps enemy away
 	public void takeDashDamage(Protagonist p){
-			this.setHealth(this.getHealth()/2 + this.getHealth()/10);
-			int sign;
-			if (Math.random() > 0.5){
-				sign = 1;
-			}	else {
-				sign = -1;
-			}
-			setXVel(-getXVel() + sign*getXVel()/10);
-			setYVel(jumpVel);
-			this.setTouchingGround(false);
+		dashDistance = Math.abs(p.getXPos() - this.getXPos());
+		if(dashDistance < p.getWidth())
+			dashPowerConstant = 1;
+		else if (dashDistance < p.getWidth()*2 && dashDistance > p.getWidth())
+			dashPowerConstant = 0.75;
+		else
+			dashPowerConstant = 0.5;	
+		this.setHealth(this.getHealth() - healthLostByDashConstant*dashPowerConstant*damageGrade);
+		int sign;
+		if (Math.random() > 0.5){
+			sign = 1;
+		}	else {
+			sign = -1;
+		}
+
+		setXVel(-getXVel() + sign*getXVel()/10);
+		setYVel(jumpVel*dashPowerConstant);
+		this.setTouchingGround(false);
 	}
 	//------------------------------------------------------------------------------------------------//
 	//CHECK-METHODS FOR ENEMY AND SURROUNDING
@@ -158,7 +172,7 @@ public class Enemy {
 			}
 		}
 	}
-	
+
 	public void checkAirborne(Ground g, ArrayList<Platform> platforms){
 		if(Math.abs(this.yPos + height/2 - g.getYFromX(this.xPos)) > this.yPos && !onPlatform){
 			touchingGround = false;
@@ -182,7 +196,7 @@ public class Enemy {
 	public void lookAt(Protagonist p){
 		pupilAngle = (int)(180/Math.PI*Math.atan2(p.getYPos()-getYPos(), p.getXPos() - getXPos()));
 	}
-	
+
 	//Wave arms
 	public void waveArms(){
 		armAngleCounter++;
@@ -263,6 +277,9 @@ public class Enemy {
 		this.health = d;
 	}
 
+	public double getDamageGrade() {
+		return damageGrade;
+	}
 	public double getMaxSpeed() {
 		return maxSpeed;
 	}
@@ -286,11 +303,11 @@ public class Enemy {
 	public int getHeight() {
 		return height;
 	}
-	
+
 	public static double getScaleTank(){
 		return scaleTank;
 	}
-	
+
 	public static double getScaleNinja(){
 		return scaleNinja;
 	}
