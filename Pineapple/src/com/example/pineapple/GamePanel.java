@@ -445,8 +445,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			i++;
 		}
 		int startIndex = i;
+		int lowestPoint = ground.getY(i);
 		while(ground.getX(i) < screenX + width){
 			i++;
+			lowestPoint = Math.max(lowestPoint, ground.getY(i));
 			if(i == ground.getLength()-2)
 				break;
 		}
@@ -464,8 +466,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			dirtPath = new Path();
 			dirtPath.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
 			dirtPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)+groundThickness-screenY)*scaleY));
-			dirtPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)+groundThickness+100-screenY)*scaleY));
-			dirtPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness+100-screenY)*scaleY));
+			dirtPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((lowestPoint+height-screenY)*scaleY));
+			dirtPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((lowestPoint+height-screenY)*scaleY));
 			dirtPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
 			canvas.drawPath(groundPath, groundPaint);
 			canvas.drawPath(dirtPath, dirtPaint);			
