@@ -721,6 +721,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			leftStickId = INVALID_POINTER;
 			rightStickId = INVALID_POINTER;
 
+			
 			break;
 
 
