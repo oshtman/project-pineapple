@@ -49,11 +49,11 @@ public class Const {
 		public static final double enemyEyeMouthYOffset = 0.3; 
 
 		public static final double enemyFootXAxis = 0.20;
-		public static final double enemyFootYAxis = 0.6;
+		public static final double enemyFootYAxis = 0.5;
 		public static final double enemyFootRadius = 0.35;
 		public static final double enemyFootXScale = 0.45;
-		public static final double enemyFootYScale = 0.156;
-		//public static final double enemyBackFootOffset = 0.1;
+		public static final double enemyFootYScale = 0.256;
+		public static final int enemyMaxFootAngle = 45;
 
 		public static final double enemyPupilXOffset = 0.25;
 		public static final double enemyPupilYOffset = 0.4;

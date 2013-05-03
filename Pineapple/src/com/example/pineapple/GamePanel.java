@@ -50,7 +50,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double bulletDamage = 0.05;
 
 	//Ground rendering variables 
-	private int numberOfPatches, foliageSize = 2;
+	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
 	private double xGap, yGap, gap, groundAngle; 
 	private Paint groundPaint = new Paint();
 	private Path groundPath;
@@ -63,6 +63,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap pupilBitmap;
 	private Bitmap stickBitmap;
 	private Bitmap bulletBitmap;
+	private Bitmap treeBitmap;
 	
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -287,7 +288,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
-		canvas.drawColor(Color.rgb(135, 206, 250));
+		canvas.drawColor(Color.rgb(135, 206, 250)); //Sky
 		renderSun(canvas);
 		renderTrees(canvas);
 		renderPlatforms(canvas);
@@ -308,7 +309,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(enemies.get(i).hasSpawned()){
 				Enemy e = enemies.get(i);
 				if(e.getXVel() < 0){
-					int feetAngle = (int)(20*Math.sin(time/3));
+					int feetAngle = (int)(Const.enemyMaxFootAngle*Math.sin(time/3));
 					//Back arm
 					m.setRotate(e.getLeftArmAngle(), enemyRightArmBitmap[e.getType()-1].getWidth(), (float)(enemyRightArmBitmap[e.getType()-1].getHeight()*0.9));
 					m.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyArmXAxis) - e.getWidth()*Const.enemyArmRadius*Math.cos(-e.getLeftArmAngle()*Math.PI/180) - screenX)*scaleX)-enemyRightArmBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + e.getHeight()*Const.enemyArmRadius*Math.sin(-e.getLeftArmAngle()*Math.PI/180) - screenY)*scaleY));
@@ -456,18 +457,24 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				break;
 		}
 		int stopIndex = i;
+		Path groundPath, dirtPath;
+		Paint dirtPaint = new Paint();
+		dirtPaint.setColor(Color.rgb(87, 59, 12));
 		for(i = startIndex; i <= stopIndex; i++){
-			Path p = new Path();
-			p.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
-			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY));
-			p.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((200-screenY)*scaleY)); //Fix line 63 and 64, (200)
-			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((200-screenY)*scaleY));
-			p.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
-			canvas.drawPath(p, groundPaint);
-			Paint groundLine = new Paint();
-			groundLine.setStrokeWidth((float)(3*scaleY));
-			//canvas.drawLine((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY), (int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY), new Paint());
-			
+			groundPath = new Path();
+			groundPath.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
+			groundPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY));
+			groundPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)+groundThickness-screenY)*scaleY)); //Fix line 63 and 64, (200)
+			groundPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
+			groundPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
+			dirtPath = new Path();
+			dirtPath.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
+			dirtPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)+groundThickness-screenY)*scaleY));
+			dirtPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)+groundThickness+100-screenY)*scaleY));
+			dirtPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness+100-screenY)*scaleY));
+			dirtPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
+			canvas.drawPath(groundPath, groundPaint);
+			canvas.drawPath(dirtPath, dirtPaint);			
 		}
 		//Experiment (Different ground details)
 		//Balls
@@ -606,7 +613,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw trees
 	public void renderTrees(Canvas canvas){
 		//x is centre of tree?
-		Paint trunk = new Paint();
+		/*Paint trunk = new Paint();
 		trunk.setColor(Color.DKGRAY);
 		Paint top = new Paint();
 		top.setColor(Color.GREEN);
@@ -621,8 +628,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleY), (float)(radius*scaleX), border);
 			canvas.drawRect((float)((trees.get(i) - trunkWidth/2 - screenX/4)*scaleX), (float)((y - trunkHeight)*scaleY), (float)((trees.get(i) + trunkWidth/2 - (float)(screenX/4))*scaleX), (float)(y*scaleY), trunk);
 		}
-		
-
+		*/
+		for(int i = 0; i < trees.size(); i++){
+			canvas.drawBitmap(treeBitmap, (float)((trees.get(i) - treeBitmap.getWidth()/2 - screenX)*scaleX), (float)(0*scaleY - screenY/2), null);
+		}
 		
 	}
 
@@ -731,6 +740,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
+		treeBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tree_1), (int)(100*scaleX), (int)(100*scaleY), true);
 		
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
