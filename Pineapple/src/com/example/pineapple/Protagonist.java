@@ -315,6 +315,15 @@ public class Protagonist {
 			}
 		}
 	}
+	
+	//Alternative method (used in tutorial for the mentor)
+	public void faceDirection(int dir){
+		if(dir >= 0){
+			facingRight = true;
+		} else {
+			facingRight = false;
+		}
+	}
 
 	//Keeps track of the protagonist's breathing (used for rendering)
 	public void breathe(){

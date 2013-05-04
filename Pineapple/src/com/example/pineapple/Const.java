@@ -69,4 +69,7 @@ public class Const {
 
 		public static final double maxRockSize = 30;
 		public static final double partOfRockVisible = 0.8;
+		public static final double maxTreeWidth = 100;
+		public static final double maxTreeHeight = 100;
+		public static final double partOfTreeVisible = 0.9;
 }

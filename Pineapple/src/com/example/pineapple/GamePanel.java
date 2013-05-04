@@ -56,6 +56,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int currentCheckpoint;
 	private ArrayList<ArrayList<String>> hints;
 	private Paint textPaint;
+	private Bird bird;
 
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
@@ -72,6 +73,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap pupilBitmap;
 	private Bitmap stickBitmap;
 	private Bitmap bulletBitmap;
+	private Bitmap birdBitmap;
 	private Bitmap treeBitmap;
 	private Bitmap[] rockBitmap;
 	
@@ -90,8 +92,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	private Bitmap[] enemyBodyBitmapFlipped = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmapFlipped = new Bitmap[3];
-	private Bitmap[] enemyLeftArmBitmapFlipped = new Bitmap[3];
-	private Bitmap[] enemyRightArmBitmapFlipped = new Bitmap[3];
 	private Bitmap[] enemyFootBitmapFlipped = new Bitmap[3];
 
 	public GamePanel(Context context, int level){
@@ -123,11 +123,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentor = new Protagonist(10, 0, this);
 			checkpoints = levelLoader.getCheckpoints();
 			hints = new ArrayList<ArrayList<String>>();
+			bird = new Bird(790, 100);
 			String[] rawHints = {
-					"Hi there, welcome to the tutorial! Usually when we send our young ones out into the world we have a brief runthrough of their abilities. However, since the enemies are at our doorstep we will have to go through it quickly, come with me!",
-					"Oh, you can move by moving your left stick left and right! Hurry up!",
-					"Good job!",
-					"You can jump by pressing up on the left stick!"
+					"Hi there, welcome to the tutorial! Let's get right into the action! You can move around by using your left stick! Why don't you give it a go?",
+					"Good job! Believe it or not, but moving is essential to make it in this world. Come along!",
+					"You can jump by pressing up on the left stick!",
+					"Wow! You seem to have some strong legs there young one! Oh my, what a steep slope! We can slide down this for sure!",
+					"Woohoo!",
+					"That was fun! But let's get back to business!",
+					"Even though we are a peaceful people with no enemies what so ever, it is always good to carry some protection, like the gun in your hand for example. Fire off a couple of shots with your right stick!",
+					"Good, but shooting a gun isn't that exciting if you're not aiming at something, am I right? Let's find something to shoot!",
+					"Do you see that bird up there? They always eat my crops and sing early in the morning! See if you can scare him with your gun!",
+					"..... Well, now he won't wake me up early at least! We better go before the animal rights people show up."
 			};
 			//Split the hints up into rows and add them to the final hint list
 			int lettersPerRow = 50;
@@ -191,6 +198,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(level == 0){
 			moveMentor();
 			handleCheckpoints();
+			bird.update();
 		}
 	}
 
@@ -201,14 +209,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			protagonist.slowDown();
 			protagonist.setStepCount(0);
 		}
-		if(rightStick.isPointed()){
-			//Aim
-			double angle = rightStick.getAngle();
-			protagonist.aim(angle);
-			//Fire
-			if(!heatMeter.isCoolingDown()){
-				bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/180*Math.PI), angle, 10));
-				firing = true;
+		if(level > 0 || currentCheckpoint > 6){
+			if(rightStick.isPointed()){
+				//Aim
+				double angle = rightStick.getAngle();
+				protagonist.aim(angle);
+				//Fire
+				if(!heatMeter.isCoolingDown()){
+					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/180*Math.PI), angle, 10));
+					firing = true;
+				}
 			}
 		}
 	}
@@ -342,23 +352,54 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentor.accelerate(0.1);
 			mentor.step(1);
 			mentor.move();
+			mentor.faceDirection(1);
 		} else {
 			mentor.setStepCount(0);
+			mentor.faceDirection((int)(Math.signum(protagonist.getXPos()-mentor.getXPos())));
 		}
 		mentor.breathe();
 		mentor.checkGround(ground);
 	}
 
 	//A special method for the tutorial
-	public void handleCheckpoints(){
+	public void handleCheckpoints() {
 		switch(currentCheckpoint){
 		case 0:
-			if(protagonist.getXPos() > checkpoints[0])
+			if(leftStick.isPointed() && (leftStick.getAngle() < 45 || leftStick.getAngle() > 315 || leftStick.getAngle() > 135 && leftStick.getAngle() < 225))
 				currentCheckpoint++;
 			break;
 		case 1:
-			if(protagonist.getXPos() > checkpoints[1])
+			if(protagonist.getXPos() > checkpoints[1]-width/2)
 				currentCheckpoint++;
+			break;
+		case 2:
+			if(!protagonist.isTouchingGround())
+				currentCheckpoint++;
+			break;
+		case 3: 
+			if(protagonist.getXPos() > 258)
+				currentCheckpoint++;
+			break;
+		case 4: 
+			if(protagonist.getXPos() > checkpoints[4])
+				currentCheckpoint++;
+			break;
+		case 5:
+			if(protagonist.getXPos() > checkpoints[5])
+				currentCheckpoint++;
+			break;
+		case 6: 
+			if(rightStick.isPointed())
+				currentCheckpoint++;
+			break;
+		case 7:
+			if(protagonist.getXPos() > checkpoints[7] - width/2)
+				currentCheckpoint++;
+			break;
+		case 8:
+			if(bird.collide(bullets)){
+				currentCheckpoint++;
+			}
 			break;
 		}
 	}
@@ -383,12 +424,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(level == 0){
 			renderMentor(canvas);
 			renderHint(canvas);
+			renderBird(canvas);
 		}
 	}
 
 	//Draw the enemies
 	public void renderEnemies(Canvas canvas){
-		;
+		
 		for(int i = 0; i < enemies.size(); i++){
 			if(enemies.get(i).hasSpawned()){
 				Enemy e = enemies.get(i);
@@ -639,7 +681,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		int radius = Bullet.getRadius();
 		for(int i = 0; i < bullets.size(); i++){
 			Bullet b = bullets.get(i);
-			;
 			renderMatrix.setRotate((float)(180/Math.PI*Math.atan2(b.getYVel(), b.getXVel())), (float)(bulletBitmap.getWidth()/2), (float)(bulletBitmap.getHeight()/2));
 			renderMatrix.postTranslate((float)((b.getXPos()-radius/2.-screenX)*scaleX), (float)((b.getYPos()-radius/2.-screenY)*scaleY));
 			canvas.drawBitmap(bulletBitmap, renderMatrix, null);
@@ -718,7 +759,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		*/
 		for(int i = 0; i < trees.size(); i++){
-			canvas.drawBitmap(treeBitmap, (float)((trees.get(i) - treeBitmap.getWidth()/2 - screenX)*scaleX), (float)(0*scaleY - screenY/2), null);
+			canvas.drawBitmap(treeBitmap, (float)((trees.get(i) - screenX)*scaleX)-treeBitmap.getWidth()/2, (float)((ground.getYFromX(trees.get(i))-screenY)*scaleY-treeBitmap.getHeight()*0.8), null);
 		}
 		
 	}
@@ -797,6 +838,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(int i = 0; i < hints.get(currentCheckpoint).size(); i++){
 			canvas.drawText(hints.get(currentCheckpoint).get(i), (float)(10*scaleX), (float)((30+textPaint.getTextSize()*i/scaleY)*scaleY), textPaint);
 		}
+	}
+	
+	public void renderBird(Canvas canvas){
+		renderMatrix = new Matrix();
+		
+		
+		if(!bird.isAlive()){
+			renderMatrix.setRotate((float)bird.getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
+		}
+		renderMatrix.postTranslate((float)((bird.getX() - bird.getWidth()/2 - screenX)*scaleX), (float)((bird.getY() - bird.getHeight() - screenY)*scaleY));
+		canvas.drawBitmap(birdBitmap, renderMatrix, null);
 	}
 
 	@Override
@@ -905,7 +957,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
-		treeBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tree_1), (int)(100*scaleX), (int)(100*scaleY), true);
+		birdBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bird), (int)(Bird.getWidth()*scaleX), (int)(Bird.getHeight()*scaleY), true);
+		treeBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tree_1), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*scaleY), true);
 		rockBitmap = new Bitmap[]{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_1), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_2), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),

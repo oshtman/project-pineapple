@@ -41,17 +41,25 @@ public class LevelLoader {
 	
 	
 	//Checkpoint array for the tutorial, the mentor will stop at these locations and give some advice
-	private int[] checkpoints = new int[]{30, 200, 400};
+	private int[] checkpoints;
+	
 	
 	public LevelLoader(int level){
 
 		switch(level){
 		case 0:
-			startPos = new int[]{10, 0};
+			startPos = new int[]{10, 70};
 			ground = new int[][]{
-					{0,  258, 395, 649, 848, 983, 1254, 1264, 1300, 1310, 1528},
-					{90, 90,  208, 208, 146, 208, 208,  240,  240,  208,  208}
+					{0,  258, 395, 649, 725, 800, 875, 983, 1254, 1264, 1300, 1310, 1528},
+					{90, 90,  208, 208, 160, 146, 160, 208, 208,  240,  240,  208,  208}
 			};
+			
+			checkpoints = new int[]{30, 200, 200, 250, 420, 530, 600, 790, 790, 900};
+			//1: Welcome text, how to move
+			//2: Come along
+			//3: Learn to jump
+			//4: Steep slope
+			//5: That was fun
 			
 			//Platform 1
 			p1 = new int[][]{
@@ -61,6 +69,11 @@ public class LevelLoader {
 					{133, 140, 154, 140, 133}
 			};
 			platforms.add(p1);
+			
+			trees.add(800);
+			
+			rocks.add(new int[]{780, 1, 20});
+			rocks.add(new int[]{820, 2, 23});
 			break;
 		case 1: 
 			//
