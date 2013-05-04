@@ -268,7 +268,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				enemy.checkAirborne(ground, platforms);
 				enemy.waveArms();
 				enemy.lookAt(protagonist);
-				Log.d(TAG, "" + enemies.get(i).getHealth());
 			} else {
 				if(protagonist.getXPos() > enemy.getSpawnX()){
 					enemy.spawn();

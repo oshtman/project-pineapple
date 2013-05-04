@@ -243,7 +243,7 @@ public class Protagonist {
 				this.setYVel(-this.getYVel());
 				Log.d(TAG, "Headache!!");
 				//if feet is in platform
-			} else if (!dashingPlatform && this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && !(this.getYPos() - this.getHeight()/2 > platforms.get(platformNumber).getLowerYFromX(this.getXPos()))){
+			} else if (!dashingPlatform && this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos())){
 				this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 				this.setYAcc(0);
 				this.setYVel(0);
