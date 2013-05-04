@@ -54,7 +54,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
 	private double xGap, yGap, gap, groundAngle; 
 	private Paint groundPaint = new Paint();
-	private Path groundPath;
+	private Path groundPath, dirtPath;;
 	private Matrix renderMatrix = new Matrix();
 	
 	//Bitmaps
@@ -456,26 +456,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw only the parts which are visible on the screen
 	public void renderGround(Canvas canvas){
 		int i = 0;
+		
+		//Find the interval of the ground that has to be rendered
 		while(ground.getX(i+1) < screenX){
 			i++;
 		}
 		int startIndex = i;
 		int lowestPoint = ground.getY(i);
-		while(ground.getX(i) < screenX + width){
+		while(ground.getX(i) < screenX + width && i < ground.getLength()-2){
 			i++;
 			lowestPoint = Math.max(lowestPoint, ground.getY(i));
-			if(i == ground.getLength()-2)
-				break;
 		}
+		
 		int stopIndex = i;
-		Path groundPath, dirtPath;
 		Paint dirtPaint = new Paint();
 		dirtPaint.setColor(Color.rgb(87, 59, 12));
 		for(i = startIndex; i <= stopIndex; i++){
+			
 			groundPath = new Path();
 			groundPath.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
 			groundPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY));
-			groundPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)+groundThickness-screenY)*scaleY)); //Fix line 63 and 64, (200)
+			groundPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)+groundThickness-screenY)*scaleY)); 
 			groundPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
 			groundPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
 			dirtPath = new Path();
