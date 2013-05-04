@@ -12,6 +12,11 @@ public class Const {
 		public static final double eyeMouthYScale = 0.567;
 		public static final double eyeMouthXOffset = 0.05;
 		public static final double eyeMouthYOffset = 0.044; 
+		
+		public static final double eyeBeardXScale = 0.9;
+		public static final double eyeBeardYScale = 0.856;
+		public static final double eyeBeardXOffset = 0.05;
+		public static final double eyeBeardYOffset = 0.044; 
 
 		public static final double footXAxis = 0.30;
 		public static final double footYAxis = 0.5;
