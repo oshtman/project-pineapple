@@ -366,23 +366,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 	
 	public void moveMentor(){
-		mentor.gravity();
-		if(mentor.getXPos() < checkpoints[currentCheckpoint]){
+		if(mentor.getXPos() < checkpoints[currentCheckpoint] - pastCheckpointBorder){
 			if(mentor.getXPos() > 840 && timesMentorJumped == 0 || mentor.getXPos() > 1250 && timesMentorJumped == 1){
 				mentor.jump();
 				timesMentorJumped++;
 			}
-			mentor.accelerate(0.1);
+			mentor.accelerate(0.5);
 			mentor.step(1);
-			mentor.move();
 			mentor.faceDirection(1);
+			mentor.setAim(0);
 		} else {
 			mentor.setStepCount(0);
+			mentor.slowDown();
 			mentor.faceDirection((int)(Math.signum(protagonist.getXPos()-mentor.getXPos())));
+			mentor.setAim((int)(180/Math.PI*Math.atan2(protagonist.getYPos() - mentor.getYPos(), protagonist.getXPos() - mentor.getXPos())));
 		}
+		mentor.gravity();
+		mentor.move();
 		mentor.breathe();
 		mentor.checkGround(ground);
 		mentor.checkPlatform(platforms);
+		
 	}
 
 	//A special method for the tutorial
@@ -822,6 +826,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public void renderMentor(Canvas canvas){
 		float feetAngle;
+		float aimAngle = (float)mentor.getAim();
 		if(mentor.isTouchingGround()){
 			feetAngle = (float)(180/Math.PI*Math.sin((double)mentor.getStepCount()/mentor.getNumberOfSteps()*Math.PI));
 		} else {
@@ -829,7 +834,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		//Draw all the mentor parts
 		if(mentor.isFacingRight()){
-			float aimAngle = 0;
 			//Draw back foot
 			renderMatrix.setRotate(-feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
 			renderMatrix.postTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.footXAxis-Const.backFootOffset) - mentor.getWidth()*Const.footRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.footYAxis-0.5) + mentor.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
@@ -845,14 +849,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.postTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.footXAxis) - mentor.getWidth()*Const.footRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.footYAxis-0.5) + mentor.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(footBitmap, renderMatrix, null);
 			//Draw pupils
-			renderMatrix.setTranslate((float)((mentor.getXPos() + mentor.getWidth()*(Const.pupilXOffset-0.5)+mentor.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.pupilYOffset-0.5)-mentor.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
+			renderMatrix.setTranslate((float)((mentor.getXPos() + mentor.getWidth()*(Const.pupilXOffset-0.5)+mentor.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.pupilYOffset-0.5)+mentor.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(pupilBitmap, renderMatrix, null);
 			//Draw weapon
-			renderMatrix.setRotate(-aimAngle, weaponBitmap.getWidth()/2, weaponBitmap.getHeight()/2);
-			renderMatrix.postTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.weaponXAxis) + mentor.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.weaponYAxis-0.5) - mentor.getHeight()*Const.weaponRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
+			renderMatrix.setTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.weaponXAxis-Const.weaponRadius) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.weaponYAxis-0.5) - screenY)*scaleY));
 			canvas.drawBitmap(weaponBitmap, renderMatrix, null);
 		} else {
-			float aimAngle = 180;
 			//Draw back foot
 			renderMatrix.setRotate(feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
 			renderMatrix.postTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.footXAxis+Const.backFootOffset) - mentor.getWidth()*Const.footRadius*Math.sin(Math.PI-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.footYAxis-0.5) + mentor.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
@@ -868,11 +870,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.postTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.footXAxis) - mentor.getWidth()*Const.footRadius*Math.sin(Math.PI+feetAngle*Math.PI/180) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.footYAxis-0.5) + mentor.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);
 			//Draw pupils
-			renderMatrix.setTranslate((float)((mentor.getXPos() + mentor.getWidth()*(Const.pupilXOffset-0.5)+mentor.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.pupilYOffset-0.5)-mentor.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
+			renderMatrix.setTranslate((float)((mentor.getXPos() + mentor.getWidth()*(Const.pupilXOffset-0.5)+mentor.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.pupilYOffset-0.5)+mentor.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(pupilBitmapFlipped, renderMatrix, null);
 			//Draw weapon
-			renderMatrix.setRotate(180-aimAngle, weaponBitmapFlipped.getWidth()/2, weaponBitmapFlipped.getHeight()/2);
-			renderMatrix.postTranslate((float)((mentor.getXPos()  + mentor.getWidth()*(0.5-Const.weaponXAxis) + mentor.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) - screenX)*scaleX - weaponBitmapFlipped.getWidth()), (float)((mentor.getYPos() + mentor.getHeight()*(Const.weaponYAxis-0.5) + mentor.getHeight()*Const.weaponRadius*Math.sin(Math.PI+aimAngle*Math.PI/180) - screenY)*scaleY));
+			renderMatrix.setTranslate((float)((mentor.getXPos()  + mentor.getWidth()*(0.5-Const.weaponXAxis-Const.weaponRadius) - screenX)*scaleX - weaponBitmapFlipped.getWidth()), (float)((mentor.getYPos() + mentor.getHeight()*(Const.weaponYAxis-0.5) - screenY)*scaleY));
 			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
 		}
 	}
