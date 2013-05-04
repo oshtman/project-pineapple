@@ -40,11 +40,14 @@ public class LevelLoader {
 	private ArrayList<int[]> rocks = new ArrayList<int[]>();	
 	
 	
+	//Checkpoint array for the tutorial, the mentor will stop at these locations and give some advice
+	private int[] checkpoints = new int[]{30, 200, 400};
+	
 	public LevelLoader(int level){
 
 		switch(level){
 		case 0:
-			startPos = new int[]{1300, 0};
+			startPos = new int[]{10, 0};
 			ground = new int[][]{
 					{0,  258, 395, 649, 848, 983, 1254, 1264, 1300, 1310, 1528},
 					{90, 90,  208, 208, 146, 208, 208,  240,  240,  208,  208}
@@ -186,6 +189,10 @@ public class LevelLoader {
 	
 	public int getStartY(){
 		return startPos[1];
+	}
+	
+	public int[] getCheckpoints(){
+		return checkpoints;
 	}
 	
 }

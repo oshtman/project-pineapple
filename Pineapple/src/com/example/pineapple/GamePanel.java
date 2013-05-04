@@ -49,6 +49,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint frame = new Paint();
 	private double time;
 	private double bulletDamage = 0.05;
+	
+	//Special tutorial variables
+	private Protagonist mentor;
+	private int[] checkpoints;
+	private int currentCheckpoint;
+	private ArrayList<ArrayList<String>> hints;
+	private Paint textPaint;
 
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
@@ -111,6 +118,35 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
 		groundPaint.setColor(Color.rgb(10, 250, 10));
+		
+		if(level == 0){
+			mentor = new Protagonist(10, 0, this);
+			checkpoints = levelLoader.getCheckpoints();
+			hints = new ArrayList<ArrayList<String>>();
+			String[] rawHints = {
+					"Hi there, welcome to the tutorial! Usually when we send our young ones out into the world we have a brief runthrough of their abilities. However, since the enemies are at our doorstep we will have to go through it quickly, come with me!",
+					"Oh, you can move by moving your left stick left and right! Hurry up!",
+					"Good job!",
+					"You can jump by pressing up on the left stick!"
+			};
+			//Split the hints up into rows and add them to the final hint list
+			int lettersPerRow = 50;
+			for(int i = 0; i < rawHints.length; i++){
+				hints.add(new ArrayList<String>());
+				while(rawHints[i].length() > lettersPerRow){
+					String row = rawHints[i].substring(0, lettersPerRow-1);
+					int spaceIndex = row.lastIndexOf(" ");
+					hints.get(i).add(rawHints[i].substring(0, spaceIndex));
+					rawHints[i] = rawHints[i].substring(spaceIndex+1, rawHints[i].length());
+				}
+				hints.get(i).add(rawHints[i]);
+			}
+			
+			//Paint
+			textPaint = new Paint();
+			textPaint.setColor(Color.BLACK);
+			textPaint.setTextSize((float)(20));
+		}
 
 	}
 
@@ -150,6 +186,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleBulletEnemyCollisions();
 		handleProtagonistEnemyCollisions();
 		this.time++;
+		
+		//Tutorial
+		if(level == 0){
+			moveMentor();
+			handleCheckpoints();
+		}
 	}
 
 	public void handleSticks(){
@@ -181,7 +223,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.checkPlatform(platforms);
 		protagonist.dashing(ground, platforms);
 	}
-
+	
 	//Move all the enemies and check for obstacles etc
 	public void moveEnemies(){
 		for(int i = 0; i < enemies.size(); i++){
@@ -293,6 +335,33 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
+	
+	public void moveMentor(){
+		mentor.gravity();
+		if(mentor.getXPos() < checkpoints[currentCheckpoint]){
+			mentor.accelerate(0.1);
+			mentor.step(1);
+			mentor.move();
+		} else {
+			mentor.setStepCount(0);
+		}
+		mentor.breathe();
+		mentor.checkGround(ground);
+	}
+
+	//A special method for the tutorial
+	public void handleCheckpoints(){
+		switch(currentCheckpoint){
+		case 0:
+			if(protagonist.getXPos() > checkpoints[0])
+				currentCheckpoint++;
+			break;
+		case 1:
+			if(protagonist.getXPos() > checkpoints[1])
+				currentCheckpoint++;
+			break;
+		}
+	}
 
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
@@ -309,6 +378,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderHeatMeter(canvas);
 		renderHealthMeter(canvas);
 
+		
+		//Tutorial 
+		if(level == 0){
+			renderMentor(canvas);
+			renderHint(canvas);
+		}
 	}
 
 	//Draw the enemies
@@ -451,6 +526,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 
 	}
+	
+	
 
 	//Draws the ground using a Path
 	//Draw only the parts which are visible on the screen
@@ -656,6 +733,71 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawBitmap(rockBitmap[rocks.get(i)[1]-1], renderMatrix, null);
 		}
 	}
+	
+	public void renderMentor(Canvas canvas){
+		float feetAngle;
+		if(mentor.isTouchingGround()){
+			feetAngle = (float)(180/Math.PI*Math.sin((double)mentor.getStepCount()/mentor.getNumberOfSteps()*Math.PI));
+		} else {
+			feetAngle = Const.jumpFeetAngle;
+		}
+		//Draw all the mentor parts
+		if(mentor.isFacingRight()){
+			float aimAngle = 0;
+			//Draw back foot
+			renderMatrix.setRotate(-feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
+			renderMatrix.postTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.footXAxis-Const.backFootOffset) - mentor.getWidth()*Const.footRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.footYAxis-0.5) + mentor.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
+			canvas.drawBitmap(footBitmap, renderMatrix, null);
+			//Draw body
+			renderMatrix.setTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.bodyXOffset) - screenX)*scaleX), (float)((mentor.getYPos() - mentor.getHeight()*(0.5-Const.bodyYOffset + Const.breathOffset*Math.sin((double)mentor.getBreathCount()/mentor.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
+			canvas.drawBitmap(bodyBitmap, renderMatrix, null);
+			//Draw eyes and mouth
+			renderMatrix.setTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX), (float)((mentor.getYPos() - mentor.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
+			canvas.drawBitmap(eyeMouthBitmap, renderMatrix, null);
+			//Draw front foot
+			renderMatrix.setRotate(feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
+			renderMatrix.postTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.footXAxis) - mentor.getWidth()*Const.footRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.footYAxis-0.5) + mentor.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
+			canvas.drawBitmap(footBitmap, renderMatrix, null);
+			//Draw pupils
+			renderMatrix.setTranslate((float)((mentor.getXPos() + mentor.getWidth()*(Const.pupilXOffset-0.5)+mentor.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.pupilYOffset-0.5)-mentor.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
+			canvas.drawBitmap(pupilBitmap, renderMatrix, null);
+			//Draw weapon
+			renderMatrix.setRotate(-aimAngle, weaponBitmap.getWidth()/2, weaponBitmap.getHeight()/2);
+			renderMatrix.postTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.weaponXAxis) + mentor.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.weaponYAxis-0.5) - mentor.getHeight()*Const.weaponRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
+			canvas.drawBitmap(weaponBitmap, renderMatrix, null);
+		} else {
+			float aimAngle = 180;
+			//Draw back foot
+			renderMatrix.setRotate(feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
+			renderMatrix.postTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.footXAxis+Const.backFootOffset) - mentor.getWidth()*Const.footRadius*Math.sin(Math.PI-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.footYAxis-0.5) + mentor.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
+			canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);
+			//Draw body
+			renderMatrix.setTranslate((float)((mentor.getXPos() + mentor.getWidth()*(0.5-Const.bodyXOffset) - screenX)*scaleX) - bodyBitmapFlipped.getWidth(), (float)((mentor.getYPos() - mentor.getHeight()*(0.5-Const.bodyYOffset + Const.breathOffset*Math.sin((double)mentor.getBreathCount()/mentor.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
+			canvas.drawBitmap(bodyBitmapFlipped, renderMatrix, null);
+			//Draw eyes and mouth
+			renderMatrix.setTranslate((float)((mentor.getXPos() + mentor.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX) - eyeMouthBitmapFlipped.getWidth(), (float)((mentor.getYPos() - mentor.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
+			canvas.drawBitmap(eyeMouthBitmapFlipped, renderMatrix, null);
+			//Draw front foot
+			renderMatrix.setRotate(-feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
+			renderMatrix.postTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.footXAxis) - mentor.getWidth()*Const.footRadius*Math.sin(Math.PI+feetAngle*Math.PI/180) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.footYAxis-0.5) + mentor.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
+			canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);
+			//Draw pupils
+			renderMatrix.setTranslate((float)((mentor.getXPos() + mentor.getWidth()*(Const.pupilXOffset-0.5)+mentor.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.pupilYOffset-0.5)-mentor.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
+			canvas.drawBitmap(pupilBitmapFlipped, renderMatrix, null);
+			//Draw weapon
+			renderMatrix.setRotate(180-aimAngle, weaponBitmapFlipped.getWidth()/2, weaponBitmapFlipped.getHeight()/2);
+			renderMatrix.postTranslate((float)((mentor.getXPos()  + mentor.getWidth()*(0.5-Const.weaponXAxis) + mentor.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) - screenX)*scaleX - weaponBitmapFlipped.getWidth()), (float)((mentor.getYPos() + mentor.getHeight()*(Const.weaponYAxis-0.5) + mentor.getHeight()*Const.weaponRadius*Math.sin(Math.PI+aimAngle*Math.PI/180) - screenY)*scaleY));
+			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
+		}
+	}
+	
+	public void renderHint(Canvas canvas){
+		
+		Log.d(TAG, ""+ hints.get(currentCheckpoint).size());
+		for(int i = 0; i < hints.get(currentCheckpoint).size(); i++){
+			canvas.drawText(hints.get(currentCheckpoint).get(i), (float)(10*scaleX), (float)((30+textPaint.getTextSize()*i/scaleY)*scaleY), textPaint);
+		}
+	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
@@ -817,6 +959,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		enemyRightArmBitmap[0] = Bitmap.createBitmap(enemyLeftArmBitmap[0], 0, 0, enemyLeftArmBitmap[0].getWidth(), enemyLeftArmBitmap[0].getHeight(), m, false);
 		enemyRightArmBitmap[1] = Bitmap.createBitmap(enemyLeftArmBitmap[1], 0, 0, enemyLeftArmBitmap[1].getWidth(), enemyLeftArmBitmap[1].getHeight(), m, false);		
 		enemyRightArmBitmap[2] = Bitmap.createBitmap(enemyLeftArmBitmap[2], 0, 0, enemyLeftArmBitmap[2].getWidth(), enemyLeftArmBitmap[2].getHeight(), m, false);
+		
+		
 		
 		//Start the thread
 		thread.setRunning(true);
