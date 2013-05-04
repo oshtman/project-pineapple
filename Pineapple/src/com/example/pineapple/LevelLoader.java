@@ -54,12 +54,7 @@ public class LevelLoader {
 					{90, 90,  208, 208, 160, 146, 160, 208, 208,  240,  240,  208,  208}
 			};
 			
-			checkpoints = new int[]{30, 200, 200, 250, 420, 530, 600, 790, 790, 900};
-			//1: Welcome text, how to move
-			//2: Come along
-			//3: Learn to jump
-			//4: Steep slope
-			//5: That was fun
+			checkpoints = new int[]{30, 200, 200, 250, 420, 530, 600, 790, 790, 950, 1240, 1240, 1400, 1400};
 			
 			//Platform 1
 			p1 = new int[][]{
@@ -69,6 +64,8 @@ public class LevelLoader {
 					{133, 140, 154, 140, 133}
 			};
 			platforms.add(p1);
+			
+			enemies.add(new int[]{1280, 220, 1000, 1});
 			
 			trees.add(800);
 			

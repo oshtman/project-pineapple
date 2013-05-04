@@ -57,7 +57,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<ArrayList<String>> hints;
 	private Paint textPaint;
 	private Bird bird;
-
+	private int timesMentorJumped;
+	
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
 	private double xGap, yGap, gap, groundAngle; 
@@ -134,7 +135,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					"Even though we are a peaceful people with no enemies what so ever, it is always good to carry some protection, like the gun in your hand for example. Fire off a couple of shots with your right stick!",
 					"Good, but shooting a gun isn't that exciting if you're not aiming at something, am I right? Let's find something to shoot!",
 					"Do you see that bird up there? They always eat my crops and sing early in the morning! See if you can scare him with your gun!",
-					"..... Well, now he won't wake me up early at least! We better go before the animal rights people show up."
+					"..... Well, now he won't wake me up early at least! We better go before the animal rights people show up. See if you can get up on this platform!",
+					"Wow, you can see so much from up here! Actually... I see something strange over there! What is that?",
+					"Good heavens, what an ugly creature! I know we are a friendly people but you better put him out of his misery! He doesn't look like a nice monster anyways...", 
+					"May he rest in peace! Now where were we? Oh right, there's one final thing you need to know! That weapon of yours, it gets easily overheated. Watch out for that if you feel like firing for a long time! Try it!",
+					"Well, that should be everything you need to know! I hereby name you... What is that noise? Run and look, will you?"
+					
 			};
 			//Split the hints up into rows and add them to the final hint list
 			int lettersPerRow = 50;
@@ -199,6 +205,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			moveMentor();
 			handleCheckpoints();
 			bird.update();
+			if(currentCheckpoint == 8){
+				screenY += (50-screenY)/20;
+			}
+			if(currentCheckpoint == 11){
+				screenY += (183-screenY)/20;
+				screenX += (1207 - screenX)/20;
+			}
 		}
 	}
 
@@ -349,6 +362,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void moveMentor(){
 		mentor.gravity();
 		if(mentor.getXPos() < checkpoints[currentCheckpoint]){
+			if(mentor.getXPos() > 840 && timesMentorJumped == 0 || mentor.getXPos() > 1250 && timesMentorJumped == 1){
+				mentor.jump();
+				timesMentorJumped++;
+			}
 			mentor.accelerate(0.1);
 			mentor.step(1);
 			mentor.move();
@@ -359,6 +376,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		mentor.breathe();
 		mentor.checkGround(ground);
+		mentor.checkPlatform(platforms);
 	}
 
 	//A special method for the tutorial
@@ -369,7 +387,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				currentCheckpoint++;
 			break;
 		case 1:
-			if(protagonist.getXPos() > checkpoints[1]-width/2)
+			if(protagonist.getXPos() > checkpoints[1]-width/4)
 				currentCheckpoint++;
 			break;
 		case 2:
@@ -393,13 +411,35 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				currentCheckpoint++;
 			break;
 		case 7:
-			if(protagonist.getXPos() > checkpoints[7] - width/2)
+			if(protagonist.getXPos() > checkpoints[7] - width/4)
 				currentCheckpoint++;
 			break;
 		case 8:
 			if(bird.collide(bullets)){
 				currentCheckpoint++;
 			}
+			break;
+		case 9:
+			if(protagonist.getXPos() > checkpoints[9] && protagonist.getYPos() < platforms.get(0).getUpperY()[0]){
+				currentCheckpoint++;
+			}
+			break;
+		case 10:
+			if(protagonist.getXPos() > checkpoints[10]){
+				currentCheckpoint++;
+			}
+		case 11:
+			if(enemies.size() == 0){
+				currentCheckpoint++;
+			}
+			break;
+		case 12:
+			if(heatMeter.isCoolingDown()){
+				currentCheckpoint++;
+			}
+		case 13: 
+			if(protagonist.getXPos() > checkpoints[13] - width/4)
+				currentCheckpoint++;
 			break;
 		}
 	}
