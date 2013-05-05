@@ -29,8 +29,8 @@ public class MainActivity extends BaseActivity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_main);
 
-		scaleBitmaps();
-		positionBitmaps();
+		//scaleBitmaps();
+		//positionBitmaps();
 	}
 
 	@Override
