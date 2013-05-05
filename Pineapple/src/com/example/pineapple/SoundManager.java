@@ -8,11 +8,12 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 
 public class SoundManager {
-	private  SoundPool mSoundPool;
-	private  HashMap<Integer, Integer> mSoundPoolMap;
-	private  HashMap<Integer, Integer> resIds;
-	private  AudioManager  mAudioManager;
-	private  Context mContext;
+	private SoundPool mSoundPool;
+	private HashMap<Integer, Integer> mSoundPoolMap;
+	private HashMap<Integer, Integer> resIds;
+	private AudioManager  mAudioManager;
+	private Context mContext;
+	private boolean musicLoaded = false;
 
 	public SoundManager(Context theContext) {
 		mContext = theContext;
@@ -25,6 +26,15 @@ public class SoundManager {
 	public void addSound(int index, int soundID) {
 		mSoundPoolMap.put(index, mSoundPool.load(mContext, soundID, 1));
 		resIds.put(index, soundID);
+		
+		if(index == 1){
+			mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+				@Override
+				public void onLoadComplete(SoundPool soundPool, int mySoundId, int status) {
+					musicLoaded = true;
+				}
+			});
+		}
 	}
 
 	public void playSound(int index) {
@@ -45,6 +55,10 @@ public class SoundManager {
 		int duration = mp.getDuration()/40;
 		mp.release();
 		return duration;
+	}
+	
+	public boolean musicLoaded(){
+		return musicLoaded;
 	}
 	
 }
