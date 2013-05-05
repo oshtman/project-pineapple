@@ -186,6 +186,15 @@ public class LevelLoader {
 			}
 			enemies.add(new int[]{20, -40, -40, 1});
 			break;
+			
+		case 4: //for meny background
+			finishX = 350;
+			startPos = new int[]{10,0};
+			ground = new int[][]{
+					{-200, 400},
+					{100, 100}
+			};
+			break;
 		}
 
 	}
