@@ -55,6 +55,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private MediaPlayer fireSound;
 	private SoundManager sm;
 	private MediaPlayer theme;
+	private boolean themePlaying = false;
 
 
 	//Special tutorial variables
@@ -132,8 +133,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadTrees();
 		loadRocks();
 		loadSounds();
-		
-		playTheme();
 
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
@@ -191,9 +190,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			lastMentorSound = -1; //Stops him from repeating the same line
 			mentorSentencesToSay = 3;
 		}
-		
-		playTheme();
-
 	}
 
 	//Load the platforms from LevelLoader and add them to the platforms list 
@@ -224,10 +220,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		sm.addSound(0, R.raw.fire_sound);
 		sm.addSound(1, R.raw.ouvertyr);
 	}
-	
+
 	public void playTheme(){
-		sm.playSound(1);
-		Log.d(TAG, "spela");
+		sm.playLoopedSound(1);
+		themePlaying = true;
 	}
 
 	//Method that gets called every frame to update the games state
@@ -241,7 +237,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
 		handleProtagonistEnemyCollisions();
-		checkFinish();
+		checkFinish();			
+		if(sm.musicLoaded() && !themePlaying)
+			playTheme();
 		this.time++;
 
 		//Tutorial
