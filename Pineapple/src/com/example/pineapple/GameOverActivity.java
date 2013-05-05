@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 
-public class GameOverActivity extends Activity {
+public class GameOverActivity extends BaseActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
