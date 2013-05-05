@@ -130,7 +130,7 @@ public class LevelLoader {
 				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
 			}
 			//Enemies
-			enemies.add(new int[]{this.getStartX() + 100, 0, this.getStartX(), 3});
+			enemies.add(new int[]{this.getStartX() + 200, 0, this.getStartX(), 3});
 			int spawnPoint;
 			int endPoint = ground[0][maxLengthPoint-1];
 			for (int i = 0; i < 200; i++) {
@@ -150,28 +150,18 @@ public class LevelLoader {
 				enemies.add(new int[]{finishX - 680 + i*10, 0, finishX - 500, 2});
 			}
 			//Trees
-			trees.add(new int[]{50, 1, 1, 0});
-			trees.add(new int[]{500, 2, 1, 0});
-			trees.add(new int[]{1000, 0, 0, 0});
-			trees.add(new int[]{1500, 1, 2, 0});
-			trees.add(new int[]{2000, 2, 2, 0});
-			trees.add(new int[]{2500, 0, 1, 0});
-			trees.add(new int[]{3000, 1, 0, 0});
-			trees.add(new int[]{3500, 2, 1, 0});
-			trees.add(new int[]{4500, 0, 2, 0});
-			trees.add(new int[]{5000, 1, 1, 0});
-			trees.add(new int[]{5500, 2, 0, 0});
+			for (int i = 1; i <= 100; i++)
+				trees.add(new int[]{50*i, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			trees.add(new int[]{endPoint - 50, 0, 1, 0});
 
 			//Rocks
-			rocks.add(new int[]{100, 1, 20, 0});
-			rocks.add(new int[]{3000, 1, 20, 0});
-			rocks.add(new int[]{finishX - 100, 1, 20, 0});
-			rocks.add(new int[]{finishX - 200, 2, 20, 0});
-			rocks.add(new int[]{finishX - 300, 3, 20, 0});
-			rocks.add(new int[]{finishX - 400, 3, 20, 0});
-			rocks.add(new int[]{finishX - 500, 0, 20, 1});
-			rocks.add(new int[]{finishX - 600, 1, 20, 0});
+			rocks.add(new int[]{100, 1, 20, 1});
+			rocks.add(new int[]{2990, 1, 20, 1});
+			rocks.add(new int[]{3000, 2, 20, 1});
+			rocks.add(new int[]{3010, 1, 20, 1});
+
+			for (int i = 1; i <= 7; i++)
+				rocks.add(new int[]{finishX - 100*i, (int)(4*Math.random()), 20, 0});
 
 			break;
 			//-------------------------------------------------------------------------//
@@ -185,6 +175,15 @@ public class LevelLoader {
 				ground[1][i] = 100-(int)(600*Math.exp(-ground[0][i]/100.));
 			}
 			enemies.add(new int[]{20, -40, -40, 1});
+			break;
+
+		case 4: //for meny background
+			finishX = 350;
+			startPos = new int[]{10,0};
+			ground = new int[][]{
+					{-200, 400},
+					{100, 100}
+			};
 			break;
 		}
 

@@ -54,6 +54,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double bulletDamage = 0.05;
 	private MediaPlayer fireSound;
 	private SoundManager sm;
+	private MediaPlayer theme;
+	private boolean themePlaying = false;
+
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -112,6 +115,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		getHolder().addCallback(this);
 		setFocusable(true);
 		this.level = level;
+
 
 		//Create game components
 		levelLoader = new LevelLoader(level);
@@ -188,7 +192,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			lastMentorSound = -1; //Stops him from repeating the same line
 			mentorSentencesToSay = 3;
 		}
-
 	}
 
 	//Load the platforms from LevelLoader and add them to the platforms list 
@@ -217,6 +220,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void loadSounds(){
 		sm.addSound(0, R.raw.fire_sound);
+		sm.addSound(1, R.raw.pineapple);
+	}
+
+	public void playTheme(){
+		sm.playLoopedSound(1);
+		themePlaying = true;
 	}
 
 	//Method that gets called every frame to update the games state
@@ -230,7 +239,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
 		handleProtagonistEnemyCollisions();
-		checkFinish();
+		checkFinish();			
+		if(sm.musicLoaded() && !themePlaying){
+			playTheme();
+			Log.d(TAG, "klar att spela tema!!");
+		}
 		this.time++;
 
 		//Tutorial
@@ -366,6 +379,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					if(enemy.getHealth() <= 0){//If the enemy is dead
 						enemies.remove(j);
 						Log.d(TAG, "Enemy down.");
+						playTheme();
 					}
 					break;
 				}
@@ -393,9 +407,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.setYVel(-5);
 				protagonist.setTouchingGround(false);
 				protagonist.reduceHealth(0.05); //Change this constant
-				if (!protagonist.checkDeadOrAlive())
+				if (!protagonist.checkDeadOrAlive()){
 					// Go to a new activity (game over)
 					context.startActivity(intent);
+					Log.d(TAG, "Killed in action");
+				}
 			}
 		}
 	}
