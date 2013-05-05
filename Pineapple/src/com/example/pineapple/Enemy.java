@@ -29,7 +29,7 @@ public class Enemy {
 	private boolean touchingGround;
 	private boolean onPlatform;
 	private final int type;
-	private int leftArmAngle, rightArmAngle, armAngleCounter = 0;
+	private int leftArmAngle, rightArmAngle, armAngleCounter;
 	private int pupilAngle;
 	private final double spawnX;
 	private boolean spawned;

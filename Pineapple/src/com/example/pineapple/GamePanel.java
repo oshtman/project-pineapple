@@ -381,6 +381,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentor.faceDirection((int)(Math.signum(protagonist.getXPos()-mentor.getXPos())));
 			mentor.setAim((int)(180/Math.PI*Math.atan2(protagonist.getYPos() - mentor.getYPos(), protagonist.getXPos() - mentor.getXPos())));
 		}
+		mentor.checkSlope(ground, platforms);
 		mentor.gravity();
 		mentor.move();
 		mentor.breathe();
