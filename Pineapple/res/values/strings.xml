@@ -11,5 +11,7 @@
     <string name="title_activity_level_complete">LevelCompleteActivity</string>
     <string name="finished">Congratulations! You finished the level! </string>
     <string name="menu">Menu</string>
+    <string name="title_activity_game_over">GameOverActivity</string>
+    <string name="game_over">No more game for you!!</string>
 
 </resources>

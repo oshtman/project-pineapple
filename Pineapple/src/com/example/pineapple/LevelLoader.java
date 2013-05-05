@@ -121,7 +121,7 @@ public class LevelLoader {
 			break;
 		case 2: //the hunt
 			//-------------------------------------------------------------------------//
-			finishX = 950;
+			finishX = 5900;
 			//Ground
 			int maxLengthPoint = 300;
 			ground = new int[2][maxLengthPoint];
@@ -135,7 +135,7 @@ public class LevelLoader {
 			int endPoint = ground[0][maxLengthPoint-1];
 			for (int i = 0; i < 200; i++) {
 				spawnPoint = i*50 + 200;
-				if (spawnPoint < endPoint - 600){
+				if (spawnPoint < endPoint - 800){
 					if (i % 10 == 0)
 						enemies.add(new int[]{spawnPoint - 200, 0, spawnPoint, 1});
 					if (i % 7 == 0)
@@ -146,32 +146,32 @@ public class LevelLoader {
 				} else
 					break;
 			}
-			for (int i = 0; i < 10; i++){
-				enemies.add(new int[]{endPoint - 520 + i*10, 0, endPoint - 400, 2});
+			for (int i = 0; i < 15; i++){
+				enemies.add(new int[]{finishX - 680 + i*10, 0, finishX - 500, 2});
 			}
 			//Trees
-			trees.add(new int[]{50, 1, 1});
-			trees.add(new int[]{500, 2, 1});
-			trees.add(new int[]{1000, 0, 1});
-			trees.add(new int[]{1500, 1, 1});
-			trees.add(new int[]{2000, 2, 1});
-			trees.add(new int[]{2500, 0, 1});
-			trees.add(new int[]{3000, 1, 1});
-			trees.add(new int[]{3500, 2, 1});
-			trees.add(new int[]{4500, 0, 1});
-			trees.add(new int[]{5000, 1, 1});
-			trees.add(new int[]{5500, 2, 1});
-			trees.add(new int[]{endPoint - 50, 0, 1});
+			trees.add(new int[]{50, 1, 1, 0});
+			trees.add(new int[]{500, 2, 1, 0});
+			trees.add(new int[]{1000, 0, 0, 0});
+			trees.add(new int[]{1500, 1, 2, 0});
+			trees.add(new int[]{2000, 2, 2, 0});
+			trees.add(new int[]{2500, 0, 1, 0});
+			trees.add(new int[]{3000, 1, 0, 0});
+			trees.add(new int[]{3500, 2, 1, 0});
+			trees.add(new int[]{4500, 0, 2, 0});
+			trees.add(new int[]{5000, 1, 1, 0});
+			trees.add(new int[]{5500, 2, 0, 0});
+			trees.add(new int[]{endPoint - 50, 0, 1, 0});
 
 			//Rocks
-			rocks.add(new int[]{100, 1, 20});
-			rocks.add(new int[]{3000, 1, 20});
-			rocks.add(new int[]{endPoint - 100, 1, 20});
-			rocks.add(new int[]{endPoint - 200, 2, 20});
-			rocks.add(new int[]{endPoint - 300, 3, 20});
-			rocks.add(new int[]{endPoint - 400, 3, 20});
-			rocks.add(new int[]{endPoint - 500, 2, 20});
-			rocks.add(new int[]{endPoint - 600, 1, 20});
+			rocks.add(new int[]{100, 1, 20, 0});
+			rocks.add(new int[]{3000, 1, 20, 0});
+			rocks.add(new int[]{finishX - 100, 1, 20, 0});
+			rocks.add(new int[]{finishX - 200, 2, 20, 0});
+			rocks.add(new int[]{finishX - 300, 3, 20, 0});
+			rocks.add(new int[]{finishX - 400, 3, 20, 0});
+			rocks.add(new int[]{finishX - 500, 0, 20, 1});
+			rocks.add(new int[]{finishX - 600, 1, 20, 0});
 
 			break;
 			//-------------------------------------------------------------------------//
