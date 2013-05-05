@@ -10,6 +10,7 @@ public class LevelLoader {
 	//Ground arrays for level
 	private int[][] ground;
 	private int[] startPos = new int[]{10, 0}; //x- and y-position of protagonist when the level begins
+	private int finishX;
 	
 	private int[][] p1;
 	private int[][] p2;
@@ -49,12 +50,13 @@ public class LevelLoader {
 		switch(level){
 		case 0:
 			startPos = new int[]{10, 70};
+			finishX = 1750;
 			ground = new int[][]{
-					{0,  258, 395, 649, 725, 800, 875, 983, 1254, 1264, 1300, 1310, 1528},
-					{90, 90,  208, 208, 160, 146, 160, 208, 208,  240,  240,  208,  208}
+					{0,  258, 395, 649, 725, 800, 875, 983, 1254, 1264, 1300, 1310, 1528, 1600, 1610, 1800},
+					{90, 90,  208, 208, 160, 146, 160, 208, 208,  240,  240,  208,  208,  270,  275,  275 }
 			};
 			
-			checkpoints = new int[]{30, 200, 200, 250, 420, 530, 600, 790, 790, 950, 1240, 1240, 1400, 1400, 1400};
+			checkpoints = new int[]{30, 200, 200, 250, 420, 530, 600, 790, 790, 950, 1240, 1240, 1400, 1400, 1700, 1700};
 			
 			//Platform 1
 			p1 = new int[][]{
@@ -66,6 +68,8 @@ public class LevelLoader {
 			platforms.add(p1);
 			
 			enemies.add(new int[]{1280, 220, 1000, 1});
+			enemies.add(new int[]{1790, 220, 1600, 1});
+			enemies.add(new int[]{1760, 220, 1600, 1});
 			
 			trees.add(new int[]{800, 0, 0});
 			
@@ -74,6 +78,7 @@ public class LevelLoader {
 			break;
 		case 1: 
 			//
+			finishX = 450;
 			ground = new int[][]{
 					{-350, -50,  -40,   -10,   0,   100, 150, 300, 400, 420, 480},
 					{40,   95,   130,   130,   95,  80,  95,  20,  150, 140, 135}
@@ -116,6 +121,7 @@ public class LevelLoader {
 			break;
 		case 2:
 			//Ground
+			finishX = 950;
 			ground = new int[2][500];
 
 			for (int i = 0; i<500; i++) {
@@ -132,6 +138,7 @@ public class LevelLoader {
 			}
 			break;
 		case 3:
+			finishX = 380;
 			startPos = new int[]{10, -20};
 			ground = new int[2][20];
 			for (int i = 0; i<20; i++) {

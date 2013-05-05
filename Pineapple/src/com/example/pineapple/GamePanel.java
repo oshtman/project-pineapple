@@ -149,7 +149,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					"Wow, you can see so much from up here! Actually... I see something strange over there! What is that?",
 					"Good heavens, what an ugly creature! I know we are a friendly people but you better put him out of his misery! He doesn't look like a nice monster anyways...", 
 					"May he rest in peace! Now where were we? Oh right, there's one final thing you need to know! That weapon of yours, it gets easily overheated. Watch out for that if you feel like firing for a long time! Try it!",
-					"Well, that should be everything you need to know! I hereby name you... What is that noise? Run and look, will you?"
+					"Well, that should be everything you need to know! I hereby name you... What is that noise? Run and look, will you?",
+					"I don't know where these creatures came from but it is up to you investigate it! Go past that flag to continue your mission! Good luck!",
+					"I don't know where these creatures came from but it is up to you investigate it! Go past that flag to continue your mission! Good luck!"
 			};
 			//Split the hints up into rows and add them to the final hint list
 			int lettersPerRow = 50;
@@ -494,7 +496,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				mentorSentencesToSay = 3;
 			}
 		case 11:
-			if(enemies.size() == 0){
+			if(enemies.size() == 2){
 				currentCheckpoint++;
 				mentorSentencesToSay = 4;
 				
@@ -504,6 +506,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(heatMeter.isCoolingDown()){
 				currentCheckpoint++;
 				mentorSentencesToSay = 2;
+			}
+			break;
+		case 13: 
+			if(enemies.size() == 0){
+				currentCheckpoint++;
+				sm.playSound(5+mentorSoundIndexStart);
+			}
+			break;
+		case 14:
+			if(mentor.getXPos() > checkpoints[currentCheckpoint]){
+				currentCheckpoint++;
+				mentorSentencesToSay = 3;
 			}
 			break;
 		}
@@ -626,7 +640,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			feetAngle = Const.jumpFeetAngle;
 		}
 		//Draw all the protagonist parts
-		;
+		
 		if(protagonist.isFacingRight()){
 			//Draw back foot
 			renderMatrix.setRotate(-feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
