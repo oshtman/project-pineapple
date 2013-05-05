@@ -553,8 +553,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 		canvas.drawColor(Color.rgb(135, 206, 250)); //Sky
 		renderSun(canvas);
-		renderTrees(canvas);
-		renderRocks(canvas);
+		renderTrees(canvas, 0);
+		renderRocks(canvas, 0);
 		renderFlag(canvas, 0);
 		//Focus
 		renderPlatforms(canvas);
@@ -568,6 +568,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderBullets(canvas);
 		//Foreground
 		renderFlag(canvas, 1);
+		renderRocks(canvas, 1);
+		renderTrees(canvas, 1);
 		renderSticks(canvas);
 		renderHeatMeter(canvas);
 		renderHealthMeter(canvas);
@@ -894,42 +896,28 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	//Draw trees
-	public void renderTrees(Canvas canvas){
-		//x is centre of tree?
-		/*Paint trunk = new Paint();
-		trunk.setColor(Color.DKGRAY);
-		Paint top = new Paint();
-		top.setColor(Color.GREEN);
-		Paint border = new Paint();
-		border.setStyle(Style.STROKE);
+	public void renderTrees(Canvas canvas, int depth){
 		for(int i = 0; i < trees.size(); i++){
-			float y = (float)(100); //Make generalll
-			float trunkHeight = (float)(height/4);//Make generalll
-			float trunkWidth = (float)(5);//Make generalll
-			float radius = 20;
-			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleY), (float)(radius*scaleX), top);
-			canvas.drawCircle((float)((trees.get(i) - screenX/4)*scaleX), (float)((y - trunkHeight - radius/2)*scaleY), (float)(radius*scaleX), border);
-			canvas.drawRect((float)((trees.get(i) - trunkWidth/2 - screenX/4)*scaleX), (float)((y - trunkHeight)*scaleY), (float)((trees.get(i) + trunkWidth/2 - (float)(screenX/4))*scaleX), (float)(y*scaleY), trunk);
+			if(trees.get(i)[3] == depth){
+				canvas.drawBitmap(treeBitmaps[0][trees.get(i)[1]], (float)((trees.get(i)[0] - Const.maxTreeWidth/4 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-(Const.partOfTreeVisible-0.2)*Const.maxTreeHeight-screenY)*scaleY), null);
+				canvas.drawBitmap(treeBitmaps[1][trees.get(i)[2]], (float)((trees.get(i)[0] - Const.maxTreeWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-Const.partOfTreeVisible*Const.maxTreeHeight - screenY)*scaleY), null);
+			}
 		}
-		*/
-		for(int i = 0; i < trees.size(); i++){
-			canvas.drawBitmap(treeBitmaps[0][trees.get(i)[1]], (float)((trees.get(i)[0] - Const.maxTreeWidth/4 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-(Const.partOfTreeVisible-0.2)*Const.maxTreeHeight-screenY)*scaleY), null);
-			canvas.drawBitmap(treeBitmaps[1][trees.get(i)[2]], (float)((trees.get(i)[0] - Const.maxTreeWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-Const.partOfTreeVisible*Const.maxTreeHeight - screenY)*scaleY), null);
-		}
-		
 	}
 	
 	//Draw rocks
-	public void renderRocks(Canvas canvas){
+	public void renderRocks(Canvas canvas, int depth){
 		for(int i = 0; i < rocks.size(); i++){
-			groundAngle = (Math.atan(ground.getSlope(rocks.get(i)[0])));
-			renderMatrix.setScale((float)(rocks.get(i)[2]/Const.maxRockSize), (float)(rocks.get(i)[2]/Const.maxRockSize));
-			renderMatrix.postRotate((float)(groundAngle*180/Math.PI), (float)(rocks.get(i)[2]/2*scaleX), (float)(rocks.get(i)[2]/2*scaleY));
-			renderMatrix.postTranslate((float)((rocks.get(i)[0]-screenX-rocks.get(i)[2]/2)*scaleX), (float)((ground.getYFromX(rocks.get(i)[0])-screenY-rocks.get(i)[2]*Const.partOfRockVisible)*scaleY));
-			canvas.drawBitmap(rockBitmap[rocks.get(i)[1]-1], renderMatrix, null);
+			if(rocks.get(i)[3] == depth){
+				groundAngle = (Math.atan(ground.getSlope(rocks.get(i)[0])));
+				renderMatrix.setScale((float)(rocks.get(i)[2]/Const.maxRockSize), (float)(rocks.get(i)[2]/Const.maxRockSize));
+				renderMatrix.postRotate((float)(groundAngle*180/Math.PI), (float)(rocks.get(i)[2]/2*scaleX), (float)(rocks.get(i)[2]/2*scaleY));
+				renderMatrix.postTranslate((float)((rocks.get(i)[0]-screenX-rocks.get(i)[2]/2)*scaleX), (float)((ground.getYFromX(rocks.get(i)[0])-screenY-rocks.get(i)[2]*Const.partOfRockVisible)*scaleY));
+				canvas.drawBitmap(rockBitmap[rocks.get(i)[1]], renderMatrix, null);
+			}
 		}
 	}
-	
+
 	public void renderFlag(Canvas canvas, int index){
 		canvas.drawBitmap(flagBitmaps[index], (float)((levelLoader.getFinishX() - index + (index - 1)*Const.finishFlagWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(levelLoader.getFinishX())-Const.partOfFinishFlagVisible*Const.finishFlagHeight - screenY)*scaleY), null);
 	}

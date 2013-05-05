@@ -35,9 +35,9 @@ public class LevelLoader {
 	//spawnX is the x position the protagonist has to reach in order for the enemy to spawn
 	private ArrayList<int[]> enemies = new ArrayList<int[]>();
 	
-	//List for trees {x position, baseType, topType}
+	//List for trees {x position, baseType, topType, back or foreground}
 	private ArrayList<int[]> trees = new ArrayList<int[]>();
-	//List for rocks {x position, type, size}
+	//List for rocks {x position, type, size, back or foreground}
 	private ArrayList<int[]> rocks = new ArrayList<int[]>();	
 	
 	
@@ -71,10 +71,12 @@ public class LevelLoader {
 			enemies.add(new int[]{1790, 220, 1600, 1});
 			enemies.add(new int[]{1760, 220, 1600, 1});
 			
-			trees.add(new int[]{800, 0, 0});
+			trees.add(new int[]{100, 1, 2, 0});
+			trees.add(new int[]{130, 2, 1, 1});
+			trees.add(new int[]{800, 0, 0, 0});
 			
-			rocks.add(new int[]{780, 1, 20});
-			rocks.add(new int[]{820, 2, 23});
+			rocks.add(new int[]{780, 0, 20, 0});
+			rocks.add(new int[]{820, 1, 23, 0});
 			break;
 		case 1: 
 			//
@@ -107,16 +109,16 @@ public class LevelLoader {
 			//enemies.add(new int[]{100, 30, 80, 3});
 
 			//Trees
-			trees.add(new int[]{0, 0, 0});
-			trees.add(new int[]{50, 0, 0});
-			trees.add(new int[]{100, 0, 0});
+			trees.add(new int[]{0, 0, 0, 0});
+			trees.add(new int[]{50, 0, 0, 0});
+			trees.add(new int[]{100, 0, 0, 0});
 			//Rocks
-			rocks.add(new int[]{20, 1, 20});
-			rocks.add(new int[]{80, 2, 15});
-			rocks.add(new int[]{160, 3, 15});
-			rocks.add(new int[]{180, 3, 20});
-			rocks.add(new int[]{200, 3, 25});
-			rocks.add(new int[]{220, 3, 30});
+			rocks.add(new int[]{20, 0, 20, 0});
+			rocks.add(new int[]{80, 1, 15, 0});
+			rocks.add(new int[]{160, 2, 15, 0});
+			rocks.add(new int[]{180, 2, 20, 0});
+			rocks.add(new int[]{200, 2, 25, 0});
+			rocks.add(new int[]{220, 2, 30, 0});
 			
 			break;
 		case 2:
