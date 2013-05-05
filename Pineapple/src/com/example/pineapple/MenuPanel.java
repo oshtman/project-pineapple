@@ -30,6 +30,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private boolean play = false;
 	private int nextLevel;
 	private int menuState;
+	private int desiredX = 100;
 	
 	public MenuPanel(Context context) {
 		super(context);
@@ -45,8 +46,13 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 	
 	public void update(){
-		if(protagonist.getXPos() < 100 || play){
+		if(play){
 			protagonist.accelerate(0.3);
+			protagonist.step(1);
+			protagonist.faceDirection(1);
+		} else if(Math.abs(protagonist.getXPos() - desiredX) > 10){
+			protagonist.accelerate(0.3*Math.signum(desiredX-protagonist.getXPos()));
+			protagonist.faceDirection((int)Math.signum(desiredX-protagonist.getXPos()));
 			protagonist.step(1);
 		} else {
 			protagonist.slowDown();
@@ -161,6 +167,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(menuState == MAIN_MENU){
 				if(playButton.isClicked(x, y)){
 					menuState = LEVEL_MENU;
+					desiredX = 40;
 				}
 			} else if(menuState == LEVEL_MENU){
 				for(int i = 0; i < levelButtons.length; i++){
@@ -184,11 +191,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		/*Paint p = new Paint();
 		p.setColor(Color.BLUE);
 		canvas.drawRect((float)((protagonist.getXPos()-protagonist.getWidth()/2)*scaleX), (float)((protagonist.getYPos()-protagonist.getHeight()/2)*scaleY), (float)((protagonist.getXPos()+protagonist.getWidth()/2)*scaleX), (float)((protagonist.getYPos()+protagonist.getHeight()/2)*scaleY), p);*/
-		float aimAngle = 0;
+		
 		float feetAngle = (float)(180/Math.PI*Math.sin((double)protagonist.getStepCount()/protagonist.getNumberOfSteps()*Math.PI));
 		//Draw all the protagonist parts
 
 		if(protagonist.isFacingRight()){
+			float aimAngle = 0;
 			//Draw back foot
 			renderMatrix.setRotate(-feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis-Const.backFootOffset) - protagonist.getWidth()*Const.footRadius*Math.sin(-feetAngle*Math.PI/180) )*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) )*scaleY));
@@ -211,6 +219,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) )*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5) - protagonist.getHeight()*Const.weaponRadius*Math.sin(aimAngle*Math.PI/180) )*scaleY));
 			canvas.drawBitmap(weaponBitmap, renderMatrix, null);
 		} else {
+			float aimAngle = 180;
 			//Draw back foot
 			renderMatrix.setRotate(feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis+Const.backFootOffset) - protagonist.getWidth()*Const.footRadius*Math.sin(Math.PI-feetAngle*Math.PI/180) )*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) )*scaleY));

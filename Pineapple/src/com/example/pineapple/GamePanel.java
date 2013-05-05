@@ -289,6 +289,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void moveProtagonist(){
 		protagonist.gravity();
 		protagonist.move();
+		protagonist.contain(levelLoader.getFinishX());
 		protagonist.faceDirection(leftStick, rightStick);
 		protagonist.breathe();
 		protagonist.invincibility();

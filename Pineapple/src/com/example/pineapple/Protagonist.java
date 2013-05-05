@@ -295,6 +295,15 @@ public class Protagonist {
 			return false;
 	}
 	
+	public void contain(int finishX){
+		if(getXPos() < 1){
+			setXPos(1);
+		}
+		if(getXPos() > finishX+20){
+			setXPos(finishX+20);
+		}
+	}
+	
 	//Check if protagonist is alive
 	public boolean checkDeadOrAlive() {
 		if (health <= 0)
