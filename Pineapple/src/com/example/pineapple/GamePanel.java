@@ -38,7 +38,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<Platform> platforms;
 	private ArrayList<Bullet> bullets;
 	private ArrayList<Enemy> enemies;
-	private ArrayList<Integer> trees;
+	private ArrayList<int[]> trees;
 	private ArrayList<int[]> rocks;
 	private int level;
 	private HeatMeter heatMeter;
@@ -58,7 +58,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<ArrayList<String>> hints;
 	private Paint textPaint;
 	private Bird bird;
-	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound;
+	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound, mentorPlayCounter, mentorSentencesToSay;
+	private int mentorSoundIndexStart = 5;
 	
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
@@ -66,7 +67,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint groundPaint = new Paint();
 	private Path groundPath, dirtPath;;
 	private Matrix renderMatrix = new Matrix();
-	private MediaPlayer[] mentorSounds;
 	
 	//Bitmaps
 	private Bitmap bodyBitmap;
@@ -81,6 +81,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap mentorBodyBitmap;
 	private Bitmap eyeBeardBitmap;
 	private Bitmap[] rockBitmap;
+	private Bitmap[][] treeBitmaps;
 	
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -169,14 +170,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			textPaint.setTextSize((float)(20));
 			
 			//Load all the things the mentor can say
-			mentorSounds = new MediaPlayer[6];
-			mentorSounds[0] = MediaPlayer.create(getContext(), R.raw.mentor_sound_1);
-			mentorSounds[1] = MediaPlayer.create(getContext(), R.raw.mentor_sound_2);
-			mentorSounds[2] = MediaPlayer.create(getContext(), R.raw.mentor_sound_3);
-			mentorSounds[3] = MediaPlayer.create(getContext(), R.raw.mentor_sound_4);
-			mentorSounds[4] = MediaPlayer.create(getContext(), R.raw.mentor_sound_5);
-			mentorSounds[5] = MediaPlayer.create(getContext(), R.raw.mentor_sound_woohoo);
+			sm.addSound(mentorSoundIndexStart+0, R.raw.mentor_sound_1);
+			sm.addSound(mentorSoundIndexStart+1, R.raw.mentor_sound_2);
+			sm.addSound(mentorSoundIndexStart+2, R.raw.mentor_sound_3);
+			sm.addSound(mentorSoundIndexStart+3, R.raw.mentor_sound_4);
+			sm.addSound(mentorSoundIndexStart+4, R.raw.mentor_sound_5);
+			sm.addSound(mentorSoundIndexStart+5, R.raw.mentor_sound_woohoo);
 			lastMentorSound = -1; //Stops him from repeating the same line
+			mentorSentencesToSay = 3;
 		}
 
 	}
@@ -206,7 +207,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 	
 	public void loadSounds(){
-		fireSound = MediaPlayer.create(getContext(),  R.raw.fire_sound2);
 		sm.addSound(0, R.raw.fire_sound);
 	}
 
@@ -400,23 +400,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentor.slowDown();
 			mentor.faceDirection((int)(Math.signum(protagonist.getXPos()-mentor.getXPos())));
 			mentor.setAim((int)(180/Math.PI*Math.atan2(protagonist.getYPos() - mentor.getYPos(), protagonist.getXPos() - mentor.getXPos())));
-			boolean play = true;
-			for(MediaPlayer mp: mentorSounds){
-				if(mp.isPlaying()){
-					play = false;
-					break;
-				}
-			}
-			
-			if(play){
-				int nextSound = (int)((mentorSounds.length-1)*Math.random());
-				while(nextSound == lastMentorSound){
-					nextSound = (int)((mentorSounds.length-1)*Math.random());
-				}
-				lastMentorSound = nextSound;
-				mentorSounds[nextSound].start();
-			}
 		}
+		handleMentorTalking();
 		mentor.checkSlope(ground, platforms);
 		mentor.gravity();
 		mentor.move();
@@ -425,66 +410,100 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		mentor.checkPlatform(platforms);
 		
 	}
+	
+	public void handleMentorTalking(){
+		if(mentorPlayCounter <= 0 && mentorSentencesToSay > 0){
+			int nextSound = (int)(5*Math.random());
+			while(nextSound == lastMentorSound){
+				nextSound = (int)(5*Math.random());
+			}
+			lastMentorSound = nextSound;
+			sm.playSound(nextSound+mentorSoundIndexStart);
+			mentorPlayCounter = sm.getDuration(nextSound+mentorSoundIndexStart);
+			mentorSentencesToSay--;
+		}
+		mentorPlayCounter--;
+	}
 
 	//A special method for the tutorial
 	public void handleCheckpoints() {
 		switch(currentCheckpoint){
 		case 0:
-			if(leftStick.isPointed() && (leftStick.getAngle() < 45 || leftStick.getAngle() > 315 || leftStick.getAngle() > 135 && leftStick.getAngle() < 225))
+			if(leftStick.isPointed() && (leftStick.getAngle() < 45 || leftStick.getAngle() > 315 || leftStick.getAngle() > 135 && leftStick.getAngle() < 225)){
 				currentCheckpoint++;
+				mentorSentencesToSay = 3;
+			}
 			break;
 		case 1:
-			if(protagonist.getXPos() > checkpoints[1]-width/4)
+			if(protagonist.getXPos() > checkpoints[1]-width/4){
 				currentCheckpoint++;
+				mentorSentencesToSay = 1;
+			}
 			break;
 		case 2:
-			if(!protagonist.isTouchingGround())
+			if(!protagonist.isTouchingGround()){
 				currentCheckpoint++;
+				mentorSentencesToSay = 2;
+			}
 			break;
 		case 3: 
 			if(protagonist.getXPos() > 258){
 				currentCheckpoint++;
-				mentorSounds[5].start();
+				sm.playSound(mentorSoundIndexStart+5);
 			}
 			break;
 		case 4: 
-			if(protagonist.getXPos() > checkpoints[4])
+			if(protagonist.getXPos() > checkpoints[4]){
 				currentCheckpoint++;
+				mentorSentencesToSay = 1;
+			}
 			break;
 		case 5:
-			if(protagonist.getXPos() > checkpoints[5])
+			if(protagonist.getXPos() > checkpoints[5]){
 				currentCheckpoint++;
+				mentorSentencesToSay = 4;
+			}
 			break;
 		case 6: 
-			if(rightStick.isPointed())
+			if(rightStick.isPointed()){
 				currentCheckpoint++;
+				mentorSentencesToSay = 2;
+			}
 			break;
 		case 7:
-			if(protagonist.getXPos() > checkpoints[7] - width/4)
+			if(protagonist.getXPos() > checkpoints[7] - width/4){
 				currentCheckpoint++;
+				mentorSentencesToSay = 2;
+			}
 			break;
 		case 8:
 			if(bird.collide(bullets)){
 				currentCheckpoint++;
+				mentorSentencesToSay = 3;
 			}
 			break;
 		case 9:
 			if(protagonist.getXPos() > checkpoints[9] && protagonist.getYPos() < platforms.get(0).getUpperY()[0]){
 				currentCheckpoint++;
+				mentorSentencesToSay = 2;
 			}
 			break;
 		case 10:
-			if(protagonist.getXPos() > checkpoints[10]){
+			if(protagonist.getXPos() > checkpoints[10]-width/4){
 				currentCheckpoint++;
+				mentorSentencesToSay = 3;
 			}
 		case 11:
 			if(enemies.size() == 0){
 				currentCheckpoint++;
+				mentorSentencesToSay = 4;
+				
 			}
 			break;
 		case 12:
 			if(heatMeter.isCoolingDown()){
 				currentCheckpoint++;
+				mentorSentencesToSay = 2;
 			}
 			break;
 		}
@@ -847,7 +866,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		*/
 		for(int i = 0; i < trees.size(); i++){
-			canvas.drawBitmap(treeBitmap, (float)((trees.get(i) - screenX)*scaleX)-treeBitmap.getWidth()/2, (float)((ground.getYFromX(trees.get(i))-screenY)*scaleY-treeBitmap.getHeight()*0.8), null);
+			canvas.drawBitmap(treeBitmaps[0][trees.get(i)[1]], (float)((trees.get(i)[0] - Const.maxTreeWidth/4 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-(Const.partOfTreeVisible-0.2)*Const.maxTreeHeight-screenY)*scaleY), null);
+			canvas.drawBitmap(treeBitmaps[1][trees.get(i)[2]], (float)((trees.get(i)[0] - Const.maxTreeWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-Const.partOfTreeVisible*Const.maxTreeHeight - screenY)*scaleY), null);
 		}
 		
 	}
@@ -1046,6 +1066,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
 		birdBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bird), (int)(Bird.getWidth()*scaleX), (int)(Bird.getHeight()*scaleY), true);
 		treeBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tree_1), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*scaleY), true);
+		treeBitmaps = new Bitmap[][]{{
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_1), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_2), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_3), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true)
+		},
+		{
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_1), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight/2*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_2), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight/2*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_3), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight/2*scaleY), true)
+		}};
 		rockBitmap = new Bitmap[]{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_1), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_2), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
