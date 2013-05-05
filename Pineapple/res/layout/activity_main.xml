@@ -6,26 +6,36 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity"
+    android:background="@drawable/menu_background" >
 
-    <TextView
+   
+  <!-- <ImageView 
+       android:src="@drawable/menu_background"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_alignParentTop="true"
+       android:layout_alignParentLeft="true"
+        android:scaleType="fitXY"/> -->
+     <TextView
         android:id="@+id/titleText"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/title" />
+        android:text="@string/title"
+        />
     
-   
     <ImageButton
+        android:layout_alignParentTop="true"
         android:id = "@+id/playButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/titleText"
         android:layout_centerHorizontal="true"
         android:background="@android:color/transparent"
         android:onClick="goToGame"
         android:src="@drawable/bird"
-        android:text="@string/play" />
+       	android:padding="10dp"
+       	android:layout_alignParentLeft="true" />
     
      <ImageButton
         android:id = "@+id/settingsButton"
@@ -36,7 +46,8 @@
         android:background="@android:color/transparent"
         android:onClick="goToSettings"
         android:src="@drawable/bird"
-        android:text="@string/play" />
+        android:padding="10dp"
+        android:layout_alignParentLeft="true"/>
      
       <ImageButton
         android:id = "@+id/highscoreButton"
@@ -47,6 +58,7 @@
         android:background="@android:color/transparent"
         android:onClick="goToHighscore"
         android:src="@drawable/bird"
-        android:text="@string/play" />
+        android:padding="10dp"
+        android:layout_alignParentLeft="true" />
 
 </RelativeLayout>

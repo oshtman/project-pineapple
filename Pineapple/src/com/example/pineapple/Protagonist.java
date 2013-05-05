@@ -51,6 +51,14 @@ public class Protagonist {
 		Log.d(TAG, "Me");
 
 	}
+	
+	public Protagonist(double i, double j) {
+		this.setXPos(i);
+		this.setYPos(j);
+		this.stepCount = 0;
+		Log.d(TAG, "Me");
+
+	}
 	//------------------------------------------------------------------------------------------------//
 	//HOW TO MAKE PROTAGONIST MOVE
 	//Moving protagonist
