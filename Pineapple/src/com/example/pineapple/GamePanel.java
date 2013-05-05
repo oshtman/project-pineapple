@@ -3,6 +3,7 @@ package com.example.pineapple;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -401,7 +402,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(finishDelay > 0){
 				finishDelay--;
 			} else {
-				//Go to finished level activity
+				// Go to a new activity
+				Context context = getContext();
+				Intent intent = new Intent(context, LevelCompleteActivity.class);
+				context.startActivity(intent);
 			}
 		}
 	}
