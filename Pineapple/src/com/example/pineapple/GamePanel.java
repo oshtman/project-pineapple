@@ -9,9 +9,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Path;
-import android.graphics.RectF;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -57,7 +56,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<ArrayList<String>> hints;
 	private Paint textPaint;
 	private Bird bird;
-	private int timesMentorJumped, pastCheckpointBorder;
+	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound;
 	
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
@@ -65,6 +64,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint groundPaint = new Paint();
 	private Path groundPath, dirtPath;;
 	private Matrix renderMatrix = new Matrix();
+	private MediaPlayer[] mentorSounds;
 	
 	//Bitmaps
 	private Bitmap bodyBitmap;
@@ -163,6 +163,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			textPaint = new Paint();
 			textPaint.setColor(Color.BLACK);
 			textPaint.setTextSize((float)(20));
+			
+			//Load all the things the mentor can say
+			mentorSounds = new MediaPlayer[6];
+			mentorSounds[0] = MediaPlayer.create(getContext(), R.raw.mentor_sound_1);
+			mentorSounds[1] = MediaPlayer.create(getContext(), R.raw.mentor_sound_2);
+			mentorSounds[2] = MediaPlayer.create(getContext(), R.raw.mentor_sound_3);
+			mentorSounds[3] = MediaPlayer.create(getContext(), R.raw.mentor_sound_4);
+			mentorSounds[4] = MediaPlayer.create(getContext(), R.raw.mentor_sound_5);
+			mentorSounds[5] = MediaPlayer.create(getContext(), R.raw.mentor_sound_woohoo);
+			lastMentorSound = -1; //Stops him from repeating the same line
 		}
 
 	}
@@ -380,6 +390,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentor.slowDown();
 			mentor.faceDirection((int)(Math.signum(protagonist.getXPos()-mentor.getXPos())));
 			mentor.setAim((int)(180/Math.PI*Math.atan2(protagonist.getYPos() - mentor.getYPos(), protagonist.getXPos() - mentor.getXPos())));
+			boolean play = true;
+			for(MediaPlayer mp: mentorSounds){
+				if(mp.isPlaying()){
+					play = false;
+					break;
+				}
+			}
+			
+			if(play){
+				int nextSound = (int)((mentorSounds.length-1)*Math.random());
+				while(nextSound == lastMentorSound){
+					nextSound = (int)((mentorSounds.length-1)*Math.random());
+				}
+				lastMentorSound = nextSound;
+				mentorSounds[nextSound].start();
+			}
 		}
 		mentor.checkSlope(ground, platforms);
 		mentor.gravity();
@@ -406,8 +432,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				currentCheckpoint++;
 			break;
 		case 3: 
-			if(protagonist.getXPos() > 258)
+			if(protagonist.getXPos() > 258){
 				currentCheckpoint++;
+				mentorSounds[5].start();
+			}
 			break;
 		case 4: 
 			if(protagonist.getXPos() > checkpoints[4])
