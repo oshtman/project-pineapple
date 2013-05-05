@@ -30,6 +30,10 @@
             android:name="com.example.pineapple.BaseActivity"
             android:label="@string/title_activity_base" >
         </activity>
+        <activity
+            android:name="com.example.pineapple.LevelCompleteActivity"
+            android:label="@string/title_activity_level_complete" >
+        </activity>
     </application>
 
 </manifest>

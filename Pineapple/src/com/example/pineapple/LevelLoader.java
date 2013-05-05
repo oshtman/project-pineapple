@@ -10,6 +10,7 @@ public class LevelLoader {
 	//Ground arrays for level
 	private int[][] ground;
 	private int[] startPos = new int[]{10, 0}; //x- and y-position of protagonist when the level begins
+	private int finishX;
 
 	private int[][] p1;
 	private int[][] p2;
@@ -33,10 +34,9 @@ public class LevelLoader {
 	//A row should contain {startX, startY, spawnX?, type}
 	//spawnX is the x position the protagonist has to reach in order for the enemy to spawn
 	private ArrayList<int[]> enemies = new ArrayList<int[]>();
-
-	//List for trees {x position, baseType, topType}
+	//List for trees {x position, baseType, topType, back or foreground}
 	private ArrayList<int[]> trees = new ArrayList<int[]>();
-	//List for rocks {x position, type, size}
+	//List for rocks {x position, type, size, back or foreground}
 	private ArrayList<int[]> rocks = new ArrayList<int[]>();	
 
 
@@ -49,12 +49,12 @@ public class LevelLoader {
 		switch(level){
 		case 0:
 			startPos = new int[]{10, 70};
+			finishX = 1750;
 			ground = new int[][]{
-					{0,  258, 395, 649, 725, 800, 875, 983, 1254, 1264, 1300, 1310, 1528},
-					{90, 90,  208, 208, 160, 146, 160, 208, 208,  240,  240,  208,  208}
-			};
-
-			checkpoints = new int[]{30, 200, 200, 250, 420, 530, 600, 790, 790, 950, 1240, 1240, 1400, 1400, 1400};
+					{0,  258, 395, 649, 725, 800, 875, 983, 1254, 1264, 1300, 1310, 1528, 1600, 1610, 1800},
+					{90, 90,  208, 208, 160, 146, 160, 208, 208,  240,  240,  208,  208,  270,  275,  275 }
+			};			
+			checkpoints = new int[]{30, 200, 200, 250, 420, 530, 600, 790, 790, 950, 1240, 1240, 1400, 1400, 1700, 1700};
 
 			//Platform 1
 			p1 = new int[][]{
@@ -66,14 +66,19 @@ public class LevelLoader {
 			platforms.add(p1);
 
 			enemies.add(new int[]{1280, 220, 1000, 1});
+			enemies.add(new int[]{1790, 220, 1600, 1});
+			enemies.add(new int[]{1760, 220, 1600, 1});
 
-			trees.add(new int[]{800, 0, 0});
+			trees.add(new int[]{100, 1, 2, 0});
+			trees.add(new int[]{130, 2, 1, 1});
+			trees.add(new int[]{800, 0, 0, 0});
 
-			rocks.add(new int[]{780, 1, 20});
-			rocks.add(new int[]{820, 2, 23});
+			rocks.add(new int[]{780, 0, 20, 0});
+			rocks.add(new int[]{820, 1, 23, 0});
 			break;
 		case 1: 
 			//
+			finishX = 450;
 			ground = new int[][]{
 					{-350, -50,  -40,   -10,   0,   100, 150, 300, 400, 420, 480},
 					{40,   95,   130,   130,   95,  80,  95,  20,  150, 140, 135}
@@ -102,20 +107,21 @@ public class LevelLoader {
 			//enemies.add(new int[]{100, 30, 80, 3});
 
 			//Trees
-			trees.add(new int[]{0, 0, 0});
-			trees.add(new int[]{50, 0, 0});
-			trees.add(new int[]{100, 0, 0});
+			trees.add(new int[]{0, 0, 0, 0});
+			trees.add(new int[]{50, 0, 0, 0});
+			trees.add(new int[]{100, 0, 0, 0});
 			//Rocks
-			rocks.add(new int[]{20, 1, 20});
-			rocks.add(new int[]{80, 2, 15});
-			rocks.add(new int[]{160, 3, 15});
-			rocks.add(new int[]{180, 3, 20});
-			rocks.add(new int[]{200, 3, 25});
-			rocks.add(new int[]{220, 3, 30});
+			rocks.add(new int[]{20, 0, 20, 0});
+			rocks.add(new int[]{80, 1, 15, 0});
+			rocks.add(new int[]{160, 2, 15, 0});
+			rocks.add(new int[]{180, 2, 20, 0});
+			rocks.add(new int[]{200, 2, 25, 0});
+			rocks.add(new int[]{220, 2, 30, 0});
 
 			break;
 		case 2: //the hunt
 			//-------------------------------------------------------------------------//
+			finishX = 950;
 			//Ground
 			int maxLengthPoint = 300;
 			ground = new int[2][maxLengthPoint];
@@ -171,6 +177,7 @@ public class LevelLoader {
 			//-------------------------------------------------------------------------//
 
 		case 3:
+			finishX = 380;
 			startPos = new int[]{10, -20};
 			ground = new int[2][20];
 			for (int i = 0; i<20; i++) {
@@ -244,4 +251,7 @@ public class LevelLoader {
 		return checkpoints;
 	}
 
+	public int getFinishX(){
+		return finishX;
+	}
 }
