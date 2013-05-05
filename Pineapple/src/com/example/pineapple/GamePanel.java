@@ -48,6 +48,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint frame = new Paint();
 	private double time;
 	private double bulletDamage = 0.05;
+	private MediaPlayer fireSound;
+	private SoundManager sm;
 	
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -114,11 +116,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		leftStick = new Stick(Stick.LEFT);
 		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
-
+		sm = new SoundManager(getContext());
+		
 		loadPlatforms();
 		loadEnemies();
 		loadTrees();
 		loadRocks();
+		loadSounds();
 		
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
@@ -200,6 +204,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void loadRocks(){
 		rocks = levelLoader.getRocks();
 	}
+	
+	public void loadSounds(){
+		fireSound = MediaPlayer.create(getContext(),  R.raw.fire_sound2);
+		sm.addSound(0, R.raw.fire_sound);
+	}
 
 	//Method that gets called every frame to update the games state
 	public void update(){
@@ -248,6 +257,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				if(!heatMeter.isCoolingDown()){
 					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/180*Math.PI), angle, 10));
 					firing = true;
+					sm.playSound(0);
 				}
 			}
 		}
