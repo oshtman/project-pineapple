@@ -125,9 +125,9 @@ public class LevelLoader {
 			//Enemies
 			for (int j = 1; j <= 25; j++){
 				int spawnPoint = j*50 + 100;
-				enemies.add(new int[]{spawnPoint + 100, 10, spawnPoint + 40, 1});
-				enemies.add(new int[]{spawnPoint + 100, 20, spawnPoint + 20, 2});
-				enemies.add(new int[]{spawnPoint + 100, 0, spawnPoint, 3});
+				enemies.add(new int[]{spawnPoint - 100, 0, spawnPoint, 2});
+				enemies.add(new int[]{spawnPoint - 100, 0, spawnPoint, 3});
+				enemies.add(new int[]{spawnPoint - 100, 0, spawnPoint, 3});
 
 			}
 			break;
