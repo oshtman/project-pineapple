@@ -212,4 +212,8 @@ public class LevelLoader {
 		return checkpoints;
 	}
 	
+	public int getFinishX(){
+		return finishX;
+	}
+	
 }

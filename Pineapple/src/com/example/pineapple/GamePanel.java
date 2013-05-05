@@ -29,6 +29,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double screenY;
 	private final int screenXPadding = 50;
 	private final int screenYPadding = 20;
+	private int finishDelay, finishDelayTime = 20;
+	private boolean finished;
 	private MainThread thread;
 	private Protagonist protagonist;
 	private Ground ground;
@@ -82,6 +84,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap eyeBeardBitmap;
 	private Bitmap[] rockBitmap;
 	private Bitmap[][] treeBitmaps;
+	private Bitmap[] flagBitmaps;
 	
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -223,6 +226,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
 		handleProtagonistEnemyCollisions();
+		checkFinish();
 		this.time++;
 		
 		//Tutorial
@@ -387,6 +391,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 	
+	public void checkFinish(){
+		if(protagonist.getXPos() >  levelLoader.getFinishX() && !finished){
+			finished = true;
+			finishDelay = finishDelayTime;
+			Log.d(TAG, "Finished!");
+		}
+		if(finished){
+			if(finishDelay > 0){
+				finishDelay--;
+			} else {
+				//Go to finished level activity
+			}
+		}
+	}
+	
 	public void moveMentor(){
 		if(mentor.getXPos() < checkpoints[currentCheckpoint] - pastCheckpointBorder){
 			if(mentor.getXPos() > 840 && timesMentorJumped == 0 || mentor.getXPos() > 1250 && timesMentorJumped == 1){
@@ -525,10 +544,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
+		
+		//Background
+		
 		canvas.drawColor(Color.rgb(135, 206, 250)); //Sky
 		renderSun(canvas);
 		renderTrees(canvas);
 		renderRocks(canvas);
+		renderFlag(canvas, 0);
+		//Focus
 		renderPlatforms(canvas);
 		renderEnemies(canvas);
 		if(level == 0){ //Tutorial
@@ -538,6 +562,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderProtagonist(canvas);
 		renderGround(canvas);
 		renderBullets(canvas);
+		//Foreground
+		renderFlag(canvas, 1);
 		renderSticks(canvas);
 		renderHeatMeter(canvas);
 		renderHealthMeter(canvas);
@@ -547,6 +573,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(level == 0){
 			renderHint(canvas);
 		}
+		
+		if(finished)
+			canvas.drawColor(Color.argb(255*(finishDelayTime-finishDelay)/finishDelayTime, 0, 0, 0));
 	}
 
 	//Draw the enemies
@@ -897,6 +926,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 	
+	public void renderFlag(Canvas canvas, int index){
+		canvas.drawBitmap(flagBitmaps[index], (float)((levelLoader.getFinishX() - index + (index - 1)*Const.finishFlagWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(levelLoader.getFinishX())-Const.partOfFinishFlagVisible*Const.finishFlagHeight - screenY)*scaleY), null);
+	}
+	
 	public void renderMentor(Canvas canvas){
 		float feetAngle;
 		float aimAngle = (float)mentor.getAim();
@@ -1079,7 +1112,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
 		birdBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bird), (int)(Bird.getWidth()*scaleX), (int)(Bird.getHeight()*scaleY), true);
-		treeBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tree_1), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*scaleY), true);
+		flagBitmaps = new Bitmap[]{
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flag_back), (int)(Const.finishFlagWidth/2*scaleX), (int)(Const.finishFlagHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flag_front), (int)(Const.finishFlagWidth/2*scaleX), (int)(Const.finishFlagHeight*scaleY), true)
+		};
 		treeBitmaps = new Bitmap[][]{{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_1), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_2), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
