@@ -132,6 +132,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadRocks();
 		loadSounds();
 		
+		playTheme();
+
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
 		groundPaint.setColor(Color.rgb(10, 250, 10));
@@ -223,7 +225,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 	
 	public void playTheme(){
-		sm.playLoopedSound(1);
+		sm.playSound(1);
 		Log.d(TAG, "spela");
 	}
 
