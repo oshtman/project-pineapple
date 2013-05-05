@@ -17,7 +17,7 @@ public class SoundManager {
 
 	public SoundManager(Context theContext) {
 		mContext = theContext;
-		mSoundPool = new SoundPool(25, AudioManager.STREAM_MUSIC, 0);
+		mSoundPool = new SoundPool(32, AudioManager.STREAM_MUSIC, 0);
 		mSoundPoolMap = new HashMap<Integer, Integer>();
 		resIds = new HashMap<Integer, Integer>();
 		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
