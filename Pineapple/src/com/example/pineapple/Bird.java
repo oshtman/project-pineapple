@@ -5,15 +5,13 @@ import java.util.ArrayList;
 public class Bird {
 	private boolean alive = true;
 	private double x, y, baseY, rotation, xVel;
-	private static int width, height;
+	private static int width = 10, height = (int)(width/1.33);
 	private double yVel;
 	private int counter;
 	
 	public Bird(int x, int y){
 		this.x = x;
 		this.baseY = y;
-		width = 10;
-		height = (int)(10/1.33); //Ratio of bitmap
 		this.yVel = 0;
 		this.rotation = 0;
 	}

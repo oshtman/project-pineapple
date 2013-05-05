@@ -34,6 +34,10 @@
             android:name="com.example.pineapple.LevelCompleteActivity"
             android:label="@string/title_activity_level_complete" >
         </activity>
+        <activity
+            android:name="com.example.pineapple.GameOverActivity"
+            android:label="@string/title_activity_game_over" >
+        </activity>
     </application>
 
 </manifest>

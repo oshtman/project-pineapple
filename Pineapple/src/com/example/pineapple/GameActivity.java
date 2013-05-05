@@ -15,7 +15,7 @@ public class GameActivity extends BaseActivity {
 	
 	
 	GamePanel gamePanel;
-	int level = 0;
+	int level = 2;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

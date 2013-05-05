@@ -21,7 +21,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = GamePanel.class.getSimpleName();
 	private final int INVALID_POINTER = -1;
 
-	
+
 	private int leftStickId = INVALID_POINTER;
 	private int rightStickId = INVALID_POINTER;
 	private final int width = 155;
@@ -53,7 +53,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double bulletDamage = 0.05;
 	private MediaPlayer fireSound;
 	private SoundManager sm;
-	
+
 	//Special tutorial variables
 	private Protagonist mentor;
 	private int[] checkpoints;
@@ -63,14 +63,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bird bird;
 	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound, mentorPlayCounter, mentorSentencesToSay;
 	private int mentorSoundIndexStart = 5;
-	
+
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
 	private double xGap, yGap, gap, groundAngle; 
 	private Paint groundPaint = new Paint();
 	private Path groundPath, dirtPath;;
 	private Matrix renderMatrix = new Matrix();
-	
+
 	//Bitmaps
 	private Bitmap bodyBitmap;
 	private Bitmap footBitmap;
@@ -86,14 +86,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[] rockBitmap;
 	private Bitmap[][] treeBitmaps;
 	private Bitmap[] flagBitmaps;
-	
+
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
 	private Bitmap[] enemyLeftArmBitmap = new Bitmap[3];
 	private Bitmap[] enemyRightArmBitmap = new Bitmap[3];
 	private Bitmap[] enemyFootBitmap = new Bitmap[3];
 	private Bitmap[] enemyPupilBitmap = new Bitmap[3];
-	
+
 	private Bitmap bodyBitmapFlipped;
 	private Bitmap footBitmapFlipped;
 	private Bitmap eyeMouthBitmapFlipped;
@@ -101,7 +101,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap pupilBitmapFlipped;
 	private Bitmap mentorBodyBitmapFlipped;
 	private Bitmap eyeBeardBitmapFlipped;
-	
+
 	private Bitmap[] enemyBodyBitmapFlipped = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmapFlipped = new Bitmap[3];
 	private Bitmap[] enemyFootBitmapFlipped = new Bitmap[3];
@@ -122,17 +122,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
 		sm = new SoundManager(getContext());
-		
+
 		loadPlatforms();
 		loadEnemies();
 		loadTrees();
 		loadRocks();
 		loadSounds();
-		
+
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
 		groundPaint.setColor(Color.rgb(10, 250, 10));
-		
+
 		if(level == 0){
 			mentor = new Protagonist(10, 0, this);
 			checkpoints = levelLoader.getCheckpoints();
@@ -169,12 +169,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				}
 				hints.get(i).add(rawHints[i]);
 			}
-			
+
 			//Paint
 			textPaint = new Paint();
 			textPaint.setColor(Color.BLACK);
 			textPaint.setTextSize((float)(20));
-			
+
 			//Load all the things the mentor can say
 			sm.addSound(mentorSoundIndexStart+0, R.raw.mentor_sound_1);
 			sm.addSound(mentorSoundIndexStart+1, R.raw.mentor_sound_2);
@@ -203,15 +203,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			enemies.add(new Enemy(enemyData[0], enemyData[1], enemyData[2], enemyData[3], this));
 		}
 	}
-	
+
 	public void loadTrees(){
 		trees = levelLoader.getTrees();
 	}
-	
+
 	public void loadRocks(){
 		rocks = levelLoader.getRocks();
 	}
-	
+
 	public void loadSounds(){
 		sm.addSound(0, R.raw.fire_sound);
 	}
@@ -229,7 +229,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleProtagonistEnemyCollisions();
 		checkFinish();
 		this.time++;
-		
+
 		//Tutorial
 		if(level == 0){
 			moveMentor();
@@ -280,7 +280,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.checkPlatform(platforms);
 		protagonist.dashing(ground, platforms);
 	}
-	
+
 	//Move all the enemies and check for obstacles etc
 	public void moveEnemies(){
 		for(int i = 0; i < enemies.size(); i++){
@@ -373,8 +373,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Check collision between enemies and protagonist
 	public void handleProtagonistEnemyCollisions(){
 		for(int i = 0; i < enemies.size(); i++){
+			Context context = getContext();
+			Intent intent = new Intent(context, GameOverActivity.class);
 			//Dashmove
-			//if(protagonist.collide(enemies.get(i)) && protagonist.isDashBonus()){
 			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*3 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*1.5 && protagonist.isDashBonus() && enemies.get(i).isTouchingGround()){
 				enemies.get(i).takeDashDamage(protagonist);
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
@@ -382,16 +383,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					Log.d(TAG, "Enemy down. Splash.");
 				}
 			}
+			//Protagonist collide with enemy
 			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && enemies.get(i).hasSpawned()){
 				protagonist.setInvincible(true);
 				protagonist.setXVel(-protagonist.getXVel());
 				protagonist.setYVel(-5);
-				protagonist.reduceHealth(0.05); //Change this constant
 				protagonist.setTouchingGround(false);
+				protagonist.reduceHealth(0.05); //Change this constant
+				if (!protagonist.checkDeadOrAlive())
+					// Go to a new activity (game over)
+					context.startActivity(intent);
 			}
 		}
 	}
-	
+
 	public void checkFinish(){
 		if(protagonist.getXPos() >  levelLoader.getFinishX() && !finished){
 			finished = true;
@@ -409,7 +414,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-	
+
 	public void moveMentor(){
 		if(mentor.getXPos() < checkpoints[currentCheckpoint] - pastCheckpointBorder){
 			if(mentor.getXPos() > 840 && timesMentorJumped == 0 || mentor.getXPos() > 1250 && timesMentorJumped == 1){
@@ -433,9 +438,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		mentor.breathe();
 		mentor.checkGround(ground);
 		mentor.checkPlatform(platforms);
-		
+
 	}
-	
+
 	public void handleMentorTalking(){
 		if(mentorPlayCounter <= 0 && mentorSentencesToSay > 0){
 			int nextSound = (int)(5*Math.random());
@@ -522,7 +527,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(enemies.size() == 2){
 				currentCheckpoint++;
 				mentorSentencesToSay = 4;
-				
+
 			}
 			break;
 		case 12:
@@ -548,9 +553,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
-		
+
 		//Background
-		
+
 		canvas.drawColor(Color.rgb(135, 206, 250)); //Sky
 		renderSun(canvas);
 		renderTrees(canvas, 0);
@@ -574,25 +579,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderHeatMeter(canvas);
 		renderHealthMeter(canvas);
 
-		
+
 		//Tutorial 
 		if(level == 0){
 			renderHint(canvas);
 		}
-		
+
 		if(finished)
 			canvas.drawColor(Color.argb(255*(finishDelayTime-finishDelay)/finishDelayTime, 0, 0, 0));
 	}
 
 	//Draw the enemies
 	public void renderEnemies(Canvas canvas){
-		
+
 		for(int i = 0; i < enemies.size(); i++){
 			if(enemies.get(i).hasSpawned()){
 				Enemy e = enemies.get(i);
 				int feetAngle = (int)(Const.enemyMaxFootAngle*Math.sin(time/3));
 				if(e.getXVel() < 0){
-					
+
 					//Back arm
 					renderMatrix.setRotate(e.getLeftArmAngle(), enemyRightArmBitmap[e.getType()-1].getWidth(), (float)(enemyRightArmBitmap[e.getType()-1].getHeight()*0.9));
 					renderMatrix.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyArmXAxis) - e.getWidth()*Const.enemyArmRadius*Math.cos(-e.getLeftArmAngle()*Math.PI/180) - screenX)*scaleX)-enemyRightArmBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + e.getHeight()*Const.enemyArmRadius*Math.sin(-e.getLeftArmAngle()*Math.PI/180) - screenY)*scaleY));
@@ -648,16 +653,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 				switch(e.getType()){
 				case 1:
-					
+
 					break;
 				case 2:
-					
+
 					break;
 				case 3:
-					
+
 					break;
 				}
-				
+
 			}
 		}
 	}
@@ -675,7 +680,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			feetAngle = Const.jumpFeetAngle;
 		}
 		//Draw all the protagonist parts
-		
+
 		if(protagonist.isFacingRight()){
 			//Draw back foot
 			renderMatrix.setRotate(-feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
@@ -724,14 +729,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 
 	}
-	
-	
+
+
 
 	//Draws the ground using a Path
 	//Draw only the parts which are visible on the screen
 	public void renderGround(Canvas canvas){
 		int i = 0;
-		
+
 		//Find the interval of the ground that has to be rendered
 		while(ground.getX(i+1) < screenX){
 			i++;
@@ -742,12 +747,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			i++;
 			lowestPoint = Math.max(lowestPoint, ground.getY(i));
 		}
-		
+
 		int stopIndex = i;
 		Paint dirtPaint = new Paint();
 		dirtPaint.setColor(Color.rgb(87, 59, 12));
 		for(i = startIndex; i <= stopIndex; i++){
-			
+
 			groundPath = new Path();
 			groundPath.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
 			groundPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY));
@@ -765,7 +770,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		//Experiment (Different ground details)
 		//Balls
-		
+
 		/*for(i = startIndex; i <= stopIndex; i++){
 			xGap = (ground.getX(i+1)-ground.getX(i));
 			yGap = (ground.getY(i+1)-ground.getY(i));
@@ -775,7 +780,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				canvas.drawOval(new RectF((float)((ground.getX(i)+xGap*j/numberOfPatches - foliageSize - screenX)*scaleX), (float)((ground.getY(i)+yGap*j/numberOfPatches-foliageSize - screenY)*scaleY), (float)((ground.getX(i)+xGap*j/numberOfPatches+foliageSize - screenX)*scaleX), (float)((ground.getY(i)+yGap*j/numberOfPatches+foliageSize - screenY)*scaleY)), groundPaint);
 			}
 		}*/
-		
+
 		//Spikes
 		groundPath = new Path();
 		for(i = startIndex; i <= stopIndex; i++){
@@ -792,7 +797,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			groundPath.lineTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
 			canvas.drawPath(groundPath, groundPaint);
 		}
-		
+
 	}
 
 	//Draw the platforms
@@ -904,7 +909,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-	
+
 	//Draw rocks
 	public void renderRocks(Canvas canvas, int depth){
 		for(int i = 0; i < rocks.size(); i++){
@@ -921,7 +926,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderFlag(Canvas canvas, int index){
 		canvas.drawBitmap(flagBitmaps[index], (float)((levelLoader.getFinishX() - index + (index - 1)*Const.finishFlagWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(levelLoader.getFinishX())-Const.partOfFinishFlagVisible*Const.finishFlagHeight - screenY)*scaleY), null);
 	}
-	
+
 	public void renderMentor(Canvas canvas){
 		float feetAngle;
 		float aimAngle = (float)mentor.getAim();
@@ -975,7 +980,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
 		}
 	}
-	
+
 	public void renderHint(Canvas canvas){
 		if(protagonist.getXPos() < checkpoints[currentCheckpoint] + pastCheckpointBorder){
 			for(int i = 0; i < hints.get(currentCheckpoint).size(); i++){
@@ -1063,7 +1068,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			leftStickId = INVALID_POINTER;
 			rightStickId = INVALID_POINTER;
 
-			
+
 			break;
 
 
@@ -1103,15 +1108,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
+		Log.d(TAG, ""+Bird.getHeight());
 		birdBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bird), (int)(Bird.getWidth()*scaleX), (int)(Bird.getHeight()*scaleY), true);
 		flagBitmaps = new Bitmap[]{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flag_back), (int)(Const.finishFlagWidth/2*scaleX), (int)(Const.finishFlagHeight*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flag_front), (int)(Const.finishFlagWidth/2*scaleX), (int)(Const.finishFlagHeight*scaleY), true)
 		};
 		treeBitmaps = new Bitmap[][]{{
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_1), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_2), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_3), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true)
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_1), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_2), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_3), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true)
 		},
 		{
 			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_1), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight/2*scaleY), true),
@@ -1124,28 +1130,28 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_3), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_4), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
 		};
-		
+
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
 		enemyEyeMouthBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyEyeMouthYScale*scaleY), true);
 		enemyLeftArmBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm), (int)(Enemy.getBaseWidth()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyArmYScale*scaleY), true);
 		enemyFootBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot), (int)(Enemy.getBaseWidth()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyFootYScale*scaleY), true);
 		enemyPupilBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil), (int)(Enemy.getBaseWidth()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyPupilYScale*scaleY), true);
-		
+
 		//Ninja
 		enemyBodyBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyBodyYScale*scaleY), true);	
 		enemyEyeMouthBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyEyeMouthYScale*scaleY), true);
 		enemyLeftArmBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyArmYScale*scaleY), true);
 		enemyFootBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyFootYScale*scaleY), true);
 		enemyPupilBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyPupilYScale*scaleY), true);
-		
+
 		//Tank
 		enemyBodyBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyBodyYScale*scaleY), true);	
 		enemyEyeMouthBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyEyeMouthYScale*scaleY), true);
 		enemyLeftArmBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyArmYScale*scaleY), true);
 		enemyFootBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyFootYScale*scaleY), true);
 		enemyPupilBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyPupilYScale*scaleY), true);
-		
+
 		Matrix m = new Matrix();
 		//Flip images
 		m.setScale(-1, 1);
@@ -1157,25 +1163,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		footBitmapFlipped = Bitmap.createBitmap(footBitmap, 0, 0, footBitmap.getWidth(), footBitmap.getHeight(), m, false);
 		weaponBitmapFlipped = Bitmap.createBitmap(weaponBitmap, 0, 0, weaponBitmap.getWidth(), weaponBitmap.getHeight(), m, false);
 		pupilBitmapFlipped = Bitmap.createBitmap(pupilBitmap, 0, 0, pupilBitmap.getWidth(), pupilBitmap.getHeight(), m, false);
-		
+
 		enemyBodyBitmapFlipped[0] = Bitmap.createBitmap(enemyBodyBitmap[0], 0, 0, enemyBodyBitmap[0].getWidth(), enemyBodyBitmap[0].getHeight(), m, false);
 		enemyBodyBitmapFlipped[1] = Bitmap.createBitmap(enemyBodyBitmap[1], 0, 0, enemyBodyBitmap[1].getWidth(), enemyBodyBitmap[1].getHeight(), m, false);
 		enemyBodyBitmapFlipped[2] = Bitmap.createBitmap(enemyBodyBitmap[2], 0, 0, enemyBodyBitmap[2].getWidth(), enemyBodyBitmap[2].getHeight(), m, false);
-		
+
 		enemyEyeMouthBitmapFlipped[0] = Bitmap.createBitmap(enemyEyeMouthBitmap[0], 0, 0, enemyEyeMouthBitmap[0].getWidth(), enemyEyeMouthBitmap[0].getHeight(), m, false);
 		enemyEyeMouthBitmapFlipped[1] = Bitmap.createBitmap(enemyEyeMouthBitmap[1], 0, 0, enemyEyeMouthBitmap[1].getWidth(), enemyEyeMouthBitmap[1].getHeight(), m, false);
 		enemyEyeMouthBitmapFlipped[2] = Bitmap.createBitmap(enemyEyeMouthBitmap[2], 0, 0, enemyEyeMouthBitmap[2].getWidth(), enemyEyeMouthBitmap[2].getHeight(), m, false);
-		
+
 		enemyFootBitmapFlipped[0] = Bitmap.createBitmap(enemyFootBitmap[0], 0, 0, enemyFootBitmap[0].getWidth(), enemyFootBitmap[0].getHeight(), m, false);
 		enemyFootBitmapFlipped[1] = Bitmap.createBitmap(enemyFootBitmap[1], 0, 0, enemyFootBitmap[1].getWidth(), enemyFootBitmap[1].getHeight(), m, false);
 		enemyFootBitmapFlipped[2] = Bitmap.createBitmap(enemyFootBitmap[2], 0, 0, enemyFootBitmap[2].getWidth(), enemyFootBitmap[2].getHeight(), m, false);
-		
+
 		enemyRightArmBitmap[0] = Bitmap.createBitmap(enemyLeftArmBitmap[0], 0, 0, enemyLeftArmBitmap[0].getWidth(), enemyLeftArmBitmap[0].getHeight(), m, false);
 		enemyRightArmBitmap[1] = Bitmap.createBitmap(enemyLeftArmBitmap[1], 0, 0, enemyLeftArmBitmap[1].getWidth(), enemyLeftArmBitmap[1].getHeight(), m, false);		
 		enemyRightArmBitmap[2] = Bitmap.createBitmap(enemyLeftArmBitmap[2], 0, 0, enemyLeftArmBitmap[2].getWidth(), enemyLeftArmBitmap[2].getHeight(), m, false);
-		
-		
-		
+
+
+
 		//Start the thread
 		thread.setRunning(true);
 		try{thread.start();} catch(IllegalThreadStateException e){}
@@ -1208,7 +1214,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void pause(){
 		thread.setRunning(false);
 	}
-	
+
 	//Resume the game
 	public void resume(){
 		thread.setRunning(true);

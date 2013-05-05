@@ -56,7 +56,7 @@ public class Enemy {
 			this.height = (int)(this.height*scaleNinja);
 			this.width = (int)(this.width*scaleNinja);
 			this.typeAcc = 0.6*baseAcc;
-			this.maxSpeed = 1*maxSpeed;
+			this.maxSpeed = 1.1*maxSpeed;
 			this.jumpVel = 2*jumpVel;
 			this.jumpAcc = 2*jumpAcc;
 			this.damageGrade = 1.5;

@@ -39,6 +39,7 @@ public class Protagonist {
 	private boolean dashingGround = false;
 	private boolean dashingPlatform = false;
 	private int platformNumber = -1;
+	private boolean alive = true;
 	//------------------------------------------------------------------------------------------------//
 	// CONSTRUCTOR
 	public Protagonist(double i, double j, GamePanel gp) {
@@ -284,6 +285,14 @@ public class Protagonist {
 			return true;
 		} else 
 			return false;
+	}
+	
+	//Check if protagonist is alive
+	public boolean checkDeadOrAlive() {
+		if (health <= 0)
+			return alive = false;
+		else
+			return alive = true;
 	}
 	//------------------------------------------------------------------------------------------------//
 	//FOR RENDERING PROTAGONIST
