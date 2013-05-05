@@ -14,6 +14,8 @@ import android.view.SurfaceView;
 public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = MenuPanel.class.getSimpleName();
 	public final static String LEVEL = "com.example.joarattacks.LEVEL";
+	private final int MAIN_MENU = 0;
+	private final int LEVEL_MENU = 1;
 	private double scaleX, scaleY;
 	private Button playButton, settingsButton, highscoreButton;
 	private MainThread thread;
@@ -23,8 +25,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Matrix renderMatrix;
 	private Bitmap bodyBitmap, weaponBitmap, footBitmap, pupilBitmap, eyeMouthBitmap;
 	private Bitmap bodyBitmapFlipped, weaponBitmapFlipped, footBitmapFlipped, pupilBitmapFlipped, eyeMouthBitmapFlipped;
+	private Button[] levelButtons;
+	private Bitmap[] levelBitmaps;
 	private boolean play = false;
 	private int nextLevel;
+	private int menuState;
 	
 	public MenuPanel(Context context) {
 		super(context);
@@ -35,6 +40,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist = new Protagonist(-20, 80);
 		renderMatrix = new Matrix();
 		setKeepScreenOn(true);
+		
+		
 	}
 	
 	public void update(){
@@ -54,9 +61,16 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public void render(Canvas canvas){
 		canvas.drawBitmap(backgroundBitmap, 0, 0, null);
-		canvas.drawBitmap(playButton.getBitmap(), (float)(playButton.getX()*scaleX), (float)(playButton.getY()*scaleY), null);
-		canvas.drawBitmap(settingsButton.getBitmap(), (float)(settingsButton.getX()*scaleX), (float)(settingsButton.getY()*scaleY), null);
-		canvas.drawBitmap(highscoreButton.getBitmap(), (float)(highscoreButton.getX()*scaleX), (float)(highscoreButton.getY()*scaleY), null);
+		if(menuState == MAIN_MENU){
+			canvas.drawBitmap(playButton.getBitmap(), (float)(playButton.getX()*scaleX), (float)(playButton.getY()*scaleY), null);
+			canvas.drawBitmap(settingsButton.getBitmap(), (float)(settingsButton.getX()*scaleX), (float)(settingsButton.getY()*scaleY), null);
+			canvas.drawBitmap(highscoreButton.getBitmap(), (float)(highscoreButton.getX()*scaleX), (float)(highscoreButton.getY()*scaleY), null);
+		}
+		if(menuState == LEVEL_MENU){
+			for(Button b: levelButtons){
+				canvas.drawBitmap(b.getBitmap(), (float)(b.getX()*scaleX), (float)(b.getY()*scaleY), null);
+			}
+		}
 		renderProtagonist(canvas);
 	}
 
@@ -99,6 +113,22 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		weaponBitmapFlipped = Bitmap.createBitmap(weaponBitmap, 0, 0, weaponBitmap.getWidth(), weaponBitmap.getHeight(), renderMatrix,false);
 		pupilBitmapFlipped = Bitmap.createBitmap(pupilBitmap, 0, 0, pupilBitmap.getWidth(), pupilBitmap.getHeight(), renderMatrix,false);
 		
+		levelBitmaps = new Bitmap[]{
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tutorial), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_1), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_2), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_3), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_4), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_5), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+		};
+		
+		levelButtons = new Button[6];
+		for(int i = 0; i < 6; i++){
+			int x = 10 + (int)(Const.menuButtonWidth*(i/3));
+			int y = 10 + (int)(Const.menuButtonHeight*(i%3));
+			levelButtons[i] = new Button(x, y, levelBitmaps[i]);
+		}
+		
 		thread.setRunning(true);
 		try{thread.start();} catch(IllegalThreadStateException e){}
 	}
@@ -128,9 +158,17 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(e.getAction() == MotionEvent.ACTION_DOWN){
 			int x = (int)(e.getX()/scaleX);
 			int y = (int)(e.getY()/scaleY);
-			if(playButton.isClicked(x, y)){
-				nextLevel = 0;
-				play = true;
+			if(menuState == MAIN_MENU){
+				if(playButton.isClicked(x, y)){
+					menuState = LEVEL_MENU;
+				}
+			} else if(menuState == LEVEL_MENU){
+				for(int i = 0; i < levelButtons.length; i++){
+					if(levelButtons[i].isClicked(x, y)){
+						play = true;
+						nextLevel = i;
+					}
+				}
 			}
 		}
 		return true;
@@ -195,6 +233,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.postTranslate((float)((protagonist.getXPos()  + protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) )*scaleX - weaponBitmapFlipped.getWidth()), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5) + protagonist.getHeight()*Const.weaponRadius*Math.sin(Math.PI+aimAngle*Math.PI/180) )*scaleY));
 			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
 		}
+		
+		
 
 
 	}
