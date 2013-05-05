@@ -61,7 +61,7 @@ public class Protagonist {
 	//Accelerating protagonist
 	public void accelerate(double acc) { // acc = 0.2?
 		this.setXVel(this.getXVel() + acc);
-		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {//Double code, also in checkSLope
+		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {//Double code, also in checkSlope
 			this.setXVel(this.getMaxSpeed());
 		} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
 			this.setXVel(-this.getMaxSpeed());
@@ -192,6 +192,7 @@ public class Protagonist {
 				double slope = ground.getSlope(this.getXPos());
 				if(Math.abs(slope) > slopeThreshold){
 					setXVel(getXVel()+slope);
+					setYVel(slope*getXVel());
 					readyToJump = false;
 				}
 			} else { //On platform
@@ -200,8 +201,8 @@ public class Protagonist {
 						double slope = platforms.get(i).getSlope(this.getXPos());
 						if(Math.abs(slope) > slopeThreshold){
 							setXVel(getXVel()+slope);
+							setYVel(slope*getXVel());
 							readyToJump = false;
-							Log.d(TAG, "HEJ");
 							break;
 						}
 					}
@@ -242,7 +243,7 @@ public class Protagonist {
 				this.setYVel(-this.getYVel());
 				Log.d(TAG, "Headache!!");
 				//if feet is in platform
-			} else if (!dashingPlatform && this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && !(this.getYPos() - this.getHeight()/2 > platforms.get(platformNumber).getLowerYFromX(this.getXPos()))){
+			} else if (!dashingPlatform && this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos())){
 				this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 				this.setYAcc(0);
 				this.setYVel(0);
@@ -312,6 +313,15 @@ public class Protagonist {
 				facingRight = false;
 				right.setAngle(180);
 			}
+		}
+	}
+	
+	//Alternative method (used in tutorial for the mentor)
+	public void faceDirection(int dir){
+		if(dir >= 0){
+			facingRight = true;
+		} else {
+			facingRight = false;
 		}
 	}
 

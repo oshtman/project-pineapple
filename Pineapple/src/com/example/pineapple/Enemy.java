@@ -16,7 +16,7 @@ public class Enemy {
 	private double health = 1;
 	private GamePanel gp;
 	private static int baseHeight = 14;
-	private static int baseWidth = (int)(baseHeight*1.5); //Change 1.42 to ratio of bitmap
+	private static int baseWidth = (int)(baseHeight*1.5); //Change 1.5 to ratio of bitmap
 	private int height, width;
 	private static double scaleNinja = 0.8;
 	private static double scaleTank = 1.2;
@@ -29,10 +29,11 @@ public class Enemy {
 	private boolean touchingGround;
 	private boolean onPlatform;
 	private final int type;
-	private int leftArmAngle, rightArmAngle, armAngleCounter = 0;
+	private int leftArmAngle, rightArmAngle, armAngleCounter;
 	private int pupilAngle;
 	private final double spawnX;
 	private boolean spawned;
+	private final double slopeThreshold = 0.7;
 	private double dashDistance;
 	private double dashPowerConstant;
 	private double healthLostByDashConstant = 0.5;
@@ -53,7 +54,7 @@ public class Enemy {
 		//type 2 is ninja
 		else if (type == 2) {
 			this.height = (int)(this.height*scaleNinja);
-			this.width = (int)(this.width*scaleNinja); //Change 1.42 to ratio of bitmap
+			this.width = (int)(this.width*scaleNinja);
 			this.typeAcc = 0.6*baseAcc;
 			this.maxSpeed = 1*maxSpeed;
 			this.jumpVel = 2*jumpVel;
@@ -64,7 +65,7 @@ public class Enemy {
 		//type 3 is tank
 		else if (type == 3) {
 			this.height = (int)(this.height*scaleTank);
-			this.width = (int)(this.width*scaleTank); //Change 1.42 to ratio of bitmap
+			this.width = (int)(this.width*scaleTank);
 			this.typeAcc = 0.1*baseAcc;
 			this.maxSpeed = 0.5*maxSpeed;
 			this.jumpVel = 0.5*jumpVel;
@@ -98,6 +99,38 @@ public class Enemy {
 	public void accelerate(Protagonist p){
 		//Fix constants later...
 		this.accelerate(typeAcc*Math.signum(p.getXPos() - this.getXPos()));
+	}
+	
+	//Check the slope and adjust speed accordingly
+	public void checkSlope(Ground ground, ArrayList<Platform> platforms){
+		if(touchingGround){ 
+			if(getYPos()+getHeight()/2 - ground.getYFromX(getXPos()) > -5){ //On ground
+				double slope = ground.getSlope(this.getXPos());
+				if(Math.abs(slope) > slopeThreshold){
+					setXVel(getXVel()+slope);
+					setYPos(getYPos()+slope*getXVel());
+				}
+			} else { //On platform
+				for(int i = 0; i < platforms.size(); i++){
+					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
+						double slope = platforms.get(i).getSlope(this.getXPos());
+						if(Math.abs(slope) > slopeThreshold){
+							setXVel(getXVel()+slope);
+							setYPos(getYPos()+slope*getXVel());
+							break;
+						}
+					}
+				}
+			}
+
+			//Check if the speed has to be reduced
+			//This doesn't look good in game
+			if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) { //Double code, also in accelerate
+				this.setXVel(this.getMaxSpeed());
+			} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
+				this.setXVel(-this.getMaxSpeed());
+			}
+		}
 	}
 	//------------------------------------------------------------------------------------------------//
 	//ENEMY ACTIONS

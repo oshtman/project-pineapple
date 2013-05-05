@@ -12,6 +12,11 @@ public class Const {
 		public static final double eyeMouthYScale = 0.567;
 		public static final double eyeMouthXOffset = 0.05;
 		public static final double eyeMouthYOffset = 0.044; 
+		
+		public static final double eyeBeardXScale = 0.9;
+		public static final double eyeBeardYScale = 0.856;
+		public static final double eyeBeardXOffset = 0.05;
+		public static final double eyeBeardYOffset = 0.044; 
 
 		public static final double footXAxis = 0.30;
 		public static final double footYAxis = 0.5;
@@ -67,5 +72,9 @@ public class Const {
 		public static final double enemyArmYScale = 0.413;
 		public static final double enemyArmRadius = 0.3;
 
-		
+		public static final double maxRockSize = 30;
+		public static final double partOfRockVisible = 0.8;
+		public static final double maxTreeWidth = 100;
+		public static final double maxTreeHeight = 100;
+		public static final double partOfTreeVisible = 0.9;
 }

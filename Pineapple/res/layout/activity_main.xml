@@ -15,13 +15,23 @@
         android:layout_height="wrap_content"
         android:text="@string/title" />
     
+    <!-- Standard button
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="startGame"
         android:text="@string/play"
         android:layout_below="@id/titleText"
-        android:layout_centerHorizontal="true" />
-        
+        android:layout_centerHorizontal="true" />-->
+    
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleText"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
+        android:onClick="startGame"
+        android:src="@drawable/bird"
+        android:text="@string/play" />
 
 </RelativeLayout>
