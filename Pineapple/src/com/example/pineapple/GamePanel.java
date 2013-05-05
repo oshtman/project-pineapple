@@ -53,6 +53,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double bulletDamage = 0.05;
 	private MediaPlayer fireSound;
 	private SoundManager sm;
+	private MediaPlayer theme;
+
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -112,6 +114,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		setFocusable(true);
 		this.level = level;
 
+
 		//Create game components
 		levelLoader = new LevelLoader(level);
 		heatMeter = new HeatMeter(0.01);
@@ -128,7 +131,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadTrees();
 		loadRocks();
 		loadSounds();
-
+		
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
 		groundPaint.setColor(Color.rgb(10, 250, 10));
@@ -185,6 +188,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			lastMentorSound = -1; //Stops him from repeating the same line
 			mentorSentencesToSay = 3;
 		}
+		
+		playTheme();
 
 	}
 
@@ -214,6 +219,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void loadSounds(){
 		sm.addSound(0, R.raw.fire_sound);
+		sm.addSound(1, R.raw.ouvertyr);
+	}
+	
+	public void playTheme(){
+		sm.playLoopedSound(1);
+		Log.d(TAG, "spela");
 	}
 
 	//Method that gets called every frame to update the games state
@@ -390,9 +401,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.setYVel(-5);
 				protagonist.setTouchingGround(false);
 				protagonist.reduceHealth(0.05); //Change this constant
-				if (!protagonist.checkDeadOrAlive())
+				if (!protagonist.checkDeadOrAlive()){
 					// Go to a new activity (game over)
 					context.startActivity(intent);
+					Log.d(TAG, "Killed in action");
+				}
 			}
 		}
 	}
