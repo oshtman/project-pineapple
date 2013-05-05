@@ -218,7 +218,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void loadSounds(){
 		sm.addSound(0, R.raw.fire_sound);
-		sm.addSound(1, R.raw.pineapple);
+		sm.addSound(1, R.raw.pineapplesmall);
 	}
 
 	public void playTheme(){
