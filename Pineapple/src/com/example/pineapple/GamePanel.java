@@ -138,6 +138,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		red.setColor(Color.RED);
 		groundPaint.setColor(Color.rgb(10, 250, 10));
 
+		setKeepScreenOn(true);
+		
 		if(level == 0){
 			mentor = new Protagonist(10, 0, this);
 			checkpoints = levelLoader.getCheckpoints();
@@ -376,6 +378,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 					if(enemy.getHealth() <= 0){//If the enemy is dead
 						enemies.remove(j);
+						j--;
 						Log.d(TAG, "Enemy down.");
 						playTheme();
 					}
@@ -395,6 +398,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				enemies.get(i).takeDashDamage(protagonist);
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
 					enemies.remove(i);
+					i--;
 					Log.d(TAG, "Enemy down. Splash.");
 				}
 			}
