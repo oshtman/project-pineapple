@@ -220,7 +220,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void loadSounds(){
 		sm.addSound(0, R.raw.fire_sound);
-		sm.addSound(1, R.raw.pineapple);
+		sm.addSound(1, R.raw.pineapplesmall);
 	}
 
 	public void playTheme(){
@@ -379,6 +379,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 					if(enemy.getHealth() <= 0){//If the enemy is dead
 						enemies.remove(j);
+						j--;
 						Log.d(TAG, "Enemy down.");
 						playTheme();
 					}
@@ -398,6 +399,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				enemies.get(i).takeDashDamage(protagonist);
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
 					enemies.remove(i);
+					i--;
 					Log.d(TAG, "Enemy down. Splash.");
 				}
 			}

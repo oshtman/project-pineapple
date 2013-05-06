@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -31,6 +32,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int nextLevel;
 	private int menuState;
 	private int desiredX = 100;
+	private SoundManager sm;
+	private MediaPlayer theme;
 	
 	public MenuPanel(Context context) {
 		super(context);
@@ -41,6 +44,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist = new Protagonist(-20, 80);
 		renderMatrix = new Matrix();
 		setKeepScreenOn(true);
+		sm = new SoundManager(getContext());
+		loadSounds();
+		playTheme();
+
 		
 		
 	}
@@ -63,6 +70,15 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		protagonist.breathe();
 		protagonist.move();
+	}
+
+	public void playTheme(){
+		theme.setLooping(true);
+		theme.start();
+	}
+	
+	public void loadSounds(){
+		theme = MediaPlayer.create(getContext(), R.raw.pineapplesmall);
 	}
 	
 	public void render(Canvas canvas){
@@ -157,9 +173,16 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		
 	}
+	public void resume(){
+		if(!theme.isPlaying()){
+			theme.setLooping(true);
+			theme.start();
+		}
+	}
 	
 	//Pause the game
 	public void pause(){
+		theme.stop();
 		thread.setRunning(false);
 	}
 	
@@ -187,8 +210,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 	
 	public void goToGame(int level){
+		theme.stop();
+		
 		Intent intent = new Intent(context, GameActivity.class);
 		intent.putExtra(LEVEL, level);
+		
 		context.startActivity(intent);
 	}
 	

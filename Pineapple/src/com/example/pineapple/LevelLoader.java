@@ -124,11 +124,14 @@ public class LevelLoader {
 			finishX = 5900;
 			//Ground
 			int maxLengthPoint = 300;
-			ground = new int[2][maxLengthPoint];
+			ground = new int[2][maxLengthPoint+1];
 			for (int i = 0; i<maxLengthPoint; i++) {
 				ground[0][i] = i*20;
 				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
 			}
+			ground[0][maxLengthPoint] = maxLengthPoint*20;
+			ground[1][maxLengthPoint] = 50 + (int)(25*Math.cos((double)ground[0][maxLengthPoint-1]/200*Math.PI));
+
 			//Enemies
 			enemies.add(new int[]{this.getStartX() + 200, 0, this.getStartX(), 3});
 			int spawnPoint;
@@ -146,8 +149,8 @@ public class LevelLoader {
 				} else
 					break;
 			}
-			for (int i = 0; i < 15; i++){
-				enemies.add(new int[]{finishX - 680 + i*10, 0, finishX - 500, 2});
+			for (int i = 0; i < 20; i++){
+				enemies.add(new int[]{finishX - 730 + i*10, 0, finishX - 500, 2});
 			}
 			//Trees
 			for (int i = 1; i <= 100; i++)
