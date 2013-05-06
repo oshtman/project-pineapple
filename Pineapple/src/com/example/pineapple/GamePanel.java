@@ -1203,8 +1203,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 
 		//Start the thread
-		thread.setRunning(true);
-		try{thread.start();} catch(IllegalThreadStateException e){}
+		 if (thread.getState()==Thread.State.TERMINATED) { 
+             thread = new MainThread(getHolder(),this);
+        }
+        thread.setRunning(true);
+        thread.start();
 	}
 
 	@Override

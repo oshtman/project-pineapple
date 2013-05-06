@@ -135,6 +135,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			levelButtons[i] = new Button(x, y, levelBitmaps[i]);
 		}
 		
+		//Start the thread
+		if (thread.getState()==Thread.State.TERMINATED) { 
+			thread = new MainThread(getHolder(),this);
+		}
 		thread.setRunning(true);
 		try{thread.start();} catch(IllegalThreadStateException e){}
 	}
@@ -174,6 +178,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					if(levelButtons[i].isClicked(x, y)){
 						play = true;
 						nextLevel = i;
+						
 					}
 				}
 			}
