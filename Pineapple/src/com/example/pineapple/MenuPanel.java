@@ -174,9 +174,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 	}
 	public void resume(){
-		if(!theme.isPlaying()){
+		if(!theme.isPlaying()){ //If theme isn't already playing
 			theme.setLooping(true);
-			theme.start();
+			theme.start(); //Play
 		}
 	}
 	
