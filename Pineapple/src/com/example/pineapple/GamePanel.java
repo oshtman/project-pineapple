@@ -57,7 +57,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private MediaPlayer theme;
 	private boolean themePlaying = false;
 
-
 	//Special tutorial variables
 	private Protagonist mentor;
 	private int[] checkpoints;
@@ -220,12 +219,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void loadSounds(){
 		sm.addSound(0, R.raw.fire_sound);
-		sm.addSound(1, R.raw.pineapplesmall);
+		theme = MediaPlayer.create(getContext(), R.raw.pineapplesmall);
 	}
 
 	public void playTheme(){
-		sm.playLoopedSound(1);
-		themePlaying = true;
+		theme.setLooping(true);
+		theme.start();
 	}
 
 	//Method that gets called every frame to update the games state
@@ -1237,11 +1236,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Pause the game
 	public void pause(){
+		theme.stop();
 		thread.setRunning(false);
 	}
 
 	//Resume the game
 	public void resume(){
 		thread.setRunning(true);
+		if(!theme.isPlaying()){
+			playTheme();
+		}
 	}
 }
