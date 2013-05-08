@@ -59,7 +59,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private boolean themePlaying = false;
 	private final int[] renderOrder = new int[]{3, 1, 2};
 	private int cloudSpawnDelay = 1000, cloudCounter = cloudSpawnDelay;
-	
+	boolean running = true;
+
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -189,9 +190,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			textPaint.setColor(Color.WHITE);
 			textPaint.setDither(true);
 			textPaint.setAntiAlias(true);
-			
 
-			
+
+
 			//Load all the things the mentor can say
 			sm.addSound(mentorSoundIndexStart+0, R.raw.mentor_sound_1);
 			sm.addSound(mentorSoundIndexStart+1, R.raw.mentor_sound_2);
@@ -447,7 +448,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-	
+
 	public void moveAndSpawnClouds(){
 		for(int i = 0; i < clouds.size(); i++){
 			clouds.get(i)[0] -= 0.1;
@@ -457,7 +458,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				i--;
 			}
 		}
-		
+
 		cloudCounter++;
 		if(cloudCounter >= cloudSpawnDelay){
 			if(Math.random() < 0.01){
@@ -642,7 +643,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw the enemies
 	public void renderEnemies(Canvas canvas){
-		
+
 		for(int j: renderOrder){ //Different types
 			for(int i = 0; i < enemies.size(); i++){
 				if(enemies.get(i).getType() == j){
@@ -959,7 +960,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		canvas.drawCircle(x, y, radius, p);
 	}
-	
+
 	//Draw clouds
 	public void renderClouds(Canvas canvas){
 		for(int i = 0; i < clouds.size(); i++){
@@ -972,8 +973,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderTrees(Canvas canvas, int depth){
 		for(int i = 0; i < trees.size(); i++){
 			if(trees.get(i)[3] == depth){
-				canvas.drawBitmap(treeBitmaps[0][trees.get(i)[1]], (float)((trees.get(i)[0] - Const.maxTreeWidth/4 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-(Const.partOfTreeVisible-0.2)*Const.maxTreeHeight-screenY)*scaleY), null);
-				canvas.drawBitmap(treeBitmaps[1][trees.get(i)[2]], (float)((trees.get(i)[0] - Const.maxTreeWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-Const.partOfTreeVisible*Const.maxTreeHeight - screenY)*scaleY), null);
+				if(trees.get(i)[0] > screenX - Const.maxTreeWidth/2 && trees.get(i)[0] < screenX + width + Const.maxTreeWidth/2){
+					canvas.drawBitmap(treeBitmaps[0][trees.get(i)[1]], (float)((trees.get(i)[0] - Const.maxTreeWidth/4 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-(Const.partOfTreeVisible-0.2)*Const.maxTreeHeight-screenY)*scaleY), null);
+					canvas.drawBitmap(treeBitmaps[1][trees.get(i)[2]], (float)((trees.get(i)[0] - Const.maxTreeWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-Const.partOfTreeVisible*Const.maxTreeHeight - screenY)*scaleY), null);
+				}
 			}
 		}
 	}
@@ -1050,7 +1053,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void renderHint(Canvas canvas){
-		
+
 		Paint p = new Paint();
 		p.setARGB(120, 40, 40, 40);
 		canvas.drawRect((float)(10*scaleX), (float)(30*scaleY - textPaint.getTextSize()), (float)(100*scaleX), (float)(30*scaleY+textPaint.getTextSize()*(hints.get(currentCheckpoint).size())), p);
@@ -1265,7 +1268,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		enemyNinjaBitmapFlipped = Bitmap.createBitmap(enemyNinjaBitmap, 0, 0, enemyNinjaBitmap.getWidth(), enemyNinjaBitmap.getHeight(), m, false);
 
 		textPaint.setTextSize((int)(4*scaleX));
-		
+
 		//Start the thread
 		if (thread.getState()==Thread.State.TERMINATED) { 
 			thread = new MainThread(getHolder(),this);
@@ -1310,4 +1313,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			playTheme();
 		}
 	}
+	
+	public void pausePlay(){
+		if(running){
+			running = false;
+			thread.setRunning(false);
+		} else {
+			running = true;
+			thread.setRunning(true);
+			thread.run();
+		}
+	}
+		
+		
+	
 }

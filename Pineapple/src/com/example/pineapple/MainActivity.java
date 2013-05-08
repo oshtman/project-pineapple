@@ -32,13 +32,6 @@ public class MainActivity extends BaseActivity {
 		setContentView(menuPanel);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-	
 	//Go to the game
 	public void goToGame(View view){
 		Intent intent = new Intent(this, GameActivity.class);
@@ -64,5 +57,12 @@ public class MainActivity extends BaseActivity {
 	public void onResume(){
 		Log.d(TAG, "Resuming...");
 		super.onResume();
+	}
+	
+	@Override
+	public void onBackPressed() { //Override so that the player cannot go to a previous activity
+		Log.d(TAG, "Back button");
+		
+		
 	}
 }

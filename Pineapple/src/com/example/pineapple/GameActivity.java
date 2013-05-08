@@ -31,13 +31,6 @@ public class GameActivity extends BaseActivity {
 		
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.game, menu);
-		return true;
-	}
-
 	public void onDestroy(){
 		Log.d(TAG, "Destroying...");
 		super.onDestroy();
@@ -61,9 +54,8 @@ public class GameActivity extends BaseActivity {
 	}
 	
 	@Override
-	public void onBackPressed() {
+	public void onBackPressed() { //Override so that the player cannot go to a previous activity
 		Log.d(TAG, "Back button");
-		super.onBackPressed();
 	}
 
 }

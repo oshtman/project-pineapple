@@ -76,11 +76,14 @@ public class LevelLoader {
 			trees.add(new int[]{800, 0, 0, 0});
 			trees.add(new int[]{950, 1, 1, 0});
 			trees.add(new int[]{1360, 0, 0, 1});
+			trees.add(new int[]{1800, 2, 2, 0});
 			
 			rocks.add(new int[]{780, 0, 20, 0});
 			rocks.add(new int[]{820, 1, 23, 0});
 			rocks.add(new int[]{320, 2, 30, 1});
 			rocks.add(new int[]{1380, 1, 20, 0});
+			rocks.add(new int[]{1770, 0, 26, 0});
+			rocks.add(new int[]{1810, 2, 19, 0});
 			break;
 		case 1: 
 			//

@@ -14,7 +14,7 @@ import android.view.SurfaceView;
 
 public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = MenuPanel.class.getSimpleName();
-	public final static String LEVEL = "com.example.joarattacks.LEVEL";
+	public final static String LEVEL = "com.example.pineapple.LEVEL";
 	private final int MAIN_MENU = 0;
 	private final int LEVEL_MENU = 1;
 	private double scaleX, scaleY;
