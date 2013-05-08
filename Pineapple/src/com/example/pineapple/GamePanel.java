@@ -44,6 +44,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<Enemy> enemies;
 	private ArrayList<int[]> trees;
 	private ArrayList<int[]> rocks;
+	private ArrayList<double[]> clouds;
 	private int level;
 	private HeatMeter heatMeter;
 	private boolean firing = false;
@@ -57,6 +58,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private MediaPlayer theme;
 	private boolean themePlaying = false;
 	private final int[] renderOrder = new int[]{3, 1, 2};
+	private int cloudSpawnDelay = 1000, cloudCounter = cloudSpawnDelay;
+	
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -89,6 +92,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap eyeBeardBitmap;
 	private Bitmap[] rockBitmap;
 	private Bitmap[][] treeBitmaps;
+	private Bitmap[] cloudBitmaps;
 	private Bitmap[] flagBitmaps;
 
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
@@ -134,6 +138,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadEnemies();
 		loadTrees();
 		loadRocks();
+		clouds = new ArrayList<double[]>();
 		loadSounds();
 
 		green.setColor(Color.GREEN);
@@ -244,6 +249,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
 		handleProtagonistEnemyCollisions();
+		moveAndSpawnClouds();
 		checkFinish();			
 		if(sm.musicLoaded() && !themePlaying){
 			playTheme();
@@ -441,6 +447,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
+	
+	public void moveAndSpawnClouds(){
+		for(int i = 0; i < clouds.size(); i++){
+			clouds.get(i)[0] -= 0.1;
+			Log.d(TAG, "Cloud at: " + clouds.get(i)[0]);
+			if(clouds.get(i)[0] < -Const.maxCloudWidth/2){
+				clouds.remove(i);
+				i--;
+			}
+		}
+		
+		cloudCounter++;
+		if(cloudCounter >= cloudSpawnDelay){
+			if(Math.random() < 0.01){
+				clouds.add(new double[]{width + Const.maxCloudWidth/2, Math.random()*Const.maxCloudHeight, (int)(Math.random()*cloudBitmaps.length)});
+				cloudCounter = 0;
+			}
+		}
+	}
 
 	public void moveMentor(){
 		if(mentor.getXPos() < checkpoints[currentCheckpoint] - pastCheckpointBorder){
@@ -583,6 +608,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Background
 		canvas.drawColor(Color.rgb(135, 206, 250)); //Sky
 		renderSun(canvas);
+		renderClouds(canvas);
 		renderTrees(canvas, 0);
 		renderRocks(canvas, 0);
 		renderFlag(canvas, 0);
@@ -933,6 +959,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		canvas.drawCircle(x, y, radius, p);
 	}
+	
+	//Draw clouds
+	public void renderClouds(Canvas canvas){
+		for(int i = 0; i < clouds.size(); i++){
+			Log.d(TAG, "Hej");
+			canvas.drawBitmap(cloudBitmaps[(int)(clouds.get(i)[2])], (float)((clouds.get(i)[0]-Const.maxCloudWidth/2)*scaleX), (float)((clouds.get(i)[1])*scaleY), null);
+		}
+	}
 
 	//Draw trees
 	public void renderTrees(Canvas canvas, int depth){
@@ -1155,15 +1189,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_3), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true)
 		},
 		{
-			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_1), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight/2*scaleY), true),
-			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_2), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight/2*scaleY), true),
-			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_3), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight/2*scaleY), true)
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_1), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*0.7*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_2), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*0.7*scaleY), true),
+			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_3), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*0.7*scaleY), true)
 		}};
 		rockBitmap = new Bitmap[]{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_1), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_2), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_3), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_4), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
+		};
+		cloudBitmaps = new Bitmap[]{
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_1), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_2), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_3), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_4), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_5), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
+
 		};
 
 		//Drone

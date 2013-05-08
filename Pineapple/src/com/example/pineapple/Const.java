@@ -84,9 +84,13 @@ public class Const {
 
 		public static final double maxRockSize = 30;
 		public static final double partOfRockVisible = 0.8;
+		
 		public static final double maxTreeWidth = 100;
 		public static final double maxTreeHeight = 100;
 		public static final double partOfTreeVisible = 0.8;
+		
+		public static final double maxCloudWidth = 100;
+		public static final double maxCloudHeight = 30;
 		
 		public static final double finishFlagHeight = 50;
 		public static final double finishFlagWidth = 20;
