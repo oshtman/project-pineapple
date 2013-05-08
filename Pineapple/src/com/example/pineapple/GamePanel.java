@@ -237,7 +237,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		moveScreen();
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
-		handleProtagonistEnemyCollisions();
+		handleProtagonistEnemyCollisions(ground);
 		checkFinish();			
 		if(sm.musicLoaded() && !themePlaying){
 			playTheme();
@@ -389,17 +389,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	//Check collision between enemies and protagonist
-	public void handleProtagonistEnemyCollisions(){
+	public void handleProtagonistEnemyCollisions(Ground ground){
 		for(int i = 0; i < enemies.size(); i++){
 			Context context = getContext();
 			Intent intent = new Intent(context, GameOverActivity.class);
 			//Dashmove
-			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*3 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*1.5 && protagonist.isDashBonus() && enemies.get(i).isTouchingGround()){
+			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*3 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*1.5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground)){
 				enemies.get(i).takeDashDamage(protagonist);
+				Log.d(TAG, "In reach for dash! Watch me.");
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
 					enemies.remove(i);
 					i--;
 					Log.d(TAG, "Enemy down. Splash.");
+					break;
+
 				}
 			}
 			//Protagonist collide with enemy
@@ -407,6 +410,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.setInvincible(true);
 				protagonist.setXVel(-protagonist.getXVel());
 				protagonist.setYVel(-5);
+				protagonist.setAbelToPerformDash(true);
 				protagonist.setTouchingGround(false);
 				protagonist.reduceHealth(0.05); //Change this constant
 				if (!protagonist.checkDeadOrAlive()){

@@ -34,6 +34,8 @@ public class Enemy {
 	private final double spawnX;
 	private boolean spawned;
 	private final double slopeThreshold = 0.7;
+	private double dashDistanceX;
+	private double dashDistanceY;
 	private double dashDistance;
 	private double dashPowerConstant;
 	private double healthLostByDashConstant = 0.5;
@@ -100,7 +102,7 @@ public class Enemy {
 		//Fix constants later...
 		this.accelerate(typeAcc*Math.signum(p.getXPos() - this.getXPos()));
 	}
-	
+
 	//Check the slope and adjust speed accordingly
 	public void checkSlope(Ground ground, ArrayList<Platform> platforms){
 		if(touchingGround){ 
@@ -141,10 +143,12 @@ public class Enemy {
 
 	//Reduce enemy health when dashing and bumps enemy away
 	public void takeDashDamage(Protagonist p){
-		dashDistance = Math.abs(p.getXPos() - this.getXPos());
-		if(dashDistance < p.getWidth())
+		dashDistanceX = Math.abs(p.getXPos() - this.getXPos());
+		dashDistanceY = Math.abs(p.getYPos() - this.getYPos());
+		dashDistance = Math.sqrt(dashDistanceX*dashDistanceX + dashDistanceY*dashDistanceY);
+		if(dashDistance < p.getWidth() && dashDistance < p.getHeight())
 			dashPowerConstant = 1;
-		else if (dashDistance < p.getWidth()*2 && dashDistance > p.getWidth())
+		else if (dashDistance < p.getWidth()*2 && dashDistance < p.getHeight()*2 && dashDistance > p.getWidth() && dashDistance > p.getHeight())
 			dashPowerConstant = 0.75;
 		else
 			dashPowerConstant = 0.5;	
@@ -223,6 +227,18 @@ public class Enemy {
 	public void spawn(){
 		spawned = true;
 	}
+
+	//If enemy is dashable
+	public boolean dashable(Ground g) {
+		if(this.getYPos() <= g.getYFromX(this.getXPos()) && this.getYPos() + this.height/2 >= this.height){
+			Log.d(TAG, "Dashable enemy");
+			return true;
+		}
+		else
+			Log.d(TAG, "WHAT? Not dashable enemy?!");
+			return false;
+	}
+
 	//------------------------------------------------------------------------------------------------//
 	//RENDER PROPERTIES
 	//Look at the protagonist
