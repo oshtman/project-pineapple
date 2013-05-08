@@ -28,7 +28,6 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap bodyBitmapFlipped, weaponBitmapFlipped, footBitmapFlipped, pupilBitmapFlipped, eyeMouthBitmapFlipped;
 	private Button[] levelButtons;
 	private Bitmap[] levelBitmaps;
-	private boolean play = false;
 	private int nextLevel;
 	private int menuState;
 	private int desiredX = 100;
@@ -47,17 +46,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		sm = new SoundManager(getContext());
 		loadSounds();
 		playTheme();
-
-		
-		
 	}
 	
 	public void update(){
-		if(play){
-			protagonist.accelerate(0.3);
-			protagonist.step(1);
-			protagonist.faceDirection(1);
-		} else if(Math.abs(protagonist.getXPos() - desiredX) > 10){
+		if(Math.abs(protagonist.getXPos() - desiredX) > 10){
 			protagonist.accelerate(0.3*Math.signum(desiredX-protagonist.getXPos()));
 			protagonist.faceDirection((int)Math.signum(desiredX-protagonist.getXPos()));
 			protagonist.step(1);
@@ -121,11 +113,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 		backgroundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.menu_background), (int)(155*scaleX), (int)(100*scaleY), true);
 		
-		bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
-		eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_eye_mouth), (int)(protagonist.getWidth()*scaleX*Const.eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeMouthYScale), true);
-		footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_foot), (int)(protagonist.getWidth()*scaleX*Const.footXScale), (int)(protagonist.getHeight()*scaleY*Const.footYScale), true);
-		weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_hand_gun), (int)(protagonist.getWidth()*scaleX*Const.weaponXScale), (int)(protagonist.getHeight()*scaleY*Const.weaponYScale), true);
-		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
+		bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
+		eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_eye_mouth), (int)(protagonist.getWidth()*scaleX*Const.eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeMouthYScale), true);
+		footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_foot), (int)(protagonist.getWidth()*scaleX*Const.footXScale), (int)(protagonist.getHeight()*scaleY*Const.footYScale), true);
+		weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_weapon), (int)(protagonist.getWidth()*scaleX*Const.weaponXScale), (int)(protagonist.getHeight()*scaleY*Const.weaponYScale), true);
+		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
 		
 		//Flip images
 		renderMatrix.setScale(-1, 1);
@@ -198,7 +190,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			} else if(menuState == LEVEL_MENU){
 				for(int i = 0; i < levelButtons.length; i++){
 					if(levelButtons[i].isClicked(x, y)){
-						play = true;
+						desiredX = 170;
 						nextLevel = i;
 						
 					}

@@ -181,9 +181,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 			//Paint
 			textPaint = new Paint();
-			textPaint.setColor(Color.BLACK);
-			textPaint.setTextSize((float)(20));
+			textPaint.setColor(Color.WHITE);
+			textPaint.setDither(true);
+			textPaint.setAntiAlias(true);
+			
 
+			
 			//Load all the things the mentor can say
 			sm.addSound(mentorSoundIndexStart+0, R.raw.mentor_sound_1);
 			sm.addSound(mentorSoundIndexStart+1, R.raw.mentor_sound_2);
@@ -577,9 +580,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
-
 		//Background
-
 		canvas.drawColor(Color.rgb(135, 206, 250)); //Sky
 		renderSun(canvas);
 		renderTrees(canvas, 0);
@@ -1015,13 +1016,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void renderHint(Canvas canvas){
-		if(protagonist.getXPos() < checkpoints[currentCheckpoint] + pastCheckpointBorder){
-			for(int i = 0; i < hints.get(currentCheckpoint).size(); i++){
-				canvas.drawText(hints.get(currentCheckpoint).get(i), (float)(10*scaleX), (float)((30+textPaint.getTextSize()*i/scaleY)*scaleY), textPaint);
-			}
-		} else if(currentCheckpoint <= 12){
-			canvas.drawText("That's far enough for now!" , (float)(10*scaleX), (float)(30*scaleY), textPaint);
+		
+		Paint p = new Paint();
+		p.setARGB(120, 40, 40, 40);
+		canvas.drawRect((float)(10*scaleX), (float)(30*scaleY - textPaint.getTextSize()), (float)(100*scaleX), (float)(30*scaleY+textPaint.getTextSize()*(hints.get(currentCheckpoint).size())), p);
+		for(int i = 0; i < hints.get(currentCheckpoint).size(); i++){
+			canvas.drawText(hints.get(currentCheckpoint).get(i), (float)(10*scaleX), (float)((30+textPaint.getTextSize()*i/scaleY)*scaleY), textPaint);
 		}
+
 	}
 
 	public void renderBird(Canvas canvas){
@@ -1132,13 +1134,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		scaleX = (double)getWidth()/width;
 
 		//Load Bitmaps
-		bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
+		bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
 		mentorBodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.mentor_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
-		eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_eye_mouth), (int)(protagonist.getWidth()*scaleX*Const.eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeMouthYScale), true);
+		eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_eye_mouth), (int)(protagonist.getWidth()*scaleX*Const.eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeMouthYScale), true);
 		eyeBeardBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.eye_beard), (int)(protagonist.getWidth()*scaleX*Const.eyeBeardXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeBeardYScale), true);
-		footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_foot), (int)(protagonist.getWidth()*scaleX*Const.footXScale), (int)(protagonist.getHeight()*scaleY*Const.footYScale), true);
-		weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_hand_gun), (int)(protagonist.getWidth()*scaleX*Const.weaponXScale), (int)(protagonist.getHeight()*scaleY*Const.weaponYScale), true);
-		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.valentine_in_game_90_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
+		footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_foot), (int)(protagonist.getWidth()*scaleX*Const.footXScale), (int)(protagonist.getHeight()*scaleY*Const.footYScale), true);
+		weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_weapon), (int)(protagonist.getWidth()*scaleX*Const.weaponXScale), (int)(protagonist.getHeight()*scaleY*Const.weaponYScale), true);
+		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
 		Log.d(TAG, ""+Bird.getHeight());
@@ -1220,6 +1222,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		enemyArmorBitmapFlipped = Bitmap.createBitmap(enemyArmorBitmap, 0, 0, enemyArmorBitmap.getWidth(), enemyArmorBitmap.getHeight(), m, false);
 		enemyNinjaBitmapFlipped = Bitmap.createBitmap(enemyNinjaBitmap, 0, 0, enemyNinjaBitmap.getWidth(), enemyNinjaBitmap.getHeight(), m, false);
 
+		textPaint.setTextSize((int)(4*scaleX));
+		
 		//Start the thread
 		if (thread.getState()==Thread.State.TERMINATED) { 
 			thread = new MainThread(getHolder(),this);
