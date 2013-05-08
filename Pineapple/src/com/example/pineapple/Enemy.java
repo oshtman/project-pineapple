@@ -40,6 +40,8 @@ public class Enemy {
 	private double dashPowerConstant;
 	private double healthLostByDashConstant = 0.5;
 	private double damageGrade;
+	private int count;
+
 	//------------------------------------------------------------------------------------------------//
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
@@ -162,6 +164,8 @@ public class Enemy {
 
 		setXVel(-getXVel() + sign*getXVel()/10);
 		setYVel(jumpVel*dashPowerConstant);
+		count++;
+		Log.d(TAG, "Been hurt: " + count + " Type: " + type);
 		this.setTouchingGround(false);
 	}
 	//------------------------------------------------------------------------------------------------//

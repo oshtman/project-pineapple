@@ -78,7 +78,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 	
 	public void loadSounds(){
-		theme = MediaPlayer.create(getContext(), R.raw.pineapplesmall);
+		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 	}
 	
 	public void render(Canvas canvas){
