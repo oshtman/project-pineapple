@@ -66,11 +66,21 @@ public class Const {
 		public static final double enemyPupilYScale = 0.056;
 		public static final double enemyPupilRadius = 0.04;
 		
-		public static final double enemyArmXAxis = 0.5;
-		public static final double enemyArmYAxis = 0.2;
+		public static final double enemyArmXAxis = 0.7;
+		public static final double enemyArmYAxis = 0.16;
 		public static final double enemyArmXScale = 0.694;
 		public static final double enemyArmYScale = 0.413;
 		public static final double enemyArmRadius = 0.3;
+		
+		public static final double enemyArmorXScale = 1;
+		public static final double enemyArmorYScale = 0.9;
+		public static final double enemyArmorXOffset = 0;
+		public static final double enemyArmorYOffset = 0; 
+		
+		public static final double enemyNinjaXScale = 1;
+		public static final double enemyNinjaYScale = 0.7;
+		public static final double enemyNinjaXOffset = 0;
+		public static final double enemyNinjaYOffset = -0.1; 
 
 		public static final double maxRockSize = 30;
 		public static final double partOfRockVisible = 0.8;
