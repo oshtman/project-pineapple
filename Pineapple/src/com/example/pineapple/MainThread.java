@@ -58,7 +58,6 @@ public class MainThread extends Thread{
 			}
 		} else {
 			while (running) {
-				Log.d(TAG, "Menu");
 				long startTime = System.currentTimeMillis();
 				menuPanel.update();
 				canvas = null;

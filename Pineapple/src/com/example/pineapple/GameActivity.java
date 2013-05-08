@@ -59,5 +59,11 @@ public class GameActivity extends BaseActivity {
 		gamePanel.resume();
 		super.onResume();
 	}
+	
+	@Override
+	public void onBackPressed() {
+		Log.d(TAG, "Back button");
+		super.onBackPressed();
+	}
 
 }
