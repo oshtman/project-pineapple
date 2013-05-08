@@ -19,7 +19,7 @@ public class Enemy {
 	private static int baseWidth = (int)(baseHeight*1.5); //Change 1.5 to ratio of bitmap
 	private int height, width;
 	private static double scaleNinja = 0.8;
-	private static double scaleTank = 1.2;
+	private static double scaleTank = 1.5;
 	private double baseAcc = 1;
 	private double jumpVel = -6;
 	private double jumpAcc = 0.4;
