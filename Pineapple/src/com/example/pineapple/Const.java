@@ -96,7 +96,7 @@ public class Const {
 		public static final double finishFlagWidth = 20;
 		public static final double partOfFinishFlagVisible = 0.9;
 		
-		public static final double menuButtonHeight = 15;
+		public static final double menuButtonHeight = 10;
 		public static final double menuButtonWidth = menuButtonHeight*2.863;
 		public static final double menuButtonXPadding = 5;
 		public static final double menuButtonYPadding = 5;

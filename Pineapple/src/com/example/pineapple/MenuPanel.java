@@ -82,6 +82,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public void render(Canvas canvas){
 		canvas.drawBitmap(backgroundBitmap, 0, 0, null);
+		renderButtons(canvas);
+		
+		renderProtagonist(canvas);
+	}
+
+	public void renderButtons(Canvas canvas){
 		if(menuState == MAIN_MENU){
 			canvas.drawBitmap(playButton.getBitmap(), (float)(playButton.getX()*scaleX), (float)(playButton.getY()*scaleY), null);
 			canvas.drawBitmap(settingsButton.getBitmap(), (float)(settingsButton.getX()*scaleX), (float)(settingsButton.getY()*scaleY), null);
@@ -92,9 +98,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				canvas.drawBitmap(b.getBitmap(), (float)(b.getX()*scaleX), (float)(b.getY()*scaleY), null);
 			}
 		}
-		renderProtagonist(canvas);
 	}
-
+	
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -109,14 +114,14 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		scaleY = (double)getHeight()/100;
 		scaleX = (double)getWidth()/155;
 		
-		Bitmap playBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.start), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true);
+		Bitmap playBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.start), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		playButton = new Button(10, 10, playBitmap);
 		
-		Bitmap settingsBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.settings), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true);
-		settingsButton = new Button(10, 30, settingsBitmap);
+		Bitmap settingsBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.settings), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+		settingsButton = new Button(10, (int)(10+1.5*Const.menuButtonHeight), settingsBitmap);
 		
-		Bitmap highscoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.highscore), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true);
-		highscoreButton = new Button(10, 50, highscoreBitmap);
+		Bitmap highscoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.highscore), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+		highscoreButton = new Button(10, (int)(10+2*1.5*Const.menuButtonHeight), highscoreBitmap);
 		
 		backgroundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.menu_background), (int)(155*scaleX), (int)(100*scaleY), true);
 		

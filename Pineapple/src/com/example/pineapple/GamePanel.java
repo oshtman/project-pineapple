@@ -1055,9 +1055,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		Paint p = new Paint();
 		p.setARGB(120, 40, 40, 40);
-		canvas.drawRect((float)(10*scaleX), (float)(30*scaleY - textPaint.getTextSize()), (float)(100*scaleX), (float)(30*scaleY+textPaint.getTextSize()*(hints.get(currentCheckpoint).size())), p);
+		canvas.drawRect((float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hints.get(currentCheckpoint).size())*textPaint.getTextSize()), (float)((rightStick.getX()-rightStick.getRadius()-5)*scaleX), (float)((leftStick.getY()+leftStick.getRadius())*scaleY), p);
 		for(int i = 0; i < hints.get(currentCheckpoint).size(); i++){
-			canvas.drawText(hints.get(currentCheckpoint).get(i), (float)(10*scaleX), (float)((30+textPaint.getTextSize()*i/scaleY)*scaleY), textPaint);
+			canvas.drawText(hints.get(currentCheckpoint).get(i), (float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hints.get(currentCheckpoint).size()-i-1)*textPaint.getTextSize()), textPaint);
 		}
 
 	}
@@ -1067,7 +1067,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(!bird.isAlive()){
 			renderMatrix.setRotate((float)bird.getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
 		}
-		renderMatrix.postTranslate((float)((bird.getX() - bird.getWidth()/2 - screenX)*scaleX), (float)((bird.getY() - bird.getHeight() - screenY)*scaleY));
+		renderMatrix.postTranslate((float)((bird.getX() - Bird.getWidth()/2 - screenX)*scaleX), (float)((bird.getY() - Bird.getHeight() - screenY)*scaleY));
 		canvas.drawBitmap(birdBitmap, renderMatrix, null);
 	}
 
