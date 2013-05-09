@@ -648,79 +648,81 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			for(int i = 0; i < enemies.size(); i++){
 				if(enemies.get(i).getType() == j){
 					if(enemies.get(i).hasSpawned()){
-						Enemy e = enemies.get(i);
-						int feetAngle = (int)(Const.enemyMaxFootAngle*Math.sin(time/3));
-						if(e.getXVel() < 0){
+						if(enemies.get(i).getXPos() + enemies.get(i).getWidth() > screenX && enemies.get(i).getXPos() - enemies.get(i).getWidth() < screenX + width){
+							Enemy e = enemies.get(i);
+							int feetAngle = (int)(Const.enemyMaxFootAngle*Math.sin(time/3));
+							if(e.getXVel() < 0){
 
-							//Back arm
-							renderMatrix.setRotate(e.getLeftArmAngle(), enemyRightArmBitmap[e.getType()-1].getWidth(), (float)(enemyRightArmBitmap[e.getType()-1].getHeight()*0.9));
-							renderMatrix.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyArmXAxis) /*e.getWidth()*Const.enemyArmRadius*Math.cos(-e.getLeftArmAngle()*Math.PI/180)*/ - screenX)*scaleX)-enemyRightArmBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) /*e.getHeight()*Const.enemyArmRadius*Math.sin(-e.getLeftArmAngle()*Math.PI/180)*/ - screenY)*scaleY));
-							canvas.drawBitmap(enemyRightArmBitmap[e.getType()-1], renderMatrix, null);
-							//Back foot
-							renderMatrix.setRotate(-feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
-							renderMatrix.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
-							canvas.drawBitmap(enemyFootBitmap[e.getType()-1], renderMatrix, null);
-							//Body
-							renderMatrix.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyBodyXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyBodyYOffset)-screenY)*scaleY));
-							canvas.drawBitmap(enemyBodyBitmap[e.getType()-1], renderMatrix, null);
-							//Eyes and mouth
-							renderMatrix.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyEyeMouthXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyEyeMouthYOffset)-screenY)*scaleY));
-							canvas.drawBitmap(enemyEyeMouthBitmap[e.getType()-1], renderMatrix, null);
-							//Draw accessories
-							if(e.getType() == 2){
-								renderMatrix.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyNinjaXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyNinjaYOffset)-screenY)*scaleY));
-								canvas.drawBitmap(enemyNinjaBitmap, renderMatrix, null);
-							} else if(e.getType() == 3){
-								renderMatrix.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyArmorXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyArmorYOffset)-screenY)*scaleY));
-								canvas.drawBitmap(enemyArmorBitmap, renderMatrix, null);
+								//Back arm
+								renderMatrix.setRotate(e.getLeftArmAngle(), enemyRightArmBitmap[e.getType()-1].getWidth(), (float)(enemyRightArmBitmap[e.getType()-1].getHeight()*0.9));
+								renderMatrix.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyArmXAxis) /*e.getWidth()*Const.enemyArmRadius*Math.cos(-e.getLeftArmAngle()*Math.PI/180)*/ - screenX)*scaleX)-enemyRightArmBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) /*e.getHeight()*Const.enemyArmRadius*Math.sin(-e.getLeftArmAngle()*Math.PI/180)*/ - screenY)*scaleY));
+								canvas.drawBitmap(enemyRightArmBitmap[e.getType()-1], renderMatrix, null);
+								//Back foot
+								renderMatrix.setRotate(-feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
+								renderMatrix.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
+								canvas.drawBitmap(enemyFootBitmap[e.getType()-1], renderMatrix, null);
+								//Body
+								renderMatrix.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyBodyXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyBodyYOffset)-screenY)*scaleY));
+								canvas.drawBitmap(enemyBodyBitmap[e.getType()-1], renderMatrix, null);
+								//Eyes and mouth
+								renderMatrix.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyEyeMouthXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyEyeMouthYOffset)-screenY)*scaleY));
+								canvas.drawBitmap(enemyEyeMouthBitmap[e.getType()-1], renderMatrix, null);
+								//Draw accessories
+								if(e.getType() == 2){
+									renderMatrix.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyNinjaXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyNinjaYOffset)-screenY)*scaleY));
+									canvas.drawBitmap(enemyNinjaBitmap, renderMatrix, null);
+								} else if(e.getType() == 3){
+									renderMatrix.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyArmorXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyArmorYOffset)-screenY)*scaleY));
+									canvas.drawBitmap(enemyArmorBitmap, renderMatrix, null);
+								}
+
+								//Front arm
+								renderMatrix.setRotate(e.getRightArmAngle(), 0, (float)(enemyLeftArmBitmap[e.getType()-1].getHeight()*0.9));
+								renderMatrix.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyArmXAxis) + /*e.getWidth()*Const.enemyArmRadius*Math.cos(e.getRightArmAngle()*Math.PI/180)*/ - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + /*e.getHeight()*Const.enemyArmRadius*Math.sin(e.getRightArmAngle()*Math.PI/180)*/ - screenY)*scaleY));
+								canvas.drawBitmap(enemyLeftArmBitmap[e.getType()-1], renderMatrix, null);
+								//Front foot
+								renderMatrix.setRotate(feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
+								renderMatrix.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
+								canvas.drawBitmap(enemyFootBitmap[e.getType()-1], renderMatrix, null);
+								//Pupils
+								renderMatrix.setTranslate((float)((e.getXPos() + e.getWidth()*(Const.enemyPupilXOffset-0.5)+e.getWidth()*Const.enemyPupilRadius*Math.cos(e.getPupilAngle()*Math.PI/180)-screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyPupilYOffset-0.5)+e.getHeight()*Const.enemyPupilRadius*Math.sin(e.getPupilAngle()*Math.PI/180) - screenY)*scaleY));
+								canvas.drawBitmap(enemyPupilBitmap[e.getType()-1], renderMatrix, null);
+							} else {
+								//Back arm
+								renderMatrix.setRotate(e.getRightArmAngle(), 0, (float)(enemyLeftArmBitmap[e.getType()-1].getHeight()*0.9));
+								renderMatrix.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyArmXAxis) + /*e.getWidth()*Const.enemyArmRadius*Math.cos(e.getRightArmAngle()*Math.PI/180)*/ - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + /*e.getHeight()*Const.enemyArmRadius*Math.sin(e.getRightArmAngle()*Math.PI/180)*/ - screenY)*scaleY));
+								canvas.drawBitmap(enemyLeftArmBitmap[e.getType()-1], renderMatrix, null);
+								//Back foot
+								renderMatrix.setRotate(-feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
+								renderMatrix.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX) - enemyFootBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
+								canvas.drawBitmap(enemyFootBitmap[e.getType()-1], renderMatrix, null);
+								//Body
+								renderMatrix.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyBodyXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyBodyYOffset)-screenY)*scaleY));
+								canvas.drawBitmap(enemyBodyBitmapFlipped[e.getType()-1], renderMatrix, null);
+								//Eyes and mouth
+								renderMatrix.setTranslate((float)((e.getXPos()+e.getWidth()*(0.5-Const.enemyEyeMouthXOffset)-screenX)*scaleX)-enemyEyeMouthBitmap[e.getType()-1].getWidth(), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyEyeMouthYOffset)-screenY)*scaleY));
+								canvas.drawBitmap(enemyEyeMouthBitmapFlipped[e.getType()-1], renderMatrix, null);
+								//Draw accessories
+								if(e.getType() == 2){
+									renderMatrix.setTranslate((float)((e.getXPos()+e.getWidth()*(0.5-Const.enemyNinjaXOffset)-screenX)*scaleX)-enemyNinjaBitmap.getWidth(), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyNinjaYOffset)-screenY)*scaleY));
+									canvas.drawBitmap(enemyNinjaBitmapFlipped, renderMatrix, null);
+								} else if(e.getType() == 3){
+									renderMatrix.setTranslate((float)((e.getXPos()+e.getWidth()*(0.5-Const.enemyArmorXOffset)-screenX)*scaleX)-enemyArmorBitmap.getWidth(), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyArmorYOffset)-screenY)*scaleY));
+									canvas.drawBitmap(enemyArmorBitmapFlipped, renderMatrix, null);
+								}
+
+								//Front arm
+								renderMatrix.setRotate(e.getLeftArmAngle(), enemyRightArmBitmap[e.getType()-1].getWidth(), (float)(enemyRightArmBitmap[e.getType()-1].getHeight()*0.9));
+								renderMatrix.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyArmXAxis) - screenX)*scaleX)-enemyRightArmBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + /*e.getHeight()*Const.enemyArmRadius*Math.sin(-e.getLeftArmAngle()*Math.PI/180)*/ - screenY)*scaleY));
+								canvas.drawBitmap(enemyRightArmBitmap[e.getType()-1], renderMatrix, null);
+								//Front foot
+								renderMatrix.setRotate(feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
+								renderMatrix.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX) - enemyFootBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
+								canvas.drawBitmap(enemyFootBitmapFlipped[e.getType()-1], renderMatrix, null);
+								//Pupils
+								renderMatrix.setTranslate((float)((e.getXPos() - e.getWidth()*(Const.enemyPupilXOffset-0.5)+e.getWidth()*Const.enemyPupilRadius*Math.cos(e.getPupilAngle()*Math.PI/180)-screenX)*scaleX)-enemyPupilBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyPupilYOffset-0.5) +  e.getHeight()*Const.enemyPupilRadius*Math.sin(e.getPupilAngle()*Math.PI/180) - screenY)*scaleY));
+								canvas.drawBitmap(enemyPupilBitmap[e.getType()-1], renderMatrix, null);
 							}
-
-							//Front arm
-							renderMatrix.setRotate(e.getRightArmAngle(), 0, (float)(enemyLeftArmBitmap[e.getType()-1].getHeight()*0.9));
-							renderMatrix.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyArmXAxis) + /*e.getWidth()*Const.enemyArmRadius*Math.cos(e.getRightArmAngle()*Math.PI/180)*/ - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + /*e.getHeight()*Const.enemyArmRadius*Math.sin(e.getRightArmAngle()*Math.PI/180)*/ - screenY)*scaleY));
-							canvas.drawBitmap(enemyLeftArmBitmap[e.getType()-1], renderMatrix, null);
-							//Front foot
-							renderMatrix.setRotate(feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
-							renderMatrix.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
-							canvas.drawBitmap(enemyFootBitmap[e.getType()-1], renderMatrix, null);
-							//Pupils
-							renderMatrix.setTranslate((float)((e.getXPos() + e.getWidth()*(Const.enemyPupilXOffset-0.5)+e.getWidth()*Const.enemyPupilRadius*Math.cos(e.getPupilAngle()*Math.PI/180)-screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyPupilYOffset-0.5)+e.getHeight()*Const.enemyPupilRadius*Math.sin(e.getPupilAngle()*Math.PI/180) - screenY)*scaleY));
-							canvas.drawBitmap(enemyPupilBitmap[e.getType()-1], renderMatrix, null);
-						} else {
-							//Back arm
-							renderMatrix.setRotate(e.getRightArmAngle(), 0, (float)(enemyLeftArmBitmap[e.getType()-1].getHeight()*0.9));
-							renderMatrix.postTranslate((float)((e.getXPos() - e.getWidth()*(0.5-Const.enemyArmXAxis) + /*e.getWidth()*Const.enemyArmRadius*Math.cos(e.getRightArmAngle()*Math.PI/180)*/ - screenX)*scaleX), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + /*e.getHeight()*Const.enemyArmRadius*Math.sin(e.getRightArmAngle()*Math.PI/180)*/ - screenY)*scaleY));
-							canvas.drawBitmap(enemyLeftArmBitmap[e.getType()-1], renderMatrix, null);
-							//Back foot
-							renderMatrix.setRotate(-feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
-							renderMatrix.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX) - enemyFootBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
-							canvas.drawBitmap(enemyFootBitmap[e.getType()-1], renderMatrix, null);
-							//Body
-							renderMatrix.setTranslate((float)((e.getXPos()-e.getWidth()*(0.5-Const.enemyBodyXOffset)-screenX)*scaleX), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyBodyYOffset)-screenY)*scaleY));
-							canvas.drawBitmap(enemyBodyBitmapFlipped[e.getType()-1], renderMatrix, null);
-							//Eyes and mouth
-							renderMatrix.setTranslate((float)((e.getXPos()+e.getWidth()*(0.5-Const.enemyEyeMouthXOffset)-screenX)*scaleX)-enemyEyeMouthBitmap[e.getType()-1].getWidth(), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyEyeMouthYOffset)-screenY)*scaleY));
-							canvas.drawBitmap(enemyEyeMouthBitmapFlipped[e.getType()-1], renderMatrix, null);
-							//Draw accessories
-							if(e.getType() == 2){
-								renderMatrix.setTranslate((float)((e.getXPos()+e.getWidth()*(0.5-Const.enemyNinjaXOffset)-screenX)*scaleX)-enemyNinjaBitmap.getWidth(), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyNinjaYOffset)-screenY)*scaleY));
-								canvas.drawBitmap(enemyNinjaBitmapFlipped, renderMatrix, null);
-							} else if(e.getType() == 3){
-								renderMatrix.setTranslate((float)((e.getXPos()+e.getWidth()*(0.5-Const.enemyArmorXOffset)-screenX)*scaleX)-enemyArmorBitmap.getWidth(), (float)((e.getYPos()-e.getHeight()*(0.5-Const.enemyArmorYOffset)-screenY)*scaleY));
-								canvas.drawBitmap(enemyArmorBitmapFlipped, renderMatrix, null);
-							}
-
-							//Front arm
-							renderMatrix.setRotate(e.getLeftArmAngle(), enemyRightArmBitmap[e.getType()-1].getWidth(), (float)(enemyRightArmBitmap[e.getType()-1].getHeight()*0.9));
-							renderMatrix.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyArmXAxis) - screenX)*scaleX)-enemyRightArmBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyArmYAxis-0.5) + /*e.getHeight()*Const.enemyArmRadius*Math.sin(-e.getLeftArmAngle()*Math.PI/180)*/ - screenY)*scaleY));
-							canvas.drawBitmap(enemyRightArmBitmap[e.getType()-1], renderMatrix, null);
-							//Front foot
-							renderMatrix.setRotate(feetAngle, enemyFootBitmap[e.getType()-1].getWidth()/2, enemyFootBitmap[e.getType()-1].getHeight()/2);
-							renderMatrix.postTranslate((float)((e.getXPos() + e.getWidth()*(0.5-Const.enemyFootXAxis-Const.backFootOffset) - e.getWidth()*Const.enemyFootRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX) - enemyFootBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyFootYAxis-0.5) + e.getHeight()*Const.enemyFootRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
-							canvas.drawBitmap(enemyFootBitmapFlipped[e.getType()-1], renderMatrix, null);
-							//Pupils
-							renderMatrix.setTranslate((float)((e.getXPos() - e.getWidth()*(Const.enemyPupilXOffset-0.5)+e.getWidth()*Const.enemyPupilRadius*Math.cos(e.getPupilAngle()*Math.PI/180)-screenX)*scaleX)-enemyPupilBitmap[e.getType()-1].getWidth(), (float)((e.getYPos() + e.getHeight()*(Const.enemyPupilYOffset-0.5) +  e.getHeight()*Const.enemyPupilRadius*Math.sin(e.getPupilAngle()*Math.PI/180) - screenY)*scaleY));
-							canvas.drawBitmap(enemyPupilBitmap[e.getType()-1], renderMatrix, null);
 						}
 					}
 				}
@@ -740,7 +742,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		} else {
 			feetAngle = Const.jumpFeetAngle;
 		}
-		
+
 		if(protagonist.isSliding()){
 			feetAngle = Const.jumpFeetAngle;
 		}
@@ -993,7 +995,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw rocks
 	public void renderRocks(Canvas canvas, int depth){
 		for(int i = 0; i < rocks.size(); i++){
-			if(rocks.get(i)[3] == depth){
+			if(rocks.get(i)[3] == depth && rocks.get(i)[0] > screenX - rocks.get(i)[2]/2 && rocks.get(i)[0] < screenX + width + rocks.get(i)[2]/2){
 				groundAngle = (Math.atan(ground.getSlope(rocks.get(i)[0])));
 				renderMatrix.setScale((float)(rocks.get(i)[2]/Const.maxRockSize), (float)(rocks.get(i)[2]/Const.maxRockSize));
 				renderMatrix.postRotate((float)(groundAngle*180/Math.PI), (float)(rocks.get(i)[2]/2*scaleX), (float)(rocks.get(i)[2]/2*scaleY));
@@ -1004,6 +1006,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void renderFlag(Canvas canvas, int index){
+		if(levelLoader.getFinishX() < screenX + width + Const.finishFlagWidth/2)
 		canvas.drawBitmap(flagBitmaps[index], (float)((levelLoader.getFinishX() - index + (index - 1)*Const.finishFlagWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(levelLoader.getFinishX())-Const.partOfFinishFlagVisible*Const.finishFlagHeight - screenY)*scaleY), null);
 	}
 
@@ -1325,7 +1328,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			playTheme();
 		}
 	}
-		
-		
-	
+
+
+
 }
