@@ -68,7 +68,7 @@ public class LevelLoader {
 			enemies.add(new int[]{1280, 220, 1000, 1});
 			enemies.add(new int[]{1790, 220, 1600, 1});
 			enemies.add(new int[]{1760, 220, 1600, 1});
-			
+
 			trees.add(new int[]{100, 1, 2, 0});
 			trees.add(new int[]{130, 2, 1, 1});
 			trees.add(new int[]{230, 0, 0, 0});
@@ -77,7 +77,7 @@ public class LevelLoader {
 			trees.add(new int[]{950, 1, 1, 0});
 			trees.add(new int[]{1360, 0, 0, 1});
 			trees.add(new int[]{1800, 2, 2, 0});
-			
+
 			rocks.add(new int[]{780, 0, 20, 0});
 			rocks.add(new int[]{820, 1, 23, 0});
 			rocks.add(new int[]{320, 2, 30, 1});
@@ -92,7 +92,7 @@ public class LevelLoader {
 					{-350, -50,  -40,   -10,   0,   100, 150, 300, 400, 420, 600},
 					{40,   95,   130,   130,   95,  80,  95,  20,  150, 140, 135}
 			};*/
-			
+
 			ground = new int[][]{
 					{-155, 322, 368, 417, 518, 609, 691, 782, 863, 900, 1000},
 					{83,   83,  103, 156, 191, 191, 189, 167, 95,  95,  130}
@@ -163,8 +163,10 @@ public class LevelLoader {
 			}
 
 			//Trees
-			for (int i = 1; i <= 100; i++)
-				trees.add(new int[]{50*i, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			for (int i = 1; i <= 100; i++){
+				if( i % 2 == 0)
+					trees.add(new int[]{50*i, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			}
 			trees.add(new int[]{endPoint - 50, 0, 1, 0});
 
 			//Rocks
