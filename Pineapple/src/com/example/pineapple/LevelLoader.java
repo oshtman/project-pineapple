@@ -87,38 +87,39 @@ public class LevelLoader {
 			break;
 		case 1: 
 			//
-			finishX = 450;
-			ground = new int[][]{
+			finishX = 990;
+			/*ground = new int[][]{
 					{-350, -50,  -40,   -10,   0,   100, 150, 300, 400, 420, 600},
 					{40,   95,   130,   130,   95,  80,  95,  20,  150, 140, 135}
+			};*/
+			
+			ground = new int[][]{
+					{-155, 322, 368, 417, 518, 609, 691, 782, 863, 900, 1000},
+					{83,   83,  103, 156, 191, 191, 189, 167, 95,  95,  130}
 			};
 
 			//Platform 1
 			p1 = new int[][]{
-					{0, 10, 50},
-					{40, 50, 50},
-					{0, 10, 50},
-					{40, 60, 50}
+					{594, 656, 662, 715, 759, 829},
+					{173, 157, 142, 131, 104, 85},
+					{594, 612, 770, 816, 829},
+					{173, 176, 146, 113, 85}
 			};
 			platforms.add(p1);
 
-			//Platform 2
-			p2 = new int[][]{
-					{150, 250, 260},
-					{50, 10, 13},
-					{150, 220, 260},
-					{50, 25, 13}
-			};
-			platforms.add(p2);
-
 			//Enemies
-			enemies.add(new int[]{100, 20, 80, 1});
+			enemies.add(new int[]{300, 20, 150, 1});
 			//enemies.add(new int[]{100, 30, 80, 3});
 
 			//Trees
-			trees.add(new int[]{0, 0, 0, 0});
-			trees.add(new int[]{50, 0, 0, 0});
-			trees.add(new int[]{100, 0, 0, 0});
+			trees.add(new int[]{0, 1, 0, 0});
+			trees.add(new int[]{50, 2, 0, 1});
+			trees.add(new int[]{100, 0, 2, 0});
+			trees.add(new int[]{140, 1, 1, 1});
+			trees.add(new int[]{180, 1, 0, 0});
+			trees.add(new int[]{240, 2, 0, 1});
+			trees.add(new int[]{300, 0, 2, 0});
+			trees.add(new int[]{320, 0, 1, 1});
 			//Rocks
 			rocks.add(new int[]{20, 0, 20, 0});
 			rocks.add(new int[]{80, 1, 15, 0});
