@@ -231,7 +231,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void loadSounds(){
 		sm.addSound(0, R.raw.fire_sound);
-		theme = MediaPlayer.create(getContext(), R.raw.pineapplesmall);
+		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 	}
 
 	public void playTheme(){
@@ -249,7 +249,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		moveScreen();
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
-		handleProtagonistEnemyCollisions();
+		handleProtagonistEnemyCollisions(ground);
 		moveAndSpawnClouds();
 		checkFinish();			
 		if(sm.musicLoaded() && !themePlaying){
@@ -402,15 +402,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	//Check collision between enemies and protagonist
-	public void handleProtagonistEnemyCollisions(){
+	public void handleProtagonistEnemyCollisions(Ground ground){
 		for(int i = 0; i < enemies.size(); i++){
 			//Dashmove
-			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*3 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*1.5 && protagonist.isDashBonus() && enemies.get(i).isTouchingGround()){
+			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*3 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*1.5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground)){
 				enemies.get(i).takeDashDamage(protagonist);
+				Log.d(TAG, "In reach for dash! Watch me.");
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
 					enemies.remove(i);
 					i--;
 					Log.d(TAG, "Enemy down. Splash.");
+					break;
+
 				}
 			}
 			//Protagonist collide with enemy
@@ -418,6 +421,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.setInvincible(true);
 				protagonist.setXVel(0);
 				protagonist.setYVel(-5);
+				protagonist.setAbelToPerformDash(true);
 				protagonist.setTouchingGround(false);
 				protagonist.reduceHealth(0.05); //Change this constant
 				if (!protagonist.checkDeadOrAlive()){
@@ -743,8 +747,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			feetAngle = Const.jumpFeetAngle;
 		}
 
-		if(protagonist.isSliding()){
+		if(protagonist.isSliding() || protagonist.isDashBonus()){
 			feetAngle = Const.jumpFeetAngle;
+			if(protagonist.getXVel() > 0){
+				aimAngle = 0;
+			} else {
+				aimAngle = 180;
+			}
 		}
 		//Draw all the protagonist parts
 
@@ -760,7 +769,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
 			canvas.drawBitmap(eyeMouthBitmap, renderMatrix, null);
 			//Draw front foot
-			if(protagonist.isSliding()){
+			if(protagonist.isSliding() || protagonist.isDashBonus()){
 				feetAngle = -Const.jumpFeetAngle;
 			}
 			renderMatrix.setRotate(feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
@@ -785,7 +794,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX) - eyeMouthBitmapFlipped.getWidth(), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
 			canvas.drawBitmap(eyeMouthBitmapFlipped, renderMatrix, null);
 			//Draw front foot
-			if(protagonist.isSliding()){
+			if(protagonist.isSliding() || protagonist.isDashBonus()){
 				feetAngle = -Const.jumpFeetAngle;
 			}
 			renderMatrix.setRotate(-feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);

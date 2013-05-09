@@ -52,7 +52,7 @@ public class Protagonist {
 		Log.d(TAG, "Me");
 
 	}
-	
+
 	public Protagonist(double i, double j) {
 		this.setXPos(i);
 		this.setYPos(j);
@@ -130,24 +130,24 @@ public class Protagonist {
 		if(overPlatform && !touchingGround && abelToPerformDash){
 			this.getPlatformNumber(platforms);
 			abelToPerformDash = false;
-
 			dashingPlatform = true;
 			Log.d(TAG, "Coming down 2 u!! #onPlatform");
 			//Check if protagonist get dash bonus
 			if(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
 				dashBonus = true;
 				invincible = true;
+				invincibility();
 				Log.d(TAG, "DASH!!");
 			} 
 		}else if (abelToPerformDash && !touchingGround){
-			abelToPerformDash = false;
-
+			this.setAbelToPerformDash(false);
 			dashingGround = true;
 			Log.d(TAG, "Coming down 2 u!! #hitGround");
 			//Check if protagonist get dash bonus
 			if(g.getYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
 				dashBonus = true;
 				invincible = true;
+				invincibility();
 				Log.d(TAG, "DASH!!");
 			}
 		}
@@ -304,7 +304,7 @@ public class Protagonist {
 		} else 
 			return false;
 	}
-	
+
 	public void contain(int finishX){
 		if(getXPos() < 1){
 			setXPos(1);
@@ -313,7 +313,7 @@ public class Protagonist {
 			setXPos(finishX+20);
 		}
 	}
-	
+
 	//Check if protagonist is alive
 	public boolean checkDeadOrAlive() {
 		if (health <= 0)
@@ -335,23 +335,28 @@ public class Protagonist {
 
 	//Which way the protagonist should be rendered
 	public void faceDirection(Stick left, Stick right){
-		if(right.isPointed()){
-			if(right.getAngle() <= 90 || right.getAngle() > 270){
-				facingRight = true;
+		if(!sliding){
+			if(right.isPointed()){
+				if(right.getAngle() <= 90 || right.getAngle() > 270){
+					facingRight = true;
+				} else {
+					facingRight = false;
+				}
 			} else {
-				facingRight = false;
+				if(left.getAngle() <= 90 || left.getAngle() > 270){
+					facingRight = true;
+					right.setAngle(0);
+				} else {
+					facingRight = false;
+					right.setAngle(180);
+				}
 			}
 		} else {
-			if(left.getAngle() <= 90 || left.getAngle() > 270){
-				facingRight = true;
-				right.setAngle(0);
-			} else {
-				facingRight = false;
-				right.setAngle(180);
-			}
+			faceDirection((int)(getXVel()));
+
 		}
 	}
-	
+
 	//Alternative method (used in tutorial for the mentor)
 	public void faceDirection(int dir){
 		if(dir >= 0){
@@ -534,6 +539,10 @@ public class Protagonist {
 
 	public void setDashBonus(boolean dashBonus) {
 		this.dashBonus = dashBonus;
+	}
+
+	public void setAbelToPerformDash(boolean amI) {
+		this.abelToPerformDash = amI;
 	}
 
 	//Others

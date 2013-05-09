@@ -149,19 +149,19 @@ public class LevelLoader {
 			for (int i = 0; i < 200; i++) {
 				spawnPoint = i*50 + 200;
 				if (spawnPoint < endPoint - 800){
-					if (i % 10 == 0)
+					if (i % 8 == 0)
 						enemies.add(new int[]{spawnPoint - 200, 0, spawnPoint, 1});
-					if (i % 7 == 0)
+					if (i % 6 == 0)
 						enemies.add(new int[]{spawnPoint - 150, 0, spawnPoint, 2});
 					if (i % 3 == 0)
 						enemies.add(new int[]{spawnPoint + 150, 0, spawnPoint, 3});
-
 				} else
 					break;
 			}
 			for (int i = 0; i < 20; i++){
 				enemies.add(new int[]{finishX - 730 + i*10, 0, finishX - 500, 2});
 			}
+
 			//Trees
 			for (int i = 1; i <= 100; i++)
 				trees.add(new int[]{50*i, (int)(3*Math.random()), (int)(3*Math.random()), 0});
