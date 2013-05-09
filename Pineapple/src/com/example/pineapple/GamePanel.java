@@ -265,7 +265,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleProtagonistEnemyCollisions(ground);
 		moveAndSpawnClouds();
 		checkFinish();
-		Log.d(TAG, "" + protagonist.isTouchingGround());
+		Log.d(TAG, "" + protagonist.isDashBonus());
 		if(sm.musicLoaded() && !themePlaying){
 			playTheme();
 			Log.d(TAG, "Ready to play theme!!");

@@ -300,6 +300,7 @@ public class Protagonist {
 				this.setYVel(0);
 				touchingGround = true;
 				dashingPlatform = false;
+				dashBonus = false;
 			}
 		}
 		//if making move towards edge of platform
