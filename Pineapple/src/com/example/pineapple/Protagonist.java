@@ -217,6 +217,10 @@ public class Protagonist {
 			}
 		}
 	}
+	public int getInvincibilityCount() {
+		return invincibilityCount;
+	}
+
 	//------------------------------------------------------------------------------------------------//
 	//CHECK-METHODS FOR PROTAGONIST AND HIS SURROUNDING
 	//Check slope under protagonist

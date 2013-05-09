@@ -41,7 +41,9 @@ public class Enemy {
 	private double healthLostByDashConstant = 0.5;
 	private double damageGrade;
 	private int count;
+	private boolean hitThisFrame;
 
+	
 	//------------------------------------------------------------------------------------------------//
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
@@ -407,6 +409,13 @@ public class Enemy {
 	
 	public void setTouchingGround(boolean touchingGround) {
 		this.touchingGround = touchingGround;
+	}
+	
+	public boolean wasHitThisFrame() {
+		return hitThisFrame;
+	}
+	public void setHitThisFrame(boolean hitThisFrame) {
+		this.hitThisFrame = hitThisFrame;
 	}
 	//------------------------------------------------------------------------------------------------//
 }
