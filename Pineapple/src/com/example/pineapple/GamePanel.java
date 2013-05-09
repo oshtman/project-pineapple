@@ -405,7 +405,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void handleProtagonistEnemyCollisions(Ground ground){
 		for(int i = 0; i < enemies.size(); i++){
 			//Dashmove
-			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*3 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*1.5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground)){
+			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*10 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*15 && protagonist.isDashBonus() && enemies.get(i).dashable(ground)){
 				enemies.get(i).takeDashDamage(protagonist);
 				Log.d(TAG, "In reach for dash! Watch me.");
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
@@ -442,6 +442,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			Log.d(TAG, "Finished!");
 		}
 		if(finished){
+			protagonist.setInvincible(true);
 			if(finishDelay > 0){
 				finishDelay--;
 			} else {

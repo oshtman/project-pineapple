@@ -154,7 +154,7 @@ public class Enemy {
 			dashPowerConstant = 0.75;
 		else
 			dashPowerConstant = 0.5;	
-		this.setHealth(this.getHealth() - healthLostByDashConstant*dashPowerConstant*damageGrade);
+		this.takeDamage(healthLostByDashConstant*dashPowerConstant*damageGrade);
 		int sign;
 		if (Math.random() > 0.5){
 			sign = 1;
@@ -234,13 +234,16 @@ public class Enemy {
 
 	//If enemy is dashable
 	public boolean dashable(Ground g) {
-		if(this.getYPos() <= g.getYFromX(this.getXPos()) && this.getYPos() + this.height/2 >= this.height){
-			Log.d(TAG, "Dashable enemy");
-			return true;
-		}
-		else
-			Log.d(TAG, "WHAT? Not dashable enemy?!");
+		if(this.getXPos() > g.getX(0) && this.getXPos() < g.getX(g.getLength() -1)){
+			if(this.getYPos() <= g.getYFromX(this.getXPos()) && this.getYPos() + this.height/2 >= this.height){
+				Log.d(TAG, "Dashable enemy");
+				return true;
+			}
+			else
+				Log.d(TAG, "WHAT? Not dashable enemy?! " + type + " " + this.getXPos());
 			return false;
+		} else
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------------------//
@@ -333,6 +336,7 @@ public class Enemy {
 	public double getDamageGrade() {
 		return damageGrade;
 	}
+	
 	public double getMaxSpeed() {
 		return maxSpeed;
 	}
@@ -368,18 +372,23 @@ public class Enemy {
 	public static int getBaseHeight() {
 		return baseHeight;
 	}
+	
 	public static int getBaseWidth() {
 		return baseWidth;
 	}
+	
 	public int getType() {
 		return type;
 	}
+	
 	public int getLeftArmAngle() {
 		return leftArmAngle;
 	}
+	
 	public int getRightArmAngle() {
 		return rightArmAngle;
 	}
+	
 	public int getPupilAngle(){
 		return pupilAngle;
 	}
@@ -387,12 +396,15 @@ public class Enemy {
 	public void setSpawed(boolean flag){
 		spawned = flag;
 	}
+	
 	public boolean hasSpawned(){
 		return spawned;
 	}
+	
 	public boolean isTouchingGround() {
 		return touchingGround;
 	}
+	
 	public void setTouchingGround(boolean touchingGround) {
 		this.touchingGround = touchingGround;
 	}

@@ -16,7 +16,7 @@ public class Protagonist {
 	private double yAcc;
 	private double health;
 	private double angleAim;
-	private double jumpVel = -6;
+	private double jumpVel = -6.5;
 	private double jumpAcc = 0.4;
 	private double maxSpeed = 3;
 	private double slideCoefficient = 0.8;
@@ -96,11 +96,15 @@ public class Protagonist {
 		} else if (angle > 45 && angle < 135 && this.isTouchingGround()) {
 			if(readyToJump) //If the protagonist isn't standing in a steep slope
 				this.jump();
-		} else if (angle > 225 && angle < 315)
+		} else if (angle > 225 && angle < 315) {
+			this.slowDown();
+			this.setStepCount(0);
 			if(!touchingGround){
 				this.down(gp.getGround(), gp.getPlatforms());
 			}
+		}
 	}
+
 	//------------------------------------------------------------------------------------------------//
 	//ACTIONS
 	//Protagonist is aiming
