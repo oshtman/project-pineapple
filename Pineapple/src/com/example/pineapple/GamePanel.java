@@ -404,8 +404,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Check collision between enemies and protagonist
 	public void handleProtagonistEnemyCollisions(){
 		for(int i = 0; i < enemies.size(); i++){
-			Context context = getContext();
-			Intent intent = new Intent(context, GameOverActivity.class);
 			//Dashmove
 			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*3 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*1.5 && protagonist.isDashBonus() && enemies.get(i).isTouchingGround()){
 				enemies.get(i).takeDashDamage(protagonist);
@@ -418,12 +416,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			//Protagonist collide with enemy
 			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && enemies.get(i).hasSpawned()){
 				protagonist.setInvincible(true);
-				protagonist.setXVel(-protagonist.getXVel());
+				protagonist.setXVel(0);
 				protagonist.setYVel(-5);
 				protagonist.setTouchingGround(false);
 				protagonist.reduceHealth(0.05); //Change this constant
 				if (!protagonist.checkDeadOrAlive()){
 					// Go to a new activity (game over)
+					Context context = getContext();
+					Intent intent = new Intent(context, GameOverActivity.class);
 					context.startActivity(intent);
 					Log.d(TAG, "Killed in action");
 				}
@@ -740,6 +740,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		} else {
 			feetAngle = Const.jumpFeetAngle;
 		}
+		
+		if(protagonist.isSliding()){
+			feetAngle = Const.jumpFeetAngle;
+		}
 		//Draw all the protagonist parts
 
 		if(protagonist.isFacingRight()){
@@ -754,6 +758,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
 			canvas.drawBitmap(eyeMouthBitmap, renderMatrix, null);
 			//Draw front foot
+			if(protagonist.isSliding()){
+				feetAngle = -Const.jumpFeetAngle;
+			}
 			renderMatrix.setRotate(feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis) - protagonist.getWidth()*Const.footRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(footBitmap, renderMatrix, null);
@@ -776,6 +783,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX) - eyeMouthBitmapFlipped.getWidth(), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
 			canvas.drawBitmap(eyeMouthBitmapFlipped, renderMatrix, null);
 			//Draw front foot
+			if(protagonist.isSliding()){
+				feetAngle = -Const.jumpFeetAngle;
+			}
 			renderMatrix.setRotate(-feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis) - protagonist.getWidth()*Const.footRadius*Math.sin(Math.PI+feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);

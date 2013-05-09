@@ -40,6 +40,7 @@ public class Protagonist {
 	private boolean dashingPlatform = false;
 	private int platformNumber = -1;
 	private boolean alive = true;
+	private boolean sliding = false;
 	//------------------------------------------------------------------------------------------------//
 	// CONSTRUCTOR
 	public Protagonist(double i, double j, GamePanel gp) {
@@ -96,7 +97,9 @@ public class Protagonist {
 			if(readyToJump) //If the protagonist isn't standing in a steep slope
 				this.jump();
 		} else if (angle > 225 && angle < 315)
-			this.down(gp.getGround(), gp.getPlatforms());
+			if(!touchingGround){
+				this.down(gp.getGround(), gp.getPlatforms());
+			}
 	}
 	//------------------------------------------------------------------------------------------------//
 	//ACTIONS
@@ -203,6 +206,10 @@ public class Protagonist {
 					setXVel(getXVel()+slope);
 					setYVel(slope*getXVel());
 					readyToJump = false;
+					faceDirection((int)(getXVel()));
+					sliding = true;
+				} else {
+					sliding = false;
 				}
 			} else { //On platform
 				for(int i = 0; i < platforms.size(); i++){
@@ -212,8 +219,11 @@ public class Protagonist {
 							setXVel(getXVel()+slope);
 							setYVel(slope*getXVel());
 							readyToJump = false;
+							sliding = true;
 							break;
 						}
+					} else {
+						sliding = false;
 					}
 				}
 			}
@@ -504,6 +514,10 @@ public class Protagonist {
 
 	public void setFacingRight(boolean facingRight) {
 		this.facingRight = facingRight;
+	}
+
+	public boolean isSliding() {
+		return sliding;
 	}
 
 	public boolean isInvincible() {
