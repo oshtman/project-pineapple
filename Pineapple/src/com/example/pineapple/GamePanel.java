@@ -283,14 +283,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			protagonist.slowDown();
 			protagonist.setStepCount(0);
 		}
-		if(level > 0 || currentCheckpoint > 6){
-			if(rightStick.isPointed()){
-				//Aim
-				double angle = rightStick.getAngle();
-				protagonist.aim(angle);
-				//Fire
+
+		if(rightStick.isPointed()){
+			//Aim
+			protagonist.aim(rightStick.getAngle());
+			//Fire
+			if(level > 0 || currentCheckpoint > 6){
 				if(!heatMeter.isCoolingDown()){
-					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(angle/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(angle/180*Math.PI), angle, 10));
+					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(protagonist.getAim()/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(protagonist.getAim()/180*Math.PI), protagonist.getAim(), 10));
 					firing = true;
 					sm.playSound(0);
 				}
@@ -739,7 +739,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		/*Paint p = new Paint();
 		p.setColor(Color.BLUE);
 		canvas.drawRect((float)((protagonist.getXPos()-protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonist.getHeight()/2)*scaleY), (float)((protagonist.getXPos()+protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonist.getHeight()/2)*scaleY), p);*/
-		float aimAngle = (float)rightStick.getAngle();
+		float aimAngle = (float)protagonist.getAim();
 		float feetAngle;
 		if(protagonist.isTouchingGround()){
 			feetAngle = (float)(180/Math.PI*Math.sin((double)protagonist.getStepCount()/protagonist.getNumberOfSteps()*Math.PI));
@@ -749,11 +749,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		if(protagonist.isSliding() || protagonist.isDashBonus()){
 			feetAngle = Const.jumpFeetAngle;
-			if(protagonist.getXVel() > 0){
-				aimAngle = 0;
-			} else {
-				aimAngle = 180;
-			}
 		}
 		//Draw all the protagonist parts
 
@@ -1016,7 +1011,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void renderFlag(Canvas canvas, int index){
 		if(levelLoader.getFinishX() < screenX + width + Const.finishFlagWidth/2)
-		canvas.drawBitmap(flagBitmaps[index], (float)((levelLoader.getFinishX() - index + (index - 1)*Const.finishFlagWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(levelLoader.getFinishX())-Const.partOfFinishFlagVisible*Const.finishFlagHeight - screenY)*scaleY), null);
+			canvas.drawBitmap(flagBitmaps[index], (float)((levelLoader.getFinishX() - index + (index - 1)*Const.finishFlagWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(levelLoader.getFinishX())-Const.partOfFinishFlagVisible*Const.finishFlagHeight - screenY)*scaleY), null);
 	}
 
 	public void renderMentor(Canvas canvas){

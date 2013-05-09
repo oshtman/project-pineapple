@@ -85,8 +85,6 @@ public class Protagonist {
 
 	//Make action from stickAngle
 	public void handleLeftStick(double angle, double acc) {
-		if(!readyToJump)
-			Log.d(TAG, "Not ready");
 		if (angle <= 45 || angle >= 315) {
 			this.accelerate(acc);
 			step(1);
@@ -105,7 +103,30 @@ public class Protagonist {
 	//ACTIONS
 	//Protagonist is aiming
 	public void aim(double angle) {
-		this.angleAim = angle;
+		Log.d(TAG, "" + angle + " " + sliding);
+		if(sliding){
+			if(getXVel() > 0){
+				if(angle > 90 && angle < 180){
+					Log.d(TAG, "YO");
+					angleAim = 90;
+				} else if(angle >= 180 && angle < 270){
+					angleAim = 270;
+				} else {
+					angleAim = angle;
+				}
+			} else {
+				if(angle < 90){
+					angleAim = 90;
+				} else if(angle > 270){
+					angleAim = 270;
+				} else {
+					angleAim = angle;
+				}
+			}
+		} else {
+			angleAim = angle;
+		}
+			
 	}
 
 	//Protagonist lose health
@@ -212,6 +233,7 @@ public class Protagonist {
 					sliding = false;
 				}
 			} else { //On platform
+				sliding = false;
 				for(int i = 0; i < platforms.size(); i++){
 					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
 						double slope = platforms.get(i).getSlope(this.getXPos());
@@ -222,9 +244,7 @@ public class Protagonist {
 							sliding = true;
 							break;
 						}
-					} else {
-						sliding = false;
-					}
+					} 
 				}
 			}
 
@@ -337,7 +357,7 @@ public class Protagonist {
 	public void faceDirection(Stick left, Stick right){
 		if(!sliding){
 			if(right.isPointed()){
-				if(right.getAngle() <= 90 || right.getAngle() > 270){
+				if(angleAim <= 90 || angleAim > 270){
 					facingRight = true;
 				} else {
 					facingRight = false;
@@ -345,10 +365,10 @@ public class Protagonist {
 			} else {
 				if(left.getAngle() <= 90 || left.getAngle() > 270){
 					facingRight = true;
-					right.setAngle(0);
+					angleAim = 0;
 				} else {
 					facingRight = false;
-					right.setAngle(180);
+					angleAim = 180;
 				}
 			}
 		} else {
