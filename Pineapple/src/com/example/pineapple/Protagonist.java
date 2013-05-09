@@ -128,7 +128,7 @@ public class Protagonist {
 		} else {
 			angleAim = angle;
 		}
-			
+
 	}
 
 	//Protagonist lose health
@@ -148,28 +148,30 @@ public class Protagonist {
 	//Method set dashingGround or dashingPlatform depending on position of protagonist 
 	//and calculate bonus or not
 	public void down(Ground g, ArrayList<Platform> platforms) {
-		double startHeight = this.getYPos();
-		this.checkOverPlatform(platforms);
-		if(overPlatform && !touchingGround && abelToPerformDash){
-			this.getPlatformNumber(platforms);
-			//this.setAbelToPerformDash(false);
-			dashingPlatform = true;
-			Log.d(TAG, "Coming down 2 u!! #onPlatform");
-			//Check if protagonist get dash bonus
-			if(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
-				dashBonus = true;
-				invincible = true;
-				Log.d(TAG, "DASH!!");
-			} 
-		}else if (abelToPerformDash && !touchingGround){
-			//this.setAbelToPerformDash(false);
-			dashingGround = true;
-			Log.d(TAG, "Coming down 2 u!! #hitGround");
-			//Check if protagonist get dash bonus
-			if(g.getYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
-				dashBonus = true;
-				invincible = true;
-				Log.d(TAG, "DASH!!");
+		if(!dashBonus){
+			double startHeight = this.getYPos();
+			this.checkOverPlatform(platforms);
+			if(overPlatform && !touchingGround && abelToPerformDash){
+				this.getPlatformNumber(platforms);
+				//this.setAbelToPerformDash(false);
+				dashingPlatform = true;
+				Log.d(TAG, "Coming down 2 u!! #onPlatform");
+				//Check if protagonist get dash bonus
+				if(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
+					dashBonus = true;
+					invincible = true;
+					Log.d(TAG, "DASH!!");
+				} 
+			}else if (abelToPerformDash && !touchingGround){
+				//this.setAbelToPerformDash(false);
+				dashingGround = true;
+				Log.d(TAG, "Coming down 2 u!! #hitGround");
+				//Check if protagonist get dash bonus
+				if(g.getYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
+					dashBonus = true;
+					invincible = true;
+					Log.d(TAG, "DASH!!");
+				}
 			}
 		}
 	}
@@ -187,7 +189,8 @@ public class Protagonist {
 				this.setYAcc(0);
 				this.setYVel(0);
 				this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
-				dashingPlatform = false;
+				if(touchingGround)
+					dashingPlatform = false;
 			}
 			//If dashing above ground
 		} else if (dashingGround){
@@ -273,6 +276,8 @@ public class Protagonist {
 				overPlatform = false;
 				dashBonus = false;
 				this.setAbelToPerformDash(false);
+				dashingGround = false;
+				dashingPlatform = false;
 			}
 		}
 	}
@@ -289,11 +294,12 @@ public class Protagonist {
 				this.setYVel(-this.getYVel());
 				Log.d(TAG, "Headache!!");
 				//if feet is in platform
-			} else if (!dashingPlatform && this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos())){
+			} else if (/*!dashingPlatform &&*/ this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos())){
 				this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 				this.setYAcc(0);
 				this.setYVel(0);
 				touchingGround = true;
+				dashingPlatform = false;
 			}
 		}
 		//if making move towards edge of platform
@@ -483,7 +489,7 @@ public class Protagonist {
 	private void setJumpAcc(double jumpAcc) {
 		this.jumpAcc = jumpAcc;
 	}
-	
+
 	private double getMaxSpeed() {
 		return maxSpeed;
 	}
@@ -568,13 +574,17 @@ public class Protagonist {
 	public boolean getDashBonus(){
 		return dashBonus;
 	}
-	
+
 	public void setDashBonus(boolean dashBonus) {
 		this.dashBonus = dashBonus;
 	}
 
 	public void setAbelToPerformDash(boolean amI) {
 		this.abelToPerformDash = amI;
+	}
+	
+	public boolean isOverPlatform() {
+		return overPlatform;
 	}
 
 	//Others
@@ -587,6 +597,10 @@ public class Protagonist {
 				this.platformNumber = -1;
 			}
 		}
+	}
+	
+	public int getPlatformNumber(){
+		return platformNumber;
 	}
 	//------------------------------------------------------------------------------------------------//
 }

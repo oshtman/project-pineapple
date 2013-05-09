@@ -43,7 +43,7 @@ public class Enemy {
 	private int count;
 	private boolean hitThisFrame;
 
-	
+
 	//------------------------------------------------------------------------------------------------//
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
@@ -218,7 +218,7 @@ public class Enemy {
 			}
 		}
 	}
-	
+
 	//Check if enemy is airborne
 	public void checkAirborne(Ground g, ArrayList<Platform> platforms){
 		if(Math.abs(this.yPos + height/2 - g.getYFromX(this.xPos)) > this.yPos && !onPlatform){
@@ -238,14 +238,17 @@ public class Enemy {
 		spawned = true;
 	}
 
-	//If enemy is dashable
-	public boolean dashable(Ground g) {
+	//If enemy is dashable (if enemy is just above ground)
+	public boolean dashable(Ground g, Protagonist p, ArrayList<Platform> platforms) {
 		if(this.getXPos() > g.getX(0) && this.getXPos() < g.getX(g.getLength() -1)){
-			if(this.getYPos() <= g.getYFromX(this.getXPos()) && this.getYPos() + this.height/2 >= - this.height + g.getYFromX(this.getXPos())){
+			//On ground
+			if(!p.isOverPlatform() && this.getYPos() <= g.getYFromX(this.getXPos()) && this.getYPos() + this.height/2 >= - this.height + g.getYFromX(this.getXPos())){
 				Log.d(TAG, "Dashable enemy");
 				return true;
-			}
-			else
+				//On platform
+			} else if(p.isOverPlatform() && this.getYPos() <= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos()) && this.getYPos() + this.height/2 >= - this.height + platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos())){
+				return true;
+			} else
 				Log.d(TAG, "WHAT? Not dashable enemy?! " + type + " " + this.getXPos());
 			return false;
 		} else
@@ -414,7 +417,7 @@ public class Enemy {
 	public void setTouchingGround(boolean touchingGround) {
 		this.touchingGround = touchingGround;
 	}
-	
+
 	public boolean wasHitThisFrame() {
 		return hitThisFrame;
 	}

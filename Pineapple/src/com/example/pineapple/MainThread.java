@@ -52,13 +52,13 @@ public class MainThread extends Thread{
 					}
 				} 
 				endTime = System.currentTimeMillis();
-				Log.d(TAG, "Frame took "+(int)(endTime-startTime) + " milliseconds");
+				//Log.d(TAG, "Frame took "+(int)(endTime-startTime) + " milliseconds");
 				if(endTime - startTime <= updateInterval){
 					try {
 						Thread.sleep(updateInterval + startTime - endTime);
 					} catch(InterruptedException e){}
 				} else { //If the rendering took too long, we try to catch up by only updating the game state
-					Log.d(TAG, "Overtime!");
+					//Log.d(TAG, "Overtime!");
 					long overTime = updateInterval - endTime + startTime;
 					while(overTime >= 0){
 						startTime = System.currentTimeMillis();
