@@ -21,7 +21,7 @@ import android.view.SurfaceView;
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = GamePanel.class.getSimpleName();
 	private final int INVALID_POINTER = -1;
-
+	public final static String LEVEL = "com.pineapple.GamePanel.LEVEL";
 
 	private int leftStickId = INVALID_POINTER;
 	private int rightStickId = INVALID_POINTER;
@@ -30,7 +30,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double screenX;
 	private double screenY;
 	private final int screenXPadding = 80;
-	private final int screenYPadding = 20;
+	private final int screenYPadding = 40;
 	private int finishDelay, finishDelayTime = 20;
 	private boolean finished;
 	private MainThread thread;
@@ -444,6 +444,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				// Go to a new activity
 				Context context = getContext();
 				Intent intent = new Intent(context, LevelCompleteActivity.class);
+				intent.putExtra(LEVEL, level);
 				context.startActivity(intent);
 			}
 		}
@@ -452,7 +453,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void moveAndSpawnClouds(){
 		for(int i = 0; i < clouds.size(); i++){
 			clouds.get(i)[0] -= 0.1;
-			Log.d(TAG, "Cloud at: " + clouds.get(i)[0]);
 			if(clouds.get(i)[0] < -Const.maxCloudWidth/2){
 				clouds.remove(i);
 				i--;
@@ -964,7 +964,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw clouds
 	public void renderClouds(Canvas canvas){
 		for(int i = 0; i < clouds.size(); i++){
-			Log.d(TAG, "Hej");
 			canvas.drawBitmap(cloudBitmaps[(int)(clouds.get(i)[2])], (float)((clouds.get(i)[0]-Const.maxCloudWidth/2)*scaleX), (float)((clouds.get(i)[1])*scaleY), null);
 		}
 	}
@@ -1169,6 +1168,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Calculate the scale that we will use to render the game
 		scaleY = (double)getHeight()/height;
 		scaleX = (double)getWidth()/width;
+		Log.d(TAG, "ScaleX = " + scaleX);
 
 		//Load Bitmaps
 		bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
@@ -1267,7 +1267,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		enemyArmorBitmapFlipped = Bitmap.createBitmap(enemyArmorBitmap, 0, 0, enemyArmorBitmap.getWidth(), enemyArmorBitmap.getHeight(), m, false);
 		enemyNinjaBitmapFlipped = Bitmap.createBitmap(enemyNinjaBitmap, 0, 0, enemyNinjaBitmap.getWidth(), enemyNinjaBitmap.getHeight(), m, false);
 
-		textPaint.setTextSize((int)(4*scaleX));
+		if(level == 0){
+			textPaint.setTextSize((int)(4*scaleX));
+		}
 
 		//Start the thread
 		if (thread.getState()==Thread.State.TERMINATED) { 
@@ -1311,17 +1313,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		thread.setRunning(true);
 		if(!theme.isPlaying()){
 			playTheme();
-		}
-	}
-	
-	public void pausePlay(){
-		if(running){
-			running = false;
-			thread.setRunning(false);
-		} else {
-			running = true;
-			thread.setRunning(true);
-			thread.run();
 		}
 	}
 		

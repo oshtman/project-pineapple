@@ -3,10 +3,12 @@ package com.example.pineapple;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
 public class GameOverActivity extends BaseActivity {
+	private final String TAG = GameOverActivity.class.getSimpleName();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,4 +29,8 @@ public class GameOverActivity extends BaseActivity {
 		startActivity(intent);
 	}
 
+	@Override
+	public void onBackPressed() { //Override so that the player cannot go to a previous activity
+		Log.d(TAG, "Back button");
+	}
 }

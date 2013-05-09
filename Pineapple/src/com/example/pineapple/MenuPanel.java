@@ -2,6 +2,8 @@ package com.example.pineapple;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -33,6 +35,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int desiredX = 100;
 	private SoundManager sm;
 	private MediaPlayer theme;
+	private int currentLevel;
 	
 	public MenuPanel(Context context) {
 		super(context);
@@ -46,6 +49,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		sm = new SoundManager(getContext());
 		loadSounds();
 		playTheme();
+		//Load saved variables
+		SharedPreferences settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
+		currentLevel = settings.getInt("currentLevel", 0);
+		
 	}
 	
 	public void update(){
@@ -136,8 +143,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_5), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
 		};
 		
-		levelButtons = new Button[6];
-		for(int i = 0; i < 6; i++){
+		levelButtons = new Button[currentLevel+1];
+		for(int i = 0; i <= currentLevel; i++){
 			int x = 10 + (int)(Const.menuButtonWidth*(i/3));
 			int y = 10 + (int)(Const.menuButtonHeight*(i%3));
 			levelButtons[i] = new Button(x, y, levelBitmaps[i]);
@@ -146,9 +153,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Start the thread
 		if (thread.getState()==Thread.State.TERMINATED) { 
 			thread = new MainThread(getHolder(),this);
+			
 		}
 		thread.setRunning(true);
 		try{thread.start();} catch(IllegalThreadStateException e){}
+		
 	}
 
 	@Override

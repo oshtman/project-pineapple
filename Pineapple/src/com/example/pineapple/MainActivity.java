@@ -32,12 +32,6 @@ public class MainActivity extends BaseActivity {
 		setContentView(menuPanel);
 	}
 
-	//Go to the game
-	public void goToGame(View view){
-		Intent intent = new Intent(this, GameActivity.class);
-		startActivity(intent);
-	}
-
 	public void onDestroy(){
 		Log.d(TAG, "Destroying...");
 		super.onDestroy();
