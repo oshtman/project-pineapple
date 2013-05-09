@@ -39,7 +39,7 @@ public class Protagonist {
 	private boolean dashingGround = false;
 	private boolean dashingPlatform = false;
 	private int platformNumber = -1;
-	private boolean alive = true;
+	private boolean dead = false;
 	private boolean sliding = false;
 	//------------------------------------------------------------------------------------------------//
 	// CONSTRUCTOR
@@ -154,25 +154,23 @@ public class Protagonist {
 		this.checkOverPlatform(platforms);
 		if(overPlatform && !touchingGround && abelToPerformDash){
 			this.getPlatformNumber(platforms);
-			abelToPerformDash = false;
+			//this.setAbelToPerformDash(false);
 			dashingPlatform = true;
 			Log.d(TAG, "Coming down 2 u!! #onPlatform");
 			//Check if protagonist get dash bonus
 			if(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
 				dashBonus = true;
 				invincible = true;
-				invincibility();
 				Log.d(TAG, "DASH!!");
 			} 
 		}else if (abelToPerformDash && !touchingGround){
-			this.setAbelToPerformDash(false);
+			//this.setAbelToPerformDash(false);
 			dashingGround = true;
 			Log.d(TAG, "Coming down 2 u!! #hitGround");
 			//Check if protagonist get dash bonus
 			if(g.getYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
 				dashBonus = true;
 				invincible = true;
-				invincibility();
 				Log.d(TAG, "DASH!!");
 			}
 		}
@@ -269,8 +267,11 @@ public class Protagonist {
 			this.yVel = 0;
 			this.yAcc = 0;
 			touchingGround = true;
-			overPlatform = false;
-			dashBonus = false;
+			if(touchingGround){
+				overPlatform = false;
+				dashBonus = false;
+				this.setAbelToPerformDash(false);
+			}
 		}
 	}
 
@@ -339,11 +340,11 @@ public class Protagonist {
 	}
 
 	//Check if protagonist is alive
-	public boolean checkDeadOrAlive() {
+	public boolean checkDead() {
 		if (health <= 0)
-			return alive = false;
+			return dead = true;
 		else
-			return alive = true;
+			return dead = false;
 	}
 	//------------------------------------------------------------------------------------------------//
 	//FOR RENDERING PROTAGONIST

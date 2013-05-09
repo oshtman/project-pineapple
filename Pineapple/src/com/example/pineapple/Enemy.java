@@ -152,21 +152,24 @@ public class Enemy {
 			dashPowerConstant = 1;
 		else if (dashDistance < p.getWidth()*2 && dashDistance < p.getHeight()*2 && dashDistance > p.getWidth() && dashDistance > p.getHeight())
 			dashPowerConstant = 0.75;
-		else
+		else if (dashDistance < p.getWidth()*4 && dashDistance < p.getHeight()*4 && dashDistance > p.getWidth()*2 && dashDistance > p.getHeight()*2)
 			dashPowerConstant = 0.5;	
-		this.takeDamage(healthLostByDashConstant*dashPowerConstant*damageGrade);
-		int sign;
-		if (Math.random() > 0.5){
-			sign = 1;
-		}	else {
-			sign = -1;
+		else 
+			dashPowerConstant = 0;
+		if (dashPowerConstant != 0) {
+			this.takeDamage(healthLostByDashConstant*dashPowerConstant*damageGrade);
+			int sign;
+			if (Math.random() > 0.5){
+				sign = 1;
+			}	else {
+				sign = -1;
+			}
+			setXVel(sign*getXVel());
+			setYVel(jumpVel*dashPowerConstant);
+			count++;
+			Log.d(TAG, "Been hurt: " + count + " Type: " + type);
+			this.setTouchingGround(false);
 		}
-
-		setXVel(-getXVel() + sign*getXVel()/10);
-		setYVel(jumpVel*dashPowerConstant);
-		count++;
-		Log.d(TAG, "Been hurt: " + count + " Type: " + type);
-		this.setTouchingGround(false);
 	}
 	//------------------------------------------------------------------------------------------------//
 	//CHECK-METHODS FOR ENEMY AND SURROUNDING
@@ -213,7 +216,8 @@ public class Enemy {
 			}
 		}
 	}
-
+	
+	//Check if enemy is airborne
 	public void checkAirborne(Ground g, ArrayList<Platform> platforms){
 		if(Math.abs(this.yPos + height/2 - g.getYFromX(this.xPos)) > this.yPos && !onPlatform){
 			touchingGround = false;
@@ -235,7 +239,7 @@ public class Enemy {
 	//If enemy is dashable
 	public boolean dashable(Ground g) {
 		if(this.getXPos() > g.getX(0) && this.getXPos() < g.getX(g.getLength() -1)){
-			if(this.getYPos() <= g.getYFromX(this.getXPos()) && this.getYPos() + this.height/2 >= this.height){
+			if(this.getYPos() <= g.getYFromX(this.getXPos()) && this.getYPos() + this.height/2 >= - this.height + g.getYFromX(this.getXPos())){
 				Log.d(TAG, "Dashable enemy");
 				return true;
 			}
@@ -243,7 +247,7 @@ public class Enemy {
 				Log.d(TAG, "WHAT? Not dashable enemy?! " + type + " " + this.getXPos());
 			return false;
 		} else
-		return false;
+			return false;
 	}
 
 	//------------------------------------------------------------------------------------------------//
@@ -336,7 +340,7 @@ public class Enemy {
 	public double getDamageGrade() {
 		return damageGrade;
 	}
-	
+
 	public double getMaxSpeed() {
 		return maxSpeed;
 	}
@@ -372,23 +376,23 @@ public class Enemy {
 	public static int getBaseHeight() {
 		return baseHeight;
 	}
-	
+
 	public static int getBaseWidth() {
 		return baseWidth;
 	}
-	
+
 	public int getType() {
 		return type;
 	}
-	
+
 	public int getLeftArmAngle() {
 		return leftArmAngle;
 	}
-	
+
 	public int getRightArmAngle() {
 		return rightArmAngle;
 	}
-	
+
 	public int getPupilAngle(){
 		return pupilAngle;
 	}
@@ -396,15 +400,15 @@ public class Enemy {
 	public void setSpawed(boolean flag){
 		spawned = flag;
 	}
-	
+
 	public boolean hasSpawned(){
 		return spawned;
 	}
-	
+
 	public boolean isTouchingGround() {
 		return touchingGround;
 	}
-	
+
 	public void setTouchingGround(boolean touchingGround) {
 		this.touchingGround = touchingGround;
 	}

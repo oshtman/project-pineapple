@@ -117,6 +117,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[] enemyFootBitmapFlipped = new Bitmap[3];
 	private Bitmap enemyArmorBitmapFlipped, enemyNinjaBitmapFlipped;
 
+	//CONSTRUCTOR
 	public GamePanel(Context context, int level){
 		super(context);
 		getHolder().addCallback(this);
@@ -212,7 +213,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			platforms.add(new Platform(levelLoader.getPlatformUpperX(i), levelLoader.getPlatformUpperY(i), levelLoader.getPlatformLowerX(i), levelLoader.getPlatformLowerY(i)));
 		}
 	}
-
+	
+	//Load the enemies from LevelLoader and add them to the platforms list 
 	public void loadEnemies(){
 		enemies = new ArrayList<Enemy>();
 		for(int i = 0; i < levelLoader.getNumberOfEnemies(); i++){
@@ -221,19 +223,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
+	//Load the trees from LevelLoader and add them to the platforms list 
 	public void loadTrees(){
 		trees = levelLoader.getTrees();
 	}
 
+	//Load the rocks from LevelLoader and add them to the platforms list 
 	public void loadRocks(){
 		rocks = levelLoader.getRocks();
 	}
 
+	//Load the sounds
 	public void loadSounds(){
 		sm.addSound(0, R.raw.fire_sound);
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 	}
 
+	//PLay the theme in loop
 	public void playTheme(){
 		theme.setLooping(true);
 		theme.start();
@@ -254,7 +260,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		checkFinish();			
 		if(sm.musicLoaded() && !themePlaying){
 			playTheme();
-			Log.d(TAG, "klar att spela tema!!");
+			Log.d(TAG, "Ready to play theme!!");
+		}
+		if (protagonist.checkDead()){
+			// Go to a new activity (game over)
+			Context context = getContext();
+			Intent intent = new Intent(context, GameOverActivity.class);
+			context.startActivity(intent);
+			Log.d(TAG, "Killed in action");
 		}
 		this.time++;
 
@@ -275,7 +288,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-
+	
+	//If left stick pointed, protagonist is moving. If not protagonist slow down
 	public void handleSticks(){
 		if(leftStick.isPointed()) {
 			protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
@@ -297,7 +311,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-
+	
+	//Move protagonist
 	public void moveProtagonist(){
 		protagonist.gravity();
 		protagonist.move();
@@ -405,7 +420,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void handleProtagonistEnemyCollisions(Ground ground){
 		for(int i = 0; i < enemies.size(); i++){
 			//Dashmove
-			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*10 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*15 && protagonist.isDashBonus() && enemies.get(i).dashable(ground)){
+			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground)){
 				enemies.get(i).takeDashDamage(protagonist);
 				Log.d(TAG, "In reach for dash! Watch me.");
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
@@ -424,17 +439,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.setAbelToPerformDash(true);
 				protagonist.setTouchingGround(false);
 				protagonist.reduceHealth(0.05); //Change this constant
-				if (!protagonist.checkDeadOrAlive()){
-					// Go to a new activity (game over)
-					Context context = getContext();
-					Intent intent = new Intent(context, GameOverActivity.class);
-					context.startActivity(intent);
-					Log.d(TAG, "Killed in action");
-				}
 			}
 		}
 	}
-
+	
+	//Check if protagonist passes finish line
 	public void checkFinish(){
 		if(protagonist.getXPos() >  levelLoader.getFinishX() && !finished){
 			finished = true;
@@ -455,6 +464,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
+	//Spawn and move clouds
 	public void moveAndSpawnClouds(){
 		for(int i = 0; i < clouds.size(); i++){
 			clouds.get(i)[0] -= 0.1;
@@ -473,6 +483,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
+	//Move mentor
 	public void moveMentor(){
 		if(mentor.getXPos() < checkpoints[currentCheckpoint] - pastCheckpointBorder){
 			if(mentor.getXPos() > 840 && timesMentorJumped == 0 || mentor.getXPos() > 1250 && timesMentorJumped == 1){
@@ -499,6 +510,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	}
 
+	//Handle mentor talking
 	public void handleMentorTalking(){
 		if(mentorPlayCounter <= 0 && mentorSentencesToSay > 0){
 			int nextSound = (int)(5*Math.random());
@@ -808,8 +820,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	}
 
-
-
 	//Draws the ground using a Path
 	//Draw only the parts which are visible on the screen
 	public void renderGround(Canvas canvas){
@@ -926,7 +936,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
-	//Draw the HeatMeter
+	//Draw the heatmeter
 	public void renderHeatMeter(Canvas canvas){
 		int xPadding = 10;
 		int yPadding = 10;
@@ -951,6 +961,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawRect((float)((this.width - width - xPadding)*scaleX), (float)(yPadding*scaleY), (float)((this.width - xPadding - width*(1-heatMeter.getHeat()))*scaleX), (float)((yPadding+height)*scaleY), red);
 	}
 
+	//Draw the healtheter
 	public void renderHealthMeter(Canvas canvas){
 		int xPadding = 10;
 		int yPadding = 10;
@@ -1009,12 +1020,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-
+	
+	//Draw finishflag
 	public void renderFlag(Canvas canvas, int index){
 		if(levelLoader.getFinishX() < screenX + width + Const.finishFlagWidth/2)
 			canvas.drawBitmap(flagBitmaps[index], (float)((levelLoader.getFinishX() - index + (index - 1)*Const.finishFlagWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(levelLoader.getFinishX())-Const.partOfFinishFlagVisible*Const.finishFlagHeight - screenY)*scaleY), null);
 	}
 
+	//Draw mentor
 	public void renderMentor(Canvas canvas){
 		float feetAngle;
 		float aimAngle = (float)mentor.getAim();
@@ -1068,7 +1081,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
 		}
 	}
-
+	
+	//Draw Hints
 	public void renderHint(Canvas canvas){
 
 		Paint p = new Paint();
@@ -1080,6 +1094,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	}
 
+	//Draw bird
 	public void renderBird(Canvas canvas){
 		renderMatrix = new Matrix();
 		if(!bird.isAlive()){
@@ -1311,11 +1326,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
-
+	//Returns ground
 	public Ground getGround() {
 		return ground;
 	}
 
+	//Returns platform
 	public ArrayList<Platform> getPlatforms() {
 		return platforms;
 	}
@@ -1333,7 +1349,5 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			playTheme();
 		}
 	}
-
-
 
 }
