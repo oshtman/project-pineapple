@@ -42,7 +42,7 @@ public class Protagonist {
 	private boolean dead = false;
 	private boolean sliding = false;
 	//------------------------------------------------------------------------------------------------//
-	// CONSTRUCTOR
+	// CONSTRUCTORS
 	public Protagonist(double i, double j, GamePanel gp) {
 		this.setXPos(i);
 		this.setYPos(j);
@@ -307,7 +307,6 @@ public class Protagonist {
 		}
 	}
 
-
 	//Check if protagonist is over a platform (used in dashing)
 	public void checkOverPlatform(ArrayList<Platform> platforms) {
 		for (int i = 0; i < platforms.size(); i++) {
@@ -330,6 +329,7 @@ public class Protagonist {
 			return false;
 	}
 
+	//Check if protagonist is outside track and set back inside level
 	public void contain(int finishX){
 		if(getXPos() < 1){
 			setXPos(1);
@@ -339,7 +339,7 @@ public class Protagonist {
 		}
 	}
 
-	//Check if protagonist is alive
+	//Check if protagonist is dead
 	public boolean checkDead() {
 		if (health <= 0)
 			return dead = true;
@@ -481,6 +481,7 @@ public class Protagonist {
 	private void setJumpAcc(double jumpAcc) {
 		this.jumpAcc = jumpAcc;
 	}
+	
 	private double getMaxSpeed() {
 		return maxSpeed;
 	}
@@ -562,6 +563,10 @@ public class Protagonist {
 		return dashBonus;
 	}
 
+	public boolean getDashBonus(){
+		return dashBonus;
+	}
+	
 	public void setDashBonus(boolean dashBonus) {
 		this.dashBonus = dashBonus;
 	}
