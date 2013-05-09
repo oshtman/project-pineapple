@@ -13,6 +13,8 @@ public class MainThread extends Thread{
 	private GamePanel gamePanel;
 	private MenuPanel menuPanel;
 	private boolean running;
+	private long startTime, endTime;
+	private final int updateInterval = 40;
 	
 	public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel){
 		super();
@@ -36,7 +38,7 @@ public class MainThread extends Thread{
 		Log.d(TAG, "Starting game loop");
 		if(!(gamePanel == null)){
 			while (running) {
-				long startTime = System.currentTimeMillis();
+				startTime = System.currentTimeMillis();
 				gamePanel.update();
 				canvas = null;
 				try {
@@ -49,16 +51,30 @@ public class MainThread extends Thread{
 						surfaceHolder.unlockCanvasAndPost(canvas);
 					}
 				} 
-				long endTime = System.currentTimeMillis();
-				try {
-					if(startTime - endTime > -40){
-						Thread.sleep(40 + startTime - endTime);
+				endTime = System.currentTimeMillis();
+				Log.d(TAG, "Frame took "+(int)(endTime-startTime) + " milliseconds");
+				if(endTime - startTime <= updateInterval){
+					try {
+						Thread.sleep(updateInterval + startTime - endTime);
+					} catch(InterruptedException e){}
+				} else { //If the rendering took too long, we try to catch up by only updating the game state
+					Log.d(TAG, "Overtime!");
+					long overTime = updateInterval - endTime + startTime;
+					while(overTime >= 0){
+						startTime = System.currentTimeMillis();
+						gamePanel.update();
+						endTime = System.currentTimeMillis();
+						try {
+							Thread.sleep(updateInterval + startTime - endTime);
+						} catch(InterruptedException e){};
+						overTime -= updateInterval + startTime - endTime;
+						Log.d(TAG, "Skipped frame");
 					}
-				} catch(InterruptedException e){}
+				}
 			}
 		} else {
 			while (running) {
-				long startTime = System.currentTimeMillis();
+				startTime = System.currentTimeMillis();
 				menuPanel.update();
 				canvas = null;
 				try {
@@ -71,10 +87,10 @@ public class MainThread extends Thread{
 						surfaceHolder.unlockCanvasAndPost(canvas);
 					}
 				} 
-				long endTime = System.currentTimeMillis();
+				endTime = System.currentTimeMillis();
 				try {
-					if(startTime - endTime > -40){
-						Thread.sleep(40 + startTime - endTime);
+					if(startTime - endTime > -updateInterval){
+						Thread.sleep(updateInterval + startTime - endTime);
 					}
 				} catch(InterruptedException e){}
 			}

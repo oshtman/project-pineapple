@@ -107,11 +107,9 @@ public class Protagonist {
 	//ACTIONS
 	//Protagonist is aiming
 	public void aim(double angle) {
-		Log.d(TAG, "" + angle + " " + sliding);
 		if(sliding){
 			if(getXVel() > 0){
 				if(angle > 90 && angle < 180){
-					Log.d(TAG, "YO");
 					angleAim = 90;
 				} else if(angle >= 180 && angle < 270){
 					angleAim = 270;
@@ -217,6 +215,10 @@ public class Protagonist {
 			}
 		}
 	}
+	public int getInvincibilityCount() {
+		return invincibilityCount;
+	}
+
 	//------------------------------------------------------------------------------------------------//
 	//CHECK-METHODS FOR PROTAGONIST AND HIS SURROUNDING
 	//Check slope under protagonist
