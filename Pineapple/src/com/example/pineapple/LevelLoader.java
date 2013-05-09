@@ -184,11 +184,13 @@ public class LevelLoader {
 		case 3:
 			finishX = 380;
 			startPos = new int[]{10, -20};
-			ground = new int[2][20];
+			ground = new int[2][21];
 			for (int i = 0; i<20; i++) {
 				ground[0][i] = i*20;
 				ground[1][i] = 100-(int)(600*Math.exp(-ground[0][i]/100.));
 			}
+			ground[0][20] = 20*25;
+			ground[1][20] = 100-(int)(600*Math.exp(-ground[0][19]/100.));
 			enemies.add(new int[]{20, -40, -40, 1});
 			break;
 
