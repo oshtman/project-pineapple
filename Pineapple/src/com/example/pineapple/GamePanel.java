@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
@@ -56,6 +57,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint stamper = new Paint();
 	private Paint cloaker = new Paint();
 	private Paint enemyPaint = new Paint();
+	private Paint timePaint = new Paint();
+	private Paint textBackground = new Paint();
 	private double time;
 	private double bulletDamage = 0.05;
 	private MediaPlayer fireSound;
@@ -75,6 +78,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double effectVolume;
 	private boolean viewStatistics = true;
 	private Path newPath;
+	private final int HUDPadding = 10;
 	
 	
 	//Special tutorial variables
@@ -171,6 +175,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		groundPaint.setColor(Color.rgb(10, 250, 10));
 		dirtPaint.setColor(Color.rgb(87, 59, 12));
 
+		textBackground.setARGB(120, 40, 40, 40);
+		
+		timePaint.setColor(Color.WHITE);
+		timePaint.setTextAlign(Align.CENTER);
+		timePaint.setDither(true);
+		timePaint.setAntiAlias(true);
+		
 		setKeepScreenOn(true);
 
 		if(level == 0){
@@ -691,15 +702,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderProtagonist(canvas);
 		renderGround(canvas);
 		renderBullets(canvas);
+		
 		//Foreground
 		renderFlag(canvas, 1);
 		renderRocks(canvas, 1);
 		renderTrees(canvas, 1);
+		
+		//HUD
 		renderSticks(canvas);
 		renderHeatMeter(canvas);
 		renderHealthMeter(canvas);
-
-
+		renderTime(canvas);
 		//Tutorial 
 		if(level == 0){
 			renderHint(canvas);
@@ -994,8 +1007,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw the heatmeter
 	public void renderHeatMeter(Canvas canvas){
-		int xPadding = 10;
-		int yPadding = 10;
 		int width = 20;
 		int height = 10;
 		int frameSize = 1;
@@ -1010,28 +1021,26 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		//Draw in top right corner
 		//Draw frame
-		canvas.drawRect((float)((this.width - width - xPadding - frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((this.width - xPadding + frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), frame);
+		canvas.drawRect((float)((this.width - width - HUDPadding - frameSize)*scaleX), (float)((HUDPadding-frameSize)*scaleY), (float)((this.width - HUDPadding + frameSize)*scaleX), (float)((HUDPadding+height+frameSize)*scaleY), frame);
 		//Draw green background
-		canvas.drawRect((float)((this.width - width - xPadding)*scaleX), (float)(yPadding*scaleY), (float)((this.width - xPadding)*scaleX), (float)((yPadding+height)*scaleY), green);
+		canvas.drawRect((float)((this.width - width - HUDPadding)*scaleX), (float)(HUDPadding*scaleY), (float)((this.width - HUDPadding)*scaleX), (float)((HUDPadding+height)*scaleY), green);
 		//Draw red indicator that moves with current heat level
-		canvas.drawRect((float)((this.width - width - xPadding)*scaleX), (float)(yPadding*scaleY), (float)((this.width - xPadding - width*(1-heatMeter.getHeat()))*scaleX), (float)((yPadding+height)*scaleY), red);
+		canvas.drawRect((float)((this.width - width - HUDPadding)*scaleX), (float)(HUDPadding*scaleY), (float)((this.width - HUDPadding - width*(1-heatMeter.getHeat()))*scaleX), (float)((HUDPadding+height)*scaleY), red);
 	}
 
 	//Draw the healtheter
 	public void renderHealthMeter(Canvas canvas){
-		int xPadding = 10;
-		int yPadding = 10;
 		int width = 20;
 		int height = 10;
 		int frameSize = 1;
 
 		//Draw in top left corner
 		//Draw frame
-		canvas.drawRect((float)((xPadding-frameSize)*scaleX), (float)((yPadding-frameSize)*scaleY), (float)((xPadding+width+frameSize)*scaleX), (float)((yPadding+height+frameSize)*scaleY), new Paint());
+		canvas.drawRect((float)((HUDPadding-frameSize)*scaleX), (float)((HUDPadding-frameSize)*scaleY), (float)((HUDPadding+width+frameSize)*scaleX), (float)((HUDPadding+height+frameSize)*scaleY), new Paint());
 		//Draw green background
-		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width)*scaleX), (float)((yPadding+height)*scaleY), red);
+		canvas.drawRect((float)(HUDPadding*scaleX), (float)(HUDPadding*scaleY), (float)((HUDPadding+width)*scaleX), (float)((HUDPadding+height)*scaleY), red);
 		//Draw red indicator that moves with current heat level
-		canvas.drawRect((float)(xPadding*scaleX), (float)(yPadding*scaleY), (float)((xPadding+width*protagonist.getHealth())*scaleX), (float)((yPadding+height)*scaleY), green);
+		canvas.drawRect((float)(HUDPadding*scaleX), (float)(HUDPadding*scaleY), (float)((HUDPadding+width*protagonist.getHealth())*scaleX), (float)((HUDPadding+height)*scaleY), green);
 	}
 
 	//Draw the sun, moving in time
@@ -1134,15 +1143,35 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw Hints
 	public void renderHint(Canvas canvas){
-
-		Paint p = new Paint();
-		p.setARGB(120, 40, 40, 40);
-		canvas.drawRect((float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hints.get(currentCheckpoint).size())*textPaint.getTextSize()), (float)((rightStick.getX()-rightStick.getRadius()-5)*scaleX), (float)((leftStick.getY()+leftStick.getRadius())*scaleY), p);
+		canvas.drawRect((float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hints.get(currentCheckpoint).size())*textPaint.getTextSize()), (float)((rightStick.getX()-rightStick.getRadius()-5)*scaleX), (float)((leftStick.getY()+leftStick.getRadius())*scaleY), textBackground);
 		for(int i = 0; i < hints.get(currentCheckpoint).size(); i++){
 			canvas.drawText(hints.get(currentCheckpoint).get(i), (float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hints.get(currentCheckpoint).size()-i-1)*textPaint.getTextSize()), textPaint);
 		}
 
 	}
+	
+	//Draw Hints
+		public void renderTime(Canvas canvas){
+			
+			
+			int secs = (int)(time*MainThread.updateInterval/1000);
+			int mins = secs/60;
+			secs =     secs%60;
+			String secString, minString;
+			if(secs < 10){
+				secString = "0" + secs;
+			} else {
+				secString = "" + secs;
+			}
+			if(mins < 10){
+				minString = "0" + mins;
+			} else {
+				minString = "" + mins;
+			}
+			
+			canvas.drawRect((float)((width/2-Const.timeAreaWidth/2)*scaleX), (float)(HUDPadding*scaleY), (float)((width/2+Const.timeAreaWidth/2)*scaleX), (float)((HUDPadding+Const.timeAreaHeight)*scaleY), textBackground);
+			canvas.drawText(minString + ":" + secString, (float)(width/2*scaleX), (float)((HUDPadding+Const.timeAreaHeight - (Const.timeAreaHeight-textPaint.getTextSize()/scaleX)/4)*scaleY), timePaint);
+		}
 
 	//Draw bird
 	public void renderBird(Canvas canvas){
@@ -1351,9 +1380,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		enemyNinjaBitmapFlipped = Bitmap.createBitmap(enemyNinjaBitmap, 0, 0, enemyNinjaBitmap.getWidth(), enemyNinjaBitmap.getHeight(), m, false);
 
 		if(level == 0){
-			textPaint.setTextSize((int)(4*scaleX));
+			textPaint.setTextSize((int)(4*scaleY));
 		}
-
+		timePaint.setTextSize((int)(Const.timeAreaHeight*scaleY));
+		
 		//Start the thread
 		if (thread.getState()==Thread.State.TERMINATED) { 
 			thread = new MainThread(getHolder(),this);

@@ -104,5 +104,9 @@ public class Const {
 		
 		public static final double butterflySize = 5;
 		
-		public static final double sunSize = 15;  
+		public static final double sunSize = 15;
+		
+		public static final double timeAreaWidth = 25;
+		public static final double timeAreaHeight = 10;
+		
 }
