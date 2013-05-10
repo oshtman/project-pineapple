@@ -29,7 +29,6 @@ public class Protagonist {
 	private int breathCount = 0;
 	private final int breathMax = 20;
 	private boolean facingRight = true;
-	private boolean overPlatform = false;
 	private boolean invincible;
 	private int invincibilityCount;
 	private final int maxInvincibilityCount = 25;

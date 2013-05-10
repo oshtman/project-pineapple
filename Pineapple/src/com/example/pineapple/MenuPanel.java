@@ -212,9 +212,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_in), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_out), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true)
 		};
-
+		if(currentLevel > 5)
+			currentLevel = 5;
 		levelButtons = new Button[currentLevel+1];
-		for(int i = 0; i <= currentLevel; i++){
+		for(int i = 0; i <= currentLevel && i < 6; i++){
 			int x = 10 + (int)(Const.menuButtonWidth*(i/3));
 			int y = 10 + (int)(Const.menuButtonHeight*(i%3));
 			levelButtons[i] = new Button(x, y, levelBitmaps[i]);

@@ -11,6 +11,7 @@ public class LevelLoader {
 	private int[][] ground;
 	private int[] startPos = new int[]{10, 0}; //x- and y-position of protagonist when the level begins
 	private int finishX;
+	private int maxLengthPoint;
 
 	private int[][] p1;
 	private int[][] p2;
@@ -133,7 +134,7 @@ public class LevelLoader {
 			//-------------------------------------------------------------------------//
 			finishX = 5900;
 			//Ground
-			int maxLengthPoint = 300;
+			maxLengthPoint = 300;
 			ground = new int[2][maxLengthPoint+1];
 			for (int i = 0; i<maxLengthPoint; i++) {
 				ground[0][i] = i*20;
@@ -198,10 +199,96 @@ public class LevelLoader {
 			finishX = 350;
 			startPos = new int[]{10,0};
 			ground = new int[][]{
-					{-200, 400},
+					{-100, 1000},
 					{100, 100}
 			};
 			break;
+
+		case 5://G…R OM G…R R€TT
+			//Ground
+			ground = new int[2][13];
+
+			ground[0][0] = -100;
+			ground[1][0] = 50;
+			
+			ground[0][1] = 10;
+			ground[1][1] = 60;
+			
+			ground[0][2] = 20;
+			ground[1][2] = 100;
+			
+			ground[0][3] = 400;
+			ground[1][3] = 10;
+			
+			ground[0][4] = 1400;
+			ground[1][4] = 1500;
+			
+			ground[0][5] = 2000;
+			ground[1][5] = 1400;
+			
+			ground[0][6] = 2600;
+			ground[1][6] = 1300;
+			
+			ground[0][7] = 3000;
+			ground[1][7] = 1200;
+
+			ground[0][8] = 3100;
+			ground[1][8] = 1150;
+			
+			ground[0][9] = 3200;
+			ground[1][9] = 1100;
+			
+			ground[0][10] = 3300;
+			ground[1][10] = 1100;
+			
+			ground[0][11] = 4000;
+			ground[1][11] = 2000;
+			
+			ground[0][12] = 4200;
+			ground[1][12] = 2000;
+			//Start and finish
+			startPos = new int[]{10,0};
+			finishX = 4150;
+			//Enemies
+			enemies.add(new int[]{100 + 200, 0, 100, 1});
+			enemies.add(new int[]{200 + 200, 0, 200, 1});
+			//chase nr1 ---
+			enemies.add(new int[]{401 - 20, 0, 401, 1});
+			enemies.add(new int[]{401 - 40, 0, 401, 1});
+			enemies.add(new int[]{401 - 60, 0, 401, 1});
+			//          ---
+			enemies.add(new int[]{400 + 200, 0, 500, 1});
+			enemies.add(new int[]{700 - 200, 0, 700, 1});
+			enemies.add(new int[]{900 - 200, 0, 900, 1});
+			enemies.add(new int[]{1000 - 200, 1400, 1000, 1});
+			enemies.add(new int[]{1100 - 200, 1400, 1100, 1});
+			enemies.add(new int[]{1200 - 200, 1400, 1200, 1});
+			enemies.add(new int[]{1900 - 200, 1400, 1900, 2});
+			enemies.add(new int[]{2100 - 200, 1300, 2100, 2});
+			enemies.add(new int[]{2300 - 200, 1300, 2300, 2});
+			enemies.add(new int[]{2500 + 200, 1200, 2500, 2});
+			enemies.add(new int[]{2700 + 200, 1200, 2700, 2});
+			enemies.add(new int[]{2900 + 200, 1000, 2900, 2});
+			enemies.add(new int[]{3100 + 200, 1000, 3100, 1});
+			//chase nr2 ---
+			enemies.add(new int[]{3300 - 20, 1100, 3300, 1});
+			enemies.add(new int[]{3300 - 30, 1100, 3300, 1});
+			enemies.add(new int[]{3300 - 40, 1100, 3301, 1});
+			enemies.add(new int[]{3300 - 50, 1000, 3301, 1});
+			enemies.add(new int[]{3300 - 60, 1000, 3301, 1});
+			//          ---
+			enemies.add(new int[]{3600 - 200, 1000, 3600, 2});
+			enemies.add(new int[]{3600 - 180, 1000, 3600, 2});
+			enemies.add(new int[]{3600 - 160, 1000, 3600, 2});
+			enemies.add(new int[]{3600 - 140, 1000, 3600, 2});
+			enemies.add(new int[]{3600 - 120, 1000, 3600, 2});
+			//trees
+			for (int j = 1; j <= 160; j++){
+				if( j % 4 == 0)
+					trees.add(new int[]{20*j, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			}
+			break;
+
 		}
 
 	}
