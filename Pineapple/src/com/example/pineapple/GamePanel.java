@@ -65,6 +65,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int cloudSpawnDelay = 1000, cloudCounter = cloudSpawnDelay;
 	private boolean running = true;
 	private float aimAngle, feetAngle;
+	private int enemyType;
+	private int[] scoreKill = new int[]{0, 0, 0};
+	private double playTime;
 
 
 	//Special tutorial variables
@@ -275,6 +278,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			Intent intent = new Intent(context, GameOverActivity.class);
 			context.startActivity(intent);
 			Log.d(TAG, "Killed in action");
+			//playTime = 1000/MainThread.updateInterval;
 		}
 		this.time++;
 
@@ -416,6 +420,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					enemy.takeDamage(bulletDamage*enemies.get(j).getDamageGrade()); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
 					enemy.setHitThisFrame(true);
 					if(enemy.getHealth() <= 0){//If the enemy is dead
+						scoreKill[enemies.get(j).getType()-1]++;
 						enemies.remove(j);
 						j--;
 						Log.d(TAG, "Enemy down.");
@@ -447,6 +452,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				enemies.get(i).takeDashDamage(protagonist);
 				Log.d(TAG, "In reach for dash! Watch me.");
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
+					scoreKill[enemies.get(i).getType()-1]++;
 					enemies.remove(i);
 					i--;
 					Log.d(TAG, "Enemy down. Splash.");
