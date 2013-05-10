@@ -14,7 +14,7 @@ public class MainThread extends Thread{
 	private MenuPanel menuPanel;
 	private boolean running;
 	private long startTime, endTime, overTime;
-	private final int updateInterval = 40;
+	private final static int updateInterval = 40; //Milliseconds per frame
 	
 	public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel){
 		super();

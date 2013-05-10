@@ -15,8 +15,8 @@ public class Button {
 		this.x = x;
 		this.y = y;
 		this.bitmap = bitmap;
-		height = (int)(Const.menuButtonHeight);
-		width = (int)(height*2.863);
+		height = bitmap.getHeight();
+		width = bitmap.getWidth();
 	}
 	
 	
