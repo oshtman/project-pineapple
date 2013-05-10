@@ -101,4 +101,6 @@ public class Const {
 		public static final double menuButtonXPadding = 5;
 		public static final double menuButtonYPadding = 5;
 		public static final double menuButtonSpace = 5;
+		
+		public static final double butterflySize = 5;
 }
