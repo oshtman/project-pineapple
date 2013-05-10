@@ -197,7 +197,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			textPaint.setDither(true);
 			textPaint.setAntiAlias(true);
 
-			
+
 
 			//Load all the things the mentor can say
 			sm.addSound(mentorSoundIndexStart+0, R.raw.mentor_sound_1);
@@ -220,7 +220,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			platforms.add(new Platform(levelLoader.getPlatformUpperX(i), levelLoader.getPlatformUpperY(i), levelLoader.getPlatformLowerX(i), levelLoader.getPlatformLowerY(i)));
 		}
 	}
-	
+
 	//Load the enemies from LevelLoader and add them to the platforms list 
 	public void loadEnemies(){
 		enemies = new ArrayList<Enemy>();
@@ -295,7 +295,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-	
+
 	//If left stick pointed, protagonist is moving. If not protagonist slow down
 	public void handleSticks(){
 		if(leftStick.isPointed()) {
@@ -318,7 +318,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-	
+
 	//Move protagonist
 	public void moveProtagonist(){
 		protagonist.gravity();
@@ -327,9 +327,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.faceDirection(leftStick, rightStick);
 		protagonist.breathe();
 		protagonist.invincibility();
+		protagonist.dashing(ground, platforms);
 		protagonist.checkGround(ground);
 		protagonist.checkPlatform(platforms);
-		protagonist.dashing(ground, platforms);
 	}
 
 	//Move all the enemies and check for obstacles etc
@@ -429,7 +429,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Check collision between enemies and protagonist
 	public void handleProtagonistEnemyCollisions(Ground ground){
 		for(int i = 0; i < enemies.size(); i++){
-			//Dashmove
+			//Protagonist collide with enemy
+			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && enemies.get(i).hasSpawned()){
+				protagonist.setInvincible(true);
+				protagonist.setXVel(0);
+				protagonist.setYVel(-5);
+				protagonist.setTouchingGround(false);
+				protagonist.reduceHealth(0.05); //Change this constant
+			}
+		}
+	}
+
+	public void sendEnemiesFlying(){
+		for(int i = 0; i < enemies.size(); i++){
 			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground, protagonist, platforms)){
 				enemies.get(i).takeDashDamage(protagonist);
 				Log.d(TAG, "In reach for dash! Watch me.");
@@ -437,22 +449,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					enemies.remove(i);
 					i--;
 					Log.d(TAG, "Enemy down. Splash.");
-					break;
-
 				}
-			}
-			//Protagonist collide with enemy
-			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && enemies.get(i).hasSpawned()){
-				protagonist.setInvincible(true);
-				protagonist.setXVel(0);
-				protagonist.setYVel(-5);
-				protagonist.setAbelToPerformDash(true);
-				protagonist.setTouchingGround(false);
-				protagonist.reduceHealth(0.05); //Change this constant
 			}
 		}
 	}
-	
+
 	//Check if protagonist passes finish line
 	public void checkFinish(){
 		if(protagonist.getXPos() >  levelLoader.getFinishX() && !finished){
@@ -764,9 +765,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw the protagonist
 	public void renderProtagonist(Canvas canvas){
-		/*Paint p = new Paint();
-		p.setColor(Color.BLUE);
-		canvas.drawRect((float)((protagonist.getXPos()-protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()-protagonist.getHeight()/2)*scaleY), (float)((protagonist.getXPos()+protagonist.getWidth()/2-screenX)*scaleX), (float)((protagonist.getYPos()+protagonist.getHeight()/2)*scaleY), p);*/
 		aimAngle = (float)protagonist.getAim();
 		if(protagonist.isTouchingGround()){
 			feetAngle = (float)(180/Math.PI*Math.sin((double)protagonist.getStepCount()/protagonist.getNumberOfSteps()*Math.PI));
@@ -777,65 +775,63 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(protagonist.isSliding() || protagonist.isDashBonus()){
 			feetAngle = Const.jumpFeetAngle;
 		}
-		if(protagonist.isInvincible()){
-			cloaker.setAlpha((int)(127 + 128*Math.sin(2*Math.PI*protagonist.getInvincibilityCount()/6)));
-		} else {
-			cloaker.setAlpha(255);
-		}
+		if(!protagonist.isInvincible() || protagonist.getInvincibilityCount() % 2 == 0){
+			
 		//Draw all the protagonist parts
 
 		if(protagonist.isFacingRight()){
 			//Draw back foot
 			renderMatrix.setRotate(-feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis-Const.backFootOffset) - protagonist.getWidth()*Const.footRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(footBitmap, renderMatrix, cloaker);
+			canvas.drawBitmap(footBitmap, renderMatrix, null);
 			//Draw body
 			renderMatrix.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.bodyYOffset + Const.breathOffset*Math.sin((double)protagonist.getBreathCount()/protagonist.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
-			canvas.drawBitmap(bodyBitmap, renderMatrix, cloaker);
+			canvas.drawBitmap(bodyBitmap, renderMatrix, null);
 			//Draw eyes and mouth
 			renderMatrix.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
-			canvas.drawBitmap(eyeMouthBitmap, renderMatrix, cloaker);
+			canvas.drawBitmap(eyeMouthBitmap, renderMatrix, null);
 			//Draw front foot
 			if(protagonist.isSliding() || protagonist.isDashBonus()){
 				feetAngle = -Const.jumpFeetAngle;
 			}
 			renderMatrix.setRotate(feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis) - protagonist.getWidth()*Const.footRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(footBitmap, renderMatrix, cloaker);
+			canvas.drawBitmap(footBitmap, renderMatrix, null);
 			//Draw pupils
 			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(Const.pupilXOffset-0.5)+protagonist.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.pupilYOffset-0.5)-protagonist.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(pupilBitmap, renderMatrix, cloaker);
+			canvas.drawBitmap(pupilBitmap, renderMatrix, null);
 			//Draw weapon
 			renderMatrix.setRotate(-aimAngle, weaponBitmap.getWidth()/2, weaponBitmap.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5) - protagonist.getHeight()*Const.weaponRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(weaponBitmap, renderMatrix, cloaker);
+			canvas.drawBitmap(weaponBitmap, renderMatrix, null);
 		} else {
 			//Draw back foot
 			renderMatrix.setRotate(feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis+Const.backFootOffset) - protagonist.getWidth()*Const.footRadius*Math.sin(Math.PI-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(footBitmapFlipped, renderMatrix, cloaker);
+			canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);
 			//Draw body
 			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(0.5-Const.bodyXOffset) - screenX)*scaleX) - bodyBitmapFlipped.getWidth(), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.bodyYOffset + Const.breathOffset*Math.sin((double)protagonist.getBreathCount()/protagonist.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
-			canvas.drawBitmap(bodyBitmapFlipped, renderMatrix, cloaker);
+			canvas.drawBitmap(bodyBitmapFlipped, renderMatrix, null);
 			//Draw eyes and mouth
 			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX) - eyeMouthBitmapFlipped.getWidth(), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
-			canvas.drawBitmap(eyeMouthBitmapFlipped, renderMatrix, cloaker);
+			canvas.drawBitmap(eyeMouthBitmapFlipped, renderMatrix, null);
 			//Draw front foot
 			if(protagonist.isSliding() || protagonist.isDashBonus()){
 				feetAngle = -Const.jumpFeetAngle;
 			}
 			renderMatrix.setRotate(-feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis) - protagonist.getWidth()*Const.footRadius*Math.sin(Math.PI+feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(footBitmapFlipped, renderMatrix, cloaker);
+			canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);
 			//Draw pupils
 			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(Const.pupilXOffset-0.5)+protagonist.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.pupilYOffset-0.5)-protagonist.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(pupilBitmapFlipped, renderMatrix, cloaker);
+			canvas.drawBitmap(pupilBitmapFlipped, renderMatrix, null);
 			//Draw weapon
 			renderMatrix.setRotate(180-aimAngle, weaponBitmapFlipped.getWidth()/2, weaponBitmapFlipped.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos()  + protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) - screenX)*scaleX - weaponBitmapFlipped.getWidth()), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5) + protagonist.getHeight()*Const.weaponRadius*Math.sin(Math.PI+aimAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, cloaker);
+			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
 		}
 
+		}
 
 	}
 
@@ -1039,7 +1035,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-	
+
 	//Draw finishflag
 	public void renderFlag(Canvas canvas, int index){
 		if(levelLoader.getFinishX() < screenX + width + Const.finishFlagWidth/2)
@@ -1100,7 +1096,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
 		}
 	}
-	
+
 	//Draw Hints
 	public void renderHint(Canvas canvas){
 

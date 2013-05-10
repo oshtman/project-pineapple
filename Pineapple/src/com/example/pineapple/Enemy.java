@@ -147,29 +147,21 @@ public class Enemy {
 
 	//Reduce enemy health when dashing and bumps enemy away
 	public void takeDashDamage(Protagonist p){
-		dashDistanceX = Math.abs(p.getXPos() - this.getXPos());
-		dashDistanceY = Math.abs(p.getYPos() - this.getYPos());
+		dashDistanceX = this.getXPos() - p.getXPos();
+		dashDistanceY = p.getYPos() - this.getYPos();
 		dashDistance = Math.sqrt(dashDistanceX*dashDistanceX + dashDistanceY*dashDistanceY);
-		if(dashDistance < p.getWidth() && dashDistance < p.getHeight())
+		if(dashDistance < p.getHeight())
 			dashPowerConstant = 1;
-		else if (dashDistance < p.getWidth()*2 && dashDistance < p.getHeight()*2 && dashDistance > p.getWidth() && dashDistance > p.getHeight())
+		else if (dashDistance < p.getHeight()*2)
 			dashPowerConstant = 0.75;
-		else if (dashDistance < p.getWidth()*4 && dashDistance < p.getHeight()*4 && dashDistance > p.getWidth()*2 && dashDistance > p.getHeight()*2)
+		else if (dashDistance < p.getHeight()*4)
 			dashPowerConstant = 0.5;	
 		else 
 			dashPowerConstant = 0;
 		if (dashPowerConstant != 0) {
 			this.takeDamage(healthLostByDashConstant*dashPowerConstant*damageGrade);
-			int sign;
-			if (Math.random() > 0.5){
-				sign = 1;
-			}	else {
-				sign = -1;
-			}
-			setXVel(sign*getXVel());
+			setXVel(Math.signum(dashDistanceX));
 			setYVel(jumpVel*dashPowerConstant);
-			count++;
-			Log.d(TAG, "Been hurt: " + count + " Type: " + type);
 			this.setTouchingGround(false);
 		}
 	}
@@ -240,19 +232,18 @@ public class Enemy {
 
 	//If enemy is dashable (if enemy is just above ground)
 	public boolean dashable(Ground g, Protagonist p, ArrayList<Platform> platforms) {
-		if(this.getXPos() > g.getX(0) && this.getXPos() < g.getX(g.getLength() -1)){
-			//On ground
-			if(!p.isOverPlatform() && this.getYPos() <= g.getYFromX(this.getXPos()) && this.getYPos() + this.height/2 >= - this.height + g.getYFromX(this.getXPos())){
-				Log.d(TAG, "Dashable enemy");
-				return true;
-				//On platform
-			} else if(p.isOverPlatform() && this.getYPos() <= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos()) && this.getYPos() + this.height/2 >= - this.height + platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos())){
-				return true;
-			} else
-				Log.d(TAG, "WHAT? Not dashable enemy?! " + type + " " + this.getXPos());
+		//On ground
+		if(p.getPlatformNumber() == -1 && this.getYPos() + this.height >=  g.getYFromX(this.getXPos())){
+			Log.d(TAG, "Dashable enemy");
+			return true;
+			//On platform
+		} else if(p.getPlatformNumber() >= 0 && this.getYPos() <= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos()) && this.getYPos() + this.height >= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos())){
+			return true;
+		} else{
+			Log.d(TAG, "WHAT? Not dashable enemy?! " + type + " " + this.getXPos());
 			return false;
-		} else
-			return false;
+		}
+
 	}
 
 	//------------------------------------------------------------------------------------------------//

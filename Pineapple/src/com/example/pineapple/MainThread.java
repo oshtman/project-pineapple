@@ -52,7 +52,6 @@ public class MainThread extends Thread{
 					}
 				} 
 				endTime = System.currentTimeMillis();
-				Log.d(TAG, "Frame took "+(int)(endTime-startTime) + " milliseconds");
 				if(endTime - startTime <= updateInterval){
 					try {
 						Thread.sleep(updateInterval + startTime - endTime);
@@ -70,7 +69,6 @@ public class MainThread extends Thread{
 							} catch(InterruptedException e){};
 						}
 						overTime -= updateInterval + startTime - endTime;
-						Log.d(TAG, "Skipped frame");
 					}
 				}
 			}
