@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -65,10 +66,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int cloudSpawnDelay = 1000, cloudCounter = cloudSpawnDelay;
 	private boolean running = true;
 	private float aimAngle, feetAngle;
-	private int enemyType;
 	private int[] scoreKill = new int[]{0, 0, 0};
-	private double playTime;
-
+	private double playTimeTotal;
+	private double playTimeMin;
+	private double playTimeS;
+	private SharedPreferences settings;
+	private boolean viewStatistics = true;
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -131,7 +134,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		getHolder().addCallback(this);
 		setFocusable(true);
 		this.level = level;
-
+		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 
 		//Create game components
 		levelLoader = new LevelLoader(level);
@@ -251,6 +254,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//PLay the theme in loop
 	public void playTheme(){
+		if(settings.getBoolean("musicOn", true)){
+			theme.setVolume(1, 1);
+		} else {
+			theme.setVolume(0, 0);
+		}
 		theme.setLooping(true);
 		theme.start();
 	}
@@ -268,17 +276,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleProtagonistEnemyCollisions(ground);
 		moveAndSpawnClouds();
 		checkFinish();
-		if(sm.musicLoaded() && !themePlaying){
-			playTheme();
-			Log.d(TAG, "Ready to play theme!!");
-		}
 		if (protagonist.checkDead()){
 			// Go to a new activity (game over)
 			Context context = getContext();
 			Intent intent = new Intent(context, GameOverActivity.class);
 			context.startActivity(intent);
-			Log.d(TAG, "Killed in action");
-			//playTime = 1000/MainThread.updateInterval;
+			if(viewStatistics){
+				playTimeTotal = MainThread.updateInterval*time/1000;
+				playTimeMin = (int)(playTimeTotal/60);
+				playTimeS = playTimeTotal - playTimeMin*60;
+				Log.d(TAG, "Killed in action! Statistics: " + "Killed Drones: " + scoreKill[0] + 
+						" Ninjas: " + scoreKill[1] + " Tanks: " + scoreKill[2] +
+						" Health: " + (int)(protagonist.getHealth()*100) + 
+						" Time: 0" + (int)playTimeMin + ":" + (int)playTimeS);
+				viewStatistics = false;
+			}
 		}
 		this.time++;
 
@@ -424,7 +436,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						enemies.remove(j);
 						j--;
 						Log.d(TAG, "Enemy down.");
-						playTheme();
 					}
 					break;
 				}
@@ -478,6 +489,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				Intent intent = new Intent(context, LevelCompleteActivity.class);
 				intent.putExtra(LEVEL, level);
 				context.startActivity(intent);
+				if(viewStatistics){
+					playTimeTotal = MainThread.updateInterval*time/1000;
+					playTimeMin = (int)(playTimeTotal/60);
+					playTimeS = playTimeTotal - playTimeMin*60;
+					Log.d(TAG, "Reached finish! Statistics: " + "Killed Drones: " + scoreKill[0] + 
+							" Ninjas: " + scoreKill[1] + " Tanks: " + scoreKill[2] +
+							" Health: " + (int)(protagonist.getHealth()*100) + 
+							" Time: 0" + (int)playTimeMin + ":" + (int)playTimeS);
+					viewStatistics = false;
+				}
 			}
 		}
 	}
@@ -783,60 +804,60 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			feetAngle = Const.jumpFeetAngle;
 		}
 		if(!protagonist.isInvincible() || protagonist.getInvincibilityCount() % 2 == 0){
-			
-		//Draw all the protagonist parts
 
-		if(protagonist.isFacingRight()){
-			//Draw back foot
-			renderMatrix.setRotate(-feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
-			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis-Const.backFootOffset) - protagonist.getWidth()*Const.footRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(footBitmap, renderMatrix, null);
-			//Draw body
-			renderMatrix.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.bodyYOffset + Const.breathOffset*Math.sin((double)protagonist.getBreathCount()/protagonist.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
-			canvas.drawBitmap(bodyBitmap, renderMatrix, null);
-			//Draw eyes and mouth
-			renderMatrix.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
-			canvas.drawBitmap(eyeMouthBitmap, renderMatrix, null);
-			//Draw front foot
-			if(protagonist.isSliding() || protagonist.isDashBonus()){
-				feetAngle = -Const.jumpFeetAngle;
+			//Draw all the protagonist parts
+
+			if(protagonist.isFacingRight()){
+				//Draw back foot
+				renderMatrix.setRotate(-feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
+				renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis-Const.backFootOffset) - protagonist.getWidth()*Const.footRadius*Math.sin(-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
+				canvas.drawBitmap(footBitmap, renderMatrix, null);
+				//Draw body
+				renderMatrix.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.bodyXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.bodyYOffset + Const.breathOffset*Math.sin((double)protagonist.getBreathCount()/protagonist.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
+				canvas.drawBitmap(bodyBitmap, renderMatrix, null);
+				//Draw eyes and mouth
+				renderMatrix.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
+				canvas.drawBitmap(eyeMouthBitmap, renderMatrix, null);
+				//Draw front foot
+				if(protagonist.isSliding() || protagonist.isDashBonus()){
+					feetAngle = -Const.jumpFeetAngle;
+				}
+				renderMatrix.setRotate(feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
+				renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis) - protagonist.getWidth()*Const.footRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
+				canvas.drawBitmap(footBitmap, renderMatrix, null);
+				//Draw pupils
+				renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(Const.pupilXOffset-0.5)+protagonist.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.pupilYOffset-0.5)-protagonist.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
+				canvas.drawBitmap(pupilBitmap, renderMatrix, null);
+				//Draw weapon
+				renderMatrix.setRotate(-aimAngle, weaponBitmap.getWidth()/2, weaponBitmap.getHeight()/2);
+				renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5) - protagonist.getHeight()*Const.weaponRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
+				canvas.drawBitmap(weaponBitmap, renderMatrix, null);
+			} else {
+				//Draw back foot
+				renderMatrix.setRotate(feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
+				renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis+Const.backFootOffset) - protagonist.getWidth()*Const.footRadius*Math.sin(Math.PI-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
+				canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);
+				//Draw body
+				renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(0.5-Const.bodyXOffset) - screenX)*scaleX) - bodyBitmapFlipped.getWidth(), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.bodyYOffset + Const.breathOffset*Math.sin((double)protagonist.getBreathCount()/protagonist.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
+				canvas.drawBitmap(bodyBitmapFlipped, renderMatrix, null);
+				//Draw eyes and mouth
+				renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX) - eyeMouthBitmapFlipped.getWidth(), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
+				canvas.drawBitmap(eyeMouthBitmapFlipped, renderMatrix, null);
+				//Draw front foot
+				if(protagonist.isSliding() || protagonist.isDashBonus()){
+					feetAngle = -Const.jumpFeetAngle;
+				}
+				renderMatrix.setRotate(-feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
+				renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis) - protagonist.getWidth()*Const.footRadius*Math.sin(Math.PI+feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
+				canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);
+				//Draw pupils
+				renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(Const.pupilXOffset-0.5)+protagonist.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.pupilYOffset-0.5)-protagonist.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
+				canvas.drawBitmap(pupilBitmapFlipped, renderMatrix, null);
+				//Draw weapon
+				renderMatrix.setRotate(180-aimAngle, weaponBitmapFlipped.getWidth()/2, weaponBitmapFlipped.getHeight()/2);
+				renderMatrix.postTranslate((float)((protagonist.getXPos()  + protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) - screenX)*scaleX - weaponBitmapFlipped.getWidth()), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5) + protagonist.getHeight()*Const.weaponRadius*Math.sin(Math.PI+aimAngle*Math.PI/180) - screenY)*scaleY));
+				canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
 			}
-			renderMatrix.setRotate(feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
-			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis) - protagonist.getWidth()*Const.footRadius*Math.sin(feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(footBitmap, renderMatrix, null);
-			//Draw pupils
-			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(Const.pupilXOffset-0.5)+protagonist.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.pupilYOffset-0.5)-protagonist.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(pupilBitmap, renderMatrix, null);
-			//Draw weapon
-			renderMatrix.setRotate(-aimAngle, weaponBitmap.getWidth()/2, weaponBitmap.getHeight()/2);
-			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5) - protagonist.getHeight()*Const.weaponRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(weaponBitmap, renderMatrix, null);
-		} else {
-			//Draw back foot
-			renderMatrix.setRotate(feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
-			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis+Const.backFootOffset) - protagonist.getWidth()*Const.footRadius*Math.sin(Math.PI-feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);
-			//Draw body
-			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(0.5-Const.bodyXOffset) - screenX)*scaleX) - bodyBitmapFlipped.getWidth(), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.bodyYOffset + Const.breathOffset*Math.sin((double)protagonist.getBreathCount()/protagonist.getBreathMax()*2*Math.PI)) - screenY)*scaleY));
-			canvas.drawBitmap(bodyBitmapFlipped, renderMatrix, null);
-			//Draw eyes and mouth
-			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(0.5-Const.eyeMouthXOffset) - screenX)*scaleX) - eyeMouthBitmapFlipped.getWidth(), (float)((protagonist.getYPos() - protagonist.getHeight()*(0.5-Const.eyeMouthYOffset) - screenY)*scaleY));
-			canvas.drawBitmap(eyeMouthBitmapFlipped, renderMatrix, null);
-			//Draw front foot
-			if(protagonist.isSliding() || protagonist.isDashBonus()){
-				feetAngle = -Const.jumpFeetAngle;
-			}
-			renderMatrix.setRotate(-feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
-			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis) - protagonist.getWidth()*Const.footRadius*Math.sin(Math.PI+feetAngle*Math.PI/180) - screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);
-			//Draw pupils
-			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(Const.pupilXOffset-0.5)+protagonist.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.pupilYOffset-0.5)-protagonist.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(pupilBitmapFlipped, renderMatrix, null);
-			//Draw weapon
-			renderMatrix.setRotate(180-aimAngle, weaponBitmapFlipped.getWidth()/2, weaponBitmapFlipped.getHeight()/2);
-			renderMatrix.postTranslate((float)((protagonist.getXPos()  + protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) - screenX)*scaleX - weaponBitmapFlipped.getWidth()), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5) + protagonist.getHeight()*Const.weaponRadius*Math.sin(Math.PI+aimAngle*Math.PI/180) - screenY)*scaleY));
-			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
-		}
 
 		}
 
