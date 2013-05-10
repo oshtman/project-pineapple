@@ -24,7 +24,7 @@ public class Platform {
 	public double getUpperYFromX(double x){
 		//Find the index to the right of the protagonist
 		int index = 0;
-		while(this.upperX[index] < x){
+		while(this.upperX[index] <= x){
 			index++;
 		}
 
@@ -37,7 +37,7 @@ public class Platform {
 	public double getLowerYFromX(double x){
 		//Find the index to the right of the protagonist
 		int index = 0;
-		while(this.lowerX[index] < x){
+		while(this.lowerX[index] <= x){
 			index++;
 		}
 

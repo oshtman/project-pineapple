@@ -13,7 +13,7 @@ public class MainThread extends Thread{
 	private GamePanel gamePanel;
 	private MenuPanel menuPanel;
 	private boolean running;
-	private long startTime, endTime;
+	private long startTime, endTime, overTime;
 	private final int updateInterval = 40;
 	
 	public MainThread(SurfaceHolder surfaceHolder, GamePanel gamePanel){
@@ -52,21 +52,23 @@ public class MainThread extends Thread{
 					}
 				} 
 				endTime = System.currentTimeMillis();
-				//Log.d(TAG, "Frame took "+(int)(endTime-startTime) + " milliseconds");
+				Log.d(TAG, "Frame took "+(int)(endTime-startTime) + " milliseconds");
 				if(endTime - startTime <= updateInterval){
 					try {
 						Thread.sleep(updateInterval + startTime - endTime);
 					} catch(InterruptedException e){}
 				} else { //If the rendering took too long, we try to catch up by only updating the game state
 					//Log.d(TAG, "Overtime!");
-					long overTime = updateInterval - endTime + startTime;
+					overTime = endTime - startTime - updateInterval;
 					while(overTime >= 0){
 						startTime = System.currentTimeMillis();
 						gamePanel.update();
 						endTime = System.currentTimeMillis();
-						try {
-							Thread.sleep(updateInterval + startTime - endTime);
-						} catch(InterruptedException e){};
+						if(endTime - startTime <= updateInterval){
+							try {
+								Thread.sleep(updateInterval + startTime - endTime);
+							} catch(InterruptedException e){};
+						}
 						overTime -= updateInterval + startTime - endTime;
 						Log.d(TAG, "Skipped frame");
 					}
