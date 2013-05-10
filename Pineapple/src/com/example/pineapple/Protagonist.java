@@ -139,10 +139,13 @@ public class Protagonist {
 
 	//Protagonist jump
 	public void jump() {
-		touchingGround = false;
-		this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
-		Log.d(TAG, "Jump!!");
-		abelToPerformDash = true;
+		if(readyToJump){
+			touchingGround = false;
+			this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
+			Log.d(TAG, "Jump!!");
+			abelToPerformDash = true;
+			readyToJump = false;
+		}
 	}
 
 	//Method set dashingGround or dashingPlatform depending on position of protagonist 
@@ -218,8 +221,10 @@ public class Protagonist {
 			}
 		}
 	}
-	public int getInvincibilityCount() {
-		return invincibilityCount;
+
+	public void noAirJumping() {
+		if(!touchingGround)
+			readyToJump = false;
 	}
 
 	//------------------------------------------------------------------------------------------------//
@@ -272,13 +277,13 @@ public class Protagonist {
 			this.yVel = 0;
 			this.yAcc = 0;
 			touchingGround = true;
-			if(touchingGround){
-				overPlatform = false;
-				dashBonus = false;
-				this.setAbelToPerformDash(false);
-				dashingGround = false;
-				dashingPlatform = false;
-			}
+
+			overPlatform = false;
+			dashBonus = false;
+			this.setAbelToPerformDash(false);
+			dashingGround = false;
+			dashingPlatform = false;
+			readyToJump = true;
 		}
 	}
 
@@ -299,9 +304,12 @@ public class Protagonist {
 				this.setYAcc(0);
 				this.setYVel(0);
 				touchingGround = true;
+				dashingGround = false;
 				dashingPlatform = false;
 				dashBonus = false;
-			}
+				readyToJump = true;
+			} 
+
 		}
 		//if making move towards edge of platform
 		for(int i = 0; i < platforms.size(); i++){
@@ -355,6 +363,7 @@ public class Protagonist {
 		else
 			return dead = false;
 	}
+
 	//------------------------------------------------------------------------------------------------//
 	//FOR RENDERING PROTAGONIST
 	//Keeps track of the protagonist's step (used for rendering)
@@ -539,6 +548,10 @@ public class Protagonist {
 		return breathMax;
 	}
 
+	public int getInvincibilityCount() {
+		return invincibilityCount;
+	}
+
 	//Booleans
 	public boolean isTouchingGround() {
 		return touchingGround;
@@ -583,7 +596,7 @@ public class Protagonist {
 	public void setAbelToPerformDash(boolean amI) {
 		this.abelToPerformDash = amI;
 	}
-	
+
 	public boolean isOverPlatform() {
 		return overPlatform;
 	}
@@ -599,7 +612,7 @@ public class Protagonist {
 			}
 		}
 	}
-	
+
 	public int getPlatformNumber(){
 		return platformNumber;
 	}
