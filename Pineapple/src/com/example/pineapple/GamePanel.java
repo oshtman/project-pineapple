@@ -74,6 +74,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private boolean soundEffects;
 	private double effectVolume;
 	private boolean viewStatistics = true;
+	private Path newPath;
 	
 	
 	//Special tutorial variables
@@ -90,6 +91,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
 	private double xGap, yGap, gap, groundAngle; 
 	private Paint groundPaint = new Paint();
+	Paint dirtPaint = new Paint();
 	private Path groundPath, dirtPath;;
 	private Matrix renderMatrix = new Matrix();
 
@@ -167,6 +169,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
 		groundPaint.setColor(Color.rgb(10, 250, 10));
+		dirtPaint.setColor(Color.rgb(87, 59, 12));
 
 		setKeepScreenOn(true);
 
@@ -889,8 +892,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 
 		int stopIndex = i;
-		Paint dirtPaint = new Paint();
-		dirtPaint.setColor(Color.rgb(87, 59, 12));
+		
 		for(i = startIndex; i <= stopIndex; i++){
 
 			groundPath = new Path();
@@ -944,12 +946,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderPlatforms(Canvas canvas){
 		for(int i = 0; i < platforms.size(); i++){
 			if(platforms.get(i).getUpperX()[0] < screenX+width && platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] > screenX){
-				Path path = platforms.get(i).getPath();
-				Path newPath = new Path(path); 
+				groundPath = new Path(platforms.get(i).getGroundPath());
+				dirtPath = new Path(platforms.get(i).getDirtPath());
 				renderMatrix.setTranslate(-(float)screenX, -(float)screenY);
 				renderMatrix.postScale((float)scaleX, (float)scaleY);
-				newPath.transform(renderMatrix);
-				canvas.drawPath(newPath, groundPaint);
+				groundPath.transform(renderMatrix);
+				dirtPath.transform(renderMatrix);
+				canvas.drawPath(groundPath, groundPaint);
+				canvas.drawPath(dirtPath, dirtPaint);
 				//Draw platform details
 				//Spikes on top
 				groundPath = new Path();

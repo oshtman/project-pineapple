@@ -9,7 +9,7 @@ public class Platform {
 	private int[] upperY;
 	private int[] lowerX;
 	private int[] lowerY;
-	private Path path;
+	private Path groundPath, dirtPath;
 
 	public Platform(int[] upperX, int[] upperY, int[] lowerX, int[] lowerY){
 		this.upperX = upperX;
@@ -17,7 +17,7 @@ public class Platform {
 		this.lowerX = lowerX;
 		this.lowerY = lowerY;
 
-		generatePath();
+		generatePaths();
 	}
 
 	//Get the y position of the ground relative to the given x
@@ -72,15 +72,23 @@ public class Platform {
 	}
 
 	//Create a Path object for the platform, which is used to render it
-	public void generatePath(){
-		path = new Path();
-		path.moveTo(upperX[0], upperY[0]);
-
+	public void generatePaths(){
+		groundPath = new Path();
+		dirtPath = new Path();
+		groundPath.moveTo(upperX[0], upperY[0]);
+		dirtPath.moveTo(upperX[upperX.length-1], upperY[upperX.length-1]);
 		for(int i = 1; i < getUpperLength(); i++){
-			path.lineTo(upperX[i], upperY[i]);
+			groundPath.lineTo(upperX[i], upperY[i]);
 		}
-		for(int i = getLowerLength()-1; i >= 0; i--){
-			path.lineTo(lowerX[i], lowerY[i]);
+		for(int i = getUpperLength()-2; i > 0; i--){
+			groundPath.lineTo(upperX[i], upperY[i]+3);
+			dirtPath.lineTo(upperX[i], upperY[i]+3);
+		}
+		
+		groundPath.lineTo(upperX[0], upperY[0]);
+		dirtPath.lineTo(upperX[0], upperY[0]);
+		for(int i = 1; i < getLowerLength(); i++){
+			dirtPath.lineTo(lowerX[i], lowerY[i]);
 		}
 	}
 
@@ -125,8 +133,12 @@ public class Platform {
 		return lowerX.length;
 	}
 
-	public Path getPath(){
-		return path;
+	public Path getGroundPath(){
+		return groundPath;
+	}
+	
+	public Path getDirtPath(){
+		return dirtPath;
 	}
 
 	//Checks if the protagonist collides with one of the sides of a platform
