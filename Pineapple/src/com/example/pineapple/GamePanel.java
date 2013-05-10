@@ -66,11 +66,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int cloudSpawnDelay = 1000, cloudCounter = cloudSpawnDelay;
 	private boolean running = true;
 	private float aimAngle, feetAngle;
+	private int[] scoreKill = new int[]{0, 0, 0};
+	private double playTimeTotal;
+	private double playTimeMin;
+	private double playTimeS;
 	private SharedPreferences settings;
 	private boolean soundEffects;
 	private double effectVolume;
-
-
+	private boolean viewStatistics = true;
+	
+	
 	//Special tutorial variables
 	private Protagonist mentor;
 	private int[] checkpoints;
@@ -285,7 +290,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			Context context = getContext();
 			Intent intent = new Intent(context, GameOverActivity.class);
 			context.startActivity(intent);
-			Log.d(TAG, "Killed in action");
+			if(viewStatistics){
+				playTimeTotal = MainThread.updateInterval*time/1000;
+				playTimeMin = (int)(playTimeTotal/60);
+				playTimeS = playTimeTotal - playTimeMin*60;
+				Log.d(TAG, "Killed in action! Statistics: " + "Killed Drones: " + scoreKill[0] + 
+						" Ninjas: " + scoreKill[1] + " Tanks: " + scoreKill[2] +
+						" Health: " + (int)(protagonist.getHealth()*100) + 
+						" Time: 0" + (int)playTimeMin + ":" + (int)playTimeS);
+				viewStatistics = false;
+			}
 		}
 		this.time++;
 
@@ -341,7 +355,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.dashing(ground, platforms);
 		protagonist.checkGround(ground);
 		protagonist.checkPlatform(platforms);
-		protagonist.noAirJumping();
+		protagonist.inAir(platforms, ground);
 	}
 
 	//Move all the enemies and check for obstacles etc
@@ -427,6 +441,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					enemy.takeDamage(bulletDamage*enemies.get(j).getDamageGrade()); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
 					enemy.setHitThisFrame(true);
 					if(enemy.getHealth() <= 0){//If the enemy is dead
+						scoreKill[enemies.get(j).getType()-1]++;
 						enemies.remove(j);
 						j--;
 						Log.d(TAG, "Enemy down.");
@@ -457,6 +472,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				enemies.get(i).takeDashDamage(protagonist);
 				Log.d(TAG, "In reach for dash! Watch me.");
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
+					scoreKill[enemies.get(i).getType()-1]++;
 					enemies.remove(i);
 					i--;
 					Log.d(TAG, "Enemy down. Splash.");
@@ -482,6 +498,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				Intent intent = new Intent(context, LevelCompleteActivity.class);
 				intent.putExtra(LEVEL, level);
 				context.startActivity(intent);
+				if(viewStatistics){
+					playTimeTotal = MainThread.updateInterval*time/1000;
+					playTimeMin = (int)(playTimeTotal/60);
+					playTimeS = playTimeTotal - playTimeMin*60;
+					Log.d(TAG, "Reached finish! Statistics: " + "Killed Drones: " + scoreKill[0] + 
+							" Ninjas: " + scoreKill[1] + " Tanks: " + scoreKill[2] +
+							" Health: " + (int)(protagonist.getHealth()*100) + 
+							" Time: 0" + (int)playTimeMin + ":" + (int)playTimeS);
+					viewStatistics = false;
+				}
 			}
 		}
 	}

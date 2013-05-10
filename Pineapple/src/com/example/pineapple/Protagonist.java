@@ -33,7 +33,7 @@ public class Protagonist {
 	private boolean invincible;
 	private int invincibilityCount;
 	private final int maxInvincibilityCount = 25;
-	private boolean readyToJump = true;
+	private boolean readyToJump = false;
 	private boolean dashBonus = false; //The dash will do damage if true
 	private boolean dashing = false; //Means that the protagonist is dashing
 	private int platformNumber = -1;
@@ -233,9 +233,18 @@ public class Protagonist {
 		}
 	}
 
-	public void noAirJumping() {
-		if(!touchingGround)
-			readyToJump = false;
+	public void inAir(ArrayList<Platform> platforms, Ground g) {
+		if(platformNumber == -1){
+			if(this.getYPos() < g.getYFromX(this.getXPos()) - this.getHeight()){
+				touchingGround = false;
+				readyToJump = false;
+			}
+		} else {
+			if(this.getYPos() < platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()){
+				touchingGround = false;
+				readyToJump = false;
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------------------------//
@@ -298,7 +307,6 @@ public class Protagonist {
 		if(platformNumber == -1){
 			//No platform around protagonist
 		} else {
-			Log.d(TAG, "Platform number = " + platformNumber + " Protagonist feet: " + (getYPos() + height/2) + " Platform Y: " + platforms.get(platformNumber).getUpperYFromX(getXPos()));
 			if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos())){
 				this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 				this.setYAcc(0);
@@ -586,12 +594,12 @@ public class Protagonist {
 		return dashBonus;
 	}
 
-	public boolean getDashBonus(){
-		return dashBonus;
-	}
-
 	public void setDashBonus(boolean dashBonus) {
 		this.dashBonus = dashBonus;
+	}
+
+	public boolean isReadyToJump(){
+		return readyToJump;
 	}
 
 	//Others
