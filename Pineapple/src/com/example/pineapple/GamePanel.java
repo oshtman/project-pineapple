@@ -104,7 +104,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap stickBitmap;
 	private Bitmap bulletBitmap;
 	private Bitmap birdBitmap;
-	private Bitmap treeBitmap;
+	private Bitmap sunBitmap;
 	private Bitmap mentorBodyBitmap;
 	private Bitmap eyeBeardBitmap;
 	private Bitmap[] rockBitmap;
@@ -1036,13 +1036,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw the sun, moving in time
 	public void renderSun(Canvas canvas){
-		float x = (float)(width*scaleX/3);//Make generalll
-		float y = (float)((50 + 50*Math.sin(Math.PI + time/500))*scaleY);//Make generalll
-		float radius = (float)(width/20*scaleX);
-		Paint p = new Paint();
-		p.setColor(Color.YELLOW);
-
-		canvas.drawCircle(x, y, radius, p);
+		canvas.drawBitmap(sunBitmap, (float)(width*scaleX/3), (float)((20 + 20*Math.sin(Math.PI + time/500))*scaleY), null);
 	}
 
 	//Draw clouds
@@ -1269,7 +1263,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
 		stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 		bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
-		Log.d(TAG, ""+Bird.getHeight());
+		sunBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sun), (int)(Const.sunSize*scaleX), (int)(Const.sunSize*scaleX), true);
 		birdBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bird), (int)(Bird.getWidth()*scaleX), (int)(Bird.getHeight()*scaleY), true);
 		flagBitmaps = new Bitmap[]{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flag_back), (int)(Const.finishFlagWidth/2*scaleX), (int)(Const.finishFlagHeight*scaleY), true),
