@@ -109,4 +109,7 @@ public class Const {
 		public static final double timeAreaWidth = 25;
 		public static final double timeAreaHeight = 10;
 		
+		public static final double sliderHandleWidth = 4;
+		
+		
 }

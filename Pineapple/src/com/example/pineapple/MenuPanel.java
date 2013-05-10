@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -34,6 +35,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap bodyBitmap, weaponBitmap, footBitmap, pupilBitmap, eyeMouthBitmap;
 	private Bitmap bodyBitmapFlipped, weaponBitmapFlipped, footBitmapFlipped, pupilBitmapFlipped, eyeMouthBitmapFlipped;
 	private Button[] levelButtons;
+	private Slider musicSlider, soundSlider;
 	private Bitmap[] levelBitmaps;
 	private Bitmap[] butterflyBitmaps;
 	private int nextLevel;
@@ -85,15 +87,21 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.breathe();
 		protagonist.move();
 		butterfly.update();
+		if(menuState == SETTINGS_MENU){
+			setVolumes();
+		}
 
 	}
 
 	public void playTheme(){
 		if(!theme.isPlaying()){ //If theme isn't already playing
 			try {
+				theme.reset();
+				loadSounds();
 				theme.prepare();
 			} catch(IOException e){	}
 			theme.setLooping(true);
+			theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
 			theme.start();
 		}
 	}
@@ -124,12 +132,27 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			theme.setVolume(0, 0);
 		}
 	}
+	
+	public void setVolumes(){
+		if(musicSlider.isSliding()){
+			Editor e = settings.edit();
+			e.putFloat("musicVolume", (float)musicSlider.getValue());
+			e.commit();
+			theme.setVolume((float)musicSlider.getValue(), (float)musicSlider.getValue());
+		}
+		if(soundSlider.isSliding()){
+			Editor e = settings.edit();
+			e.putFloat("soundVolume", (float)soundSlider.getValue());
+			e.commit();
+		}
+	}
 
 	public void render(Canvas canvas){
 		canvas.drawBitmap(backgroundBitmap, 0, 0, null);
 		renderButterfly(canvas);
 		renderButtons(canvas);
 		renderProtagonist(canvas);
+		renderSliders(canvas);
 	}
 
 	public void renderButtons(Canvas canvas){
@@ -150,6 +173,16 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			break;
 		}
 
+	}
+	
+	public void renderSliders(Canvas canvas){
+		if(menuState == SETTINGS_MENU){
+			canvas.drawLine((float)(musicSlider.getX()*scaleX), (float)((musicSlider.getY()+musicSlider.getHeight()/2)*scaleY), (float)((musicSlider.getX() + musicSlider.getWidth())*scaleX), (float)((musicSlider.getY()+musicSlider.getHeight()/2)*scaleY), new Paint());
+			canvas.drawRect((float)((musicSlider.getX() + musicSlider.getWidth()*musicSlider.getValue()-Const.sliderHandleWidth/2)*scaleX), (float)((musicSlider.getY()*scaleY)), (float)((musicSlider.getX() + musicSlider.getWidth()*musicSlider.getValue()+Const.sliderHandleWidth/2)*scaleX), (float)((musicSlider.getY() + musicSlider.getHeight())*scaleY), new Paint());
+			
+			canvas.drawLine((float)(soundSlider.getX()*scaleX), (float)((soundSlider.getY()+soundSlider.getHeight()/2)*scaleY), (float)((soundSlider.getX() + soundSlider.getWidth())*scaleX), (float)((soundSlider.getY()+soundSlider.getHeight()/2)*scaleY), new Paint());
+			canvas.drawRect((float)((soundSlider.getX() + soundSlider.getWidth()*soundSlider.getValue()-Const.sliderHandleWidth/2)*scaleX), (float)((soundSlider.getY()*scaleY)), (float)((soundSlider.getX() + soundSlider.getWidth()*soundSlider.getValue()+Const.sliderHandleWidth/2)*scaleX), (float)((soundSlider.getY() + soundSlider.getHeight())*scaleY), new Paint());
+		}
 	}
 
 	@Override
@@ -219,6 +252,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			int y = 10 + (int)(Const.menuButtonHeight*(i%3));
 			levelButtons[i] = new Button(x, y, Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
 		}
+		
+		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth(), musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
+		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth(), soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
 
 		//Start the thread
 		if (thread.getState()==Thread.State.TERMINATED) { 
@@ -245,9 +281,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	}
 	public void resume(){
-
 		playTheme();
-
 	}
 
 	//Pause the game
@@ -258,9 +292,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
+		
+		touchX = (int)(e.getX()/scaleX);
+		touchY = (int)(e.getY()/scaleY);
 		if(e.getAction() == MotionEvent.ACTION_DOWN){
-			touchX = (int)(e.getX()/scaleX);
-			touchY = (int)(e.getY()/scaleY);
+			
 			switch(menuState){
 			case MAIN_MENU:
 				if(playButton.isClicked(touchX, touchY)){
@@ -281,21 +317,27 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			case SETTINGS_MENU:
 				if(soundButton.isClicked(touchX, touchY)){
 					Editor ed = settings.edit();
-					ed.putBoolean("soundOn", !settings.getBoolean("soundOn", true));
+					ed.putFloat("soundVolume", settings.getFloat("soundVolume", 1)>0?0:1);
 					ed.commit();
 				}
 				if(musicButton.isClicked(touchX, touchY)){
 					Editor ed = settings.edit();
-					ed.putBoolean("musicOn", !settings.getBoolean("musicOn", true));
+					ed.putFloat("musicVolume", settings.getFloat("musicVolume", 1)>0?0:1);
 					ed.commit();
-					if(settings.getBoolean("musicOn", true)){
-						theme.setVolume(1, 1);
-					} else {
-						theme.setVolume(0, 0);
-					}
+					theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
 				}
+				soundSlider.handleTouch(touchX, touchY);
+				musicSlider.handleTouch(touchX, touchY);
 				break;
 			}
+		}
+		if(e.getAction() == MotionEvent.ACTION_MOVE){
+			soundSlider.handleTouch(touchX, touchY);
+			musicSlider.handleTouch(touchX, touchY);
+		}
+		if(e.getAction() == MotionEvent.ACTION_UP){
+			musicSlider.release();
+			soundSlider.release();
 		}
 		return true;
 	}

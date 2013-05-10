@@ -144,14 +144,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		setFocusable(true);
 		this.level = level;
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
-		soundEffects = settings.getBoolean("soundOn", true);
-		//Temporary
-		if(soundEffects){
-			effectVolume = 1;
-		} else {
-			effectVolume = 0;
-		}
-
+		effectVolume = settings.getFloat("soundVolume", 1);
+		
 		//Create game components
 		levelLoader = new LevelLoader(level);
 		heatMeter = new HeatMeter(0.01);
@@ -277,11 +271,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//PLay the theme in loop
 	public void playTheme(){
-		if(settings.getBoolean("musicOn", true)){
-			theme.setVolume(1, 1);
-		} else {
-			theme.setVolume(0, 0);
-		}
+		theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
 		theme.setLooping(true);
 		theme.start();
 	}
@@ -1170,7 +1160,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 			
 			canvas.drawRect((float)((width/2-Const.timeAreaWidth/2)*scaleX), (float)(HUDPadding*scaleY), (float)((width/2+Const.timeAreaWidth/2)*scaleX), (float)((HUDPadding+Const.timeAreaHeight)*scaleY), textBackground);
-			canvas.drawText(minString + ":" + secString, (float)(width/2*scaleX), (float)((HUDPadding+Const.timeAreaHeight - (Const.timeAreaHeight-textPaint.getTextSize()/scaleX)/4)*scaleY), timePaint);
+			canvas.drawText(minString + ":" + secString, (float)(width/2*scaleX), (float)((HUDPadding+Const.timeAreaHeight - (Const.timeAreaHeight-timePaint.getTextSize()/scaleX)/2)*scaleY), timePaint);
 		}
 
 	//Draw bird

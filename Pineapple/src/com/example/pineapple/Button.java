@@ -51,4 +51,14 @@ public class Button {
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
+
+
+	public double getHeight() {
+		return height;
+	}
+
+
+	public double getWidth() {
+		return width;
+	}
 }
