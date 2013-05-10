@@ -404,7 +404,9 @@ public class Protagonist {
 			}
 		} else {
 			faceDirection((int)(getXVel()));
-
+			if(!right.isPointed()){
+				angleAim = 90 - 90*Math.signum(getXVel());
+			}
 		}
 	}
 
