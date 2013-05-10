@@ -67,6 +67,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private boolean running = true;
 	private float aimAngle, feetAngle;
 	private SharedPreferences settings;
+	private boolean soundEffects;
+	private double effectVolume;
 
 
 	//Special tutorial variables
@@ -131,6 +133,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		setFocusable(true);
 		this.level = level;
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
+		soundEffects = settings.getBoolean("soundOn", true);
+		//Temporary
+		if(soundEffects){
+			effectVolume = 1;
+		} else {
+			effectVolume = 0;
+		}
 
 		//Create game components
 		levelLoader = new LevelLoader(level);
@@ -212,7 +221,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentorSentencesToSay = 3;
 		}
 		stamper.setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.SRC_IN));
-		cloaker.setAlpha(255);
 	}
 
 	//Load the platforms from LevelLoader and add them to the platforms list 
@@ -316,7 +324,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				if(!heatMeter.isCoolingDown()){
 					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(protagonist.getAim()/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(protagonist.getAim()/180*Math.PI), protagonist.getAim(), 10));
 					firing = true;
-					sm.playSound(0);
+					sm.playSound(0, effectVolume);
 				}
 			}
 		}
@@ -532,7 +540,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				nextSound = (int)(5*Math.random());
 			}
 			lastMentorSound = nextSound;
-			sm.playSound(nextSound+mentorSoundIndexStart);
+			sm.playSound(nextSound+mentorSoundIndexStart, effectVolume);
 			mentorPlayCounter = sm.getDuration(nextSound+mentorSoundIndexStart);
 			mentorSentencesToSay--;
 		}
@@ -563,7 +571,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		case 3: 
 			if(protagonist.getXPos() > 258){
 				currentCheckpoint++;
-				sm.playSound(mentorSoundIndexStart+5);
+				sm.playSound(mentorSoundIndexStart+5, effectVolume);
 			}
 			break;
 		case 4: 
@@ -623,7 +631,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		case 13: 
 			if(enemies.size() == 0){
 				currentCheckpoint++;
-				sm.playSound(5+mentorSoundIndexStart);
+				sm.playSound(5+mentorSoundIndexStart, effectVolume);
 			}
 			break;
 		case 14:
