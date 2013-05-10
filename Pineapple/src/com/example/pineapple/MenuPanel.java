@@ -167,19 +167,19 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		scaleX = (double)getWidth()/155;
 
 		Bitmap playBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.start), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		playButton = new Button(10, 10, playBitmap);
+		playButton = new Button(10, 10, playBitmap.getWidth()/scaleX, playBitmap.getHeight()/scaleY, playBitmap);
 
 		Bitmap settingsBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.settings), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		settingsButton = new Button(10, (int)(10+1.5*Const.menuButtonHeight), settingsBitmap);
+		settingsButton = new Button(10, (int)(10 + 1.5*Const.menuButtonHeight), settingsBitmap.getWidth()/scaleX, settingsBitmap.getHeight()/scaleY, settingsBitmap);
 
 		Bitmap highscoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.highscore), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		highscoreButton = new Button(10, (int)(10+2*1.5*Const.menuButtonHeight), highscoreBitmap);
+		highscoreButton = new Button(10, (int)(10 + 2*1.5*Const.menuButtonHeight), highscoreBitmap.getWidth()/scaleX, highscoreBitmap.getHeight()/scaleY, highscoreBitmap);
 
 		Bitmap soundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sound), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		soundButton = new Button(10, 10, soundBitmap);
+		soundButton = new Button(10, 10, soundBitmap.getWidth()/scaleX, soundBitmap.getHeight()/scaleY, soundBitmap);
 
 		Bitmap musicBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.music), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		musicButton = new Button(10, (int)(10+1.5*Const.menuButtonHeight), musicBitmap);
+		musicButton = new Button(10, (int)(10 + 1.5*Const.menuButtonHeight), musicBitmap.getWidth()/scaleX, musicBitmap.getHeight()/scaleY, musicBitmap);
 
 
 
@@ -217,7 +217,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(int i = 0; i <= currentLevel; i++){
 			int x = 10 + (int)(Const.menuButtonWidth*(i/3));
 			int y = 10 + (int)(Const.menuButtonHeight*(i%3));
-			levelButtons[i] = new Button(x, y, levelBitmaps[i]);
+			levelButtons[i] = new Button(x, y, Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
 		}
 
 		//Start the thread

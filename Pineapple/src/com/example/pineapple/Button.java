@@ -7,16 +7,16 @@ public class Button {
 	private final String TAG = Button.class.getSimpleName();
 	
 	int x, y;
-	int height, width;
+	double height, width;
 	private Bitmap bitmap;
 	private boolean visible;
 	
-	public Button(int x, int y, Bitmap bitmap){
+	public Button(int x, int y, double width, double height, Bitmap bitmap){
 		this.x = x;
 		this.y = y;
+		this.width = width;
+		this.height = height;
 		this.bitmap = bitmap;
-		height = bitmap.getHeight();
-		width = bitmap.getWidth();
 	}
 	
 	
@@ -26,7 +26,7 @@ public class Button {
 		if(x > this.x && x < this.x + width){
 			if(y > this.y && y < this.y + height){
 				flag = true;
-				Log.d(TAG, ""+ this.y + "<" + y +  "<" + (this.y + height)); 
+				Log.d(TAG, this.y + "<" + y +  "<" + (this.y + height)); 
 			}
 		}
 		return flag;
