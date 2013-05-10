@@ -139,9 +139,12 @@ public class Protagonist {
 
 	//Protagonist jump
 	public void jump() {
-		touchingGround = false;
-		this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
-		Log.d(TAG, "Jump!!");
+		if(readyToJump){
+			touchingGround = false;
+			this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
+			Log.d(TAG, "Jump!!");
+			readyToJump = false;
+		}
 	}
 
 	//Method set dashingGround or dashingPlatform depending on position of protagonist 
@@ -191,7 +194,7 @@ public class Protagonist {
 					this.setYAcc(15); //Set constant
 					this.setYVel(this.getYAcc() + this.getYVel());
 				}
-			//If dashing above ground
+				//If dashing above ground
 			} else {
 				if(this.getYPos() + this.getHeight()/2 + this.getYVel() > g.getYFromX(this.getXPos())){
 					this.setYAcc(0);
@@ -229,8 +232,10 @@ public class Protagonist {
 			}
 		}
 	}
-	public int getInvincibilityCount() {
-		return invincibilityCount;
+
+	public void noAirJumping() {
+		if(!touchingGround)
+			readyToJump = false;
 	}
 
 	//------------------------------------------------------------------------------------------------//
@@ -283,6 +288,7 @@ public class Protagonist {
 			this.yVel = 0;
 			this.yAcc = 0;
 			touchingGround = true;
+			readyToJump = true;
 		}
 	}
 
@@ -298,8 +304,10 @@ public class Protagonist {
 				this.setYAcc(0);
 				this.setYVel(0);
 				touchingGround = true;
-			}
+				readyToJump = true;
+			} 
 		}
+
 		//if making move towards edge of platform
 		for(int i = 0; i < platforms.size(); i++){
 			//if head is in platform
@@ -356,6 +364,7 @@ public class Protagonist {
 		else
 			return dead = false;
 	}
+
 	//------------------------------------------------------------------------------------------------//
 	//FOR RENDERING PROTAGONIST
 	//Keeps track of the protagonist's step (used for rendering)
@@ -540,6 +549,10 @@ public class Protagonist {
 		return breathMax;
 	}
 
+	public int getInvincibilityCount() {
+		return invincibilityCount;
+	}
+
 	//Booleans
 	public boolean isTouchingGround() {
 		return touchingGround;
@@ -581,8 +594,16 @@ public class Protagonist {
 		this.dashBonus = dashBonus;
 	}
 
-	public boolean isOverPlatform() {
-		return overPlatform;
+	//Others
+	public void getPlatformNumber(ArrayList<Platform> platforms){
+		for(int i = 0; i < platforms.size(); i++){
+			if (platforms.get(i).spans(this.getXPos())){
+				this.platformNumber = i;
+				break;
+			} else {
+				this.platformNumber = -1;
+			}
+		}
 	}
 
 	public int getPlatformNumber(){

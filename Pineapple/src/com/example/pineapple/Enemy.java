@@ -233,9 +233,11 @@ public class Enemy {
 	//If enemy is dashable (if enemy is just above ground)
 	public boolean dashable(Ground g, Protagonist p, ArrayList<Platform> platforms) {
 		//On ground
-		if(p.getPlatformNumber() == -1 && this.getYPos() + this.height >=  g.getYFromX(this.getXPos())){
-			Log.d(TAG, "Dashable enemy");
-			return true;
+		if(p.getPlatformNumber() == -1){
+			if(this.getYPos() + this.height >=  g.getYFromX(this.getXPos())){
+				Log.d(TAG, "Dashable enemy");
+				return true;
+			} else return false;
 			//On platform
 		} else if(p.getPlatformNumber() >= 0 && this.getYPos() <= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos()) && this.getYPos() + this.height >= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos())){
 			return true;
