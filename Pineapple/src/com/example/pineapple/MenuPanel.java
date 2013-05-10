@@ -18,6 +18,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	public final static String LEVEL = "com.example.pineapple.LEVEL";
 	private final int MAIN_MENU = 0;
 	private final int LEVEL_MENU = 1;
+	private final int PLAY = 2;
 	private double scaleX, scaleY;
 	private Button playButton, settingsButton, highscoreButton;
 	private MainThread thread;

@@ -34,13 +34,12 @@ public class Protagonist {
 	private int invincibilityCount;
 	private final int maxInvincibilityCount = 25;
 	private boolean readyToJump = true;
-	private boolean dashBonus = false;
-	private boolean abelToPerformDash = false;
-	private boolean dashingGround = false;
-	private boolean dashingPlatform = false;
+	private boolean dashBonus = false; //The dash will do damage if true
+	private boolean dashing = false; //Means that the protagonist is dashing
 	private int platformNumber = -1;
 	private boolean dead = false;
 	private boolean sliding = false;
+	private double startHeight;
 	//------------------------------------------------------------------------------------------------//
 	// CONSTRUCTORS
 	public Protagonist(double i, double j, GamePanel gp) {
@@ -95,10 +94,11 @@ public class Protagonist {
 			if(readyToJump) //If the protagonist isn't standing in a steep slope
 				this.jump();
 		} else if (angle > 225 && angle < 315) {
-			this.slowDown();
-			this.setStepCount(0);
 			if(!touchingGround){
 				this.down(gp.getGround(), gp.getPlatforms());
+			} else {
+				this.slowDown();
+				this.setStepCount(0);
 			}
 		}
 	}
@@ -143,7 +143,6 @@ public class Protagonist {
 			touchingGround = false;
 			this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
 			Log.d(TAG, "Jump!!");
-			abelToPerformDash = true;
 			readyToJump = false;
 		}
 	}
@@ -151,28 +150,24 @@ public class Protagonist {
 	//Method set dashingGround or dashingPlatform depending on position of protagonist 
 	//and calculate bonus or not
 	public void down(Ground g, ArrayList<Platform> platforms) {
-		if(!dashBonus){
-			double startHeight = this.getYPos();
-			this.checkOverPlatform(platforms);
-			if(overPlatform && !touchingGround && abelToPerformDash){
-				this.getPlatformNumber(platforms);
-				//this.setAbelToPerformDash(false);
-				dashingPlatform = true;
+		if(!dashing){
+			dashing = true;
+			startHeight = this.getYPos();
+			this.checkOverPlatform(platforms); // Can perhaps be removed later
+			if(platformNumber >= 0){
 				Log.d(TAG, "Coming down 2 u!! #onPlatform");
-				//Check if protagonist get dash bonus
+				//Check if protagonist get dash bonus (if he is high enough)
 				if(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
 					dashBonus = true;
 					invincible = true;
 					Log.d(TAG, "DASH!!");
 				} 
-			}else if (abelToPerformDash && !touchingGround){
-				//this.setAbelToPerformDash(false);
-				dashingGround = true;
+			} else { //Over ground
 				Log.d(TAG, "Coming down 2 u!! #hitGround");
 				//Check if protagonist get dash bonus
 				if(g.getYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
-					dashBonus = true;
 					invincible = true;
+					dashBonus = true;
 					Log.d(TAG, "DASH!!");
 				}
 			}
@@ -181,29 +176,45 @@ public class Protagonist {
 
 	//Method take protagonist to platform alt ground by acceleration (dashing)
 	public void dashing(Ground g, ArrayList<Platform> platforms){
-		//If dashing above platform
-		if(dashingPlatform){
-			this.getPlatformNumber(platforms);
-			//Check if protagonist would pass platform in a frame, if yes set protagonist on platform
-			if(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getYPos() > this.getYVel()){
-				this.setYAcc(15); //Set constant
-				this.setYVel(this.getYAcc() + this.getYVel());
+		if(dashing){
+			//If dashing above platform
+			if(platformNumber >= 0){
+				//Check if protagonist would pass platform in a frame, if yes set protagonist on platform
+				if(this.getYPos() + this.getHeight()/2 + this.getYVel() > platforms.get(platformNumber).getUpperYFromX(this.getXPos())){
+					this.setYAcc(0);
+					this.setYVel(0);
+					this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
+					touchingGround = true;
+					if(dashBonus){
+						gp.sendEnemiesFlying();
+					}
+					dashing = false;
+					dashBonus = false;
+				} else { //Still above platform
+					this.setYAcc(15); //Set constant
+					this.setYVel(this.getYAcc() + this.getYVel());
+				}
+				//If dashing above ground
 			} else {
-				this.setYAcc(0);
-				this.setYVel(0);
-				this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
-				if(touchingGround)
-					dashingPlatform = false;
+				if(this.getYPos() + this.getHeight()/2 + this.getYVel() > g.getYFromX(this.getXPos())){
+					this.setYAcc(0);
+					this.setYVel(0);
+					this.setYPos(g.getYFromX(this.getXPos()) - this.getHeight()/2);
+					touchingGround = true;
+					if(dashBonus){
+						gp.sendEnemiesFlying();
+					}
+					dashing = false;
+					dashBonus = false;
+				} else {
+					this.setYAcc(15); //Set constant
+					this.setYVel(this.getYAcc() + this.getYVel());
+				}
+				//Let checkGround handle the y position
 			}
-			//If dashing above ground
-		} else if (dashingGround){
-			this.setYAcc(15); //Set constant
-			this.setYVel(this.getYAcc() + this.getYVel());
-			if(touchingGround){
-				dashingGround = false;
-			}
-		}		
-	}
+		}
+	}		
+
 	//------------------------------------------------------------------------------------------------//
 	//OTHER PROPERTIES
 	//Let gravity work on protagonist
@@ -277,43 +288,34 @@ public class Protagonist {
 			this.yVel = 0;
 			this.yAcc = 0;
 			touchingGround = true;
-
-			overPlatform = false;
-			dashBonus = false;
-			this.setAbelToPerformDash(false);
-			dashingGround = false;
-			dashingPlatform = false;
 			readyToJump = true;
 		}
 	}
 
 	//Check if protagonist hit platform
 	public void checkPlatform(ArrayList<Platform> platforms) {
-		this.getPlatformNumber(platforms);
+		checkOverPlatform(platforms);
 		if(platformNumber == -1){
 			//No platform around protagonist
 		} else {
-			this.checkOverPlatform(platforms);
-			//if head is in platform
-			if (!overPlatform && this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos())) {
-				this.setYVel(-this.getYVel());
-				Log.d(TAG, "Headache!!");
-				//if feet is in platform
-			} else if (/*!dashingPlatform &&*/ this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos())){
+			Log.d(TAG, "Platform number = " + platformNumber + " Protagonist feet: " + (getYPos() + height/2) + " Platform Y: " + platforms.get(platformNumber).getUpperYFromX(getXPos()));
+			if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos())){
 				this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 				this.setYAcc(0);
 				this.setYVel(0);
 				touchingGround = true;
-				dashingGround = false;
-				dashingPlatform = false;
-				dashBonus = false;
 				readyToJump = true;
 			} 
-
 		}
+
 		//if making move towards edge of platform
 		for(int i = 0; i < platforms.size(); i++){
-			if (platforms.get(i).checkSide(this, -1) && getXPos() < platforms.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > platforms.get(i).getUpperX()[0] && getXVel() > 0) {
+			//if head is in platform
+			if (platforms.get(i).spans(getXPos()) && this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
+				this.setYVel(-this.getYVel());
+				Log.d(TAG, "Headache!!");
+				//if feet is in platform
+			} else if (platforms.get(i).checkSide(this, -1) && getXPos() < platforms.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > platforms.get(i).getUpperX()[0] && getXVel() > 0) {
 				this.setXVel(0);
 				this.setXPos(platforms.get(i).getUpperX()[0] - getWidth()/2);
 			}
@@ -325,13 +327,13 @@ public class Protagonist {
 	}
 
 	//Check if protagonist is over a platform (used in dashing)
-	public void checkOverPlatform(ArrayList<Platform> platforms) {
+	public void checkOverPlatform(ArrayList<Platform> platforms) { //Add an if block to get the highest platform
 		for (int i = 0; i < platforms.size(); i++) {
-			if (platforms.get(i).spans(this.getXPos()) && platforms.get(i).getUpperYFromX(this.getXPos()) >= this.getYPos() + this.getHeight()/2){
-				overPlatform = true;
+			if (platforms.get(i).spans(this.getXPos()) && platforms.get(i).getLowerYFromX(this.getXPos()) >= this.getYPos() + this.getHeight()/2){
+				platformNumber = i;
 				break;
 			} else {
-				overPlatform = false;
+				platformNumber = -1;
 			}
 		}
 	}
@@ -340,7 +342,6 @@ public class Protagonist {
 	public boolean collide(Enemy e){
 		if(getXPos() - getWidth()/2 < e.getXPos() + e.getWidth()/2 && getXPos() + getWidth()/2 > e.getXPos() - e.getWidth()/2 &&
 				getYPos() - getWidth()/2 < e.getYPos() + e.getHeight()/2 && getYPos() + getWidth()/2 > e.getYPos() - e.getHeight()/2){
-			abelToPerformDash = true;
 			return true;
 		} else 
 			return false;
@@ -591,14 +592,6 @@ public class Protagonist {
 
 	public void setDashBonus(boolean dashBonus) {
 		this.dashBonus = dashBonus;
-	}
-
-	public void setAbelToPerformDash(boolean amI) {
-		this.abelToPerformDash = amI;
-	}
-
-	public boolean isOverPlatform() {
-		return overPlatform;
 	}
 
 	//Others
