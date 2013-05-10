@@ -35,6 +35,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap bodyBitmapFlipped, weaponBitmapFlipped, footBitmapFlipped, pupilBitmapFlipped, eyeMouthBitmapFlipped;
 	private Button[] levelButtons;
 	private Bitmap[] levelBitmaps;
+	private Bitmap[] butterflyBitmaps;
 	private int nextLevel;
 	private int menuState;
 	private SoundManager sm;
@@ -43,6 +44,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int touchX, touchY;
 	private int[] desiredX = new int[]{30, 60, 70, 80, 170};
 	private SharedPreferences settings;
+	private Butterfly butterfly;
+	private float aimAngle, feetAngle;
 
 	public MenuPanel(Context context) {
 		super(context);
@@ -51,6 +54,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		thread = new MainThread(this.getHolder(), this);
 		this.context = context;
 		protagonist = new Protagonist(-20, 80);
+		butterfly = new Butterfly();
 		renderMatrix = new Matrix();
 		setKeepScreenOn(true);
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
@@ -59,7 +63,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadSounds();
 		playTheme();
 		//Load saved variables
-		
+
 
 	}
 
@@ -67,16 +71,21 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(Math.abs(protagonist.getXPos() - desiredX[menuState]) > 10){
 			protagonist.accelerate(0.3*Math.signum(desiredX[menuState]-protagonist.getXPos()));
 			protagonist.faceDirection((int)Math.signum(desiredX[menuState]-protagonist.getXPos()));
+			protagonist.setAim(90 - (int)Math.signum(desiredX[menuState]-protagonist.getXPos())*90);
 			protagonist.step(1);
 		} else {
 			protagonist.slowDown();
 			protagonist.setStepCount(0);
+			protagonist.faceDirection((int)Math.signum(butterfly.getX()-protagonist.getXPos()));
+			protagonist.setAim((int)(180/Math.PI * Math.atan2(butterfly.getY() - protagonist.getYPos(), butterfly.getX() - protagonist.getXPos())));
 		}
 		if(protagonist.getXPos() > 160){
 			goToGame(nextLevel);
 		}
 		protagonist.breathe();
 		protagonist.move();
+		butterfly.update();
+
 	}
 
 	public void playTheme(){
@@ -88,27 +97,27 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			theme.start();
 		}
 	}
-	
+
 	public void stopTheme(){
 		if(theme.isPlaying()){
 			try {
-		        theme.stop();
-		    } catch (IllegalStateException e) {
-		        e.printStackTrace();
-		    } 
-			
+				theme.stop();
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} 
+
 		}
 	}
 
 	public void loadSounds(){
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 		try {
-	        theme.prepare();
-	    } catch (IllegalStateException e) {
-	        e.printStackTrace();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
+			theme.prepare();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		if(settings.getBoolean("musicOn", true)){
 			theme.setVolume(1, 1);
 		} else {
@@ -118,8 +127,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void render(Canvas canvas){
 		canvas.drawBitmap(backgroundBitmap, 0, 0, null);
+		renderButterfly(canvas);
 		renderButtons(canvas);
-
 		renderProtagonist(canvas);
 	}
 
@@ -197,6 +206,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_3), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_4), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_5), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+		};
+
+		butterflyBitmaps = new Bitmap[]{
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_in), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_out), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true)
 		};
 
 		levelButtons = new Button[currentLevel+1];
@@ -306,11 +320,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void renderProtagonist(Canvas canvas){
-		float feetAngle = (float)(180/Math.PI*Math.sin((double)protagonist.getStepCount()/protagonist.getNumberOfSteps()*Math.PI));
+		feetAngle = (float)(180/Math.PI*Math.sin((double)protagonist.getStepCount()/protagonist.getNumberOfSteps()*Math.PI));
+		aimAngle = (float)(protagonist.getAim());
 		//Draw all the protagonist parts
 
 		if(protagonist.isFacingRight()){
-			float aimAngle = 0;
 			//Draw back foot
 			renderMatrix.setRotate(-feetAngle, footBitmap.getWidth()/2, footBitmap.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis-Const.backFootOffset) - protagonist.getWidth()*Const.footRadius*Math.sin(-feetAngle*Math.PI/180) )*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) )*scaleY));
@@ -326,14 +340,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis) - protagonist.getWidth()*Const.footRadius*Math.sin(feetAngle*Math.PI/180) )*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) )*scaleY));
 			canvas.drawBitmap(footBitmap, renderMatrix, null);
 			//Draw pupils
-			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(Const.pupilXOffset-0.5)+protagonist.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180))*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.pupilYOffset-0.5)-protagonist.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) )*scaleY));
+			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(Const.pupilXOffset-0.5)+protagonist.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180))*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.pupilYOffset-0.5)+protagonist.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) )*scaleY));
 			canvas.drawBitmap(pupilBitmap, renderMatrix, null);
 			//Draw weapon
-			renderMatrix.setRotate(-aimAngle, weaponBitmap.getWidth()/2, weaponBitmap.getHeight()/2);
-			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) )*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5) - protagonist.getHeight()*Const.weaponRadius*Math.sin(aimAngle*Math.PI/180) )*scaleY));
+			renderMatrix.setTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius)*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5))*scaleY));
 			canvas.drawBitmap(weaponBitmap, renderMatrix, null);
 		} else {
-			float aimAngle = 180;
 			//Draw back foot
 			renderMatrix.setRotate(feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis+Const.backFootOffset) - protagonist.getWidth()*Const.footRadius*Math.sin(Math.PI-feetAngle*Math.PI/180) )*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(-feetAngle*Math.PI/180) )*scaleY));
@@ -349,20 +361,19 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.postTranslate((float)((protagonist.getXPos() - protagonist.getWidth()*(0.5-Const.footXAxis) - protagonist.getWidth()*Const.footRadius*Math.sin(Math.PI+feetAngle*Math.PI/180) )*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.footYAxis-0.5) + protagonist.getHeight()*Const.footRadius*Math.cos(feetAngle*Math.PI/180) )*scaleY));
 			canvas.drawBitmap(footBitmapFlipped, renderMatrix, null);
 			//Draw pupils
-			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(Const.pupilXOffset-0.5)+protagonist.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180))*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.pupilYOffset-0.5)-protagonist.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) )*scaleY));
+			renderMatrix.setTranslate((float)((protagonist.getXPos() + protagonist.getWidth()*(Const.pupilXOffset-0.5)+protagonist.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180))*scaleX), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.pupilYOffset-0.5)+protagonist.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) )*scaleY));
 			canvas.drawBitmap(pupilBitmapFlipped, renderMatrix, null);
 			//Draw weapon
-			renderMatrix.setRotate(180-aimAngle, weaponBitmapFlipped.getWidth()/2, weaponBitmapFlipped.getHeight()/2);
-			renderMatrix.postTranslate((float)((protagonist.getXPos()  + protagonist.getWidth()*(0.5-Const.weaponXAxis) + protagonist.getWidth()*Const.weaponRadius*Math.cos(aimAngle*Math.PI/180) )*scaleX - weaponBitmapFlipped.getWidth()), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5) + protagonist.getHeight()*Const.weaponRadius*Math.sin(Math.PI+aimAngle*Math.PI/180) )*scaleY));
+			renderMatrix.setTranslate((float)((protagonist.getXPos()  + protagonist.getWidth()*(0.5-Const.weaponXAxis) - protagonist.getWidth()*Const.weaponRadius)*scaleX - weaponBitmapFlipped.getWidth()), (float)((protagonist.getYPos() + protagonist.getHeight()*(Const.weaponYAxis-0.5))*scaleY));
 			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
 		}
-
-
-
-
 	}
 
-
+	public void renderButterfly(Canvas canvas){
+		renderMatrix.setRotate(butterfly.getRot(), butterflyBitmaps[0].getWidth()/2, butterflyBitmaps[0].getHeight()/2);
+		renderMatrix.postTranslate((float)((butterfly.getX()-Const.butterflySize/2)*scaleX), (float)((butterfly.getY()-Const.butterflySize/2)*scaleY));
+		canvas.drawBitmap(butterflyBitmaps[(int)(butterfly.getCounter() % 2)], renderMatrix, null);
+	}
 
 
 }
