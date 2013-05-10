@@ -150,17 +150,17 @@ public class Enemy {
 		dashDistanceX = this.getXPos() - p.getXPos();
 		dashDistanceY = p.getYPos() - this.getYPos();
 		dashDistance = Math.sqrt(dashDistanceX*dashDistanceX + dashDistanceY*dashDistanceY);
-		if(dashDistance < p.getHeight())
+		if(dashDistance < p.getWidth())
 			dashPowerConstant = 1;
-		else if (dashDistance < p.getHeight()*2)
+		else if (dashDistance < p.getWidth()*2)
 			dashPowerConstant = 0.75;
-		else if (dashDistance < p.getHeight()*4)
+		else if (dashDistance < p.getWidth()*3)
 			dashPowerConstant = 0.5;	
 		else 
 			dashPowerConstant = 0;
 		if (dashPowerConstant != 0) {
 			this.takeDamage(healthLostByDashConstant*dashPowerConstant*damageGrade);
-			setXVel(Math.signum(dashDistanceX));
+			setXVel(Math.signum(dashDistanceX)*dashPowerConstant*2);
 			setYVel(jumpVel*dashPowerConstant);
 			this.setTouchingGround(false);
 		}
