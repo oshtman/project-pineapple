@@ -45,7 +45,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private MediaPlayer theme;
 	private int currentLevel;
 	private int touchX, touchY;
-	private int[] desiredX = new int[]{30, 60, 70, 80, 170};
+	private int[] desiredX = new int[]{30, 60, 100, 120, 170};
 	private SharedPreferences settings;
 	private Butterfly butterfly;
 	private float aimAngle, feetAngle;
@@ -246,6 +246,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_3), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_4), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_5), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_6), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_7), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_8), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_9), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
 		};
 
 		butterflyBitmaps = new Bitmap[]{
@@ -256,14 +260,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		sliderLineBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_line), (int)(musicSlider.getWidth()*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
 		sliderHandleBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_handle), (int)(Const.sliderHandleWidth*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
 		
-		if(currentLevel > 5)
-			currentLevel = 5;
+		if(currentLevel > 7)
+			currentLevel = 7;
 		levelButtons = new Button[currentLevel+1];
-		for(int i = 0; i <= currentLevel && i < 6; i++){
+		for(int i = 0; i <= currentLevel && i < 8; i++){
 			levelButtons[i] = new Button(Const.HUDPadding + (int)(Const.menuButtonWidth*(i/Const.levelButtonsPerRow)), Const.HUDPadding + (int)(Const.menuButtonHeight*(i%Const.levelButtonsPerRow)), Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
 		}
-		
-		
 
 		//Start the thread
 		if (thread.getState()==Thread.State.TERMINATED) { 
