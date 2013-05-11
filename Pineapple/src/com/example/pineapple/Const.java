@@ -103,7 +103,7 @@ public class Const {
 		public static final double menuButtonSpace = 5;
 		
 		public static final double butterflySize = 5;
-		
+		public static final double flowerSize = 8;
 		public static final double sunSize = 15;
 		
 		public static final double timeAreaWidth = 25;
@@ -111,5 +111,11 @@ public class Const {
 		
 		public static final double sliderHandleWidth = 4;
 		
+		public static final double criticalHealth = 0.2;
+		
+		public static final double meterWidth = 20;
+		public static final double meterHeight = 10;
+		public static final double meterFrameSize = 1;
+		public static final double blinkInterval = 0.05;
 		
 }

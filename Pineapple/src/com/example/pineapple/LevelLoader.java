@@ -39,7 +39,7 @@ public class LevelLoader {
 	private ArrayList<int[]> trees = new ArrayList<int[]>();
 	//List for rocks {x position, type, size, back or foreground}
 	private ArrayList<int[]> rocks = new ArrayList<int[]>();
-	//List for flowers {x position, type, back or foreground}
+	//List for flowers {x position, type}
 	private ArrayList<int[]> flowers = new ArrayList<int[]>();
 
 
@@ -305,10 +305,13 @@ public class LevelLoader {
 			trees.add(new int[]{4200, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			trees.add(new int[]{4300, (int)(3*Math.random()), (int)(3*Math.random()), 1});
 			//rocks
-			rocks.add(new int[]{4150, 1, 20, 1});
+			rocks.add(new int[]{4150, 1, 20, 0});
 			rocks.add(new int[]{4250, 3, 20, 0});
-			//flower
-			flowers.add(new int[]{4450, 0, 0});
+			//flowers
+			flowers.add(new int[]{4420, 0});
+			flowers.add(new int[]{4435, 0});
+			flowers.add(new int[]{4460, 0});
+			flowers.add(new int[]{1, 0});
 			break;
 		}
 	}
@@ -357,11 +360,19 @@ public class LevelLoader {
 	public ArrayList<int[]> getRocks(){
 		return rocks;
 	}
-
+	
 	public int getNumberOfRocks(){
-		return trees.size();
+		return rocks.size();
 	}
-
+	
+	public ArrayList<int[]> getFlowers(){
+		return flowers;
+	}
+	
+	public int getNumberOfFlowers(){
+		return flowers.size();
+	}
+	
 	public int getStartX(){
 		return startPos[0];
 	}

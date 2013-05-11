@@ -11,6 +11,7 @@ public class SoundManager {
 	private SoundPool mSoundPool;
 	private HashMap<Integer, Integer> mSoundPoolMap;
 	private HashMap<Integer, Integer> resIds;
+	private HashMap<Integer, Integer> playIds;
 	private AudioManager  mAudioManager;
 	private Context mContext;
 	private boolean musicLoaded = false;
@@ -20,6 +21,7 @@ public class SoundManager {
 		mSoundPool = new SoundPool(32, AudioManager.STREAM_MUSIC, 0);
 		mSoundPoolMap = new HashMap<Integer, Integer>();
 		resIds = new HashMap<Integer, Integer>();
+		playIds = new HashMap<Integer, Integer>();
 		mAudioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
 	}
 
@@ -31,14 +33,20 @@ public class SoundManager {
 	public void playSound(int index, double volume) {
 		float streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		streamVolume = (float)volume * streamVolume / mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		mSoundPool.play((Integer) mSoundPoolMap.get(index), streamVolume, streamVolume, 1, 0, 1f);
+		playIds.put(index, mSoundPool.play((Integer) mSoundPoolMap.get(index), streamVolume, streamVolume, 1, 0, 1f));
 	}
 
 	public void playLoopedSound(int index, double volume) {
 		float streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		streamVolume = (float)volume * streamVolume / mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 
-		mSoundPool.play((Integer) mSoundPoolMap.get(index), streamVolume, streamVolume, 1, -1, 1f);
+		playIds.put(index, mSoundPool.play((Integer) mSoundPoolMap.get(index), streamVolume, streamVolume, 1, -1, 1f));
+	}
+	
+	public void stop(int index){
+		if(playIds.containsKey(index)){
+			mSoundPool.stop(playIds.get(index));
+		}
 	}
 	
 	public int getDuration(int index){
