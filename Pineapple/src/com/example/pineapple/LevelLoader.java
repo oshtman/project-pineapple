@@ -38,7 +38,9 @@ public class LevelLoader {
 	//List for trees {x position, baseType, topType, back or foreground}
 	private ArrayList<int[]> trees = new ArrayList<int[]>();
 	//List for rocks {x position, type, size, back or foreground}
-	private ArrayList<int[]> rocks = new ArrayList<int[]>();	
+	private ArrayList<int[]> rocks = new ArrayList<int[]>();
+	//List for flowers {x position, type}
+	private ArrayList<int[]> flowers = new ArrayList<int[]>();
 
 
 	//Checkpoint array for the tutorial, the mentor will stop at these locations and give some advice
@@ -203,9 +205,9 @@ public class LevelLoader {
 			};
 			break;
 
-		case 5://G…R OM G…R R€TT
+		case 5://downhill
 			//Ground
-			ground = new int[2][13];
+			ground = new int[2][14];
 
 			ground[0][0] = -100;
 			ground[1][0] = 50;
@@ -243,11 +245,14 @@ public class LevelLoader {
 			ground[0][11] = 4000;
 			ground[1][11] = 2000;
 			
-			ground[0][12] = 4200;
+			ground[0][12] = 4500;
 			ground[1][12] = 2000;
+			
+			ground[0][13] = 4700;
+			ground[1][13] = 1700;
 			//Start and finish
 			startPos = new int[]{10,0};
-			finishX = 4150;
+			finishX = 4400;
 			//Enemies
 			enemies.add(new int[]{100 + 200, 0, 100, 1});
 			enemies.add(new int[]{200 + 200, 0, 200, 1});
@@ -281,15 +286,34 @@ public class LevelLoader {
 			enemies.add(new int[]{3600 - 160, 1000, 3600, 2});
 			enemies.add(new int[]{3600 - 140, 1000, 3600, 2});
 			enemies.add(new int[]{3600 - 120, 1000, 3600, 2});
+			//final stand
+			enemies.add(new int[]{4200 - 160, 1990, 4200, 1});
+			enemies.add(new int[]{4200 - 180, 1990, 4200, 1});
+			enemies.add(new int[]{4200 - 200, 1990, 4200, 1});
+			enemies.add(new int[]{4200 + 300, 1990, 4200, 2});
+			enemies.add(new int[]{4200 + 320, 1990, 4200, 2});
+			enemies.add(new int[]{4200 + 340, 1990, 4200, 2});
+			enemies.add(new int[]{4200 + 360, 1990, 4200, 2});
+			enemies.add(new int[]{4200 + 180, 1990, 4200, 3});
+			enemies.add(new int[]{4200 + 200, 1990, 4200, 3});
 			//trees
 			for (int j = 1; j <= 160; j++){
 				if( j % 4 == 0)
 					trees.add(new int[]{20*j, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			}
+			trees.add(new int[]{4100, (int)(3*Math.random()), (int)(3*Math.random()), 1});
+			trees.add(new int[]{4200, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			trees.add(new int[]{4300, (int)(3*Math.random()), (int)(3*Math.random()), 1});
+			//rocks
+			rocks.add(new int[]{4150, 1, 20, 0});
+			rocks.add(new int[]{4250, 3, 20, 0});
+			//flowers
+			flowers.add(new int[]{4420, 0});
+			flowers.add(new int[]{4435, 0});
+			flowers.add(new int[]{4460, 0});
+			flowers.add(new int[]{1, 0});
 			break;
-
 		}
-
 	}
 
 	public int[] getLevelX(int index){
@@ -336,11 +360,19 @@ public class LevelLoader {
 	public ArrayList<int[]> getRocks(){
 		return rocks;
 	}
-
+	
 	public int getNumberOfRocks(){
-		return trees.size();
+		return rocks.size();
 	}
-
+	
+	public ArrayList<int[]> getFlowers(){
+		return flowers;
+	}
+	
+	public int getNumberOfFlowers(){
+		return flowers.size();
+	}
+	
 	public int getStartX(){
 		return startPos[0];
 	}

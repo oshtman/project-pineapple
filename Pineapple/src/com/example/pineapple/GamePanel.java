@@ -47,6 +47,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<Enemy> enemies;
 	private ArrayList<int[]> trees;
 	private ArrayList<int[]> rocks;
+	private ArrayList<int[]> flowers;
 	private ArrayList<double[]> clouds;
 	private int level;
 	private HeatMeter heatMeter;
@@ -164,6 +165,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadEnemies();
 		loadTrees();
 		loadRocks();
+		loadFlowers();
 		clouds = new ArrayList<double[]>();
 		loadSounds();
 
@@ -264,6 +266,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the rocks from LevelLoader and add them to the platforms list 
 	public void loadRocks(){
 		rocks = levelLoader.getRocks();
+	}
+
+	//Load the flowers from LevelLoader and add them to the platforms list 
+	public void loadFlowers(){
+		flowers = levelLoader.getFlowers();
 	}
 
 	//Load the sounds
@@ -701,6 +708,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderTrees(canvas, 0);
 		renderRocks(canvas, 0);
 		renderFlag(canvas, 0);
+		renderFlowers(canvas);
 		//Focus
 		renderPlatforms(canvas);
 		renderEnemies(canvas);
@@ -1062,14 +1070,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
-	//Draw trees
-	public void renderTrees(Canvas canvas, int depth){
-		for(i = 0; i < trees.size(); i++){
-			if(trees.get(i)[3] == depth){
-				if(trees.get(i)[0] > screenX - Const.maxTreeWidth/2 && trees.get(i)[0] < screenX + width + Const.maxTreeWidth/2){
-					canvas.drawBitmap(treeBitmaps[0][trees.get(i)[1]], (float)((trees.get(i)[0] - Const.maxTreeWidth/4 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-(Const.partOfTreeVisible-0.2)*Const.maxTreeHeight-screenY)*scaleY), null);
-					canvas.drawBitmap(treeBitmaps[1][trees.get(i)[2]], (float)((trees.get(i)[0] - Const.maxTreeWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-Const.partOfTreeVisible*Const.maxTreeHeight - screenY)*scaleY), null);
-				}
+	//Draw flowers
+	public void renderFlowers(Canvas canvas){
+		for(i = 0; i < flowers.size(); i++){
+			if(flowers.get(i)[0] > screenX - Const.flowerSize/2 && flowers.get(i)[0] < screenX + width + Const.flowerSize/2){
+				canvas.drawBitmap(flowerBitmap, (float)((flowers.get(i)[0] - Const.flowerSize/4 - screenX)*scaleX), (float)((ground.getYFromX(flowers.get(i)[0])-Const.flowerSize-screenY)*scaleY), null);
+
 			}
 		}
 	}
@@ -1083,6 +1089,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				renderMatrix.postRotate((float)(groundAngle*180/Math.PI), (float)(rocks.get(i)[2]/2*scaleX), (float)(rocks.get(i)[2]/2*scaleY));
 				renderMatrix.postTranslate((float)((rocks.get(i)[0]-screenX-rocks.get(i)[2]/2)*scaleX), (float)((ground.getYFromX(rocks.get(i)[0])-screenY-rocks.get(i)[2]*Const.partOfRockVisible)*scaleY));
 				canvas.drawBitmap(rockBitmap[rocks.get(i)[1]], renderMatrix, null);
+			}
+		}
+	}
+
+	//Draw tree
+	public void renderTrees(Canvas canvas, int depth){
+		for(i = 0; i < trees.size(); i++){
+			if(trees.get(i)[3] == depth){
+				if(trees.get(i)[0] > screenX - Const.maxTreeWidth/2 && trees.get(i)[0] < screenX + width + Const.maxTreeWidth/2){
+					canvas.drawBitmap(treeBitmaps[0][trees.get(i)[1]], (float)((trees.get(i)[0] - Const.maxTreeWidth/4 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-(Const.partOfTreeVisible-0.2)*Const.maxTreeHeight-screenY)*scaleY), null);
+					canvas.drawBitmap(treeBitmaps[1][trees.get(i)[2]], (float)((trees.get(i)[0] - Const.maxTreeWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-Const.partOfTreeVisible*Const.maxTreeHeight - screenY)*scaleY), null);
+				}
 			}
 		}
 	}
