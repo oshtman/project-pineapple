@@ -68,95 +68,104 @@
                 <TableRow
                     android:id="@+id/tableRow1"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="0.5"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:padding="1dip" >
 
                     <ImageView
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="fill_parent"
                         android:layout_column="0"
+                        android:layout_weight="1"
                         android:scaleType="fitCenter"
                         android:src="@drawable/thumb_normal" />
 
                     <ImageView
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="fill_parent"
                         android:layout_column="1"
+                        android:layout_weight="1"
                         android:scaleType="fitCenter"
                         android:src="@drawable/thumb_ninja" />
 
                     <ImageView
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="fill_parent"
                         android:layout_column="2"
+                        android:layout_weight="1"
                         android:scaleType="fitCenter"
                         android:src="@drawable/thumb_tank" />
 
                     <TextView
                         android:id="@+id/timeTitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_column="3"
+                        android:layout_weight="1"
                         android:text="@string/play" />
 
-                    <TextView
-                        android:id="@+id/healthTitle"
-                        android:layout_width="wrap_content"
+                    <ImageView
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_column="4"
-                        android:text="@string/play" />
+                        android:layout_weight="1"
+                        android:src="@drawable/red_cross" />
                 </TableRow>
 
                 <TableRow
                     android:id="@+id/tableRow2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:padding="5dip"
                     android:textAlignment="center" >
 
                     <TextView
                         android:id="@+id/normalsKilledText"
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="fill_parent"
                         android:layout_column="0"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:textColor="#FFFFFF"
                         android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/ninjasKilledText"
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="fill_parent"
                         android:layout_column="1"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:textColor="#FFFFFF"
                         android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/tanksKilledText"
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="fill_parent"
                         android:layout_column="2"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:textColor="#FFFFFF"
                         android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/timeText"
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="fill_parent"
                         android:layout_column="3"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:textColor="#FFFFFF"
                         android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/healthText"
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="fill_parent"
                         android:layout_column="4"
+                        android:layout_weight="1"
                         android:gravity="center"
                         android:textColor="#FFFFFF"
                         android:textSize="20dp" />
@@ -169,7 +178,7 @@
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:padding="1dip">
+            android:padding="1dip" >
 
             <TableLayout
                 android:id="@+id/tableLayout2"
