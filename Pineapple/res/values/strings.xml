@@ -18,5 +18,6 @@
     <string name="enemiesKilled">Enemies Killed</string>
     <string name="playAgain">Play Again</string>
     <string name="newLevel">You unlocked a new level! :D </string>
+    <string name="score">Score</string>
 	
 </resources>
