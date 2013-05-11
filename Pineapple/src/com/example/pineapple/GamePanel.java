@@ -117,6 +117,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[][] treeBitmaps;
 	private Bitmap[] cloudBitmaps;
 	private Bitmap[] flagBitmaps;
+	private Bitmap flowerBitmap;
 
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -1319,6 +1320,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_5), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
 
 		};
+		flowerBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flower), (int)(Const.flowerSize*scaleX), (int)(Const.flowerSize*scaleY), true);
 
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	

@@ -103,7 +103,7 @@ public class Const {
 		public static final double menuButtonSpace = 5;
 		
 		public static final double butterflySize = 5;
-		
+		public static final double flowerSize = 8;
 		public static final double sunSize = 15;
 		
 		public static final double timeAreaWidth = 25;
