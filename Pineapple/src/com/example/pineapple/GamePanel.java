@@ -33,7 +33,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double screenX;
 	private double screenY;
 	private final int screenXPadding = 80;
-	private final int screenYPadding = 20;
+	private final int screenYPadding = 40;
 	private int finishDelay, finishDelayTime = 20;
 	private boolean finished;
 	private MainThread thread;
