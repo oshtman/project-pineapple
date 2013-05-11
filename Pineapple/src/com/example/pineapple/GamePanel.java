@@ -535,14 +535,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				finishDelay--;
 			} else {
 				// Go to a new activity
-				Context context = getContext();
-				Intent intent = new Intent(context, LevelCompleteActivity.class);
-				intent.putExtra(LEVEL, level);
-				intent.putExtra(SCORE_KILL, scoreKill);
-				intent.putExtra(TIME, time);
-				intent.putExtra(HEALTH, (int)(protagonist.getHealth()*100));
-				context.startActivity(intent);
+				
 				if(viewStatistics){
+					Context context = getContext();
+					Intent intent = new Intent(context, LevelCompleteActivity.class);
+					intent.putExtra(LEVEL, level);
+					intent.putExtra(SCORE_KILL, scoreKill);
+					intent.putExtra(TIME, time);
+					intent.putExtra(HEALTH, (int)(protagonist.getHealth()*100));
+					context.startActivity(intent);
 					playTimeTotal = MainThread.updateInterval*time/1000;
 					playTimeMin = (int)(playTimeTotal/60);
 					playTimeS = playTimeTotal - playTimeMin*60;
