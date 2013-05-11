@@ -514,7 +514,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 		dashX = (int)protagonist.getXPos();
-		dashY = (int)protagonist.getYPos();
+		dashY = (int)(protagonist.getYPos() - protagonist.getHeight()/4);
 		latestDashTime = time;
 		sm.playSound(5, effectVolume);
 	}
