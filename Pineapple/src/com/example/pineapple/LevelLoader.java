@@ -203,7 +203,7 @@ public class LevelLoader {
 			};
 			break;
 
-		case 5://G…R OM G…R R€TT
+		case 5://downhill
 			//Ground
 			ground = new int[2][13];
 
@@ -243,11 +243,11 @@ public class LevelLoader {
 			ground[0][11] = 4000;
 			ground[1][11] = 2000;
 			
-			ground[0][12] = 4200;
+			ground[0][12] = 4500;
 			ground[1][12] = 2000;
 			//Start and finish
 			startPos = new int[]{10,0};
-			finishX = 4150;
+			finishX = 4400;
 			//Enemies
 			enemies.add(new int[]{100 + 200, 0, 100, 1});
 			enemies.add(new int[]{200 + 200, 0, 200, 1});
