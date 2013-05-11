@@ -38,6 +38,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Slider musicSlider, soundSlider;
 	private Bitmap[] levelBitmaps;
 	private Bitmap[] butterflyBitmaps;
+	private Bitmap sliderLineBitmap, sliderHandleBitmap;
 	private int nextLevel;
 	private int menuState;
 	private SoundManager sm;
@@ -48,6 +49,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private SharedPreferences settings;
 	private Butterfly butterfly;
 	private float aimAngle, feetAngle;
+	private int time = 0;
 
 	public MenuPanel(Context context) {
 		super(context);
@@ -90,6 +92,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(menuState == SETTINGS_MENU){
 			setVolumes();
 		}
+		
+		time++;
 
 	}
 
@@ -177,11 +181,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	
 	public void renderSliders(Canvas canvas){
 		if(menuState == SETTINGS_MENU){
-			canvas.drawLine((float)(musicSlider.getX()*scaleX), (float)((musicSlider.getY()+musicSlider.getHeight()/2)*scaleY), (float)((musicSlider.getX() + musicSlider.getWidth())*scaleX), (float)((musicSlider.getY()+musicSlider.getHeight()/2)*scaleY), new Paint());
-			canvas.drawRect((float)((musicSlider.getX() + musicSlider.getWidth()*musicSlider.getValue()-Const.sliderHandleWidth/2)*scaleX), (float)((musicSlider.getY()*scaleY)), (float)((musicSlider.getX() + musicSlider.getWidth()*musicSlider.getValue()+Const.sliderHandleWidth/2)*scaleX), (float)((musicSlider.getY() + musicSlider.getHeight())*scaleY), new Paint());
+			canvas.drawBitmap(sliderLineBitmap, (float)(musicSlider.getX()*scaleX), (float)(musicSlider.getY()*scaleY), null);
+			canvas.drawBitmap(sliderHandleBitmap, (float)((musicSlider.getX() + musicSlider.getWidth()*musicSlider.getValue()-Const.sliderHandleWidth/2)*scaleX), (float)((musicSlider.getY()+Const.menuButtonHeight/4*Math.sin(time/45.*Math.PI))*scaleY), null);
 			
-			canvas.drawLine((float)(soundSlider.getX()*scaleX), (float)((soundSlider.getY()+soundSlider.getHeight()/2)*scaleY), (float)((soundSlider.getX() + soundSlider.getWidth())*scaleX), (float)((soundSlider.getY()+soundSlider.getHeight()/2)*scaleY), new Paint());
-			canvas.drawRect((float)((soundSlider.getX() + soundSlider.getWidth()*soundSlider.getValue()-Const.sliderHandleWidth/2)*scaleX), (float)((soundSlider.getY()*scaleY)), (float)((soundSlider.getX() + soundSlider.getWidth()*soundSlider.getValue()+Const.sliderHandleWidth/2)*scaleX), (float)((soundSlider.getY() + soundSlider.getHeight())*scaleY), new Paint());
+			canvas.drawBitmap(sliderLineBitmap, (float)(soundSlider.getX()*scaleX), (float)(soundSlider.getY()*scaleY), null);
+			canvas.drawBitmap(sliderHandleBitmap, (float)((soundSlider.getX() + soundSlider.getWidth()*soundSlider.getValue()-Const.sliderHandleWidth/2)*scaleX), (float)((soundSlider.getY()+Const.menuButtonHeight/4*Math.cos(time/45.*Math.PI))*scaleY), null);
 		}
 	}
 
@@ -198,7 +202,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		scaleY = (double)getHeight()/100;
 		scaleX = (double)getWidth()/155;
-
+		
+		
 		Bitmap playBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.start), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		playButton = new Button(10, 10, playBitmap.getWidth()/scaleX, playBitmap.getHeight()/scaleY, playBitmap);
 
@@ -214,6 +219,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		Bitmap musicBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.music), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		musicButton = new Button(10, (int)(10 + 1.5*Const.menuButtonHeight), musicBitmap.getWidth()/scaleX, musicBitmap.getHeight()/scaleY, musicBitmap);
 
+		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth() + Const.HUDPadding, musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
+		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
 
 
 		backgroundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.menu_background), (int)(155*scaleX), (int)(100*scaleY), true);
@@ -245,6 +252,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_in), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_out), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true)
 		};
+		
+		sliderLineBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_line), (int)(musicSlider.getWidth()*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
+		sliderHandleBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_handle), (int)(Const.sliderHandleWidth*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
+		
 		if(currentLevel > 5)
 			currentLevel = 5;
 		levelButtons = new Button[currentLevel+1];
@@ -252,8 +263,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			levelButtons[i] = new Button(Const.HUDPadding + (int)(Const.menuButtonWidth*(i/Const.levelButtonsPerRow)), Const.HUDPadding + (int)(Const.menuButtonHeight*(i%Const.levelButtonsPerRow)), Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
 		}
 		
-		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth() + Const.HUDPadding, musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
-		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
+		
 
 		//Start the thread
 		if (thread.getState()==Thread.State.TERMINATED) { 
