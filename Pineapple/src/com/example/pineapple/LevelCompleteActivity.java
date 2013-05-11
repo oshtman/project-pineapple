@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 public class LevelCompleteActivity extends BaseActivity {
@@ -38,7 +39,7 @@ public class LevelCompleteActivity extends BaseActivity {
 			e.putInt("currentLevel", completedLevel+1);
 			e.commit();
 		}
-		
+		TableLayout stats = (TableLayout) findViewById(R.id.tableLayout1);
 		if(true){
 			TextView dataText;
 			dataText = (TextView) findViewById(R.id.normalsKilledText);
@@ -60,8 +61,12 @@ public class LevelCompleteActivity extends BaseActivity {
 			dataText = (TextView) findViewById(R.id.healthText);
 			dataText.setText(health + "%");
 			
+			int score = 100 - milliSecs/100 + 1*scoreKill[0] + 1*scoreKill[1] + 3*scoreKill[2] + health;
 			dataText = (TextView) findViewById(R.id.scoreText);
-			dataText.setText(""+ 1000);
+			dataText.setText(""+ score);
+			stats.setVisibility(View.VISIBLE);
+		} else {
+			stats.setVisibility(View.INVISIBLE);
 		}
 		ImageView newLevelText = (ImageView) findViewById(R.id.newLevelText);
 		
@@ -71,6 +76,9 @@ public class LevelCompleteActivity extends BaseActivity {
 		} else {
 			newLevelText.setVisibility(ImageView.INVISIBLE);
 		}
+		
+			
+		
 		
 	}
 
