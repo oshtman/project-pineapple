@@ -337,12 +337,15 @@ public class Protagonist {
 
 	//Check if protagonist is over a platform (used in dashing)
 	public void checkOverPlatform(ArrayList<Platform> platforms) { //Add an if block to get the highest platform
+		platformNumber = -1;
 		for (int i = 0; i < platforms.size(); i++) {
 			if (platforms.get(i).spans(this.getXPos()) && platforms.get(i).getLowerYFromX(this.getXPos()) >= this.getYPos() + this.getHeight()/2){
-				platformNumber = i;
-				break;
-			} else {
-				platformNumber = -1;
+				if(platformNumber >= 0 && platforms.get(i).getUpperYFromX(getXPos()) > platforms.get(platformNumber).getUpperYFromX(getXPos())){
+					//Do nothing
+				} else {
+					platformNumber = i;
+				}
+					
 			}
 		}
 	}

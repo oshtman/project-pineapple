@@ -120,4 +120,8 @@ public class Const {
 		public static final int HUDPadding = 10;
 		
 		public static final int levelButtonsPerRow = 6;
+		
+		public static final double dustWidth = 40;
+		public static final double dustHeight = 20; 
+		public static final int dustDecayTime = 10;
 	}

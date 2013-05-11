@@ -109,6 +109,14 @@ public class LevelLoader {
 					{173, 176, 146, 113, 85}
 			};
 			platforms.add(p1);
+			
+			p2 = new int[][]{
+					{700, 759},
+					{90, 90},
+					{700, 730, 759},
+					{90, 100, 90}
+			};
+			platforms.add(p2);
 
 			//Enemies
 			enemies.add(new int[]{300, 20, 150, 1});

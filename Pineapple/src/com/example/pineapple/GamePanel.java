@@ -60,7 +60,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint enemyPaint = new Paint();
 	private Paint timePaint = new Paint();
 	private Paint textBackground = new Paint();
-	private double time;
+	private int time;
 	private double bulletDamage = 0.05;
 	private MediaPlayer fireSound;
 	private SoundManager sm;
@@ -81,6 +81,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Path newPath;
 	private int i, index, id;
 	private boolean criticalHealthFlag = false;
+	private int latestDashTime = -Const.dustDecayTime;
+	private int dashX, dashY;
 
 
 	//Special tutorial variables
@@ -118,6 +120,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[] cloudBitmaps;
 	private Bitmap[] flagBitmaps;
 	private Bitmap flowerBitmap;
+	private Bitmap dustBitmap;
 
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -510,6 +513,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				
 			}
 		}
+		dashX = (int)protagonist.getXPos();
+		dashY = (int)protagonist.getYPos();
+		latestDashTime = time;
 		sm.playSound(5, effectVolume);
 	}
 
@@ -725,6 +731,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderBullets(canvas);
 
 		//Foreground
+		renderDust(canvas);
 		renderFlag(canvas, 1);
 		renderRocks(canvas, 1);
 		renderTrees(canvas, 1);
@@ -1108,6 +1115,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
+	
+	//Draw dust if needed
+	public void renderDust(Canvas canvas){
+		if(time - latestDashTime < Const.dustDecayTime){
+			cloaker.setAlpha((int)(255 - 255.*(time-latestDashTime)/Const.dustDecayTime));
+			canvas.drawBitmap(dustBitmap, (float)((dashX - Const.dustWidth/2 - screenX)*scaleX), (float)((dashY - Const.dustHeight/2 - screenY)*scaleX), cloaker);
+		}
+	}
 
 	//Draw finishflag
 	public void renderFlag(Canvas canvas, int index){
@@ -1352,7 +1367,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		};
 		flowerBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flower), (int)(Const.flowerSize*scaleX), (int)(Const.flowerSize*scaleY), true);
-
+		dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
+		
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
 		enemyEyeMouthBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyEyeMouthYScale*scaleY), true);
