@@ -216,8 +216,8 @@ public class LevelLoader {
 			startPos = new int[]{10,150};
 			//Ground
 			ground = new int[][]{
-					{-100, 500},
-					{150, 150}
+					{-100, -2, -1, 500},
+					{0, 100, 150, 150}
 			};
 			//Enemy
 			enemies.add(new int[]{10 - 100, 100, 10, 1});
@@ -238,6 +238,7 @@ public class LevelLoader {
 			//Rock
 			rocks.add(new int[]{70, 3, 20, 0});
 			//Flower
+			flowers.add(new int[]{-10, 0});
 			flowers.add(new int[]{80, 0});
 			flowers.add(new int[]{finishX + 10, 0});
 			break;
@@ -270,7 +271,7 @@ public class LevelLoader {
 			ground[1][11] = 2000;
 			ground[0][12] = 4500;
 			ground[1][12] = 2000;
-			ground[0][13] = 4700;
+			ground[0][13] = 4800;
 			ground[1][13] = 1700;
 			//Start and finish
 			startPos = new int[]{10,50};
@@ -309,15 +310,15 @@ public class LevelLoader {
 			enemies.add(new int[]{3600 - 140, 1000, 3600, 2});
 			enemies.add(new int[]{3600 - 120, 1000, 3600, 2});
 			//final stand
-			enemies.add(new int[]{4200 - 160, 1990, 4200, 1});
-			enemies.add(new int[]{4200 - 180, 1990, 4200, 1});
-			enemies.add(new int[]{4200 - 200, 1990, 4200, 1});
-			enemies.add(new int[]{4200 + 300, 1990, 4200, 2});
-			enemies.add(new int[]{4200 + 320, 1990, 4200, 2});
-			enemies.add(new int[]{4200 + 340, 1990, 4200, 2});
-			enemies.add(new int[]{4200 + 360, 1990, 4200, 2});
+			enemies.add(new int[]{4200 - 300, 1800, 4200, 1});
+			enemies.add(new int[]{4200 - 320, 1800, 4200, 1});
+			enemies.add(new int[]{4200 - 340, 1800, 4200, 1});
 			enemies.add(new int[]{4200 + 180, 1990, 4200, 3});
 			enemies.add(new int[]{4200 + 200, 1990, 4200, 3});
+			enemies.add(new int[]{4300 + 100, 2000, 4300, 2});
+			enemies.add(new int[]{4300 + 120, 2000, 4300, 2});
+			enemies.add(new int[]{4300 + 140, 2000, 4300, 2});
+			enemies.add(new int[]{4300 + 160, 2000, 4300, 2});
 			//trees
 			for (int j = 1; j <= 160; j++){
 				if( j % 4 == 0 && (j*20 < 400 || j*20 >= 1400))

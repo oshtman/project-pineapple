@@ -44,7 +44,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private MediaPlayer theme;
 	private int currentLevel;
 	private int touchX, touchY;
-	private int[] desiredX = new int[]{30, 60, 70, 80, 170};
+	private int[] desiredX = new int[]{30, 60, 100, 120, 170};
 	private SharedPreferences settings;
 	private Butterfly butterfly;
 	private float aimAngle, feetAngle;

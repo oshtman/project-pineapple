@@ -285,7 +285,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		sm.addSound(5, R.raw.dash_finish);
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 	}
-	
+
 	public void playSound(int index){
 		sm.playSound(index, effectVolume);
 	}
@@ -510,7 +510,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					i--;
 					Log.d(TAG, "Enemy down. Splash.");
 				}
-				
+
 			}
 		}
 		dashX = (int)protagonist.getXPos();
@@ -935,20 +935,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		int stopIndex = i;
 
 		for(i = startIndex; i <= stopIndex; i++){
-
-			groundPath = new Path();
-			groundPath.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
-			groundPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY));
-			groundPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)+groundThickness-screenY)*scaleY)); 
-			groundPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
-			groundPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
+			if(Math.abs(ground.getSlope((ground.getX(i) + ground.getX(i+1))/2)) < 10){
+				groundPath = new Path();
+				groundPath.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
+				groundPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)-screenY)*scaleY));
+				groundPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)+groundThickness-screenY)*scaleY)); 
+				groundPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
+				groundPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)-screenY)*scaleY));
+				canvas.drawPath(groundPath, groundPaint);
+			}
 			dirtPath = new Path();
 			dirtPath.moveTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
 			dirtPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((ground.getY(i+1)+groundThickness-screenY)*scaleY));
 			dirtPath.lineTo((int)((ground.getX(i+1)-screenX)*scaleX), (int)((lowestPoint+height-screenY)*scaleY));
 			dirtPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((lowestPoint+height-screenY)*scaleY));
 			dirtPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
-			canvas.drawPath(groundPath, groundPaint);
 			canvas.drawPath(dirtPath, dirtPaint);			
 		}
 		//Experiment (Different ground details)
@@ -967,18 +968,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Spikes
 		groundPath = new Path();
 		for(i = startIndex; i <= stopIndex; i++){
-			xGap = (ground.getX(i+1)-ground.getX(i));
-			yGap = (ground.getY(i+1)-ground.getY(i));
-			gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));
-			numberOfPatches = (int)(gap/foliageSize/2+2);
-			groundAngle = Math.atan(ground.getSlope((ground.getX(i)+ground.getX(i+1))/2));
-			groundPath.moveTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
-			for(int j = 0; j < numberOfPatches; j++){
-				groundPath.lineTo((float)((ground.getX(i)+xGap*(j+0.5)/numberOfPatches+foliageSize*Math.sin(groundAngle)-screenX)*scaleX), (float)((ground.getY(i)+yGap/numberOfPatches*(j+0.5)-foliageSize*Math.cos(groundAngle)-screenY)*scaleY));
-				groundPath.lineTo((float)((ground.getX(i)+xGap*(j+1)/numberOfPatches - screenX)*scaleX), (float)((ground.getY(i)+yGap/numberOfPatches*(j+1)-screenY)*scaleY));
+			if (Math.abs(ground.getSlope((ground.getX(i) + ground.getX(i+1))/2)) < 10){
+				xGap = (ground.getX(i+1)-ground.getX(i));
+				yGap = (ground.getY(i+1)-ground.getY(i));
+				gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));
+				numberOfPatches = (int)(gap/foliageSize/2+2);
+				groundAngle = Math.atan(ground.getSlope((ground.getX(i)+ground.getX(i+1))/2));
+				groundPath.moveTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
+				for(int j = 0; j < numberOfPatches; j++){
+					groundPath.lineTo((float)((ground.getX(i)+xGap*(j+0.5)/numberOfPatches+foliageSize*Math.sin(groundAngle)-screenX)*scaleX), (float)((ground.getY(i)+yGap/numberOfPatches*(j+0.5)-foliageSize*Math.cos(groundAngle)-screenY)*scaleY));
+					groundPath.lineTo((float)((ground.getX(i)+xGap*(j+1)/numberOfPatches - screenX)*scaleX), (float)((ground.getY(i)+yGap/numberOfPatches*(j+1)-screenY)*scaleY));
+				}
+				groundPath.lineTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
+				canvas.drawPath(groundPath, groundPaint);
 			}
-			groundPath.lineTo((float)((ground.getX(i)-screenX)*scaleX), (float)((ground.getY(i)-screenY)*scaleY));
-			canvas.drawPath(groundPath, groundPaint);
 		}
 
 	}
@@ -1115,7 +1118,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-	
+
 	//Draw dust if needed
 	public void renderDust(Canvas canvas){
 		if(time - latestDashTime < Const.dustDecayTime){
@@ -1368,7 +1371,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		};
 		flowerBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flower), (int)(Const.flowerSize*scaleX), (int)(Const.flowerSize*scaleY), true);
 		dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
-		
+
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
 		enemyEyeMouthBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyEyeMouthYScale*scaleY), true);
