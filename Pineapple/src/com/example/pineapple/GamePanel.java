@@ -1071,7 +1071,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw the sun, moving in time
 	public void renderSun(Canvas canvas){
-		canvas.drawBitmap(sunBitmap, (float)(width*scaleX/3), (float)((20 + 20*Math.sin(Math.PI + time/500))*scaleY), null);
+		canvas.drawBitmap(sunBitmap, (float)(width*scaleX/3), (float)((20 + 20*Math.sin(Math.PI + time/500.))*scaleY), null);
 	}
 
 	//Draw clouds
