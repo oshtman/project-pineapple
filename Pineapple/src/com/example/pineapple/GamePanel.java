@@ -63,7 +63,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint enemyPaint = new Paint();
 	private Paint timePaint = new Paint();
 	private Paint textBackground = new Paint();
-	private int time;
+	private double time;
 	private double bulletDamage = 0.05;
 	private MediaPlayer fireSound;
 	private SoundManager sm;
@@ -518,7 +518,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		dashX = (int)protagonist.getXPos();
 		dashY = (int)(protagonist.getYPos() - protagonist.getHeight()/4);
-		latestDashTime = time;
+		latestDashTime = (int)time;
 		sm.playSound(5, effectVolume);
 	}
 
