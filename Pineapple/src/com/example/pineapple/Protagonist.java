@@ -143,6 +143,7 @@ public class Protagonist {
 			this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
 			Log.d(TAG, "Jump!!");
 			readyToJump = false;
+			gp.playSound(3);
 		}
 	}
 
@@ -170,6 +171,7 @@ public class Protagonist {
 					Log.d(TAG, "DASH!!");
 				}
 			}
+			gp.playSound(4);
 		}
 	}
 
