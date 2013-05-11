@@ -25,6 +25,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = GamePanel.class.getSimpleName();
 	private final int INVALID_POINTER = -1;
 	public final static String LEVEL = "com.pineapple.GamePanel.LEVEL";
+	public final static String SCORE_KILL = "com.pineapple.GamePanel.SCORE_KILL";
+	public final static String TIME = "com.pineapple.GamePanel.TIME";
+	public final static String HEALTH = "com.pineapple.GamePanel.HEALTH";
 
 	private int leftStickId = INVALID_POINTER;
 	private int rightStickId = INVALID_POINTER;
@@ -501,7 +504,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void sendEnemiesFlying(){
 		for(i = 0; i < enemies.size(); i++){
-			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground, protagonist, platforms)){
+			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground, protagonist, platforms) && enemies.get(i).hasSpawned()){
 				enemies.get(i).takeDashDamage(protagonist);
 				Log.d(TAG, "In reach for dash! Watch me.");
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
@@ -535,6 +538,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				Context context = getContext();
 				Intent intent = new Intent(context, LevelCompleteActivity.class);
 				intent.putExtra(LEVEL, level);
+				intent.putExtra(SCORE_KILL, scoreKill);
+				intent.putExtra(TIME, time);
+				intent.putExtra(HEALTH, (int)(protagonist.getHealth()*100));
 				context.startActivity(intent);
 				if(viewStatistics){
 					playTimeTotal = MainThread.updateInterval*time/1000;
@@ -1074,7 +1080,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw the sun, moving in time
 	public void renderSun(Canvas canvas){
-		canvas.drawBitmap(sunBitmap, (float)(width*scaleX/3), (float)((20 + 20*Math.sin(Math.PI + time/500))*scaleY), null);
+		canvas.drawBitmap(sunBitmap, (float)(width*scaleX/3), (float)((20 + 20*Math.sin(Math.PI + time/500.))*scaleY), null);
 	}
 
 	//Draw clouds
@@ -1089,7 +1095,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(i = 0; i < flowers.size(); i++){
 			if(flowers.get(i)[0] > screenX - Const.flowerSize/2 && flowers.get(i)[0] < screenX + width + Const.flowerSize/2){
 				canvas.drawBitmap(flowerBitmap, (float)((flowers.get(i)[0] - Const.flowerSize/4 - screenX)*scaleX), (float)((ground.getYFromX(flowers.get(i)[0])-Const.flowerSize-screenY)*scaleY), null);
-
 			}
 		}
 	}
@@ -1199,8 +1204,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw Hints
 	public void renderTime(Canvas canvas){
-
-
 		int secs = (int)(time*MainThread.updateInterval/1000);
 		int mins = secs/60;
 		secs =     secs%60;
