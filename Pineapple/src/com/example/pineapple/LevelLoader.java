@@ -201,8 +201,14 @@ public class LevelLoader {
 			startPos = new int[]{10,0};
 			ground = new int[][]{
 					{-100, 1000},
-					{100, 100}
+					{150, 150}
 			};
+			//tree
+			trees.add(new int[]{130, 2, 0, 0});
+			//rock
+			rocks.add(new int[]{70, 3, 20, 0});
+			//flower
+			flowers.add(new int[]{80, 0});
 			break;
 
 		case 5://downhill
