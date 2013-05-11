@@ -9,176 +9,212 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".LevelCompleteActivity" >
 
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/finished" />
-
     <TableLayout
-        android:id="@+id/tableLayout1"
+        android:id="@+id/tableLayout3"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@+id/tableLayout2"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/statisticsTitle" >
+        android:layout_alignParentRight="true" >
 
         <TableRow
-            android:id="@+id/tableRow1"
+            android:id="@+id/imbaTableRow3"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="0dp"
             android:layout_weight="0.5"
             android:padding="1dip" >
 
-            <ImageView
+            <TableLayout
+                android:id="@+id/tableLayout4"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_column="0"
-                android:src="@drawable/thumb_normal" />
+                android:layout_weight="1" >
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_column="1"
-                android:src="@drawable/thumb_ninja" />
+                <TableRow
+                    android:id="@+id/TableRow8"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.1"
+                    android:padding="1dip" >
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_column="2"
-                android:src="@drawable/thumb_tank" />
+                    <ImageView
+                        android:id="@+id/titleText"
+                        android:layout_column="0"
+                        android:layout_weight="1"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/level_completed" />
 
-            <TextView
-                android:id="@+id/timeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="3"
-                android:text="@string/play" />
-
-            <TextView
-                android:id="@+id/healthTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="4"
-                android:text="@string/play" />
+                    <ImageView
+                        android:id="@+id/newLevelText"
+                        android:layout_column="1"
+                        android:layout_weight="1"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/new_level_unlocked" />
+                </TableRow>
+            </TableLayout>
         </TableRow>
 
         <TableRow
-            android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:padding="5dip"
-            android:textAlignment="center" >
-
-            <TextView
-                android:id="@+id/normalsKilledText"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_column="0"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/ninjasKilledText"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_column="1"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/tanksKilledText"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_column="2"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/timeText"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_column="3"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/healthText"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_column="4"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="20dp" />
-        </TableRow>
-    </TableLayout>
-
-    <TableLayout
-        android:id="@+id/tableLayout2"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@+id/button2"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/statisticsTitle" >
-
-        <TableRow
-            android:id="@+id/tableRow"
+            android:id="@+id/imbaTableRow1"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:padding="1dip"
-            android:layout_below="@id/tableLayout1" >
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:padding="1dip" >
 
-            <ImageButton
-                android:id="@+id/button1"
+            <TableLayout
+                android:id="@+id/tableLayout1"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_column="0"
-                android:background="#00000000"
-                android:onClick="goToMain"
-                android:src="@drawable/main_menu" />
+                android:layout_weight="1" >
 
-            <ImageButton
-                android:id="@+id/button2"
+                <TableRow
+                    android:id="@+id/tableRow1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.5"
+                    android:padding="1dip" >
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_column="0"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/thumb_normal" />
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_column="1"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/thumb_ninja" />
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_column="2"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/thumb_tank" />
+
+                    <TextView
+                        android:id="@+id/timeTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="3"
+                        android:text="@string/play" />
+
+                    <TextView
+                        android:id="@+id/healthTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="4"
+                        android:text="@string/play" />
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/tableRow2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:padding="5dip"
+                    android:textAlignment="center" >
+
+                    <TextView
+                        android:id="@+id/normalsKilledText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_column="0"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:id="@+id/ninjasKilledText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_column="1"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:id="@+id/tanksKilledText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_column="2"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:id="@+id/timeText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_column="3"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:id="@+id/healthText"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_column="4"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20dp" />
+                </TableRow>
+            </TableLayout>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/imbaTableRow2"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:padding="1dip">
+
+            <TableLayout
+                android:id="@+id/tableLayout2"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_column="1"
-                android:background="#00000000"
-                android:onClick="goToSameLevel"
-                android:src="@drawable/main_menu" />
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/tableLayout1"
+                android:layout_weight="1" >
 
-            <ImageButton
-                android:id="@+id/button3"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_column="2"
-                android:background="#00000000"
-                android:onClick="goToNextLevel"
-                android:src="@drawable/main_menu" />
+                <TableRow
+                    android:id="@+id/tableRow"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:padding="1dip" >
+
+                    <ImageButton
+                        android:id="@+id/button1"
+                        android:layout_column="0"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:onClick="goToMain"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/main_menu" />
+
+                    <ImageButton
+                        android:id="@+id/button2"
+                        android:layout_column="1"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:onClick="goToSameLevel"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/try_again" />
+
+                    <ImageButton
+                        android:id="@+id/button3"
+                        android:layout_column="2"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:onClick="goToNextLevel"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/play_next" />
+                </TableRow>
+            </TableLayout>
         </TableRow>
     </TableLayout>
-
-    <TextView
-        android:id="@+id/statisticsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/titleText"
-        android:layout_below="@+id/titleText"
-        android:text="@string/statistics"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/newLevelText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/titleText"
-        android:layout_alignBottom="@+id/titleText"
-        android:layout_marginLeft="16dp"
-        android:layout_toRightOf="@+id/titleText"
-        android:text="@string/newLevel" />
 
 </RelativeLayout>

@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class LevelCompleteActivity extends BaseActivity {
@@ -58,13 +59,13 @@ public class LevelCompleteActivity extends BaseActivity {
 			dataText = (TextView) findViewById(R.id.healthText);
 			dataText.setText(health + "%");
 		}
-		TextView newLevelText = (TextView) findViewById(R.id.newLevelText);
+		ImageView newLevelText = (ImageView) findViewById(R.id.newLevelText);
 		
 		if(newLevel){
 			Log.d(TAG, "You unlocked a new level!");
-			newLevelText.setVisibility(TextView.VISIBLE);
+			newLevelText.setVisibility(ImageView.VISIBLE);
 		} else {
-			newLevelText.setVisibility(TextView.INVISIBLE);
+			newLevelText.setVisibility(ImageView.INVISIBLE);
 		}
 		
 	}
