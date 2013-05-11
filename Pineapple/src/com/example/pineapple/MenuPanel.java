@@ -249,9 +249,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			currentLevel = 5;
 		levelButtons = new Button[currentLevel+1];
 		for(int i = 0; i <= currentLevel && i < 6; i++){
-			int x = 10 + (int)(Const.menuButtonWidth*(i/3));
-			int y = 10 + (int)(Const.menuButtonHeight*(i%3));
-			levelButtons[i] = new Button(x, y, Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
+			levelButtons[i] = new Button(Const.HUDPadding + (int)(Const.menuButtonWidth*(i/Const.levelButtonsPerRow)), Const.HUDPadding + (int)(Const.menuButtonHeight*(i%Const.levelButtonsPerRow)), Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
 		}
 		
 		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth(), musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
@@ -320,12 +318,14 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					Editor ed = settings.edit();
 					ed.putFloat("soundVolume", settings.getFloat("soundVolume", 1)>0?0:1);
 					ed.commit();
+					soundSlider.setValue(settings.getFloat("soundVolume", 1));
 				}
 				if(musicButton.isClicked(touchX, touchY)){
 					Editor ed = settings.edit();
 					ed.putFloat("musicVolume", settings.getFloat("musicVolume", 1)>0?0:1);
 					ed.commit();
 					theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
+					musicSlider.setValue(settings.getFloat("musicVolume", 1));
 				}
 				soundSlider.handleTouch(touchX, touchY);
 				musicSlider.handleTouch(touchX, touchY);
@@ -415,7 +415,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderButterfly(Canvas canvas){
 		renderMatrix.setRotate(butterfly.getRot(), butterflyBitmaps[0].getWidth()/2, butterflyBitmaps[0].getHeight()/2);
 		renderMatrix.postTranslate((float)((butterfly.getX()-Const.butterflySize/2)*scaleX), (float)((butterfly.getY()-Const.butterflySize/2)*scaleY));
-		canvas.drawBitmap(butterflyBitmaps[(int)(butterfly.getCounter() % 2)], renderMatrix, null);
+		canvas.drawBitmap(butterflyBitmaps[(int)(Math.abs(butterfly.getCounter() % 2))], renderMatrix, null);
 	}
 
 

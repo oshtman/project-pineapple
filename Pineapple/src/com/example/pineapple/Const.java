@@ -117,5 +117,7 @@ public class Const {
 		public static final double meterHeight = 10;
 		public static final double meterFrameSize = 1;
 		public static final double blinkInterval = 0.05;
+		public static final int HUDPadding = 10;
 		
-}
+		public static final int levelButtonsPerRow = 6;
+	}

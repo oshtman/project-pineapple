@@ -79,7 +79,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double effectVolume;
 	private boolean viewStatistics = true;
 	private Path newPath;
-	private final int HUDPadding = 10;
 	private int i, index, id;
 	private boolean criticalHealthFlag = false;
 
@@ -1038,11 +1037,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		//Draw in top right corner
 		//Draw frame
-		canvas.drawRect((float)((this.width - Const.meterWidth - HUDPadding - Const.meterFrameSize)*scaleX), (float)((HUDPadding-Const.meterFrameSize)*scaleY), (float)((this.width - HUDPadding + Const.meterFrameSize)*scaleX), (float)((HUDPadding+Const.meterHeight+Const.meterFrameSize)*scaleY), frame);
+		canvas.drawRect((float)((this.width - Const.meterWidth - Const.HUDPadding - Const.meterFrameSize)*scaleX), (float)((Const.HUDPadding-Const.meterFrameSize)*scaleY), (float)((this.width - Const.HUDPadding + Const.meterFrameSize)*scaleX), (float)((Const.HUDPadding+Const.meterHeight+Const.meterFrameSize)*scaleY), frame);
 		//Draw green background
-		canvas.drawRect((float)((this.width - Const.meterWidth - HUDPadding)*scaleX), (float)(HUDPadding*scaleY), (float)((this.width - HUDPadding)*scaleX), (float)((HUDPadding+Const.meterHeight)*scaleY), green);
+		canvas.drawRect((float)((this.width - Const.meterWidth - Const.HUDPadding)*scaleX), (float)(Const.HUDPadding*scaleY), (float)((this.width - Const.HUDPadding)*scaleX), (float)((Const.HUDPadding+Const.meterHeight)*scaleY), green);
 		//Draw red indicator that moves with current heat level
-		canvas.drawRect((float)((this.width - Const.meterWidth - HUDPadding)*scaleX), (float)(HUDPadding*scaleY), (float)((this.width - HUDPadding - Const.meterWidth*(1-heatMeter.getHeat()))*scaleX), (float)((HUDPadding+Const.meterHeight)*scaleY), red);
+		canvas.drawRect((float)((this.width - Const.meterWidth - Const.HUDPadding)*scaleX), (float)(Const.HUDPadding*scaleY), (float)((this.width - Const.HUDPadding - Const.meterWidth*(1-heatMeter.getHeat()))*scaleX), (float)((Const.HUDPadding+Const.meterHeight)*scaleY), red);
 	}
 
 	//Draw the healtheter
@@ -1056,11 +1055,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		//Draw in top left corner
 		//Draw frame
-		canvas.drawRect((float)((HUDPadding-Const.meterFrameSize)*scaleX), (float)((HUDPadding-Const.meterFrameSize)*scaleY), (float)((HUDPadding+Const.meterWidth+Const.meterFrameSize)*scaleX), (float)((HUDPadding+Const.meterHeight+Const.meterFrameSize)*scaleY), frame);
+		canvas.drawRect((float)((Const.HUDPadding-Const.meterFrameSize)*scaleX), (float)((Const.HUDPadding-Const.meterFrameSize)*scaleY), (float)((Const.HUDPadding+Const.meterWidth+Const.meterFrameSize)*scaleX), (float)((Const.HUDPadding+Const.meterHeight+Const.meterFrameSize)*scaleY), frame);
 		//Draw green background
-		canvas.drawRect((float)(HUDPadding*scaleX), (float)(HUDPadding*scaleY), (float)((HUDPadding+Const.meterWidth)*scaleX), (float)((HUDPadding+Const.meterHeight)*scaleY), red);
+		canvas.drawRect((float)(Const.HUDPadding*scaleX), (float)(Const.HUDPadding*scaleY), (float)((Const.HUDPadding+Const.meterWidth)*scaleX), (float)((Const.HUDPadding+Const.meterHeight)*scaleY), red);
 		//Draw red indicator that moves with current heat level
-		canvas.drawRect((float)(HUDPadding*scaleX), (float)(HUDPadding*scaleY), (float)((HUDPadding+Const.meterWidth*protagonist.getHealth())*scaleX), (float)((HUDPadding+Const.meterHeight)*scaleY), green);
+		canvas.drawRect((float)(Const.HUDPadding*scaleX), (float)(Const.HUDPadding*scaleY), (float)((Const.HUDPadding+Const.meterWidth*protagonist.getHealth())*scaleX), (float)((Const.HUDPadding+Const.meterHeight)*scaleY), green);
 	}
 
 	//Draw the sun, moving in time
@@ -1199,8 +1198,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			minString = "" + mins;
 		}
 
-		canvas.drawRect((float)((width/2-Const.timeAreaWidth/2)*scaleX), (float)(HUDPadding*scaleY), (float)((width/2+Const.timeAreaWidth/2)*scaleX), (float)((HUDPadding+Const.timeAreaHeight)*scaleY), textBackground);
-		canvas.drawText(minString + ":" + secString, (float)(width/2*scaleX), (float)((HUDPadding+Const.timeAreaHeight - (Const.timeAreaHeight-timePaint.getTextSize()/scaleX)/2)*scaleY), timePaint);
+		canvas.drawRect((float)((width/2-Const.timeAreaWidth/2)*scaleX), (float)(Const.HUDPadding*scaleY), (float)((width/2+Const.timeAreaWidth/2)*scaleX), (float)((Const.HUDPadding+Const.timeAreaHeight)*scaleY), textBackground);
+		canvas.drawText(minString + ":" + secString, (float)(width/2*scaleX), (float)((Const.HUDPadding+Const.timeAreaHeight - (Const.timeAreaHeight-timePaint.getTextSize()/scaleX)/2)*scaleY), timePaint);
 	}
 
 	//Draw bird
