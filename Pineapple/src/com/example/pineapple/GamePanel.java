@@ -707,7 +707,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMentor(canvas);
 			renderBird(canvas);
 		}
-		//renderProtagonist(canvas);
+		renderProtagonist(canvas);
 		renderGround(canvas);
 		renderBullets(canvas);
 
