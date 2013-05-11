@@ -13,5 +13,10 @@
     <string name="menu">Menu</string>
     <string name="title_activity_game_over">GameOverActivity</string>
     <string name="game_over">No more game for you!!</string>
-
+    <string name="statistics">STATISTICS</string>
+    <string name="nextLevel">Next Level</string>
+    <string name="enemiesKilled">Enemies Killed</string>
+    <string name="playAgain">Play Again</string>
+    <string name="newLevel">You unlocked a new level! :D </string>
+	
 </resources>
