@@ -79,6 +79,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private boolean viewStatistics = true;
 	private Path newPath;
 	private final int HUDPadding = 10;
+	private int i, index, id;
 	
 	
 	//Special tutorial variables
@@ -204,7 +205,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			};
 			//Split the hints up into rows and add them to the final hint list
 			int lettersPerRow = 50;
-			for(int i = 0; i < rawHints.length; i++){
+			for(i = 0; i < rawHints.length; i++){
 				hints.add(new ArrayList<String>());
 				while(rawHints[i].length() > lettersPerRow){
 					String row = rawHints[i].substring(0, lettersPerRow-1);
@@ -239,7 +240,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the platforms from LevelLoader and add them to the platforms list 
 	public void loadPlatforms(){
 		platforms = new ArrayList<Platform>();
-		for(int i = 0; i < levelLoader.getNumberOfPlatforms(); i++){
+		for(i = 0; i < levelLoader.getNumberOfPlatforms(); i++){
 			platforms.add(new Platform(levelLoader.getPlatformUpperX(i), levelLoader.getPlatformUpperY(i), levelLoader.getPlatformLowerX(i), levelLoader.getPlatformLowerY(i)));
 		}
 	}
@@ -247,7 +248,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the enemies from LevelLoader and add them to the platforms list 
 	public void loadEnemies(){
 		enemies = new ArrayList<Enemy>();
-		for(int i = 0; i < levelLoader.getNumberOfEnemies(); i++){
+		for(i = 0; i < levelLoader.getNumberOfEnemies(); i++){
 			int[] enemyData = levelLoader.getEnemyData(i);
 			enemies.add(new Enemy(enemyData[0], enemyData[1], enemyData[2], enemyData[3], this));
 		}
@@ -364,7 +365,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Move all the enemies and check for obstacles etc
 	public void moveEnemies(){
-		for(int i = 0; i < enemies.size(); i++){
+		for(i = 0; i < enemies.size(); i++){
 			Enemy enemy = enemies.get(i);
 			if(enemy.hasSpawned()){
 				enemy.gravity();
@@ -385,7 +386,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void moveBullets(){
-		for(int i = 0; i < bullets.size(); i++){
+		for(i = 0; i < bullets.size(); i++){
 			Bullet b = bullets.get(i);
 			b.gravity(1);
 			b.move();
@@ -431,10 +432,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Check collision between enemies and bullets
 	public void handleBulletEnemyCollisions(){
-		for(int i = 0; i < enemies.size(); i++){
+		for(i = 0; i < enemies.size(); i++){
 			enemies.get(i).setHitThisFrame(false);
 		}
-		for(int i = 0; i < bullets.size(); i++){//All bullets
+		for(i = 0; i < bullets.size(); i++){//All bullets
 			Bullet bullet = bullets.get(i);
 			for(int j = 0; j < enemies.size(); j++){//All enemies
 				Enemy enemy = enemies.get(j);
@@ -458,7 +459,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Check collision between enemies and protagonist
 	public void handleProtagonistEnemyCollisions(Ground ground){
-		for(int i = 0; i < enemies.size(); i++){
+		for(i = 0; i < enemies.size(); i++){
 			//Protagonist collide with enemy
 			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && enemies.get(i).hasSpawned()){
 				protagonist.setInvincible(true);
@@ -471,7 +472,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void sendEnemiesFlying(){
-		for(int i = 0; i < enemies.size(); i++){
+		for(i = 0; i < enemies.size(); i++){
 			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground, protagonist, platforms)){
 				enemies.get(i).takeDashDamage(protagonist);
 				Log.d(TAG, "In reach for dash! Watch me.");
@@ -518,7 +519,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Spawn and move clouds
 	public void moveAndSpawnClouds(){
-		for(int i = 0; i < clouds.size(); i++){
+		for(i = 0; i < clouds.size(); i++){
 			clouds.get(i)[0] -= 0.1;
 			if(clouds.get(i)[0] < -Const.maxCloudWidth/2){
 				clouds.remove(i);
@@ -716,7 +717,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderEnemies(Canvas canvas){
 
 		for(int j: renderOrder){ //Different types
-			for(int i = 0; i < enemies.size(); i++){
+			for(i = 0; i < enemies.size(); i++){
 				if(enemies.get(i).getType() == j){
 					if(enemies.get(i).hasSpawned()){
 						if(enemies.get(i).getXPos() + enemies.get(i).getWidth() > screenX && enemies.get(i).getXPos() - enemies.get(i).getWidth() < screenX + width){
@@ -881,7 +882,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draws the ground using a Path
 	//Draw only the parts which are visible on the screen
 	public void renderGround(Canvas canvas){
-		int i = 0;
+		i = 0;
 
 		//Find the interval of the ground that has to be rendered
 		while(ground.getX(i+1) < screenX){
@@ -947,7 +948,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw the platforms
 	public void renderPlatforms(Canvas canvas){
-		for(int i = 0; i < platforms.size(); i++){
+		for(i = 0; i < platforms.size(); i++){
 			if(platforms.get(i).getUpperX()[0] < screenX+width && platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] > screenX){
 				groundPath = new Path(platforms.get(i).getGroundPath());
 				dirtPath = new Path(platforms.get(i).getDirtPath());
@@ -987,7 +988,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw the bullets
 	public void renderBullets(Canvas canvas){
 		int radius = Bullet.getRadius();
-		for(int i = 0; i < bullets.size(); i++){
+		for(i = 0; i < bullets.size(); i++){
 			Bullet b = bullets.get(i);
 			renderMatrix.setRotate((float)(180/Math.PI*Math.atan2(b.getYVel(), b.getXVel())), (float)(bulletBitmap.getWidth()/2), (float)(bulletBitmap.getHeight()/2));
 			renderMatrix.postTranslate((float)((b.getXPos()-radius/2.-screenX)*scaleX), (float)((b.getYPos()-radius/2.-screenY)*scaleY));
@@ -1040,14 +1041,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw clouds
 	public void renderClouds(Canvas canvas){
-		for(int i = 0; i < clouds.size(); i++){
+		for(i = 0; i < clouds.size(); i++){
 			canvas.drawBitmap(cloudBitmaps[(int)(clouds.get(i)[2])], (float)((clouds.get(i)[0]-Const.maxCloudWidth/2)*scaleX), (float)((clouds.get(i)[1])*scaleY), null);
 		}
 	}
 
 	//Draw trees
 	public void renderTrees(Canvas canvas, int depth){
-		for(int i = 0; i < trees.size(); i++){
+		for(i = 0; i < trees.size(); i++){
 			if(trees.get(i)[3] == depth){
 				if(trees.get(i)[0] > screenX - Const.maxTreeWidth/2 && trees.get(i)[0] < screenX + width + Const.maxTreeWidth/2){
 					canvas.drawBitmap(treeBitmaps[0][trees.get(i)[1]], (float)((trees.get(i)[0] - Const.maxTreeWidth/4 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-(Const.partOfTreeVisible-0.2)*Const.maxTreeHeight-screenY)*scaleY), null);
@@ -1059,7 +1060,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw rocks
 	public void renderRocks(Canvas canvas, int depth){
-		for(int i = 0; i < rocks.size(); i++){
+		for(i = 0; i < rocks.size(); i++){
 			if(rocks.get(i)[3] == depth && rocks.get(i)[0] > screenX - rocks.get(i)[2]/2 && rocks.get(i)[0] < screenX + width + rocks.get(i)[2]/2){
 				groundAngle = (Math.atan(ground.getSlope(rocks.get(i)[0])));
 				renderMatrix.setScale((float)(rocks.get(i)[2]/Const.maxRockSize), (float)(rocks.get(i)[2]/Const.maxRockSize));
@@ -1134,7 +1135,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw Hints
 	public void renderHint(Canvas canvas){
 		canvas.drawRect((float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hints.get(currentCheckpoint).size())*textPaint.getTextSize()), (float)((rightStick.getX()-rightStick.getRadius()-5)*scaleX), (float)((leftStick.getY()+leftStick.getRadius())*scaleY), textBackground);
-		for(int i = 0; i < hints.get(currentCheckpoint).size(); i++){
+		for(i = 0; i < hints.get(currentCheckpoint).size(); i++){
 			canvas.drawText(hints.get(currentCheckpoint).get(i), (float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hints.get(currentCheckpoint).size()-i-1)*textPaint.getTextSize()), textPaint);
 		}
 
@@ -1178,8 +1179,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		double x;
 		double y;
 
-		int index = e.getActionIndex();
-		int id = e.getPointerId(index);
+		index = e.getActionIndex();
+		id = e.getPointerId(index);
 
 		switch(e.getActionMasked()){
 
