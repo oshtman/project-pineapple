@@ -201,8 +201,14 @@ public class LevelLoader {
 			startPos = new int[]{10,0};
 			ground = new int[][]{
 					{-100, 1000},
-					{100, 100}
+					{150, 150}
 			};
+			//tree
+			trees.add(new int[]{130, 2, 0, 0});
+			//rock
+			rocks.add(new int[]{70, 3, 20, 0});
+			//flower
+			flowers.add(new int[]{80, 0});
 			break;
 
 		case 5://downhill
@@ -211,43 +217,43 @@ public class LevelLoader {
 
 			ground[0][0] = -100;
 			ground[1][0] = 50;
-			
+
 			ground[0][1] = 10;
 			ground[1][1] = 60;
-			
+
 			ground[0][2] = 20;
 			ground[1][2] = 100;
-			
+
 			ground[0][3] = 400;
 			ground[1][3] = 10;
-			
+
 			ground[0][4] = 1400;
 			ground[1][4] = 1500;
-			
+
 			ground[0][5] = 2000;
 			ground[1][5] = 1400;
-			
+
 			ground[0][6] = 2600;
 			ground[1][6] = 1300;
-			
+
 			ground[0][7] = 3000;
 			ground[1][7] = 1200;
 
 			ground[0][8] = 3100;
 			ground[1][8] = 1150;
-			
+
 			ground[0][9] = 3200;
 			ground[1][9] = 1100;
-			
+
 			ground[0][10] = 3300;
 			ground[1][10] = 1100;
-			
+
 			ground[0][11] = 4000;
 			ground[1][11] = 2000;
-			
+
 			ground[0][12] = 4500;
 			ground[1][12] = 2000;
-			
+
 			ground[0][13] = 4700;
 			ground[1][13] = 1700;
 			//Start and finish
@@ -298,7 +304,7 @@ public class LevelLoader {
 			enemies.add(new int[]{4200 + 200, 1990, 4200, 3});
 			//trees
 			for (int j = 1; j <= 160; j++){
-				if( j % 4 == 0)
+				if( j % 4 == 0 && (j*20 < 400 || j*20 >= 1400))
 					trees.add(new int[]{20*j, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			}
 			trees.add(new int[]{4100, (int)(3*Math.random()), (int)(3*Math.random()), 1});
@@ -308,6 +314,13 @@ public class LevelLoader {
 			rocks.add(new int[]{4150, 1, 20, 0});
 			rocks.add(new int[]{4250, 3, 20, 0});
 			//flowers
+			for (int j = 0; j < 4 ; j++){
+				if(j != 2)
+					flowers.add(new int[]{380 + 5*j, 0});
+			}
+			for (int j = 0; j < 2 ; j++){
+				flowers.add(new int[]{3280 + 7*j, 0});
+			}
 			flowers.add(new int[]{4420, 0});
 			flowers.add(new int[]{4435, 0});
 			flowers.add(new int[]{4460, 0});
@@ -360,19 +373,19 @@ public class LevelLoader {
 	public ArrayList<int[]> getRocks(){
 		return rocks;
 	}
-	
+
 	public int getNumberOfRocks(){
 		return rocks.size();
 	}
-	
+
 	public ArrayList<int[]> getFlowers(){
 		return flowers;
 	}
-	
+
 	public int getNumberOfFlowers(){
 		return flowers.size();
 	}
-	
+
 	public int getStartX(){
 		return startPos[0];
 	}
