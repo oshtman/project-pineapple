@@ -109,7 +109,7 @@ public class LevelLoader {
 					{173, 176, 146, 113, 85}
 			};
 			platforms.add(p1);
-			
+
 			p2 = new int[][]{
 					{700, 759},
 					{90, 90},
@@ -140,7 +140,6 @@ public class LevelLoader {
 
 			break;
 		case 2: //Hunt
-			//-------------------------------------------------------------------------//
 			//Start and finish
 			startPos = new int[]{10, 40};
 			finishX = 5900;
@@ -156,8 +155,7 @@ public class LevelLoader {
 			}
 			ground[0][maxLengthPoint] = maxLengthPoint*20;
 			ground[1][maxLengthPoint] = 50 + (int)(25*Math.cos((double)ground[0][maxLengthPoint-1]/200*Math.PI));
-
-			//Enemies
+			//Enemy
 			enemies.add(new int[]{this.getStartX() + 200, 0, this.getStartX(), 3});
 			int spawnPoint;
 			int endPoint = ground[0][maxLengthPoint-1];
@@ -176,7 +174,6 @@ public class LevelLoader {
 			for (int i = 0; i < 20; i++){
 				enemies.add(new int[]{finishX - 730 + i*10, 0, finishX - 500, 2});
 			}
-
 			//Trees
 			for (int i = 1; i <= 100; i++){
 				if( i % 2 == 0)
@@ -198,7 +195,6 @@ public class LevelLoader {
 			flowers.add(new int[]{endPoint - 120, 0});
 			flowers.add(new int[]{finishX + 20, 0});
 			break;
-			//-------------------------------------------------------------------------//
 		case 3:
 			finishX = 380;
 			startPos = new int[]{10, -20};
@@ -244,7 +240,7 @@ public class LevelLoader {
 			flowers.add(new int[]{80, 0});
 			flowers.add(new int[]{finishX + 10, 0});
 			break;
-		case 6://Downhill			
+		case 5://Downhill			
 			//Start and finish
 			startPos = new int[]{10,50};
 			finishX = 4400;
@@ -281,7 +277,7 @@ public class LevelLoader {
 			//Enemies
 			enemies.add(new int[]{100 + 200, 0, 100, 1});
 			enemies.add(new int[]{200 + 200, 0, 200, 1});
-			//--- chase nr1 ---
+			//--- Chase nr1 ---
 			enemies.add(new int[]{401 - 20, 0, 401, 1});
 			enemies.add(new int[]{401 - 40, 0, 401, 1});
 			enemies.add(new int[]{401 - 60, 0, 401, 1});
@@ -299,7 +295,7 @@ public class LevelLoader {
 			enemies.add(new int[]{2700 + 200, 1200, 2700, 2});
 			enemies.add(new int[]{2900 + 200, 1000, 2900, 2});
 			enemies.add(new int[]{3100 + 200, 1000, 3100, 1});
-			//--- chase nr2 ---
+			//--- Chase nr2 ---
 			enemies.add(new int[]{3300 - 20, 1100, 3300, 1});
 			enemies.add(new int[]{3300 - 30, 1100, 3300, 1});
 			enemies.add(new int[]{3300 - 40, 1100, 3301, 1});
@@ -311,7 +307,7 @@ public class LevelLoader {
 			enemies.add(new int[]{3600 - 160, 1000, 3600, 2});
 			enemies.add(new int[]{3600 - 140, 1000, 3600, 2});
 			enemies.add(new int[]{3600 - 120, 1000, 3600, 2});
-			//--- final stand ---
+			//--- Final stand ---
 			enemies.add(new int[]{4200 - 300, 1800, 4200, 1});
 			enemies.add(new int[]{4200 - 320, 1800, 4200, 1});
 			enemies.add(new int[]{4200 - 340, 1800, 4200, 1});
@@ -346,7 +342,7 @@ public class LevelLoader {
 			flowers.add(new int[]{4460, 0});
 			flowers.add(new int[]{1, 0});
 			break;
-		case 5: //Up and away
+		case 6: //Up and away
 			//Start and finish
 			startPos = new int[]{10, 20};
 			finishX = 1100;
@@ -364,24 +360,23 @@ public class LevelLoader {
 			ground[1][4] = 140;
 			ground[0][5] = 600;
 			ground[1][5] = 160;
-			ground[0][6] = 610; //ledge 1
+			ground[0][6] = 610; //Ledge 1
 			ground[1][6] = 120; 
 			ground[0][7] = 700; //
 			ground[1][7] = 120; 
-			ground[0][8] = 770; //ledge 2
+			ground[0][8] = 770; //Ledge 2
 			ground[1][8] = -270; 
 			ground[0][9] = 785; //
 			ground[1][9] = -270;
-			ground[0][10] = 840;//ledge 3
+			ground[0][10] = 840;//Ledge 3
 			ground[1][10] = -640;
 			ground[0][11] = 855;//
 			ground[1][11] = -640;
-			ground[0][12] = 900;
+			ground[0][12] = 900; //Final ledge
 			ground[1][12] = -1000;
 			ground[0][13] = 1200;
 			ground[1][13] = -1000;
-			//Platforms
-			//Platform 1 uppx uppy lowx lowy
+			//Platform uppx uppy lowx lowy
 			p1 = new int[][]{
 					{10, 100, 200, 300, 400, 500, 580},
 					{-70, -50, -50, -20, 20, 60, 90},
@@ -424,7 +419,7 @@ public class LevelLoader {
 			platforms.add(p4);
 			platforms.add(p5);
 			platforms.add(p6);
-			//Enemy
+			//Enemies
 			enemies.add(new int[]{900, -1000, 100, 1});
 			enemies.add(new int[]{920, -1000, 100, 1});
 			enemies.add(new int[]{940, -1000, 100, 1});
@@ -432,7 +427,7 @@ public class LevelLoader {
 			enemies.add(new int[]{980, -1000, 100, 1});
 			enemies.add(new int[]{0, 20, 300, 2});
 			enemies.add(new int[]{20, 20, 300, 2});
-			//--enemies on plattforms---
+			//---Enemies on plattforms---
 			enemies.add(new int[]{300, -20, 600, 1});
 			enemies.add(new int[]{280, -160, 600, 1});
 			enemies.add(new int[]{320, -160, 600, 3});
@@ -464,6 +459,96 @@ public class LevelLoader {
 			flowers.add(new int[]{773, 0});
 			flowers.add(new int[]{840, 0});
 			flowers.add(new int[]{1150, 0});
+			break;
+		case 7://Sea
+			//Start and finish
+			startPos = new int[]{10, 20};
+			finishX = 2000;
+			//Ground
+			ground = new int[2][6];
+			ground[0][0] = -100;
+			ground[1][0] = 0;
+			ground[0][1] = 100;
+			ground[1][1] = 0;
+			ground[0][2] = 110;
+			ground[1][2] = 40;
+			ground[0][3] = 1810;
+			ground[1][3] = 40;
+			ground[0][4] = 1820;
+			ground[1][4] = -40;
+			ground[0][5] = 2200;
+			ground[1][5] = -60;
+			//Platform
+			p1 = new int[][]{
+					{140, 240, 340},
+					{-20, -50, -30},
+					{140, 150, 240, 330, 340},
+					{-20, -10, -10, -20, -30}
+			};
+			p2 = new int[][]{
+					{380, 500, 600},
+					{-20, -40, -50},
+					{380, 400, 500, 570, 600},
+					{-20, -20, -30, -40, -50}
+			};
+			p3 = new int[][]{
+					{680, 800, 1000},
+					{-20, -10, -40},
+					{680, 700, 800, 960, 1000},
+					{-20, -10, 0, -20, -40}
+			};
+			p4 = new int[][]{
+					{1030, 1400, 1600},
+					{-20, -20, -30},
+					{1030, 1060, 1400, 1580, 1600},
+					{-20, 0, 10, -10, -30}
+			};
+			p5 = new int[][]{
+					{1630, 1700, 1790},
+					{-30, -40, -50},
+					{1630, 1640, 1700, 1780, 1790},
+					{-30, -10, 10, -10, -50}
+			};
+			platforms.add(p1);
+			platforms.add(p2);
+			platforms.add(p3);
+			platforms.add(p4);
+			platforms.add(p5);
+			//Enemies
+			enemies.add(new int[]{300, 40, 100, 2});
+			enemies.add(new int[]{310, 40, 100, 2});
+			enemies.add(new int[]{320, 40, 100, 2});
+			enemies.add(new int[]{330, 40, 100, 3});
+			enemies.add(new int[]{500, 40, 300, 2});
+			enemies.add(new int[]{510, 40, 300, 2});
+			enemies.add(new int[]{520, 40, 300, 3});
+			enemies.add(new int[]{700, 40, 500, 2});
+			enemies.add(new int[]{710, 40, 500, 2});
+			enemies.add(new int[]{720, 40, 500, 3});
+			//---Enemy on platform nr---
+			enemies.add(new int[]{290, -30, 150, 1});//1
+			enemies.add(new int[]{580, -50, 390, 1});//2
+			enemies.add(new int[]{590, -50, 390, 1});
+			enemies.add(new int[]{950, -40, 690, 1});//3
+			enemies.add(new int[]{970, -40, 690, 1});
+			enemies.add(new int[]{990, -40, 690, 1});
+			enemies.add(new int[]{1520, -30, 1050, 1});//4
+			enemies.add(new int[]{1540, -30, 1050, 1});
+			enemies.add(new int[]{1560, -30, 1050, 1});
+			enemies.add(new int[]{1580, -30, 1050, 1});
+			enemies.add(new int[]{1750, -50, 1640, 1});//5
+			enemies.add(new int[]{1760, -50, 1640, 1});
+			enemies.add(new int[]{1770, -50, 1640, 1});
+			enemies.add(new int[]{1780, -50, 1640, 1});
+			enemies.add(new int[]{1790, -50, 1640, 1});
+			//Trees
+			trees.add(new int[]{-10, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			trees.add(new int[]{1900, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			//Rocks
+			rocks.add(new int[]{1000, (int)(4*Math.random()), 30, 0});
+			//Flowers
+			flowers.add(new int[]{0, 0});
+			flowers.add(new int[]{1910, 0});
 			break;
 		}
 	}
