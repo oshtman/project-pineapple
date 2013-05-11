@@ -314,7 +314,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			Intent intent = new Intent(context, GameOverActivity.class);
 			context.startActivity(intent);
 			if(viewStatistics){
-				playTimeTotal = MainThread.updateInterval*time/1000;
+				playTimeTotal = MainThread.updateInterval*time/1000; //time in seconds
 				playTimeMin = (int)(playTimeTotal/60);
 				playTimeS = playTimeTotal - playTimeMin*60;
 				Log.d(TAG, "Killed in action! Statistics: " + "Killed Drones: " + scoreKill[0] + 
@@ -324,7 +324,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				viewStatistics = false;
 			}
 		}
-		this.time++;
+		this.time++; //count number of frames passed
 
 		//Tutorial
 		if(level == 0){

@@ -212,18 +212,18 @@ public class LevelLoader {
 					{150, 150}
 			};
 			//Enemy
-			enemies.add(new int[]{10 - 100, 0, 10, 1});
-			enemies.add(new int[]{10 - 100, 0, 10, 1});
-			enemies.add(new int[]{10 - 100, 0, 10, 2});
-			enemies.add(new int[]{60 - 100, 0, 60, 1});
-			enemies.add(new int[]{60 - 100, 0, 60, 1});
-			enemies.add(new int[]{60 - 100, 0, 60, 2});
-			enemies.add(new int[]{110 - 100, 0, 110, 1});
-			enemies.add(new int[]{110 - 100, 0, 110, 2});
-			enemies.add(new int[]{110 - 100, 0, 110, 3});
-			enemies.add(new int[]{160 - 100, 0, 160, 1});
-			enemies.add(new int[]{160 - 100, 0, 160, 2});
-			enemies.add(new int[]{160 - 100, 0, 160, 3});
+			enemies.add(new int[]{10 - 100, 100, 10, 1});
+			enemies.add(new int[]{10 - 100, 100, 10, 1});
+			enemies.add(new int[]{10 - 100, 100, 10, 2});
+			enemies.add(new int[]{60 - 100, 100, 60, 1});
+			enemies.add(new int[]{60 - 100, 100, 60, 1});
+			enemies.add(new int[]{60 - 100, 100, 60, 2});
+			enemies.add(new int[]{110 - 100, 100, 110, 1});
+			enemies.add(new int[]{110 - 100, 100, 110, 2});
+			enemies.add(new int[]{110 - 100, 100, 110, 3});
+			enemies.add(new int[]{160 - 100, 100, 160, 1});
+			enemies.add(new int[]{160 - 100, 100, 160, 2});
+			enemies.add(new int[]{160 - 100, 100, 160, 3});
 			//Tree
 			trees.add(new int[]{130, 2, 0, 0});
 			trees.add(new int[]{400, 1, 2, 0});
@@ -265,7 +265,7 @@ public class LevelLoader {
 			ground[0][13] = 4700;
 			ground[1][13] = 1700;
 			//Start and finish
-			startPos = new int[]{10,0};
+			startPos = new int[]{10,50};
 			finishX = 4400;
 			//Enemies
 			enemies.add(new int[]{100 + 200, 0, 100, 1});
