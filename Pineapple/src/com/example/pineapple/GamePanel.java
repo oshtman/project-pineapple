@@ -60,7 +60,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint enemyPaint = new Paint();
 	private Paint timePaint = new Paint();
 	private Paint textBackground = new Paint();
-	private double time;
+	private int time;
 	private double bulletDamage = 0.05;
 	private MediaPlayer fireSound;
 	private SoundManager sm;
@@ -79,9 +79,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double effectVolume;
 	private boolean viewStatistics = true;
 	private Path newPath;
-	private final int HUDPadding = 10;
 	private int i, index, id;
 	private boolean criticalHealthFlag = false;
+	private int latestDashTime = -Const.dustDecayTime;
+	private int dashX, dashY;
 
 
 	//Special tutorial variables
@@ -119,6 +120,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[] cloudBitmaps;
 	private Bitmap[] flagBitmaps;
 	private Bitmap flowerBitmap;
+	private Bitmap dustBitmap;
 
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -511,6 +513,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				
 			}
 		}
+		dashX = (int)protagonist.getXPos();
+		dashY = (int)protagonist.getYPos();
+		latestDashTime = time;
 		sm.playSound(5, effectVolume);
 	}
 
@@ -726,6 +731,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderBullets(canvas);
 
 		//Foreground
+		renderDust(canvas);
 		renderFlag(canvas, 1);
 		renderRocks(canvas, 1);
 		renderTrees(canvas, 1);
@@ -1038,11 +1044,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		//Draw in top right corner
 		//Draw frame
-		canvas.drawRect((float)((this.width - Const.meterWidth - HUDPadding - Const.meterFrameSize)*scaleX), (float)((HUDPadding-Const.meterFrameSize)*scaleY), (float)((this.width - HUDPadding + Const.meterFrameSize)*scaleX), (float)((HUDPadding+Const.meterHeight+Const.meterFrameSize)*scaleY), frame);
+		canvas.drawRect((float)((this.width - Const.meterWidth - Const.HUDPadding - Const.meterFrameSize)*scaleX), (float)((Const.HUDPadding-Const.meterFrameSize)*scaleY), (float)((this.width - Const.HUDPadding + Const.meterFrameSize)*scaleX), (float)((Const.HUDPadding+Const.meterHeight+Const.meterFrameSize)*scaleY), frame);
 		//Draw green background
-		canvas.drawRect((float)((this.width - Const.meterWidth - HUDPadding)*scaleX), (float)(HUDPadding*scaleY), (float)((this.width - HUDPadding)*scaleX), (float)((HUDPadding+Const.meterHeight)*scaleY), green);
+		canvas.drawRect((float)((this.width - Const.meterWidth - Const.HUDPadding)*scaleX), (float)(Const.HUDPadding*scaleY), (float)((this.width - Const.HUDPadding)*scaleX), (float)((Const.HUDPadding+Const.meterHeight)*scaleY), green);
 		//Draw red indicator that moves with current heat level
-		canvas.drawRect((float)((this.width - Const.meterWidth - HUDPadding)*scaleX), (float)(HUDPadding*scaleY), (float)((this.width - HUDPadding - Const.meterWidth*(1-heatMeter.getHeat()))*scaleX), (float)((HUDPadding+Const.meterHeight)*scaleY), red);
+		canvas.drawRect((float)((this.width - Const.meterWidth - Const.HUDPadding)*scaleX), (float)(Const.HUDPadding*scaleY), (float)((this.width - Const.HUDPadding - Const.meterWidth*(1-heatMeter.getHeat()))*scaleX), (float)((Const.HUDPadding+Const.meterHeight)*scaleY), red);
 	}
 
 	//Draw the healtheter
@@ -1056,11 +1062,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		//Draw in top left corner
 		//Draw frame
-		canvas.drawRect((float)((HUDPadding-Const.meterFrameSize)*scaleX), (float)((HUDPadding-Const.meterFrameSize)*scaleY), (float)((HUDPadding+Const.meterWidth+Const.meterFrameSize)*scaleX), (float)((HUDPadding+Const.meterHeight+Const.meterFrameSize)*scaleY), frame);
+		canvas.drawRect((float)((Const.HUDPadding-Const.meterFrameSize)*scaleX), (float)((Const.HUDPadding-Const.meterFrameSize)*scaleY), (float)((Const.HUDPadding+Const.meterWidth+Const.meterFrameSize)*scaleX), (float)((Const.HUDPadding+Const.meterHeight+Const.meterFrameSize)*scaleY), frame);
 		//Draw green background
-		canvas.drawRect((float)(HUDPadding*scaleX), (float)(HUDPadding*scaleY), (float)((HUDPadding+Const.meterWidth)*scaleX), (float)((HUDPadding+Const.meterHeight)*scaleY), red);
+		canvas.drawRect((float)(Const.HUDPadding*scaleX), (float)(Const.HUDPadding*scaleY), (float)((Const.HUDPadding+Const.meterWidth)*scaleX), (float)((Const.HUDPadding+Const.meterHeight)*scaleY), red);
 		//Draw red indicator that moves with current heat level
-		canvas.drawRect((float)(HUDPadding*scaleX), (float)(HUDPadding*scaleY), (float)((HUDPadding+Const.meterWidth*protagonist.getHealth())*scaleX), (float)((HUDPadding+Const.meterHeight)*scaleY), green);
+		canvas.drawRect((float)(Const.HUDPadding*scaleX), (float)(Const.HUDPadding*scaleY), (float)((Const.HUDPadding+Const.meterWidth*protagonist.getHealth())*scaleX), (float)((Const.HUDPadding+Const.meterHeight)*scaleY), green);
 	}
 
 	//Draw the sun, moving in time
@@ -1107,6 +1113,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					canvas.drawBitmap(treeBitmaps[1][trees.get(i)[2]], (float)((trees.get(i)[0] - Const.maxTreeWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(trees.get(i)[0])-Const.partOfTreeVisible*Const.maxTreeHeight - screenY)*scaleY), null);
 				}
 			}
+		}
+	}
+	
+	//Draw dust if needed
+	public void renderDust(Canvas canvas){
+		if(time - latestDashTime < Const.dustDecayTime){
+			cloaker.setAlpha((int)(255 - 255.*(time-latestDashTime)/Const.dustDecayTime));
+			canvas.drawBitmap(dustBitmap, (float)((dashX - Const.dustWidth/2 - screenX)*scaleX), (float)((dashY - Const.dustHeight/2 - screenY)*scaleX), cloaker);
 		}
 	}
 
@@ -1199,8 +1213,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			minString = "" + mins;
 		}
 
-		canvas.drawRect((float)((width/2-Const.timeAreaWidth/2)*scaleX), (float)(HUDPadding*scaleY), (float)((width/2+Const.timeAreaWidth/2)*scaleX), (float)((HUDPadding+Const.timeAreaHeight)*scaleY), textBackground);
-		canvas.drawText(minString + ":" + secString, (float)(width/2*scaleX), (float)((HUDPadding+Const.timeAreaHeight - (Const.timeAreaHeight-timePaint.getTextSize()/scaleX)/2)*scaleY), timePaint);
+		canvas.drawRect((float)((width/2-Const.timeAreaWidth/2)*scaleX), (float)(Const.HUDPadding*scaleY), (float)((width/2+Const.timeAreaWidth/2)*scaleX), (float)((Const.HUDPadding+Const.timeAreaHeight)*scaleY), textBackground);
+		canvas.drawText(minString + ":" + secString, (float)(width/2*scaleX), (float)((Const.HUDPadding+Const.timeAreaHeight - (Const.timeAreaHeight-timePaint.getTextSize()/scaleX)/2)*scaleY), timePaint);
 	}
 
 	//Draw bird
@@ -1353,7 +1367,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		};
 		flowerBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flower), (int)(Const.flowerSize*scaleX), (int)(Const.flowerSize*scaleY), true);
-
+		dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
+		
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
 		enemyEyeMouthBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyEyeMouthYScale*scaleY), true);
