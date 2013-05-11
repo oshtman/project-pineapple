@@ -16,14 +16,15 @@ public class Bullet {
 	private boolean colliding;
 	private int rotation;
 	private int type;
+	private Protagonist protagonist;
 
 	//CONSTRUCTOR
-	public Bullet(double x, double y, double angle, double bulletSpeed) {
+	public Bullet(double x, double y, double angle, double bulletSpeed, Protagonist protagonist) {
 		angle += Math.random()*SPREAD-SPREAD/2;
 		this.xPos = x;
 		this.yPos = y;
-		this.xVel = Math.cos(angle/180*Math.PI)*bulletSpeed;
-		this.yVel = -Math.sin(angle/180*Math.PI)*bulletSpeed;
+		this.xVel = protagonist.getXVel() + Math.cos(angle/180*Math.PI)*bulletSpeed;
+		this.yVel = protagonist.getYVel() - Math.sin(angle/180*Math.PI)*bulletSpeed;
 		this.angle = angle;
 		rotation = (int)(Math.random()*360);
 		type = (int)(Math.random()*3);

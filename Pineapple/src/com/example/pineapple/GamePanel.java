@@ -366,7 +366,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			//Fire
 			if(level > 0 || currentCheckpoint > 6){
 				if(!heatMeter.isCoolingDown()){
-					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(protagonist.getAim()/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(protagonist.getAim()/180*Math.PI), protagonist.getAim(), 10));
+					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(protagonist.getAim()/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(protagonist.getAim()/180*Math.PI), protagonist.getAim(), 10, protagonist));
 					firing = true;
 					sm.playSound(0, effectVolume);
 				}

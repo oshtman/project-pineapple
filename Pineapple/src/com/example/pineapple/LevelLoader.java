@@ -425,8 +425,8 @@ public class LevelLoader {
 			enemies.add(new int[]{940, -1000, 100, 1});
 			enemies.add(new int[]{960, -1000, 100, 1});
 			enemies.add(new int[]{980, -1000, 100, 1});
-			enemies.add(new int[]{0, 20, 300, 2});
-			enemies.add(new int[]{20, 20, 300, 2});
+			enemies.add(new int[]{0, 20, 400, 2});
+			enemies.add(new int[]{20, 20, 400, 2});
 			//---Enemies on plattforms---
 			enemies.add(new int[]{300, -20, 600, 1});
 			enemies.add(new int[]{280, -160, 600, 1});
@@ -531,7 +531,7 @@ public class LevelLoader {
 			enemies.add(new int[]{590, -50, 390, 1});
 			enemies.add(new int[]{950, -40, 690, 1});//3
 			enemies.add(new int[]{970, -40, 690, 1});
-			enemies.add(new int[]{990, -40, 690, 1});
+			enemies.add(new int[]{980, -40, 690, 1});
 			enemies.add(new int[]{1520, -30, 1050, 1});//4
 			enemies.add(new int[]{1540, -30, 1050, 1});
 			enemies.add(new int[]{1560, -30, 1050, 1});
