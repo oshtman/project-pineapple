@@ -92,7 +92,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint textPaint;
 	private Bird bird;
 	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound, mentorPlayCounter, mentorSentencesToSay;
-	private int mentorSoundIndexStart = 5;
+	private int mentorSoundIndexStart = 15;
 
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
@@ -279,7 +279,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		sm.addSound(1, R.raw.low_health);
 		sm.addSound(2, R.raw.bird);
 		sm.addSound(3, R.raw.protagonist_jump);
+		sm.addSound(4, R.raw.dash_start);
+		sm.addSound(5, R.raw.dash_finish);
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
+	}
+	
+	public void playSound(int index){
+		sm.playSound(index, effectVolume);
 	}
 
 	//PLay the theme in loop
@@ -343,9 +349,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//If left stick pointed, protagonist is moving. If not protagonist slow down
 	public void handleSticks(){
 		if(leftStick.isPointed()) {
-			if(leftStick.getAngle() > 45 && leftStick.getAngle() < 135 && protagonist.isTouchingGround()){
-				sm.playSound(3, effectVolume);
-			}
 			protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
 		} else if (Math.abs(protagonist.getXVel()) > 0){
 			protagonist.slowDown();
@@ -505,8 +508,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					i--;
 					Log.d(TAG, "Enemy down. Splash.");
 				}
+				
 			}
 		}
+		sm.playSound(5, effectVolume);
 	}
 
 	//Check if protagonist passes finish line
