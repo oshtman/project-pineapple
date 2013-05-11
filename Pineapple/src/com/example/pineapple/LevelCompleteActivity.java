@@ -51,13 +51,17 @@ public class LevelCompleteActivity extends BaseActivity {
 			int milliSecs = time*MainThread.updateInterval;
 			String mins = ((milliSecs/1000.)/60 >= 10)?""+(int)(milliSecs/1000.)/60:"0"+(int)(milliSecs/1000.)/60;
 			String secs = ((milliSecs/1000.)%60 >= 10)?""+(int)(milliSecs/1000.)%60:"0"+(int)(milliSecs/1000.)%60;
-			String millisecs = (milliSecs%1000 < 10)?"00"+(milliSecs%1000):(milliSecs%1000 < 100)?"0"+(milliSecs%1000):""+(milliSecs%1000);
+			milliSecs /= 10;
+			String millisecs = (milliSecs%100 < 10)?"0"+(milliSecs%100):""+(milliSecs%100);
 			
 			dataText = (TextView) findViewById(R.id.timeText);
 			dataText.setText(mins+":"+secs+","+millisecs);
 			
 			dataText = (TextView) findViewById(R.id.healthText);
 			dataText.setText(health + "%");
+			
+			dataText = (TextView) findViewById(R.id.scoreText);
+			dataText.setText(""+ 1000);
 		}
 		ImageView newLevelText = (ImageView) findViewById(R.id.newLevelText);
 		
