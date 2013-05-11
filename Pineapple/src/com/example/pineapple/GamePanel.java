@@ -501,7 +501,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void sendEnemiesFlying(){
 		for(i = 0; i < enemies.size(); i++){
-			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground, protagonist, platforms)){
+			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground, protagonist, platforms) && enemies.get(i).hasSpawned()){
 				enemies.get(i).takeDashDamage(protagonist);
 				Log.d(TAG, "In reach for dash! Watch me.");
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
