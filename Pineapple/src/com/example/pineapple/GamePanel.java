@@ -270,6 +270,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void loadSounds(){
 		sm.addSound(0, R.raw.fire_sound);
 		sm.addSound(1, R.raw.low_health);
+		sm.addSound(2, R.raw.bird);
+		sm.addSound(3, R.raw.protagonist_jump);
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 	}
 
@@ -315,7 +317,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(level == 0){
 			moveMentor();
 			handleCheckpoints();
-			bird.update();
+			if(bird != null){
+				bird.update();
+			}
 			if(currentCheckpoint == 8){
 				screenY += (50-screenY)/20;
 			}
@@ -332,6 +336,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//If left stick pointed, protagonist is moving. If not protagonist slow down
 	public void handleSticks(){
 		if(leftStick.isPointed()) {
+			if(leftStick.getAngle() > 45 && leftStick.getAngle() < 135 && protagonist.isTouchingGround()){
+				sm.playSound(3, effectVolume);
+			}
 			protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
 		} else if (Math.abs(protagonist.getXVel()) > 0){
 			protagonist.slowDown();
@@ -636,12 +643,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(protagonist.getXPos() > checkpoints[7] - width/4){
 				currentCheckpoint++;
 				mentorSentencesToSay = 2;
+				sm.playLoopedSound(2, effectVolume);
 			}
 			break;
 		case 8:
 			if(bird.collide(bullets)){
 				currentCheckpoint++;
 				mentorSentencesToSay = 3;
+				sm.stop(2);
 			}
 			break;
 		case 9:
