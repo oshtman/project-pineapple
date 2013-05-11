@@ -293,7 +293,7 @@ public class Protagonist {
 
 	//Check if the protagonist is standing on the ground (make sure he is)
 	public void checkGround(Ground g){
-		if(this.yPos + height/2 > g.getYFromX(this.xPos)){
+		if(this.getYPos() + this.getHeight()/2 + this.getYVel() > g.getYFromX(this.getXPos())){
 			this.yPos = g.getYFromX(this.xPos)-height/2;
 			this.yVel = 0;
 			this.yAcc = 0;
@@ -308,7 +308,8 @@ public class Protagonist {
 		if(platformNumber == -1){
 			//No platform around protagonist
 		} else {
-			if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos())){
+			//if feet is in platform
+			if(this.getYPos() + this.getHeight()/2 + this.getYVel() > platforms.get(platformNumber).getUpperYFromX(this.getXPos())){
 				this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 				this.setYAcc(0);
 				this.setYVel(0);
@@ -323,7 +324,6 @@ public class Protagonist {
 			if (platforms.get(i).spans(getXPos()) && this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
 				this.setYVel(-this.getYVel());
 				Log.d(TAG, "Headache!!");
-				//if feet is in platform
 			} else if (platforms.get(i).checkSide(this, -1) && getXPos() < platforms.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > platforms.get(i).getUpperX()[0] && getXVel() > 0) {
 				this.setXVel(0);
 				this.setXPos(platforms.get(i).getUpperX()[0] - getWidth()/2);
