@@ -337,6 +337,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			// Go to a new activity (game over)
 			Context context = getContext();
 			Intent intent = new Intent(context, GameOverActivity.class);
+			intent.putExtra(GamePanel.LEVEL, level);
 			context.startActivity(intent);
 			if(viewStatistics){
 				playTimeTotal = MainThread.updateInterval*time/1000; //time in seconds

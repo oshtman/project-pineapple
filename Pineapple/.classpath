@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="C:/Users/Oskar/Desktop/Scoreloop_core_social_android_3.1/ScoreloopCore/scoreloop-core.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
