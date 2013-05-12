@@ -62,7 +62,7 @@ public class LevelCompleteActivity extends BaseActivity {
 			dataText = (TextView) findViewById(R.id.healthText);
 			dataText.setText(health + "%");
 			
-			int score = 100 - centiSecs/100 + 1*scoreKill[0] + 1*scoreKill[1] + 3*scoreKill[2] + health;
+			int score = (100 - centiSecs/100 + 5*scoreKill[0] + 7*scoreKill[1] + 10*scoreKill[2] + health)*10;
 			dataText = (TextView) findViewById(R.id.scoreText);
 			dataText.setText(""+ score);
 			stats.setVisibility(View.VISIBLE);
