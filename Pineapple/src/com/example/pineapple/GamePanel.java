@@ -63,7 +63,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint enemyPaint = new Paint();
 	private Paint timePaint = new Paint();
 	private Paint textBackground = new Paint();
-	private double time;
+	private int time;
 	private double bulletDamage = 0.05;
 	private MediaPlayer fireSound;
 	private SoundManager sm;
@@ -518,7 +518,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		dashX = (int)protagonist.getXPos();
 		dashY = (int)(protagonist.getYPos() - protagonist.getHeight()/4);
-		latestDashTime = (int)time;
+		latestDashTime = time;
 		sm.playSound(5, effectVolume);
 	}
 
@@ -667,6 +667,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(protagonist.getXPos() > checkpoints[7] - width/4){
 				currentCheckpoint++;
 				mentorSentencesToSay = 2;
+				Log.d(TAG, "HAJJJJ");
 				sm.playLoopedSound(2, effectVolume);
 			}
 			break;
@@ -766,7 +767,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					if(enemies.get(i).hasSpawned()){
 						if(enemies.get(i).getXPos() + enemies.get(i).getWidth() > screenX && enemies.get(i).getXPos() - enemies.get(i).getWidth() < screenX + width){
 							Enemy e = enemies.get(i);
-							feetAngle = (int)(Const.enemyMaxFootAngle*Math.sin(time/3));
+							feetAngle = (int)(Const.enemyMaxFootAngle*Math.sin(time/3.));
 							if(e.wasHitThisFrame()){
 								enemyPaint = stamper;
 							} else {
@@ -1205,7 +1206,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw Hints
 	public void renderTime(Canvas canvas){
-		int secs = (int)(time*MainThread.updateInterval/1000);
+		int secs = time*MainThread.updateInterval/1000;
 		int mins = secs/60;
 		secs =     secs%60;
 		String secString, minString;
