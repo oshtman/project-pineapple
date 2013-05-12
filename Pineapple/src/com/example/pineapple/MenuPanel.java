@@ -57,6 +57,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		setFocusable(true);
 		thread = new MainThread(this.getHolder(), this);
 		this.context = context;
+		sm = new SoundManager(context, 1);
 		protagonist = new Protagonist(-20, 80);
 		butterfly = new Butterfly();
 		renderMatrix = new Matrix();
@@ -122,6 +123,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void loadSounds(){
+		sm.addSound(0, R.raw.fire_sound);
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 		try {
 			theme.prepare();
@@ -148,6 +150,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			Editor e = settings.edit();
 			e.putFloat("soundVolume", (float)soundSlider.getValue());
 			e.commit();
+			sm.playSound(0, settings.getFloat("soundVolume", 0));
 		}
 	}
 
@@ -331,6 +334,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					ed.putFloat("soundVolume", settings.getFloat("soundVolume", 1)>0?0:1);
 					ed.commit();
 					soundSlider.setValue(settings.getFloat("soundVolume", 1));
+					sm.playSound(0, settings.getFloat("soundVolume", 0));
+					
 				}
 				if(musicButton.isClicked(touchX, touchY)){
 					Editor ed = settings.edit();
