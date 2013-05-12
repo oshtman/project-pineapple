@@ -6,28 +6,33 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 public class GameOverActivity extends BaseActivity {
 	private final String TAG = GameOverActivity.class.getSimpleName();
+	private int failedLevel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_game_over);
+		failedLevel = getIntent().getExtras().getInt(GamePanel.LEVEL);
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.game_over, menu);
-		return true;
-	}
-
+	
 	public void goToMain(View view){
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
 	}
 
+	public void goToSameLevel(View view){
+		Intent intent = new Intent(this, GameActivity.class);
+		intent.putExtra(MenuPanel.LEVEL, failedLevel);
+		startActivity(intent);
+	}
+	
 	@Override
 	public void onBackPressed() { //Override so that the player cannot go to a previous activity
 		Log.d(TAG, "Back button");

@@ -40,7 +40,7 @@ public class LevelCompleteActivity extends BaseActivity {
 			e.commit();
 		}
 		TableLayout stats = (TableLayout) findViewById(R.id.tableLayout1);
-		if(true){
+		if(settings.getBoolean("scoring", false)){
 			TextView dataText;
 			dataText = (TextView) findViewById(R.id.normalsKilledText);
 			dataText.setText(""+scoreKill[0]);
@@ -74,7 +74,6 @@ public class LevelCompleteActivity extends BaseActivity {
 		ImageView newLevelText = (ImageView) findViewById(R.id.newLevelText);
 		
 		if(newLevel){
-			Log.d(TAG, "You unlocked a new level!");
 			newLevelText.setVisibility(ImageView.VISIBLE);
 		} else {
 			newLevelText.setVisibility(ImageView.INVISIBLE);
