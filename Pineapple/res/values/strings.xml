@@ -19,5 +19,6 @@
     <string name="playAgain">Play Again</string>
     <string name="newLevel">You unlocked a new level! :D </string>
     <string name="score">Score</string>
-	
+    <string name="title_activity_terms_of_service">TermsOfServiceActivity</string>
+
 </resources>

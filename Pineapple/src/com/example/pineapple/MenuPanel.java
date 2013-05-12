@@ -2,6 +2,7 @@ package com.example.pineapple;
 
 import java.io.IOException;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,12 +11,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.scoreloop.client.android.core.controller.TermsOfServiceController;
+import com.scoreloop.client.android.core.controller.TermsOfServiceControllerObserver;
+import com.scoreloop.client.android.core.model.Session;
+import com.scoreloop.client.android.core.model.TermsOfService;
 
 public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = MenuPanel.class.getSimpleName();
@@ -52,6 +57,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private float aimAngle, feetAngle;
 	private int time = 0;
 	
+	private final TermsOfServiceController controller;
 
 	public MenuPanel(Context context) {
 		super(context);
@@ -69,10 +75,29 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		sm = new SoundManager(getContext());
 		loadSounds();
 		playTheme();
-		//Load saved variables
-
-
+		
+	    //controller to handle the user's acceptance of the Terms Of Service
+		controller = new TermsOfServiceController(new TermsOfServiceControllerObserver() {
+			 @Override
+			 public void termsOfServiceControllerDidFinish(final TermsOfServiceController controller, final Boolean accepted) {
+			    if(accepted != null) {
+			        // we have conclusive result
+			        if(accepted) {
+			            // user did accept
+			        }
+			        else {
+			        	// user declined
+			        }
+			    }
+			 }
+		});
+		
+		
 	}
+	//Load saved variables
+
+
+
 
 	public void update(){
 		if(Math.abs(protagonist.getXPos() - desiredX[menuState]) > 10){
@@ -95,7 +120,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(menuState == SETTINGS_MENU){
 			setVolumes();
 		}
-		
+
 		time++;
 
 	}
@@ -136,7 +161,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		theme.setVolume(settings.getFloat("musicVolume", 0), settings.getFloat("musicVolume", 0));
 	}
-	
+
 	public void setVolumes(){
 		if(musicSlider.isSliding()){
 			Editor e = settings.edit();
@@ -158,6 +183,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderButtons(canvas);
 		renderProtagonist(canvas);
 		renderSliders(canvas);
+		renderUser();
 	}
 
 	public void renderButtons(Canvas canvas){
@@ -185,12 +211,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 
 	}
-	
+
 	public void renderSliders(Canvas canvas){
 		if(menuState == SETTINGS_MENU){
 			canvas.drawBitmap(sliderLineBitmap, (float)(musicSlider.getX()*scaleX), (float)(musicSlider.getY()*scaleY), null);
 			canvas.drawBitmap(sliderHandleBitmap, (float)((musicSlider.getX() + musicSlider.getWidth()*musicSlider.getValue()-Const.sliderHandleWidth/2)*scaleX), (float)((musicSlider.getY()+Const.menuButtonHeight/4*Math.sin(time/45.*Math.PI))*scaleY), null);
-			
+
 			canvas.drawBitmap(sliderLineBitmap, (float)(soundSlider.getX()*scaleX), (float)(soundSlider.getY()*scaleY), null);
 			canvas.drawBitmap(sliderHandleBitmap, (float)((soundSlider.getX() + soundSlider.getWidth()*soundSlider.getValue()-Const.sliderHandleWidth/2)*scaleX), (float)((soundSlider.getY()+Const.menuButtonHeight/4*Math.cos(time/45.*Math.PI))*scaleY), null);
 		}
@@ -205,12 +231,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		Log.d(TAG, "Hit");
 
 		scaleY = (double)getHeight()/100;
 		scaleX = (double)getWidth()/155;
-		
-		
+
+
 		Bitmap playBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.start), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		playButton = new Button(10, 10, playBitmap.getWidth()/scaleX, playBitmap.getHeight()/scaleY, playBitmap);
 
@@ -228,7 +253,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		Bitmap scoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.score), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		scoreButton = new Button(10, (int)(10 + 3*Const.menuButtonHeight), scoreBitmap.getWidth()/scaleX, scoreBitmap.getHeight()/scaleY, scoreBitmap);
-		
+
 		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth() + Const.HUDPadding, musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
 		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
 
@@ -266,13 +291,13 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_in), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_out), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true)
 		};
-		
+
 		sliderLineBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_line), (int)(musicSlider.getWidth()*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
 		sliderHandleBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_handle), (int)(Const.sliderHandleWidth*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
-		
+
 		onBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
 		offBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
-		
+
 		if(currentLevel > 7)
 			currentLevel = 7;
 		levelButtons = new Button[currentLevel+1];
@@ -316,11 +341,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
-		
+
 		touchX = (int)(e.getX()/scaleX);
 		touchY = (int)(e.getY()/scaleY);
 		if(e.getAction() == MotionEvent.ACTION_DOWN){
-			
+
 			switch(menuState){
 			case MAIN_MENU:
 				if(playButton.isClicked(touchX, touchY)){
@@ -345,7 +370,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					ed.commit();
 					soundSlider.setValue(settings.getFloat("soundVolume", 1));
 					sm.playSound(0, settings.getFloat("soundVolume", 0));
-					
+
 				}
 				if(musicButton.isClicked(touchX, touchY)){
 					Editor ed = settings.edit();
@@ -358,6 +383,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					Editor ed = settings.edit();
 					ed.putBoolean("scoring", settings.getBoolean("scoring", false)?false:true);
 					ed.commit();
+					if(settings.getBoolean("scoring", false)){
+						controller.query(null);
+					}
 				}
 				soundSlider.handleTouch(touchX, touchY);
 				musicSlider.handleTouch(touchX, touchY);
