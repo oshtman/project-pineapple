@@ -41,6 +41,8 @@ public class LevelLoader {
 	private ArrayList<int[]> rocks = new ArrayList<int[]>();
 	//List for flowers {x position, type}
 	private ArrayList<int[]> flowers = new ArrayList<int[]>();
+	//List for skeletons {x position, add more to y if visible above ground}
+	private ArrayList<int[]> skeletons = new ArrayList<int[]>();
 
 
 	//Checkpoint array for the tutorial, the mentor will stop at these locations and give some advice
@@ -194,6 +196,8 @@ public class LevelLoader {
 			flowers.add(new int[]{endPoint - 250, 0});
 			flowers.add(new int[]{endPoint - 120, 0});
 			flowers.add(new int[]{finishX + 20, 0});
+			//Skeletons
+			skeletons.add(new int[]{5400, 10});
 			break;
 		case 3:
 			finishX = 380;
@@ -239,6 +243,9 @@ public class LevelLoader {
 			flowers.add(new int[]{-10, 0});
 			flowers.add(new int[]{80, 0});
 			flowers.add(new int[]{finishX + 10, 0});
+			//Skeletons
+			skeletons.add(new int[]{220, 0});
+			skeletons.add(new int[]{-50, 40});
 			break;
 		case 5://Downhill			
 			//Start and finish
@@ -252,9 +259,9 @@ public class LevelLoader {
 			ground[1][1] = 60;
 			ground[0][2] = 20;
 			ground[1][2] = 100;
-			ground[0][3] = 400;
+			ground[0][3] = 400; //Down
 			ground[1][3] = 10;
-			ground[0][4] = 1400;
+			ground[0][4] = 1400; //Here
 			ground[1][4] = 1500;
 			ground[0][5] = 2000;
 			ground[1][5] = 1400;
@@ -266,10 +273,10 @@ public class LevelLoader {
 			ground[1][8] = 1150;
 			ground[0][9] = 3200;
 			ground[1][9] = 1100;
-			ground[0][10] = 3300;
-			ground[1][10] = 1100;
-			ground[0][11] = 4000;
-			ground[1][11] = 2000;
+			ground[0][10] = 3300; //Down
+			ground[1][10] = 1100; 
+			ground[0][11] = 4000; //Here
+			ground[1][11] = 2000; 
 			ground[0][12] = 4500;
 			ground[1][12] = 2000;
 			ground[0][13] = 4800;
@@ -329,6 +336,7 @@ public class LevelLoader {
 			//Rocks
 			rocks.add(new int[]{4150, 1, 20, 0});
 			rocks.add(new int[]{4250, 3, 20, 0});
+			rocks.add(new int[]{-50, 2, 50, 0});
 			//Flowers
 			for (int j = 0; j < 4 ; j++){
 				if(j != 2)
@@ -341,6 +349,9 @@ public class LevelLoader {
 			flowers.add(new int[]{4435, 0});
 			flowers.add(new int[]{4460, 0});
 			flowers.add(new int[]{1, 0});
+			//Skeletons
+			skeletons.add(new int[]{800, 50});
+			skeletons.add(new int[]{3500, 50});
 			break;
 		case 6: //Up and away
 			//Start and finish
@@ -450,7 +461,7 @@ public class LevelLoader {
 			rocks.add(new int[]{-50, (int)(4*Math.random()), 20, 0});
 			rocks.add(new int[]{500, (int)(4*Math.random()), 17, 0});
 			rocks.add(new int[]{570, (int)(4*Math.random()), 25, 1});
-			//Flower
+			//Flowers
 			flowers.add(new int[]{0, 0});
 			flowers.add(new int[]{630, 0});
 			flowers.add(new int[]{640, 0});
@@ -459,6 +470,8 @@ public class LevelLoader {
 			flowers.add(new int[]{773, 0});
 			flowers.add(new int[]{840, 0});
 			flowers.add(new int[]{1150, 0});
+			//Skeletons
+			skeletons.add(new int[]{640, 10});
 			break;
 		case 7://Sea
 			//Start and finish
@@ -549,6 +562,8 @@ public class LevelLoader {
 			//Flowers
 			flowers.add(new int[]{0, 0});
 			flowers.add(new int[]{1910, 0});
+			//Skeletons
+			skeletons.add(new int[]{40, 0});
 			break;
 		}
 	}
@@ -608,6 +623,14 @@ public class LevelLoader {
 
 	public int getNumberOfFlowers(){
 		return flowers.size();
+	}
+	
+	public ArrayList<int[]> getSkeletons(){
+		return skeletons;
+	}
+
+	public int getNumberOfSkeletons(){
+		return skeletons.size();
 	}
 
 	public int getStartX(){
