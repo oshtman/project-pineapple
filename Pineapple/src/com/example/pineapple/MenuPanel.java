@@ -2,7 +2,6 @@ package com.example.pineapple;
 
 import java.io.IOException;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,17 +9,21 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.scoreloop.client.android.core.controller.RequestController;
+import com.scoreloop.client.android.core.controller.RequestControllerObserver;
 import com.scoreloop.client.android.core.controller.TermsOfServiceController;
 import com.scoreloop.client.android.core.controller.TermsOfServiceControllerObserver;
-import com.scoreloop.client.android.core.model.Session;
-import com.scoreloop.client.android.core.model.TermsOfService;
+import com.scoreloop.client.android.core.controller.UserController;
+import com.scoreloop.client.android.core.model.User;
 
 public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final String TAG = MenuPanel.class.getSimpleName();
@@ -30,6 +33,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int SETTINGS_MENU = 2;
 	private final int HIGHSCORE_MENU = 3;
 	private final int PLAY = 4;
+	private final int width = 155, height = 100;
 	private double scaleX, scaleY;
 	private Button playButton, settingsButton, highscoreButton, soundButton, musicButton, scoreButton;
 	private MainThread thread;
@@ -56,8 +60,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Butterfly butterfly;
 	private float aimAngle, feetAngle;
 	private int time = 0;
-	
+	private Paint userPaint;
+
+
 	private final TermsOfServiceController controller;
+	private UserController userController;
+	private static String userName = "loading...";
 
 	public MenuPanel(Context context) {
 		super(context);
@@ -75,24 +83,41 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		sm = new SoundManager(getContext());
 		loadSounds();
 		playTheme();
-		
-	    //controller to handle the user's acceptance of the Terms Of Service
+
+		userPaint = new Paint();
+		userPaint.setColor(Color.WHITE);
+
+		//controller to handle the user's acceptance of the Terms Of Service
 		controller = new TermsOfServiceController(new TermsOfServiceControllerObserver() {
-			 @Override
-			 public void termsOfServiceControllerDidFinish(final TermsOfServiceController controller, final Boolean accepted) {
-			    if(accepted != null) {
-			        // we have conclusive result
-			        if(accepted) {
-			            // user did accept
-			        }
-			        else {
-			        	// user declined
-			        }
-			    }
-			 }
+			@Override
+			public void termsOfServiceControllerDidFinish(final TermsOfServiceController controller, final Boolean accepted) {
+				if(accepted != null) {
+					// we have conclusive result
+					if(accepted) {
+						// user did accept
+					}
+					else {
+						// user declined
+					}
+				}
+			}
 		});
+		RequestControllerObserver observer = new RequestControllerObserver() {
+			public void requestControllerDidReceiveResponse(RequestController requestController) {
+				UserController userController = (UserController)requestController;
+				MenuPanel.setUserName(userController.getUser().getDisplayName());
+			}
+			public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
+				// the profile could not be loaded :(
+
+			}
+		};
 		
+		userController = new UserController(observer);
+		userController.loadUser();
 		
+		//showProgressIndicator();
+
 	}
 	//Load saved variables
 
@@ -183,7 +208,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderButtons(canvas);
 		renderProtagonist(canvas);
 		renderSliders(canvas);
-		renderUser();
+		renderUser(canvas);
 	}
 
 	public void renderButtons(Canvas canvas){
@@ -222,6 +247,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
+	public void renderUser(Canvas canvas){
+		canvas.drawText("User: " + userName, (float)((Const.HUDPadding/2*scaleX)), (float)((height-Const.HUDPadding/2)*scaleY), userPaint);
+	}
+
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -232,8 +261,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 
-		scaleY = (double)getHeight()/100;
-		scaleX = (double)getWidth()/155;
+		scaleY = (double)getHeight()/height;
+		scaleX = (double)getWidth()/width;
 
 
 		Bitmap playBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.start), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
@@ -258,7 +287,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
 
 
-		backgroundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.menu_background), (int)(155*scaleX), (int)(100*scaleY), true);
+		backgroundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.menu_background), (int)(width*scaleX), (int)(height*scaleY), true);
 
 		bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
 		eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_eye_mouth), (int)(protagonist.getWidth()*scaleX*Const.eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeMouthYScale), true);
@@ -304,6 +333,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(int i = 0; i <= currentLevel && i < 8; i++){
 			levelButtons[i] = new Button(Const.HUDPadding + (int)(Const.menuButtonWidth*(i/Const.levelButtonsPerRow)), Const.HUDPadding + (int)(Const.menuButtonHeight*(i%Const.levelButtonsPerRow)), Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
 		}
+
+		userPaint.setTextSize((float)(10*scaleY));
+		userPaint.setAntiAlias(true);
+		userPaint.setDither(true);
 
 		//Start the thread
 		if (thread.getState()==Thread.State.TERMINATED) { 
@@ -478,5 +511,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawBitmap(butterflyBitmaps[(int)(Math.abs(butterfly.getCounter() % 2))], renderMatrix, null);
 	}
 
+	public static void setUserName(String name){
+		userName = name;
+	}
 
 }
