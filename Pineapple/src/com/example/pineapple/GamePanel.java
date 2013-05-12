@@ -51,6 +51,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<int[]> trees;
 	private ArrayList<int[]> rocks;
 	private ArrayList<int[]> flowers;
+	private ArrayList<int[]> skeletons;
 	private ArrayList<double[]> clouds;
 	private int level;
 	private HeatMeter heatMeter;
@@ -129,6 +130,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[] flagBitmaps;
 	private Bitmap flowerBitmap;
 	private Bitmap dustBitmap;
+	private Bitmap skeletonBitmap;
 	private Bitmap fruitBitmap;
 
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
@@ -178,6 +180,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadTrees();
 		loadRocks();
 		loadFlowers();
+		loadSkeletons();
 		clouds = new ArrayList<double[]>();
 		loadSounds();
 
@@ -284,6 +287,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the flowers from LevelLoader and add them to the platforms list 
 	public void loadFlowers(){
 		flowers = levelLoader.getFlowers();
+	}
+	
+	//Load the skeletons from LevelLoader and add them to the platforms list 
+	public void loadSkeletons(){
+		skeletons = levelLoader.getSkeletons();
 	}
 
 	//Load the sounds
@@ -786,6 +794,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderFlag(canvas, 1);
 		renderRocks(canvas, 1);
 		renderTrees(canvas, 1);
+		renderSkeletons(canvas);
 
 		//HUD
 		renderSticks(canvas);
@@ -1143,6 +1152,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
+	//Draw skeletons
+	public void renderSkeletons(Canvas canvas){
+		for(i = 0; i < skeletons.size(); i++){
+			if(skeletons.get(i)[0] > screenX - Const.skeletonSize/2 && skeletons.get(i)[0] < screenX + width + Const.skeletonSize/2){
+				canvas.drawBitmap(skeletonBitmap, (float)((skeletons.get(i)[0] - Const.skeletonSize/4 - screenX)*scaleX), (float)((ground.getYFromX(skeletons.get(i)[0]) + Const.skeletonSize/4 - screenY + skeletons.get(i)[1])*scaleY), null);
+			}
+		}
+	}
 
 	//Draw rocks
 	public void renderRocks(Canvas canvas, int depth){
@@ -1428,6 +1445,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		};
 		flowerBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flower), (int)(Const.flowerSize*scaleX), (int)(Const.flowerSize*scaleY), true);
 		dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
+		skeletonBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skeleton), (int)(Const.skeletonSize*scaleX), (int)(Const.skeletonSize*scaleY), true);
 		fruitBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fruit), (int)(Const.tutorialFruitSize*scaleX), (int)(Const.tutorialFruitSize*scaleY), true);
 
 		//Drone

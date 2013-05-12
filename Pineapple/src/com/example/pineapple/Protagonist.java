@@ -153,6 +153,8 @@ public class Protagonist {
 		if(!dashing){
 			dashing = true;
 			startHeight = this.getYPos();
+			this.setXVel(0);
+			this.setXAcc(0);
 			this.checkOverPlatform(platforms); // Can perhaps be removed later
 			if(platformNumber >= 0){
 				Log.d(TAG, "Coming down 2 u!! #onPlatform");
