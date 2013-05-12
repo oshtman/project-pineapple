@@ -50,6 +50,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Butterfly butterfly;
 	private float aimAngle, feetAngle;
 	private int time = 0;
+	
 
 	public MenuPanel(Context context) {
 		super(context);

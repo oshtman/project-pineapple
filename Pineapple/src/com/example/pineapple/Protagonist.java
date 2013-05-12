@@ -235,6 +235,7 @@ public class Protagonist {
 	}
 
 	public void inAir(ArrayList<Platform> platforms, Ground g) {
+		checkOverPlatform(platforms);
 		if(platformNumber == -1){
 			if(this.getYPos() < g.getYFromX(this.getXPos()) - this.getHeight()){
 				touchingGround = false;

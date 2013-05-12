@@ -86,6 +86,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private boolean criticalHealthFlag = false;
 	private int latestDashTime = -Const.dustDecayTime;
 	private int dashX, dashY;
+	private int latestAction = 0;
+	private int protagonistSoundIndexStart = 25;
 
 
 	//Special tutorial variables
@@ -97,6 +99,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bird bird;
 	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound, mentorPlayCounter, mentorSentencesToSay;
 	private int mentorSoundIndexStart = 15;
+	private boolean tutorialFruitUp = true;
+	private int tutorialFruitYSpeed = 0;
 
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
@@ -124,6 +128,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[] flagBitmaps;
 	private Bitmap flowerBitmap;
 	private Bitmap dustBitmap;
+	private Bitmap fruitBitmap;
 
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -192,7 +197,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentor = new Protagonist(10, 0, this);
 			checkpoints = levelLoader.getCheckpoints();
 			hints = new ArrayList<ArrayList<String>>();
-			bird = new Bird(790, 100);
+
 			pastCheckpointBorder = 10;
 			String[] rawHints = {
 					"Hi there, welcome to the tutorial! Let's get right into the action! You can move around by using your left stick! Why don't you give it a go?",
@@ -203,7 +208,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					"That was fun! But let's get back to business!",
 					"Even though we are a peaceful people with no enemies what so ever, it is always good to carry some protection, like the gun in your hand for example. Fire off a couple of shots with your right stick!",
 					"Good, but shooting a gun isn't that exciting if you're not aiming at something, am I right? Let's find something to shoot!",
-					"Do you see that bird up there? They always eat my crops and sing early in the morning! See if you can scare him with your gun!",
+					"Before we go on, do you mind getting that fruit down for me? You can use your dash to shake the tree. Jump, and when you're high enough press down on your left stick!",
+					"Thank you! Oh, looks like you woke up a bird! They always eat my crops and sing early in the morning! See if you can scare him with your gun!",
 					"..... Well, now he won't wake me up early at least! We better go before the animal rights people show up. See if you can get up on this platform!",
 					"Wow, you can see so much from up here! Actually... I see something strange over there! What is that?",
 					"Good heavens, what an ugly creature! I know we are a friendly people but you better put him out of his misery! He doesn't look like a nice monster anyways...", 
@@ -286,6 +292,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		sm.addSound(3, R.raw.protagonist_jump);
 		sm.addSound(4, R.raw.dash_start);
 		sm.addSound(5, R.raw.dash_finish);
+		sm.addSound(6, R.raw.protagonist_damaged);
+		sm.addSound(protagonistSoundIndexStart+0, R.raw.protagonist_1);
+		sm.addSound(protagonistSoundIndexStart+1, R.raw.protagonist_2);
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 	}
 
@@ -312,6 +321,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleBulletEnemyCollisions();
 		handleProtagonistEnemyCollisions(ground);
 		moveAndSpawnClouds();
+		handleProtagonistMumbling();
 		checkFinish();
 		if (protagonist.checkDead()){
 			// Go to a new activity (game over)
@@ -338,14 +348,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(bird != null){
 				bird.update();
 			}
+			if(!tutorialFruitUp && Const.tutorialFruitY < 200){
+				tutorialFruitYSpeed++;
+				Const.tutorialFruitY += tutorialFruitYSpeed;
+			}
 			if(currentCheckpoint == 8){
 				screenY += (50-screenY)/20;
 			}
-			if(currentCheckpoint == 11){
+			if(currentCheckpoint == 12){
 				screenY += (183-screenY)/20;
 				screenX += (1207-screenX)/20;
 			}
-			if(protagonist.getXPos() > checkpoints[currentCheckpoint] + pastCheckpointBorder && currentCheckpoint <= 12){
+			if(protagonist.getXPos() > checkpoints[currentCheckpoint] + pastCheckpointBorder && currentCheckpoint <= 13){
 				protagonist.setXPos(checkpoints[currentCheckpoint] + pastCheckpointBorder);
 			}
 		}
@@ -369,6 +383,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(protagonist.getAim()/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(protagonist.getAim()/180*Math.PI), protagonist.getAim(), 10, protagonist));
 					firing = true;
 					sm.playSound(0, effectVolume);
+					latestAction = time;
 				}
 			}
 		}
@@ -440,6 +455,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		} else if(protagonist.getYPos() - screenY < screenYPadding){
 			screenY = protagonist.getYPos() - screenYPadding;
 		}
+		if(time-latestDashTime < Const.dustDecayTime){
+			screenY += 4*Math.exp(-(time-latestDashTime)/(double)Const.dustDecayTime)*Math.cos((time-latestDashTime)*Math.PI);
+		}
 
 	}
 
@@ -486,7 +504,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void handleProtagonistEnemyCollisions(Ground ground){
 		for(i = 0; i < enemies.size(); i++){
 			//Protagonist collide with enemy
-			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && enemies.get(i).hasSpawned()){
+			if(protagonist.collide(enemies.get(i)) && !protagonist.isInvincible() && !protagonist.isDashBonus() && enemies.get(i).hasSpawned()){
 				protagonist.setInvincible(true);
 				protagonist.setXVel(0);
 				protagonist.setYVel(-5);
@@ -498,6 +516,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						criticalHealthFlag = true;
 					}
 				}
+				latestAction = time;
+				sm.playSound(6, effectVolume);
 			}
 		}
 	}
@@ -516,9 +536,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 			}
 		}
+		if(mentor != null && mentor.isTouchingGround()){
+			mentor.setYVel(-5);
+		}
 		dashX = (int)protagonist.getXPos();
 		dashY = (int)(protagonist.getYPos() - protagonist.getHeight()/4);
 		latestDashTime = time;
+		latestAction = time;
 		sm.playSound(5, effectVolume);
 	}
 
@@ -535,7 +559,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				finishDelay--;
 			} else {
 				// Go to a new activity
-				
+
 				if(viewStatistics){
 					Context context = getContext();
 					Intent intent = new Intent(context, LevelCompleteActivity.class);
@@ -576,6 +600,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
+	public void handleProtagonistMumbling(){
+		if(time-latestAction > Const.mumbleDelay){
+			latestAction = time;
+			sm.playSound(protagonistSoundIndexStart+(int)(2*Math.random()), effectVolume);
+		}
+	}
+
 	//Move mentor
 	public void moveMentor(){
 		if(mentor.getXPos() < checkpoints[currentCheckpoint] - pastCheckpointBorder){
@@ -595,6 +626,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		handleMentorTalking();
 		mentor.checkSlope(ground, platforms);
+		mentor.inAir(platforms, ground);
 		mentor.gravity();
 		mentor.move();
 		mentor.breathe();
@@ -646,13 +678,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 			break;
 		case 4: 
-			if(protagonist.getXPos() > checkpoints[4]){
+			if(protagonist.getXPos() > checkpoints[currentCheckpoint]){
 				currentCheckpoint++;
 				mentorSentencesToSay = 1;
 			}
 			break;
 		case 5:
-			if(protagonist.getXPos() > checkpoints[5]){
+			if(protagonist.getXPos() > checkpoints[currentCheckpoint]){
 				currentCheckpoint++;
 				mentorSentencesToSay = 4;
 			}
@@ -664,51 +696,59 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 			break;
 		case 7:
-			if(protagonist.getXPos() > checkpoints[7] - width/4){
+			if(protagonist.getXPos() > checkpoints[currentCheckpoint] - width/4){
 				currentCheckpoint++;
-				mentorSentencesToSay = 2;
-				Log.d(TAG, "HAJJJJ");
-				sm.playLoopedSound(2, effectVolume);
+				mentorSentencesToSay = 3;
+				
 			}
 			break;
 		case 8:
+			if(protagonist.isDashBonus() && Math.abs(protagonist.getXPos()-mentor.getXPos()) < 50){
+				currentCheckpoint++;
+				mentorSentencesToSay = 2;
+				tutorialFruitUp = false;
+				bird = new Bird(790, 100);
+				sm.playLoopedSound(2, effectVolume);
+			}
+			break;
+		case 9:
 			if(bird.collide(bullets)){
 				currentCheckpoint++;
 				mentorSentencesToSay = 3;
 				sm.stop(2);
 			}
 			break;
-		case 9:
-			if(protagonist.getXPos() > checkpoints[9] && protagonist.getYPos() < platforms.get(0).getUpperY()[0]){
+		case 10:
+			if(protagonist.getXPos() > checkpoints[currentCheckpoint] && protagonist.getYPos() < platforms.get(0).getUpperY()[0]){
 				currentCheckpoint++;
 				mentorSentencesToSay = 2;
 			}
 			break;
-		case 10:
-			if(protagonist.getXPos() > checkpoints[10]-width/4){
+		case 11:
+			if(protagonist.getXPos() > checkpoints[currentCheckpoint]-width/4){
 				currentCheckpoint++;
 				mentorSentencesToSay = 3;
 			}
-		case 11:
+		case 12:
 			if(enemies.size() == 2){
 				currentCheckpoint++;
 				mentorSentencesToSay = 4;
 
 			}
 			break;
-		case 12:
+		case 13:
 			if(heatMeter.isCoolingDown()){
 				currentCheckpoint++;
 				mentorSentencesToSay = 2;
 			}
 			break;
-		case 13: 
+		case 14: 
 			if(enemies.size() == 0){
 				currentCheckpoint++;
 				sm.playSound(5+mentorSoundIndexStart, effectVolume);
 			}
 			break;
-		case 14:
+		case 15:
 			if(mentor.getXPos() > checkpoints[currentCheckpoint]){
 				currentCheckpoint++;
 				mentorSentencesToSay = 3;
@@ -733,6 +773,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(level == 0){ //Tutorial
 			renderMentor(canvas);
 			renderBird(canvas);
+			renderFruit(canvas);
 		}
 		renderProtagonist(canvas);
 		renderGround(canvas);
@@ -1228,13 +1269,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw bird
 	public void renderBird(Canvas canvas){
 		renderMatrix = new Matrix();
-		if(!bird.isAlive()){
-			renderMatrix.setRotate((float)bird.getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
+		if(bird != null){
+			if(!bird.isAlive()){
+				renderMatrix.setRotate((float)bird.getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
+			}
+			renderMatrix.postTranslate((float)((bird.getX() - Bird.getWidth()/2 - screenX)*scaleX), (float)((bird.getY() - Bird.getHeight() - screenY)*scaleY));
+			canvas.drawBitmap(birdBitmap, renderMatrix, null);
 		}
-		renderMatrix.postTranslate((float)((bird.getX() - Bird.getWidth()/2 - screenX)*scaleX), (float)((bird.getY() - Bird.getHeight() - screenY)*scaleY));
-		canvas.drawBitmap(birdBitmap, renderMatrix, null);
 	}
-
+	
+	public void renderFruit(Canvas canvas){
+		if(Const.tutorialFruitY < 200){
+			canvas.drawBitmap(fruitBitmap, (float)((Const.tutorialFruitX-screenX)*scaleX), (float)((Const.tutorialFruitY-screenY)*scaleY), null);
+		}
+	}
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
 		double x;
@@ -1376,7 +1424,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		};
 		flowerBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flower), (int)(Const.flowerSize*scaleX), (int)(Const.flowerSize*scaleY), true);
 		dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
-
+		fruitBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fruit), (int)(Const.tutorialFruitSize*scaleX), (int)(Const.tutorialFruitSize*scaleY), true);
+		
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
 		enemyEyeMouthBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyEyeMouthYScale*scaleY), true);
