@@ -1,6 +1,9 @@
 package com.example.pineapple;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -48,6 +51,7 @@ public class MainActivity extends BaseActivity {
 	@Override
 	public void onBackPressed() { //Override so that the player cannot go to a previous activity
 		menuPanel.back();
-		Log.d(TAG, "Back button");		
+		//menuPanel.uploadUserName("UltraBeaver");
+		Log.d(TAG, "Back button");	
 	}
 }
