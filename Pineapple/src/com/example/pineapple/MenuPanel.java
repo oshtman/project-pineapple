@@ -26,7 +26,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int HIGHSCORE_MENU = 3;
 	private final int PLAY = 4;
 	private double scaleX, scaleY;
-	private Button playButton, settingsButton, highscoreButton, soundButton, musicButton;
+	private Button playButton, settingsButton, highscoreButton, soundButton, musicButton, scoreButton;
 	private MainThread thread;
 	private Bitmap backgroundBitmap;
 	private Context context;
@@ -39,6 +39,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[] levelBitmaps;
 	private Bitmap[] butterflyBitmaps;
 	private Bitmap sliderLineBitmap, sliderHandleBitmap;
+	private Bitmap onBitmap, offBitmap;
 	private int nextLevel;
 	private int menuState;
 	private SoundManager sm;
@@ -133,11 +134,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if(settings.getBoolean("musicOn", true)){
-			theme.setVolume(1, 1);
-		} else {
-			theme.setVolume(0, 0);
-		}
+		theme.setVolume(settings.getFloat("musicVolume", 0), settings.getFloat("musicVolume", 0));
 	}
 	
 	public void setVolumes(){
@@ -178,6 +175,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		case SETTINGS_MENU:
 			canvas.drawBitmap(soundButton.getBitmap(), (float)(soundButton.getX()*scaleX), (float)(soundButton.getY()*scaleY), null);
 			canvas.drawBitmap(musicButton.getBitmap(), (float)(musicButton.getX()*scaleX), (float)(musicButton.getY()*scaleY), null);
+			canvas.drawBitmap(scoreButton.getBitmap(), (float)(scoreButton.getX()*scaleX), (float)(scoreButton.getY()*scaleY), null);
+			if(settings.getBoolean("scoring", false)){
+				canvas.drawBitmap(onBitmap, (float)((scoreButton.getX()+Const.HUDPadding+scoreButton.getWidth())*scaleX), (float)(scoreButton.getY()*scaleY), null);
+			}  else {
+				canvas.drawBitmap(offBitmap, (float)((scoreButton.getX()+Const.HUDPadding+scoreButton.getWidth())*scaleX), (float)(scoreButton.getY()*scaleY), null);
+			}
 			break;
 		}
 
@@ -223,6 +226,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		Bitmap musicBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.music), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		musicButton = new Button(10, (int)(10 + 1.5*Const.menuButtonHeight), musicBitmap.getWidth()/scaleX, musicBitmap.getHeight()/scaleY, musicBitmap);
 
+		Bitmap scoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.score), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+		scoreButton = new Button(10, (int)(10 + 3*Const.menuButtonHeight), scoreBitmap.getWidth()/scaleX, scoreBitmap.getHeight()/scaleY, scoreBitmap);
+		
 		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth() + Const.HUDPadding, musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
 		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
 
@@ -263,6 +269,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		
 		sliderLineBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_line), (int)(musicSlider.getWidth()*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
 		sliderHandleBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_handle), (int)(Const.sliderHandleWidth*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
+		
+		onBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
+		offBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
 		
 		if(currentLevel > 7)
 			currentLevel = 7;
@@ -344,6 +353,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					ed.commit();
 					theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
 					musicSlider.setValue(settings.getFloat("musicVolume", 1));
+				}
+				if(scoreButton.isClicked(touchX, touchY)){
+					Editor ed = settings.edit();
+					ed.putBoolean("scoring", settings.getBoolean("scoring", false)?false:true);
+					ed.commit();
 				}
 				soundSlider.handleTouch(touchX, touchY);
 				musicSlider.handleTouch(touchX, touchY);

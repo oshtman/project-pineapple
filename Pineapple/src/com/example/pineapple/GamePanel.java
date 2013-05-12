@@ -81,7 +81,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private SharedPreferences settings;
 	private boolean soundEffects;
 	private double effectVolume;
-	private boolean viewStatistics = true;
+	private boolean viewStatistics;
 	private Path newPath;
 	private int i, index, id;
 	private boolean criticalHealthFlag = false;
@@ -89,6 +89,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int dashX, dashY;
 	private int latestAction = 0;
 	private int protagonistSoundIndexStart = 25;
+	private boolean sentVariables = false;
 
 
 	//Special tutorial variables
@@ -161,6 +162,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		this.level = level;
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 		effectVolume = settings.getFloat("soundVolume", 1);
+		viewStatistics = settings.getBoolean("scoring", false);
 
 		//Create game components
 		levelLoader = new LevelLoader(level);
@@ -565,17 +567,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			protagonist.setInvincible(true);
 			if(finishDelay > 0){
 				finishDelay--;
-			} else {
+			} else if(!sentVariables){
 				// Go to a new activity
-
+				sentVariables = true;
 				if(viewStatistics){
-					Context context = getContext();
-					Intent intent = new Intent(context, LevelCompleteActivity.class);
-					intent.putExtra(LEVEL, level);
-					intent.putExtra(SCORE_KILL, scoreKill);
-					intent.putExtra(TIME, time);
-					intent.putExtra(HEALTH, (int)(protagonist.getHealth()*100));
-					context.startActivity(intent);
 					playTimeTotal = MainThread.updateInterval*time/1000;
 					playTimeMin = (int)(playTimeTotal/60);
 					playTimeS = playTimeTotal - playTimeMin*60;
@@ -585,6 +580,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 							" Time: 0" + (int)playTimeMin + ":" + (int)playTimeS);
 					viewStatistics = false;
 				}
+				Context context = getContext();
+				Intent intent = new Intent(context, LevelCompleteActivity.class);
+				intent.putExtra(LEVEL, level);
+				intent.putExtra(SCORE_KILL, scoreKill);
+				intent.putExtra(TIME, time);
+				intent.putExtra(HEALTH, (int)(protagonist.getHealth()*100));
+				context.startActivity(intent);
 			}
 		}
 	}
@@ -707,7 +709,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(protagonist.getXPos() > checkpoints[currentCheckpoint] - width/4){
 				currentCheckpoint++;
 				mentorSentencesToSay = 3;
-				
+
 			}
 			break;
 		case 8:
@@ -1264,23 +1266,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw Hints
 	public void renderTime(Canvas canvas){
-		int secs = time*MainThread.updateInterval/1000;
-		int mins = secs/60;
-		secs =     secs%60;
-		String secString, minString;
-		if(secs < 10){
-			secString = "0" + secs;
-		} else {
-			secString = "" + secs;
-		}
-		if(mins < 10){
-			minString = "0" + mins;
-		} else {
-			minString = "" + mins;
-		}
+		if(viewStatistics){
+			int secs = time*MainThread.updateInterval/1000;
+			int mins = secs/60;
+			secs =     secs%60;
+			String secString, minString;
+			if(secs < 10){
+				secString = "0" + secs;
+			} else {
+				secString = "" + secs;
+			}
+			if(mins < 10){
+				minString = "0" + mins;
+			} else {
+				minString = "" + mins;
+			}
 
-		canvas.drawRect((float)((width/2-Const.timeAreaWidth/2)*scaleX), (float)(Const.HUDPadding*scaleY), (float)((width/2+Const.timeAreaWidth/2)*scaleX), (float)((Const.HUDPadding+Const.timeAreaHeight)*scaleY), textBackground);
-		canvas.drawText(minString + ":" + secString, (float)(width/2*scaleX), (float)((Const.HUDPadding+Const.timeAreaHeight - (Const.timeAreaHeight-timePaint.getTextSize()/scaleX)/2)*scaleY), timePaint);
+			canvas.drawRect((float)((width/2-Const.timeAreaWidth/2)*scaleX), (float)(Const.HUDPadding*scaleY), (float)((width/2+Const.timeAreaWidth/2)*scaleX), (float)((Const.HUDPadding+Const.timeAreaHeight)*scaleY), textBackground);
+			canvas.drawText(minString + ":" + secString, (float)(width/2*scaleX), (float)((Const.HUDPadding+Const.timeAreaHeight - (Const.timeAreaHeight-timePaint.getTextSize()/scaleX)/2)*scaleY), timePaint);
+		}
 	}
 
 	//Draw bird
@@ -1294,7 +1298,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawBitmap(birdBitmap, renderMatrix, null);
 		}
 	}
-	
+
 	public void renderFruit(Canvas canvas){
 		if(Const.tutorialFruitY < 200){
 			canvas.drawBitmap(fruitBitmap, (float)((Const.tutorialFruitX-screenX)*scaleX), (float)((Const.tutorialFruitY-screenY)*scaleY), null);
@@ -1443,7 +1447,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
 		skeletonBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skeleton), (int)(Const.skeletonSize*scaleX), (int)(Const.skeletonSize*scaleY), true);
 		fruitBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fruit), (int)(Const.tutorialFruitSize*scaleX), (int)(Const.tutorialFruitSize*scaleY), true);
-		
+
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
 		enemyEyeMouthBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyEyeMouthYScale*scaleY), true);
