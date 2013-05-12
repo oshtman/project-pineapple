@@ -125,4 +125,11 @@ public class Const {
 		public static final double dustWidth = 40;
 		public static final double dustHeight = 20; 
 		public static final int dustDecayTime = 10;
+		
+		public static final int mumbleDelay = 250;
+		
+		public static int tutorialFruitX = 800;
+		public static int tutorialFruitY = 80;
+		public static final int tutorialFruitSize = 6;
+		
 	}

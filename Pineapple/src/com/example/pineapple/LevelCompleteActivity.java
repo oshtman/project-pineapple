@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 public class LevelCompleteActivity extends BaseActivity {
@@ -38,7 +39,7 @@ public class LevelCompleteActivity extends BaseActivity {
 			e.putInt("currentLevel", completedLevel+1);
 			e.commit();
 		}
-		
+		TableLayout stats = (TableLayout) findViewById(R.id.tableLayout1);
 		if(true){
 			TextView dataText;
 			dataText = (TextView) findViewById(R.id.normalsKilledText);
@@ -48,20 +49,27 @@ public class LevelCompleteActivity extends BaseActivity {
 			dataText = (TextView) findViewById(R.id.tanksKilledText);
 			dataText.setText(""+scoreKill[2]);
 			
-			int milliSecs = time*MainThread.updateInterval;
-			String mins = ((milliSecs/1000.)/60 >= 10)?""+(int)(milliSecs/1000.)/60:"0"+(int)(milliSecs/1000.)/60;
-			String secs = ((milliSecs/1000.)%60 >= 10)?""+(int)(milliSecs/1000.)%60:"0"+(int)(milliSecs/1000.)%60;
-			milliSecs /= 10;
-			String millisecs = (milliSecs%100 < 10)?"0"+(milliSecs%100):""+(milliSecs%100);
+			Log.d(TAG, ""+time);
+			int seconds = (int)(time*MainThread.updateInterval/1000);
+			int centiSecs = time*MainThread.updateInterval/10;
+			String mins = (seconds/60 >= 10)?""+seconds/60:"0"+seconds/60;
+			String secs = (seconds%60 >= 10)?""+seconds%60:"0"+seconds%60;
+			String centisecs = (centiSecs%100 < 10)?"0"+(centiSecs%100):""+(centiSecs%100);
 			
 			dataText = (TextView) findViewById(R.id.timeText);
-			dataText.setText(mins+":"+secs+","+millisecs);
+			dataText.setText(mins+":"+secs+","+centisecs);
 			
 			dataText = (TextView) findViewById(R.id.healthText);
 			dataText.setText(health + "%");
 			
+			int score = 100 - centiSecs/100 + 1*scoreKill[0] + 1*scoreKill[1] + 3*scoreKill[2] + health;
 			dataText = (TextView) findViewById(R.id.scoreText);
-			dataText.setText(""+ 1000);
+			dataText.setText(""+ score);
+			stats.setVisibility(View.VISIBLE);
+			
+			Log.d(TAG, "Seconds: " + seconds + " Centisecs: " + centiSecs + " gives " + mins+":"+secs+","+centisecs);
+		} else {
+			stats.setVisibility(View.INVISIBLE);
 		}
 		ImageView newLevelText = (ImageView) findViewById(R.id.newLevelText);
 		
@@ -71,6 +79,9 @@ public class LevelCompleteActivity extends BaseActivity {
 		} else {
 			newLevelText.setVisibility(ImageView.INVISIBLE);
 		}
+		
+			
+		
 		
 	}
 

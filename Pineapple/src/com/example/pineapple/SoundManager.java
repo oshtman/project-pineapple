@@ -17,8 +17,12 @@ public class SoundManager {
 	private boolean musicLoaded = false;
 
 	public SoundManager(Context theContext) {
+		this(theContext, 32);
+	}
+	
+	public SoundManager(Context theContext, int simultaneousTracks) {
 		mContext = theContext;
-		mSoundPool = new SoundPool(32, AudioManager.STREAM_MUSIC, 0);
+		mSoundPool = new SoundPool(simultaneousTracks, AudioManager.STREAM_MUSIC, 0);
 		mSoundPoolMap = new HashMap<Integer, Integer>();
 		resIds = new HashMap<Integer, Integer>();
 		playIds = new HashMap<Integer, Integer>();
