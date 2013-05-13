@@ -167,6 +167,7 @@ public class LevelLoader {
 			rocks.add(new int[]{330, (int)(4*Math.random()), 30, 0});
 			rocks.add(new int[]{340, (int)(4*Math.random()), 30, 1});
 			rocks.add(new int[]{350, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{380, (int)(4*Math.random()), 30, 0});
 
 			//Flowers
 			flowers.add(new int[]{-10, 0});
