@@ -179,7 +179,7 @@ public class Enemy {
 	public void checkPlatform(ArrayList<Platform> platforms) {
 		this.getPlatformNumber(platforms);
 		if (platformNumber == -1){
-			//Do nothing
+			//Do nothing (no surrounding platform)
 		}else{
 			//Check if head hit platform
 			if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos())) {
@@ -217,12 +217,10 @@ public class Enemy {
 		if (platformNumber == -1 || this.yPos - this.height/2 > platforms.get(platformNumber).getLowerYFromX(this.xPos)){ //Check if above ground
 			if(Math.abs(this.yPos + height/2 - g.getYFromX(this.xPos)) > this.height/4){
 				touchingGround = false;
-				Log.d(TAG, "groundAir! " + touchingGround + " " + platformNumber);
 			}
 		} else { //If above platform
 			if (Math.abs(this.yPos + height/2 - platforms.get(platformNumber).getUpperYFromX(this.xPos)) > this.height/4){
 				touchingGround = false;
-				Log.d(TAG, "platformAir! " + touchingGround + " " + platformNumber);
 			}
 		}
 	}
