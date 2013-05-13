@@ -303,7 +303,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		sm.addSound(3, R.raw.protagonist_jump);
 		sm.addSound(4, R.raw.dash_start);
 		sm.addSound(5, R.raw.dash_finish);
-		sm.addSound(6, R.raw.protagonist_damaged);
+		sm.addSound(6, R.raw.protagonist_hurt_1);
+		sm.addSound(7, R.raw.protagonist_hurt_2);
 		sm.addSound(protagonistSoundIndexStart+0, R.raw.protagonist_1);
 		sm.addSound(protagonistSoundIndexStart+1, R.raw.protagonist_2);
 		sm.addSound(protagonistSoundIndexStart+2, R.raw.protagonist_3);
@@ -533,7 +534,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					}
 				}
 				latestAction = time;
-				sm.playSound(6, effectVolume);
+				sm.playSound(6+(int)(2*Math.random()), effectVolume);
 			}
 		}
 	}
