@@ -91,7 +91,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int latestAction = 0;
 	private int protagonistSoundIndexStart = 4;
 	private boolean sentVariables = false;
-	private int latestDroneSound, latestNinjaSound, latestTankSound;
+	private int latestDroneSound = 0, latestNinjaSound = 0, latestTankSound = 0;
 
 
 	//Special tutorial variables
@@ -511,35 +511,36 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				if(bullet.collideEnemy(enemies.get(j)) && enemies.get(j).hasSpawned()){//If collision detected
 					bullets.remove(i);//Remove the bullet from the game
 					i--;
-
+					
 					enemies.get(j).takeDamage(bulletDamage*enemies.get(j).getDamageGrade()); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
 					enemies.get(j).setHitThisFrame(true);
+					switch(enemies.get(j).getType()){
+					case 1:
+						if(time - latestDroneSound + 2 - 4*Math.random() > 10){
+							playSound(enemySM, (enemies.get(j).getType()-1)*2);
+							latestDroneSound = time;
+						}
+						break;
+					case 2:
+						if(time - latestNinjaSound + 2 - 4*Math.random() > 10){
+							playSound(enemySM, (enemies.get(j).getType()-1)*2);
+							latestNinjaSound = time;
+						}
+						break;
+					case 3:
+						if(time - latestTankSound + 2 - 4*Math.random()> 10){
+							playSound(enemySM, (enemies.get(j).getType()-1)*2);
+							latestTankSound = time;
+						}
+						break;
+					}
 					if(enemies.get(j).getHealth() <= 0){//If the enemy is dead
 						scoreKill[enemies.get(j).getType()-1]++;
 						enemies.remove(j);
 						j--;
 						Log.d(TAG, "Enemy down.");
 					}
-					switch(enemies.get(i).getType()){
-					case 1:
-						if(time - latestDroneSound > 25){
-							playSound(enemySM, (enemies.get(i).getType()-1)*2);
-							latestDroneSound = time;
-						}
-						break;
-					case 2:
-						if(time - latestNinjaSound > 25){
-							playSound(enemySM, (enemies.get(i).getType()-1)*2);
-							latestNinjaSound = time;
-						}
-						break;
-					case 3:
-						if(time - latestTankSound > 25){
-							playSound(enemySM, (enemies.get(i).getType()-1)*2);
-							latestTankSound = time;
-						}
-						break;
-					}
+					
 					
 					break;
 				}
