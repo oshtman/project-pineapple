@@ -3,7 +3,10 @@ package com.example.pineapple;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -28,6 +31,7 @@ public class LevelCompleteActivity extends BaseActivity {
 	private final String TAG = LevelCompleteActivity.class.getSimpleName();
 	private boolean newLevel;
 	private int completedLevel;
+	private AlertDialog alert;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,28 +90,35 @@ public class LevelCompleteActivity extends BaseActivity {
 			Log.d(TAG, "Seconds: " + seconds + " Centisecs: " + centiSecs + " gives " + mins+":"+secs+","+centisecs);
 
 			int localHighscore = localScores.getInt("score_"+difficulty+"_"+completedLevel, 0);
+			Log.d(TAG, "score_"+difficulty+"_"+completedLevel);
 			if(score > localHighscore){ //New local highscore
-				Log.d(TAG, "You beat your previous best!");
+				showNewHighscore();
 				
+				Editor ed = localScores.edit();
+				ed.putInt("score_"+difficulty+"_"+completedLevel, score);
+				ed.commit();
+				
+				Log.d(TAG, "You beat your previous best!");
+
 				final ImageButton button1 = (ImageButton)findViewById(R.id.button1);
 				final ImageButton button2 = (ImageButton)findViewById(R.id.button2);
 				final ImageButton button3 = (ImageButton)findViewById(R.id.button3);
-				
+
 				button1.setVisibility(View.INVISIBLE);
 				button2.setVisibility(View.INVISIBLE);
 				button3.setVisibility(View.INVISIBLE);
-				
-				
+
+
 				//Upload highscore to server
 				RequestControllerObserver observer = new RequestControllerObserver(){
 
 					@Override
 					public void requestControllerDidReceiveResponse(RequestController requestController) {
-						ScoreController userController = (ScoreController)requestController;
 						Log.d(TAG, "Score upload successful");
 						button1.setVisibility(View.VISIBLE);
 						button2.setVisibility(View.VISIBLE);
 						button3.setVisibility(View.VISIBLE);
+						showFinish("Success", "Your score was successfully uploaded!");
 						//Upload score
 					}
 
@@ -118,6 +129,7 @@ public class LevelCompleteActivity extends BaseActivity {
 						button2.setVisibility(View.VISIBLE);
 						button3.setVisibility(View.VISIBLE);
 						
+						showFinish("Upload failure", "Your score upload failed!");
 					}
 				};
 				final ScoreController myScoreController = new ScoreController(observer);
@@ -130,11 +142,11 @@ public class LevelCompleteActivity extends BaseActivity {
 				context.put("mins", (int)(seconds/60));
 				context.put("secs", (int)(seconds%60));
 				context.put("cSecs", (int)((time*MainThread.updateInterval/10)%100));
-				
+
 				s.setMode(2*completedLevel+difficulty); 
 				s.setContext(context);
 				myScoreController.submitScore(s);
-				
+
 			}
 		} else {
 			stats.setVisibility(View.INVISIBLE);
@@ -147,9 +159,9 @@ public class LevelCompleteActivity extends BaseActivity {
 			newLevelText.setVisibility(ImageView.INVISIBLE);
 		}
 	}
-	
+
 	public static void viewButtons(){
-		
+
 	}
 
 	@Override
@@ -179,5 +191,32 @@ public class LevelCompleteActivity extends BaseActivity {
 	@Override
 	public void onBackPressed() { //Override so that the player cannot go to a previous activity
 		Log.d(TAG, "Back button");
+	}
+	
+	public void showNewHighscore(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("New Highscore!");
+		builder.setMessage("Congratulations, you beat your previous best!");
+		builder.setCancelable(false);
+		alert = builder.create();
+		alert.show();
+	}
+	
+	public void showFinish(String title, String msg){
+		alert.dismiss();
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(title);
+		builder.setMessage(msg);
+		builder.setPositiveButton("OK", new OnClickListener(){
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+				
+			}
+			
+		});
+		alert = builder.create();
+		alert.show();
 	}
 }

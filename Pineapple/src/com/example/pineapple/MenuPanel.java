@@ -70,6 +70,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int time = 0;
 	private Paint userPaint, leaderboardPaint;
 	private static float difficulty;
+	private LevelBriefer briefer;
 
 	private final TermsOfServiceController controller;
 	private static String userName;
@@ -91,7 +92,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		butterfly = new Butterfly();
 		renderMatrix = new Matrix();
 		setKeepScreenOn(true);
-
+		briefer = new LevelBriefer(80, Const.HUDPadding, (width - 80 - Const.HUDPadding), (height - 2*Const.HUDPadding));
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 		currentLevel = settings.getInt("currentLevel", 0);
 		sm = new SoundManager(getContext());
@@ -168,6 +169,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.breathe();
 		protagonist.move();
 		butterfly.update();
+		//briefer.update();
 		if(menuState == SETTINGS_MENU){
 			setVolumes();
 		}
@@ -236,6 +238,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderSliders(canvas);
 		renderUser(canvas);
 		renderLeaderboards(canvas);
+		//briefer.render(canvas, scaleX, scaleY);
 	}
 
 	public void renderButtons(Canvas canvas){
@@ -299,7 +302,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				canvas.drawText("#", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Name", (float)(Const.leaderboardColumns[1]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Score", (float)(Const.leaderboardColumns[2]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
-				canvas.drawText("Normals", (float)(Const.leaderboardColumns[3]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				canvas.drawText("Drones", (float)(Const.leaderboardColumns[3]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Ninjas", (float)(Const.leaderboardColumns[4]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Tanks", (float)(Const.leaderboardColumns[5]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Time", (float)(Const.leaderboardColumns[6]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
@@ -508,6 +511,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					if(levelButtons[i].isClicked(touchX, touchY)){
 						nextLevel = i;
 						menuState = PLAY;
+						//briefer.handleClick(i);
 					}
 				}
 				break;
