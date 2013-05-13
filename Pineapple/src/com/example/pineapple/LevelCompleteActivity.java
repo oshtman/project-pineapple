@@ -89,11 +89,13 @@ public class LevelCompleteActivity extends BaseActivity {
 			if(score > localHighscore){ //New local highscore
 				Log.d(TAG, "You beat your previous best!");
 				
-				ImageButton button1 = (ImageButton)findViewById(R.id.button1);
-				ImageButton button2 = (ImageButton)findViewById(R.id.button2);
-				ImageButton button3 = (ImageButton)findViewById(R.id.button3);
+				final ImageButton button1 = (ImageButton)findViewById(R.id.button1);
+				final ImageButton button2 = (ImageButton)findViewById(R.id.button2);
+				final ImageButton button3 = (ImageButton)findViewById(R.id.button3);
 				
-				
+				button1.setVisibility(View.INVISIBLE);
+				button2.setVisibility(View.INVISIBLE);
+				button3.setVisibility(View.INVISIBLE);
 				
 				
 				//Upload highscore to server
@@ -102,15 +104,20 @@ public class LevelCompleteActivity extends BaseActivity {
 					@Override
 					public void requestControllerDidReceiveResponse(RequestController requestController) {
 						ScoreController userController = (ScoreController)requestController;
-						Log.d(TAG, "Score connect successful");
-						
-						
+						Log.d(TAG, "Score upload successful");
+						button1.setVisibility(View.VISIBLE);
+						button2.setVisibility(View.VISIBLE);
+						button3.setVisibility(View.VISIBLE);
 						//Upload score
 					}
 
 					@Override
 					public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
 						Log.d(TAG, "Score connect failed");
+						button1.setVisibility(View.VISIBLE);
+						button2.setVisibility(View.VISIBLE);
+						button3.setVisibility(View.VISIBLE);
+						
 					}
 				};
 				final ScoreController myScoreController = new ScoreController(observer);
@@ -138,10 +145,10 @@ public class LevelCompleteActivity extends BaseActivity {
 		} else {
 			newLevelText.setVisibility(ImageView.INVISIBLE);
 		}
-
-
-
-
+	}
+	
+	public static void viewButtons(){
+		
 	}
 
 	@Override
