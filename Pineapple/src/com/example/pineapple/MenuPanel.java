@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -523,6 +524,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		intent.putExtra(LEVEL, level);
 
 		context.startActivity(intent);
+		((Activity)context).finish();
+		Log.d(TAG, "Starting game");
 	}
 
 	public void back(){
