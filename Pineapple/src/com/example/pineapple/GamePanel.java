@@ -68,7 +68,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int time;
 	private double bulletDamage = 0.05;
 	private MediaPlayer fireSound;
-	private SoundManager sm;
+	public SoundManager ambientSM, protagonistSM, enemySM, mentorSM;
 	private MediaPlayer theme;
 	private boolean themePlaying = false;
 	private final int[] renderOrder = new int[]{3, 1, 2};
@@ -89,8 +89,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int latestDashTime = -Const.dustDecayTime;
 	private int dashX, dashY;
 	private int latestAction = 0;
-	private int protagonistSoundIndexStart = 25;
+	private int protagonistSoundIndexStart = 4;
 	private boolean sentVariables = false;
+	private int latestDroneSound, latestNinjaSound, latestTankSound;
 
 
 	//Special tutorial variables
@@ -174,7 +175,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		leftStick = new Stick(Stick.LEFT);
 		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
-		sm = new SoundManager(getContext());
+		ambientSM = new SoundManager(getContext(), 10);
+		protagonistSM = new SoundManager(getContext(), 1);
+		enemySM = new SoundManager(getContext(), 10);
 
 		loadPlatforms();
 		loadEnemies();
@@ -200,7 +203,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		setKeepScreenOn(true);
 
 		if(level == 0){
-			mentor = new Protagonist(10, 0, this);
+			mentor = new Protagonist(10, 0, this, true);
 			checkpoints = levelLoader.getCheckpoints();
 			hints = new ArrayList<ArrayList<String>>();
 
@@ -244,14 +247,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			textPaint.setAntiAlias(true);
 
 
-
+			mentorSM = new SoundManager(getContext(), 1);
 			//Load all the things the mentor can say
-			sm.addSound(mentorSoundIndexStart+0, R.raw.mentor_sound_1);
-			sm.addSound(mentorSoundIndexStart+1, R.raw.mentor_sound_2);
-			sm.addSound(mentorSoundIndexStart+2, R.raw.mentor_sound_3);
-			sm.addSound(mentorSoundIndexStart+3, R.raw.mentor_sound_4);
-			sm.addSound(mentorSoundIndexStart+4, R.raw.mentor_sound_5);
-			sm.addSound(mentorSoundIndexStart+5, R.raw.mentor_sound_woohoo);
+			mentorSM.addSound(0, R.raw.mentor_sound_1);
+			mentorSM.addSound(1, R.raw.mentor_sound_2);
+			mentorSM.addSound(2, R.raw.mentor_sound_3);
+			mentorSM.addSound(3, R.raw.mentor_sound_4);
+			mentorSM.addSound(4, R.raw.mentor_sound_5);
+			mentorSM.addSound(5, R.raw.mentor_sound_woohoo);
 			lastMentorSound = -1; //Stops him from repeating the same line
 			mentorSentencesToSay = 3;
 		}
@@ -297,24 +300,30 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Load the sounds
 	public void loadSounds(){
-		sm.addSound(0, R.raw.fire_sound);
-		sm.addSound(1, R.raw.low_health);
-		sm.addSound(2, R.raw.bird);
-		sm.addSound(3, R.raw.protagonist_jump);
-		sm.addSound(4, R.raw.dash_start);
-		sm.addSound(5, R.raw.dash_finish);
-		sm.addSound(6, R.raw.protagonist_hurt_1);
-		sm.addSound(7, R.raw.protagonist_hurt_2);
-		sm.addSound(protagonistSoundIndexStart+0, R.raw.protagonist_1);
-		sm.addSound(protagonistSoundIndexStart+1, R.raw.protagonist_2);
-		sm.addSound(protagonistSoundIndexStart+2, R.raw.protagonist_3);
-		sm.addSound(protagonistSoundIndexStart+3, R.raw.protagonist_4);
-		sm.addSound(protagonistSoundIndexStart+4, R.raw.protagonist_5);
+		ambientSM.addSound(0, R.raw.fire_sound);
+		ambientSM.addSound(1, R.raw.low_health);
+		ambientSM.addSound(2, R.raw.bird);
+		ambientSM.addSound(3, R.raw.dash_finish);
+		protagonistSM.addSound(0, R.raw.protagonist_jump);
+		protagonistSM.addSound(1, R.raw.dash_start);
+		protagonistSM.addSound(2, R.raw.protagonist_hurt_1);
+		protagonistSM.addSound(3, R.raw.protagonist_hurt_2);
+		protagonistSM.addSound(protagonistSoundIndexStart+0, R.raw.protagonist_1);
+		protagonistSM.addSound(protagonistSoundIndexStart+1, R.raw.protagonist_2);
+		protagonistSM.addSound(protagonistSoundIndexStart+2, R.raw.protagonist_3);
+		protagonistSM.addSound(protagonistSoundIndexStart+3, R.raw.protagonist_4);
+		protagonistSM.addSound(protagonistSoundIndexStart+4, R.raw.protagonist_5);
+		enemySM.addSound(0, R.raw.drone_entry);
+		enemySM.addSound(1, R.raw.drone_hurt);
+		enemySM.addSound(2, R.raw.ninja_entry);
+		enemySM.addSound(3, R.raw.ninja_hurt);
+		enemySM.addSound(4, R.raw.tank_entry);
+		enemySM.addSound(5, R.raw.tank_hurt);
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 	}
 
-	public void playSound(int index){
-		sm.playSound(index, effectVolume);
+	public void playSound(SoundManager manager, int index){
+		manager.playSound(index, effectVolume);
 	}
 
 	//PLay the theme in loop
@@ -399,7 +408,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				if(!heatMeter.isCoolingDown()){
 					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(protagonist.getAim()/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(protagonist.getAim()/180*Math.PI), protagonist.getAim(), 10, protagonist));
 					firing = true;
-					sm.playSound(0, effectVolume);
+					playSound(ambientSM, 0);
 					latestAction = time;
 				}
 			}
@@ -437,6 +446,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			} else {
 				if(protagonist.getXPos() > enemy.getSpawnX()){
 					enemy.spawn();
+					playSound(enemySM, (enemy.getType()-1)*2+1);
 				}
 			}
 		}
@@ -511,6 +521,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						j--;
 						Log.d(TAG, "Enemy down.");
 					}
+					switch(enemy.getType()){
+					case 1:
+						if(time - latestDroneSound > 25){
+							playSound(enemySM, (enemy.getType()-1)*2);
+							latestDroneSound = time;
+						}
+						break;
+					case 2:
+						if(time - latestNinjaSound > 25){
+							playSound(enemySM, (enemy.getType()-1)*2);
+							latestNinjaSound = time;
+						}
+						break;
+					case 3:
+						if(time - latestTankSound > 25){
+							playSound(enemySM, (enemy.getType()-1)*2);
+							latestTankSound = time;
+						}
+						break;
+					}
+					
 					break;
 				}
 			}
@@ -529,12 +560,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.reduceHealth(0.05); //Change this constant
 				if(protagonist.getHealth() < Const.criticalHealth){
 					if(!criticalHealthFlag){
-						sm.playLoopedSound(1, effectVolume);
+						playSound(ambientSM, 1);
 						criticalHealthFlag = true;
 					}
 				}
 				latestAction = time;
-				sm.playSound(6+(int)(2*Math.random()), effectVolume);
+				playSound(protagonistSM, 2 + (int)(Math.random()*2));
 			}
 		}
 	}
@@ -560,7 +591,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		dashY = (int)(protagonist.getYPos() - protagonist.getHeight()/4);
 		latestDashTime = time;
 		latestAction = time;
-		sm.playSound(5, effectVolume);
+		playSound(ambientSM, 3);
 	}
 
 	//Check if protagonist passes finish line
@@ -621,7 +652,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void handleProtagonistMumbling(){
 		if(time-latestAction > Const.mumbleDelay){
 			latestAction = time;
-			sm.playSound(protagonistSoundIndexStart+(int)(5*Math.random()), effectVolume);
+			playSound(protagonistSM, protagonistSoundIndexStart+(int)(Math.random()*5));
 		}
 	}
 
@@ -661,8 +692,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				nextSound = (int)(5*Math.random());
 			}
 			lastMentorSound = nextSound;
-			sm.playSound(nextSound+mentorSoundIndexStart, effectVolume);
-			mentorPlayCounter = sm.getDuration(nextSound+mentorSoundIndexStart);
+			playSound(mentorSM, nextSound);
+			mentorPlayCounter = mentorSM.getDuration(nextSound);
 			mentorSentencesToSay--;
 		}
 		mentorPlayCounter--;
@@ -692,7 +723,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		case 3: 
 			if(protagonist.getXPos() > 258){
 				currentCheckpoint++;
-				sm.playSound(mentorSoundIndexStart+5, effectVolume);
+				playSound(mentorSM, 5);
 			}
 			break;
 		case 4: 
@@ -726,14 +757,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				mentorSentencesToSay = 2;
 				tutorialFruitUp = false;
 				bird = new Bird(790, 100);
-				sm.playLoopedSound(2, effectVolume);
+				ambientSM.playLoopedSound(2, effectVolume);
 			}
 			break;
 		case 9:
 			if(bird.collide(bullets)){
 				currentCheckpoint++;
 				mentorSentencesToSay = 3;
-				sm.stop(2);
+				ambientSM.stop(2);
 			}
 			break;
 		case 10:
@@ -763,7 +794,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		case 14: 
 			if(enemies.size() == 0){
 				currentCheckpoint++;
-				sm.playSound(5+mentorSoundIndexStart, effectVolume);
+				playSound(mentorSM, 5);
 			}
 			break;
 		case 15:
@@ -1552,7 +1583,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Pause the game
 	public void pause(){
 		theme.stop();
-		sm.stop(1);
+		ambientSM.stop(1);
 		thread.setRunning(false);
 	}
 

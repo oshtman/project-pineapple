@@ -39,23 +39,27 @@ public class Protagonist {
 	private boolean dead = false;
 	private boolean sliding = false;
 	private double startHeight;
+	private boolean mentor;
 	//------------------------------------------------------------------------------------------------//
 	// CONSTRUCTORS
-	public Protagonist(double i, double j, GamePanel gp) {
+	public Protagonist(double i, double j, GamePanel gp, boolean mentor) {
 		this.setXPos(i);
 		this.setYPos(j);
 		this.health = 1;
 		this.gp = gp;
 		this.stepCount = 0;
+		this.mentor = mentor;
 		Log.d(TAG, "Me");
+
+	}
+	
+	public Protagonist(double i, double j, GamePanel gp) {
+		this(i, j, gp, false);
 
 	}
 
 	public Protagonist(double i, double j) {
-		this.setXPos(i);
-		this.setYPos(j);
-		this.stepCount = 0;
-		Log.d(TAG, "Me");
+		this(i, j, null);
 
 	}
 	//------------------------------------------------------------------------------------------------//
@@ -143,7 +147,8 @@ public class Protagonist {
 			this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
 			Log.d(TAG, "Jump!!");
 			readyToJump = false;
-			gp.playSound(3);
+			if(!mentor)
+				gp.playSound(gp.protagonistSM, 0);
 		}
 	}
 
@@ -173,7 +178,7 @@ public class Protagonist {
 					Log.d(TAG, "DASH!!");
 				}
 			}
-			gp.playSound(4);
+			gp.playSound(gp.protagonistSM, 1);
 		}
 	}
 
