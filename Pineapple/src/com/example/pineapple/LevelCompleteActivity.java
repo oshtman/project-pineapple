@@ -126,6 +126,7 @@ public class LevelCompleteActivity extends BaseActivity {
 				context.put("normals", scoreKill[0]);
 				context.put("ninjas", scoreKill[1]);
 				context.put("tanks", scoreKill[2]);
+				context.put("health", health);
 				context.put("mins", (int)(seconds/60));
 				context.put("secs", (int)(seconds%60));
 				context.put("cSecs", (int)((time*MainThread.updateInterval/10)%100));

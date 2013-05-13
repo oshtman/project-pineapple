@@ -43,7 +43,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int PLAY = 4;
 	private final int width = 155, height = 100;
 	private double scaleX, scaleY;
-	private Button playButton, settingsButton, highscoreButton, soundButton, musicButton, scoreButton;
+	private Button playButton, settingsButton, highscoreButton, soundButton, musicButton, scoreButton, setNameButton;
 	private MainThread thread;
 	private Bitmap backgroundBitmap;
 	private Context context;
@@ -69,11 +69,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private float aimAngle, feetAngle;
 	private int time = 0;
 	private Paint userPaint, leaderboardPaint;
-	private EditText nameField;
 
 	private final TermsOfServiceController controller;
-	private static UserController userController;
-	private static String userName = "loading...";
+	private static String userName;
 	private static boolean leaderboardsLoaded = false;
 	private static ArrayList<List<Score>> highScoreList= new ArrayList<List<Score>>();
 	private static int currentHighScoreMode = 0;
@@ -99,6 +97,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadSounds();
 		playTheme();
 
+		userName = (settings.getString("userName", null) == null)?"loading...":settings.getString("userName", null);
+		
 		userPaint = new Paint();
 		userPaint.setColor(Color.WHITE);
 
@@ -106,10 +106,6 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		leaderboardPaint.setColor(Color.WHITE);
 
 		textBackground.setARGB(120, 40, 40, 40);
-
-		nameField = new EditText(context);
-
-
 
 		//controller to handle the user's acceptance of the Terms Of Service
 		controller = new TermsOfServiceController(new TermsOfServiceControllerObserver() {
@@ -137,6 +133,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				// insert values into text fields
 				User user = userController.getUser();
 				setUserName(user.getLogin());
+				
 			}
 
 			@Override
@@ -256,6 +253,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawBitmap(soundButton.getBitmap(), (float)(soundButton.getX()*scaleX), (float)(soundButton.getY()*scaleY), null);
 			canvas.drawBitmap(musicButton.getBitmap(), (float)(musicButton.getX()*scaleX), (float)(musicButton.getY()*scaleY), null);
 			canvas.drawBitmap(scoreButton.getBitmap(), (float)(scoreButton.getX()*scaleX), (float)(scoreButton.getY()*scaleY), null);
+			canvas.drawBitmap(setNameButton.getBitmap(), (float)(setNameButton.getX()*scaleX), (float)(setNameButton.getY()*scaleY), null);
 			if(settings.getBoolean("scoring", false)){
 				canvas.drawBitmap(onBitmap, (float)((scoreButton.getX()+Const.HUDPadding+scoreButton.getWidth())*scaleX), (float)(scoreButton.getY()*scaleY), null);
 			}  else {
@@ -287,14 +285,40 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				String difficultyS = (leaderboardDifficulty == 0)?"normal":"hard";
 				String leaderboardTitle = "Leaderboard for " + levelS + " @difficulty " + difficultyS;
 
-				canvas.drawRect((float)(Const.HUDPadding/2*scaleX), 0, (float)((width-Const.HUDPadding/2)*scaleX), (float)(height*scaleY), textBackground);
-				canvas.drawText(leaderboardTitle, (float)(Const.HUDPadding/2*scaleX), (float)(Const.HUDPadding*scaleY), leaderboardPaint);
-				canvas.drawLine((float)(Const.HUDPadding/2*scaleX), (float)(Const.HUDPadding*scaleY), (float)((width - Const.HUDPadding/2)*scaleX), (float)(Const.HUDPadding*scaleY), leaderboardPaint);
+				canvas.drawRect(0, 0, (float)(width*scaleX), (float)(height*scaleY), textBackground);
+				canvas.drawText(leaderboardTitle, (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY/2*scaleY), leaderboardPaint);
+				
+				
+				//Draw column heads
+				canvas.drawText("#", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				canvas.drawText("Name", (float)(Const.leaderboardColumns[1]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				canvas.drawText("Score", (float)(Const.leaderboardColumns[2]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				canvas.drawText("Normals", (float)(Const.leaderboardColumns[3]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				canvas.drawText("Ninjas", (float)(Const.leaderboardColumns[4]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				canvas.drawText("Tanks", (float)(Const.leaderboardColumns[5]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				canvas.drawText("Time", (float)(Const.leaderboardColumns[6]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				canvas.drawText("Health", (float)(Const.leaderboardColumns[7]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				canvas.drawLine(0, (float)(Const.leaderboardStartY*scaleY), (float)(width*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				
 				try{ //Try to render the leaderboard
-					for(int i = 0; i < highScoreList.get(2*leaderboardLevel).size(); i++){
-						Score s = highScoreList.get(2*leaderboardLevel).get(i);
-						String entry = "#"+s.getRank()+". "+s.getUser().getLogin()+": " + s.getResult().intValue();
-						canvas.drawText(entry, (float)(Const.HUDPadding/2*scaleX), (float)(3/2.*Const.HUDPadding*scaleY+i*(height-Const.HUDPadding)/20.*scaleY), leaderboardPaint);
+					for(int i = 0; i < highScoreList.get(2*leaderboardLevel+leaderboardDifficulty).size(); i++){
+						Score s = highScoreList.get(2*leaderboardLevel+leaderboardDifficulty).get(i);
+						
+						//Format time string
+						int sec = Integer.parseInt(s.getContext().get("secs").toString());
+						int min = Integer.parseInt(s.getContext().get("mins").toString());
+				
+						String mins = ((min < 10)?"0"+min:""+min);
+						String secs = ((sec < 10)?"0"+sec:""+sec);
+						
+						canvas.drawText(s.getRank()+". ", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
+						canvas.drawText(s.getUser().getLogin(), (float)(Const.leaderboardColumns[1]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
+						canvas.drawText(s.getResult().intValue()+"", (float)(Const.leaderboardColumns[2]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
+						canvas.drawText(s.getContext().get("normals")+"", (float)(Const.leaderboardColumns[3]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
+						canvas.drawText(s.getContext().get("ninjas")+"", (float)(Const.leaderboardColumns[4]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
+						canvas.drawText(s.getContext().get("tanks")+"", (float)(Const.leaderboardColumns[5]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
+						canvas.drawText(mins+":"+secs, (float)(Const.leaderboardColumns[6]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
+						canvas.drawText(100+" %", (float)(Const.leaderboardColumns[7]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
 					}
 				} catch(IndexOutOfBoundsException e){ //The rendering might get interrupted by a leaderboard update
 					Log.e(TAG, "The leaderboard rendering got interrupted");
@@ -341,6 +365,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		Bitmap scoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.score), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		scoreButton = new Button(10, (int)(10 + 3*Const.menuButtonHeight), scoreBitmap.getWidth()/scaleX, scoreBitmap.getHeight()/scaleY, scoreBitmap);
 
+		Bitmap setNameBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tutorial), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+		setNameButton = new Button(10, (int)(10 + 4.5*Const.menuButtonHeight), setNameBitmap.getWidth()/scaleX, setNameBitmap.getHeight()/scaleY, setNameBitmap);
+		
 		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth() + Const.HUDPadding, musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
 		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
 
@@ -489,6 +516,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 						controller.query(null);
 					}
 				}
+				if(setNameButton.isClicked(touchX, touchY)){
+					((MainActivity)context).requestName();
+				}
 				soundSlider.handleTouch(touchX, touchY);
 				musicSlider.handleTouch(touchX, touchY);
 				break;
@@ -594,8 +624,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		canvas.drawBitmap(butterflyBitmaps[(int)(Math.abs(butterfly.getCounter() % 2))], renderMatrix, null);
 	}
 
-	public static void setUserName(String name){
+	public void setUserName(String name){
 		userName = name;
+		Editor e = settings.edit();
+		e.putString("userName", name);
+		e.commit();
 	}
 
 	public void uploadUserName(String name){
@@ -621,13 +654,13 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				Log.d(TAG, "Name change failed because:");
 				RequestControllerException ctrlException = (RequestControllerException) exception;
 				if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_USERNAME_TAKEN)) {
-					Log.d(TAG, "Name taken");
+					((MainActivity)context).displayMessage("Error uploading name", "Name is already taken");
 				}
 				else if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_USERNAME_TOO_SHORT)) {
-					Log.d(TAG, "Name too short");
+					((MainActivity)context).displayMessage("Error uploading name", "Name is too short");
 				}
 				else if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_INVALID_USERNAME)) {
-					Log.d(TAG, "Name invalid");
+					((MainActivity)context).displayMessage("Error uploading name", "The name is invalid");
 				}
 
 			}
