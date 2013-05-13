@@ -55,13 +55,14 @@ public class MainActivity extends BaseActivity {
 		Log.d(TAG, "Back button");	
 	}
 	
-	public void requestName(){
+	public void requestName(String currentName){
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Enter your desired name");
 		alert.setMessage("This will be displayed to your rivals!");
 
 		// Set an EditText view to get user input 
 		final EditText input = new EditText(this);
+		input.setText(currentName);
 		alert.setView(input);
 
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

@@ -1194,7 +1194,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderDust(Canvas canvas){
 		if(time - latestDashTime < Const.dustDecayTime){
 			cloaker.setAlpha((int)(255 - 255.*(time-latestDashTime)/Const.dustDecayTime));
-			canvas.drawBitmap(dustBitmap, (float)((dashX - Const.dustWidth/2 - screenX)*scaleX), (float)((dashY - Const.dustHeight/2 - screenY)*scaleX), cloaker);
+			canvas.drawBitmap(dustBitmap, (float)((dashX - Const.dustWidth/2 - screenX)*scaleX), (float)((dashY - Const.dustHeight/2 - screenY)*scaleY), cloaker);
 		}
 	}
 
