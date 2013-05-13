@@ -141,63 +141,37 @@ public class LevelLoader {
 			rocks.add(new int[]{220, 2, 30, 0});
 
 			break;
-		case 2: //Hunt
+		case 2://Hide and seek, watch out
 			//Start and finish
-			startPos = new int[]{10, 40};
-			finishX = 5900;
+			startPos = new int[]{10, 0};
+			finishX = 2000;
 			//Ground
-			maxLengthPoint = 300;
-			ground = new int[2][maxLengthPoint+1];
+			ground = new int[2][14];
 			ground[0][0] = -100;
-			ground[1][0] = 50;
-
-			for (int i = 1; i<maxLengthPoint; i++) {
-				ground[0][i] = i*20;
-				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
-			}
-			ground[0][maxLengthPoint] = maxLengthPoint*20;
-			ground[1][maxLengthPoint] = 50 + (int)(25*Math.cos((double)ground[0][maxLengthPoint-1]/200*Math.PI));
-			//Enemy
-			enemies.add(new int[]{this.getStartX() + 200, 0, this.getStartX(), 3});
-			int spawnPoint;
-			int endPoint = ground[0][maxLengthPoint-1];
-			for (int i = 0; i < 200; i++) {
-				spawnPoint = i*50 + 200;
-				if (spawnPoint < endPoint - 800){
-					if (i % 8 == 0)
-						enemies.add(new int[]{spawnPoint - 200, 0, spawnPoint, 1});
-					if (i % 6 == 0)
-						enemies.add(new int[]{spawnPoint - 150, 0, spawnPoint, 2});
-					if (i % 3 == 0)
-						enemies.add(new int[]{spawnPoint + 150, 0, spawnPoint, 3});
-				} else
-					break;
-			}
-			for (int i = 0; i < 20; i++){
-				enemies.add(new int[]{finishX - 730 + i*10, 0, finishX - 500, 2});
-			}
+			ground[1][0] = 0;
+			ground[0][1] = 2100;
+			ground[1][1] = 0;
+			//Enemies
 			//Trees
-			for (int i = 1; i <= 100; i++){
-				if( i % 2 == 0)
-					trees.add(new int[]{50*i, (int)(3*Math.random()), (int)(3*Math.random()), 0});
-			}
-			trees.add(new int[]{endPoint - 50, 0, 1, 0});
-			trees.add(new int[]{-50, 2, 0, 0});
-			trees.add(new int[]{-20, 1, 1, 0});
+			trees.add(new int[]{4100, (int)(3*Math.random()), (int)(3*Math.random()), 1});
 			//Rocks
-			rocks.add(new int[]{50, 1, 20, 0});
-			rocks.add(new int[]{2985, 1, 20, 1});
-			rocks.add(new int[]{3000, 2, 20, 0});
-			rocks.add(new int[]{3015, 1, 20, 1});
-			for (int i = 1; i <= 4; i++)
-				rocks.add(new int[]{finishX - 150*i, (int)(4*Math.random()), 20, 0});
+			rocks.add(new int[]{50, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{120, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{140, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{150, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{200, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{230, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{250, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{280, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{300, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{330, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{340, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{350, (int)(4*Math.random()), 30, 0});
+
 			//Flowers
-			flowers.add(new int[]{0, 0});
-			flowers.add(new int[]{endPoint - 250, 0});
-			flowers.add(new int[]{endPoint - 120, 0});
-			flowers.add(new int[]{finishX + 20, 0});
+			flowers.add(new int[]{-10, 0});
 			//Skeletons
-			skeletons.add(new int[]{5400, 10});
+			skeletons.add(new int[]{220, 0});
 			break;
 		case 3:
 			finishX = 380;
@@ -564,6 +538,64 @@ public class LevelLoader {
 			flowers.add(new int[]{1910, 0});
 			//Skeletons
 			skeletons.add(new int[]{40, 0});
+			break;
+		case 8: //Hunt
+			//Start and finish
+			startPos = new int[]{10, 40};
+			finishX = 5900;
+			//Ground
+			maxLengthPoint = 300;
+			ground = new int[2][maxLengthPoint+1];
+			ground[0][0] = -100;
+			ground[1][0] = 50;
+
+			for (int i = 1; i<maxLengthPoint; i++) {
+				ground[0][i] = i*20;
+				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
+			}
+			ground[0][maxLengthPoint] = maxLengthPoint*20;
+			ground[1][maxLengthPoint] = 50 + (int)(25*Math.cos((double)ground[0][maxLengthPoint-1]/200*Math.PI));
+			//Enemy
+			enemies.add(new int[]{this.getStartX() + 200, 0, this.getStartX(), 3});
+			int spawnPoint;
+			int endPoint = ground[0][maxLengthPoint-1];
+			for (int i = 0; i < 200; i++) {
+				spawnPoint = i*50 + 200;
+				if (spawnPoint < endPoint - 800){
+					if (i % 8 == 0)
+						enemies.add(new int[]{spawnPoint - 200, 0, spawnPoint, 1});
+					if (i % 6 == 0)
+						enemies.add(new int[]{spawnPoint - 150, 0, spawnPoint, 2});
+					if (i % 3 == 0)
+						enemies.add(new int[]{spawnPoint + 150, 0, spawnPoint, 3});
+				} else
+					break;
+			}
+			for (int i = 0; i < 20; i++){
+				enemies.add(new int[]{finishX - 730 + i*10, 0, finishX - 500, 2});
+			}
+			//Trees
+			for (int i = 1; i <= 100; i++){
+				if( i % 2 == 0)
+					trees.add(new int[]{50*i, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			}
+			trees.add(new int[]{endPoint - 50, 0, 1, 0});
+			trees.add(new int[]{-50, 2, 0, 0});
+			trees.add(new int[]{-20, 1, 1, 0});
+			//Rocks
+			rocks.add(new int[]{50, 1, 20, 0});
+			rocks.add(new int[]{2985, 1, 20, 1});
+			rocks.add(new int[]{3000, 2, 20, 0});
+			rocks.add(new int[]{3015, 1, 20, 1});
+			for (int i = 1; i <= 4; i++)
+				rocks.add(new int[]{finishX - 150*i, (int)(4*Math.random()), 20, 0});
+			//Flowers
+			flowers.add(new int[]{0, 0});
+			flowers.add(new int[]{endPoint - 250, 0});
+			flowers.add(new int[]{endPoint - 120, 0});
+			flowers.add(new int[]{finishX + 20, 0});
+			//Skeletons
+			skeletons.add(new int[]{5400, 10});
 			break;
 		}
 	}
