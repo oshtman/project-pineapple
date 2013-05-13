@@ -79,9 +79,12 @@ public class MainThread extends Thread{
 				canvas = null;
 				try {
 					canvas = this.surfaceHolder.lockCanvas();
+					
 					synchronized (surfaceHolder) {
+						if(canvas!=null)
 						this.menuPanel.render(canvas);
 					}
+					
 				} finally {
 					if (canvas != null) {
 						surfaceHolder.unlockCanvasAndPost(canvas);

@@ -2,6 +2,7 @@ package com.example.pineapple;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -337,7 +338,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			// Go to a new activity (game over)
 			Context context = getContext();
 			Intent intent = new Intent(context, GameOverActivity.class);
+			intent.putExtra(GamePanel.LEVEL, level);
 			context.startActivity(intent);
+			((Activity)context).finish();
 			if(viewStatistics){
 				playTimeTotal = MainThread.updateInterval*time/1000; //time in seconds
 				playTimeMin = (int)(playTimeTotal/60);
@@ -587,6 +590,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				intent.putExtra(TIME, time);
 				intent.putExtra(HEALTH, (int)(protagonist.getHealth()*100));
 				context.startActivity(intent);
+				((Activity)context).finish();
 			}
 		}
 	}

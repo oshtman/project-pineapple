@@ -1,7 +1,10 @@
 package com.example.pineapple;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +12,7 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
@@ -16,15 +20,28 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.EditText;
+
+import com.scoreloop.client.android.core.controller.RequestController;
+import com.scoreloop.client.android.core.controller.RequestControllerException;
+import com.scoreloop.client.android.core.controller.RequestControllerObserver;
+import com.scoreloop.client.android.core.controller.ScoresController;
+import com.scoreloop.client.android.core.controller.TermsOfServiceController;
+import com.scoreloop.client.android.core.controller.TermsOfServiceControllerObserver;
+import com.scoreloop.client.android.core.controller.UserController;
+import com.scoreloop.client.android.core.model.Score;
+import com.scoreloop.client.android.core.model.Session;
+import com.scoreloop.client.android.core.model.User;
 
 public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
-	private final String TAG = MenuPanel.class.getSimpleName();
+	private static final String TAG = MenuPanel.class.getSimpleName();
 	public final static String LEVEL = "com.example.pineapple.LEVEL";
 	private final int MAIN_MENU = 0;
 	private final int LEVEL_MENU = 1;
 	private final int SETTINGS_MENU = 2;
 	private final int HIGHSCORE_MENU = 3;
 	private final int PLAY = 4;
+	private final int width = 155, height = 100;
 	private double scaleX, scaleY;
 	private Button playButton, settingsButton, highscoreButton, soundButton, musicButton, scoreButton;
 	private MainThread thread;
@@ -39,7 +56,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[] levelBitmaps;
 	private Bitmap[] butterflyBitmaps;
 	private Bitmap sliderLineBitmap, sliderHandleBitmap;
-	private Bitmap onBitmap, offBitmap;
+	private Bitmap onBitmap, offBitmap, updateBitmap;
 	private int nextLevel;
 	private int menuState;
 	private SoundManager sm;
@@ -51,29 +68,90 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Butterfly butterfly;
 	private float aimAngle, feetAngle;
 	private int time = 0;
-	
+	private Paint userPaint, leaderboardPaint;
+	private EditText nameField;
+
+	private final TermsOfServiceController controller;
+	private static UserController userController;
+	private static String userName = "loading...";
+	private static boolean leaderboardsLoaded = false;
+	private static ArrayList<List<Score>> highScoreList= new ArrayList<List<Score>>();
+	private static int currentHighScoreMode = 0;
+	private static int leaderboardLevel = 0, leaderboardDifficulty = 0;
+	private static int loaderRotation = 0;
+	private Paint textBackground = new Paint();
 
 	public MenuPanel(Context context) {
 		super(context);
 		getHolder().addCallback(this);
 		setFocusable(true);
-		thread = new MainThread(this.getHolder(), this);
+		leaderboardsLoaded = false;
 		this.context = context;
 		sm = new SoundManager(context, 1);
 		protagonist = new Protagonist(-20, 80);
 		butterfly = new Butterfly();
 		renderMatrix = new Matrix();
 		setKeepScreenOn(true);
+
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 		currentLevel = settings.getInt("currentLevel", 0);
 		sm = new SoundManager(getContext());
 		loadSounds();
 		playTheme();
-		//Load saved variables
+
+		userPaint = new Paint();
+		userPaint.setColor(Color.WHITE);
+
+		leaderboardPaint = new Paint();
+		leaderboardPaint.setColor(Color.WHITE);
+
+		textBackground.setARGB(120, 40, 40, 40);
+
+		nameField = new EditText(context);
 
 
+
+		//controller to handle the user's acceptance of the Terms Of Service
+		controller = new TermsOfServiceController(new TermsOfServiceControllerObserver() {
+			@Override
+			public void termsOfServiceControllerDidFinish(final TermsOfServiceController controller, final Boolean accepted) {
+				if(accepted != null) {
+					// we have conclusive result
+					if(accepted) {
+						// user did accept
+					}
+					else {
+						// user declined
+					}
+				}
+			}
+		});
+
+		// first, a request observer...
+		RequestControllerObserver observer = new RequestControllerObserver() {
+
+			@Override
+			public void requestControllerDidReceiveResponse(RequestController requestController) {
+				UserController userController = (UserController)requestController;
+				Log.d(TAG, "Load successful");
+				// insert values into text fields
+				User user = userController.getUser();
+				setUserName(user.getLogin());
+			}
+
+			@Override
+			public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
+				Log.d(TAG, "Load failed");
+			}
+		};
+
+		// here's the UserController doing our work to update the profile data
+		UserController userController = new UserController(observer);
+
+		// and fire the request
+		userController.loadUser();
+		thread = new MainThread(this.getHolder(), this);
 	}
-
 	public void update(){
 		if(Math.abs(protagonist.getXPos() - desiredX[menuState]) > 10){
 			protagonist.accelerate(0.3*Math.signum(desiredX[menuState]-protagonist.getXPos()));
@@ -95,7 +173,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(menuState == SETTINGS_MENU){
 			setVolumes();
 		}
-		
+
 		time++;
 
 	}
@@ -136,7 +214,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		theme.setVolume(settings.getFloat("musicVolume", 0), settings.getFloat("musicVolume", 0));
 	}
-	
+
 	public void setVolumes(){
 		if(musicSlider.isSliding()){
 			Editor e = settings.edit();
@@ -158,6 +236,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderButtons(canvas);
 		renderProtagonist(canvas);
 		renderSliders(canvas);
+		renderUser(canvas);
+		renderLeaderboards(canvas);
 	}
 
 	public void renderButtons(Canvas canvas){
@@ -185,14 +265,47 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 
 	}
-	
+
 	public void renderSliders(Canvas canvas){
 		if(menuState == SETTINGS_MENU){
 			canvas.drawBitmap(sliderLineBitmap, (float)(musicSlider.getX()*scaleX), (float)(musicSlider.getY()*scaleY), null);
 			canvas.drawBitmap(sliderHandleBitmap, (float)((musicSlider.getX() + musicSlider.getWidth()*musicSlider.getValue()-Const.sliderHandleWidth/2)*scaleX), (float)((musicSlider.getY()+Const.menuButtonHeight/4*Math.sin(time/45.*Math.PI))*scaleY), null);
-			
+
 			canvas.drawBitmap(sliderLineBitmap, (float)(soundSlider.getX()*scaleX), (float)(soundSlider.getY()*scaleY), null);
 			canvas.drawBitmap(sliderHandleBitmap, (float)((soundSlider.getX() + soundSlider.getWidth()*soundSlider.getValue()-Const.sliderHandleWidth/2)*scaleX), (float)((soundSlider.getY()+Const.menuButtonHeight/4*Math.cos(time/45.*Math.PI))*scaleY), null);
+		}
+	}
+
+	public void renderUser(Canvas canvas){
+		canvas.drawText("User: " + userName, (float)((Const.HUDPadding/2*scaleX)), (float)((height-Const.HUDPadding/2)*scaleY), userPaint);
+	}
+
+	public void renderLeaderboards(Canvas canvas){
+		if(menuState == HIGHSCORE_MENU){
+			if(leaderboardsLoaded){
+				String levelS = (leaderboardLevel > 0)?("level " + leaderboardLevel):"tutorial";
+				String difficultyS = (leaderboardDifficulty == 0)?"normal":"hard";
+				String leaderboardTitle = "Leaderboard for " + levelS + " @difficulty " + difficultyS;
+
+				canvas.drawRect((float)(Const.HUDPadding/2*scaleX), 0, (float)((width-Const.HUDPadding/2)*scaleX), (float)(height*scaleY), textBackground);
+				canvas.drawText(leaderboardTitle, (float)(Const.HUDPadding/2*scaleX), (float)(Const.HUDPadding*scaleY), leaderboardPaint);
+				canvas.drawLine((float)(Const.HUDPadding/2*scaleX), (float)(Const.HUDPadding*scaleY), (float)((width - Const.HUDPadding/2)*scaleX), (float)(Const.HUDPadding*scaleY), leaderboardPaint);
+				try{ //Try to render the leaderboard
+					for(int i = 0; i < highScoreList.get(2*leaderboardLevel).size(); i++){
+						Score s = highScoreList.get(2*leaderboardLevel).get(i);
+						String entry = "#"+s.getRank()+". "+s.getUser().getLogin()+": " + s.getResult().intValue();
+						canvas.drawText(entry, (float)(Const.HUDPadding/2*scaleX), (float)(3/2.*Const.HUDPadding*scaleY+i*(height-Const.HUDPadding)/20.*scaleY), leaderboardPaint);
+					}
+				} catch(IndexOutOfBoundsException e){ //The rendering might get interrupted by a leaderboard update
+					Log.e(TAG, "The leaderboard rendering got interrupted");
+				}
+			} else {
+				loaderRotation += 10;
+				Matrix m = new Matrix();
+				m.setRotate(loaderRotation, updateBitmap.getWidth()/2, updateBitmap.getHeight()/2);
+				m.postTranslate((float)(width/2*scaleX - updateBitmap.getWidth()/2), (float)(height/2*scaleY - updateBitmap.getHeight()/2));
+				canvas.drawBitmap(updateBitmap, m, null);
+			}
 		}
 	}
 
@@ -205,12 +318,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
-		Log.d(TAG, "Hit");
 
-		scaleY = (double)getHeight()/100;
-		scaleX = (double)getWidth()/155;
-		
-		
+		scaleY = (double)getHeight()/height;
+		scaleX = (double)getWidth()/width;
+
+
 		Bitmap playBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.start), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		playButton = new Button(10, 10, playBitmap.getWidth()/scaleX, playBitmap.getHeight()/scaleY, playBitmap);
 
@@ -228,13 +340,13 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		Bitmap scoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.score), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		scoreButton = new Button(10, (int)(10 + 3*Const.menuButtonHeight), scoreBitmap.getWidth()/scaleX, scoreBitmap.getHeight()/scaleY, scoreBitmap);
-		
+
 		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth() + Const.HUDPadding, musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
 		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
 
 
-		backgroundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.menu_background), (int)(155*scaleX), (int)(100*scaleY), true);
-
+		backgroundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.menu_background), (int)(width*scaleX), (int)(height*scaleY), true);
+		Log.d(TAG, "Loaded");
 		bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
 		eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_eye_mouth), (int)(protagonist.getWidth()*scaleX*Const.eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeMouthYScale), true);
 		footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_foot), (int)(protagonist.getWidth()*scaleX*Const.footXScale), (int)(protagonist.getHeight()*scaleY*Const.footYScale), true);
@@ -266,19 +378,27 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_in), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_out), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true)
 		};
-		
+
 		sliderLineBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_line), (int)(musicSlider.getWidth()*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
 		sliderHandleBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_handle), (int)(Const.sliderHandleWidth*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
-		
+
 		onBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
 		offBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
-		
+		updateBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update), (int)(Const.updateSize*scaleX), (int)(Const.updateSize*scaleY), true);
 		if(currentLevel > 7)
 			currentLevel = 7;
 		levelButtons = new Button[currentLevel+1];
 		for(int i = 0; i <= currentLevel && i < 8; i++){
 			levelButtons[i] = new Button(Const.HUDPadding + (int)(Const.menuButtonWidth*(i/Const.levelButtonsPerRow)), Const.HUDPadding + (int)(Const.menuButtonHeight*(i%Const.levelButtonsPerRow)), Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
 		}
+
+		userPaint.setTextSize((float)(10*scaleY));
+		userPaint.setAntiAlias(true);
+		userPaint.setDither(true);
+
+		leaderboardPaint.setTextSize((float)((height/20.)*scaleY));
+		leaderboardPaint.setAntiAlias(true);
+		leaderboardPaint.setDither(true);
 
 		//Start the thread
 		if (thread.getState()==Thread.State.TERMINATED) { 
@@ -304,8 +424,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 
 	}
+
 	public void resume(){
 		playTheme();
+		leaderboardsLoaded = false;
+		currentHighScoreMode = 0;
 	}
 
 	//Pause the game
@@ -316,11 +439,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
-		
+
 		touchX = (int)(e.getX()/scaleX);
 		touchY = (int)(e.getY()/scaleY);
 		if(e.getAction() == MotionEvent.ACTION_DOWN){
-			
+
 			switch(menuState){
 			case MAIN_MENU:
 				if(playButton.isClicked(touchX, touchY)){
@@ -328,6 +451,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				}
 				if(settingsButton.isClicked(touchX, touchY)){
 					menuState = SETTINGS_MENU;
+				}
+				if(highscoreButton.isClicked(touchX, touchY)){
+					menuState = HIGHSCORE_MENU;
+					loadHighscores();
 				}
 				break;
 			case LEVEL_MENU:
@@ -345,7 +472,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					ed.commit();
 					soundSlider.setValue(settings.getFloat("soundVolume", 1));
 					sm.playSound(0, settings.getFloat("soundVolume", 0));
-					
+
 				}
 				if(musicButton.isClicked(touchX, touchY)){
 					Editor ed = settings.edit();
@@ -358,10 +485,25 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					Editor ed = settings.edit();
 					ed.putBoolean("scoring", settings.getBoolean("scoring", false)?false:true);
 					ed.commit();
+					if(settings.getBoolean("scoring", false)){
+						controller.query(null);
+					}
 				}
 				soundSlider.handleTouch(touchX, touchY);
 				musicSlider.handleTouch(touchX, touchY);
 				break;
+			case HIGHSCORE_MENU:
+				if(leaderboardsLoaded && touchX > width/2 && touchY > height/2){
+					leaderboardsLoaded = false;
+					currentHighScoreMode = 0;
+					loadHighscores();
+				} else {
+					leaderboardLevel++;
+					if(leaderboardLevel >= 10)
+						leaderboardLevel = 0;
+				}
+				break;
+
 			}
 		}
 		if(e.getAction() == MotionEvent.ACTION_MOVE){
@@ -382,6 +524,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		intent.putExtra(LEVEL, level);
 
 		context.startActivity(intent);
+		((Activity)context).finish();
+		Log.d(TAG, "Starting game");
 	}
 
 	public void back(){
@@ -449,6 +593,91 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderMatrix.postTranslate((float)((butterfly.getX()-Const.butterflySize/2)*scaleX), (float)((butterfly.getY()-Const.butterflySize/2)*scaleY));
 		canvas.drawBitmap(butterflyBitmaps[(int)(Math.abs(butterfly.getCounter() % 2))], renderMatrix, null);
 	}
+
+	public static void setUserName(String name){
+		userName = name;
+	}
+
+	public void uploadUserName(String name){
+		User user = Session.getCurrentSession().getUser();
+
+		// update his values
+		user.setLogin(name);
+
+		// set up a request observer
+		RequestControllerObserver observer = new RequestControllerObserver() {
+
+			@Override
+			public void requestControllerDidReceiveResponse(RequestController aRequestController) {
+				// update displayed values
+				User user = ((UserController)aRequestController).getUser();
+				setUserName(user.getLogin());
+				Log.d(TAG, "Name changed successfully!");
+			}
+
+			@Override
+			public void requestControllerDidFail(RequestController controller, Exception exception) {
+
+				Log.d(TAG, "Name change failed because:");
+				RequestControllerException ctrlException = (RequestControllerException) exception;
+				if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_USERNAME_TAKEN)) {
+					Log.d(TAG, "Name taken");
+				}
+				else if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_USERNAME_TOO_SHORT)) {
+					Log.d(TAG, "Name too short");
+				}
+				else if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_INVALID_USERNAME)) {
+					Log.d(TAG, "Name invalid");
+				}
+
+			}
+		};
+
+		// with our observer, set up the request controller
+		UserController userController = new  UserController(observer);
+
+		// pass the user into the controller
+		userController.setUser(user);
+
+		// submit our changes
+		userController.submitUser();
+	}
+
+	public static void loadHighscores(){
+		if(currentHighScoreMode == 0){
+			highScoreList.clear();
+		}
+		RequestControllerObserver observer = new RequestControllerObserver() {
+
+			@Override
+			public void requestControllerDidReceiveResponse(RequestController requestController) {
+				List<Score> retrievedScores = ((ScoresController)requestController).getScores();
+				Log.d(TAG, "Connection to leaderboards level " + currentHighScoreMode + " successful");
+				highScoreList.add(retrievedScores);
+				for(Score s: retrievedScores){
+					Log.d(TAG, "User: " + s.getUser().getLogin() + " Score: " + s.getResult());
+				}
+				currentHighScoreMode++;
+				loadHighscores();
+			}
+
+			@Override
+			public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
+				Log.d(TAG, "Connection to leaderboards failed");
+			}
+		};
+		ScoresController controller = new ScoresController(observer);
+		int maxModes = 20, maxRanks = 20;
+		if(currentHighScoreMode < maxModes){
+			controller.setMode(currentHighScoreMode); 
+			controller.setRangeLength(maxRanks); 
+			controller.loadRangeAtRank(1);
+		} else {
+			leaderboardsLoaded = true;
+		}
+	}
+
+
 
 
 }
