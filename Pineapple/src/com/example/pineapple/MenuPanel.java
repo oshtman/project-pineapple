@@ -92,7 +92,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		butterfly = new Butterfly();
 		renderMatrix = new Matrix();
 		setKeepScreenOn(true);
-		briefer = new LevelBriefer(80, Const.HUDPadding, (width - 80 - Const.HUDPadding), (height - 2*Const.HUDPadding));
+		
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 		currentLevel = settings.getInt("currentLevel", 0);
 		sm = new SoundManager(getContext());
@@ -169,7 +169,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.breathe();
 		protagonist.move();
 		butterfly.update();
-		//briefer.update();
+		briefer.update();
 		if(menuState == SETTINGS_MENU){
 			setVolumes();
 		}
@@ -238,7 +238,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderSliders(canvas);
 		renderUser(canvas);
 		renderLeaderboards(canvas);
-		//briefer.render(canvas, scaleX, scaleY);
+		renderBriefer(canvas);
+		
 	}
 
 	public void renderButtons(Canvas canvas){
@@ -348,6 +349,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
+	public void renderBriefer(Canvas canvas){
+		if(menuState == LEVEL_MENU){
+			briefer.render(canvas);
+		}
+	}
+	
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -445,6 +452,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		userPaint.setAntiAlias(true);
 		userPaint.setDither(true);
 
+		briefer = new LevelBriefer(70, Const.HUDPadding, (width - 70 - Const.HUDPadding), (height - 2*Const.HUDPadding), scaleX, scaleY, settings, context.getSharedPreferences("localScores", Context.MODE_PRIVATE));
+		
 		leaderboardPaint.setTextSize((float)(((height-Const.leaderboardStartY)/Const.leaderboardRows)*scaleY));
 		leaderboardPaint.setAntiAlias(true);
 		leaderboardPaint.setDither(true);
@@ -509,9 +518,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			case LEVEL_MENU:
 				for(int i = 0; i < levelButtons.length; i++){
 					if(levelButtons[i].isClicked(touchX, touchY)){
-						nextLevel = i;
-						menuState = PLAY;
-						//briefer.handleClick(i);
+						if(briefer.handleClick(i)){
+							nextLevel = i;
+							menuState = PLAY;
+						}
 					}
 				}
 				break;
@@ -590,6 +600,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void back(){
 		switch(menuState){
 		case LEVEL_MENU:
+			briefer.close();
 		case SETTINGS_MENU:
 		case HIGHSCORE_MENU:
 			menuState = MAIN_MENU;
