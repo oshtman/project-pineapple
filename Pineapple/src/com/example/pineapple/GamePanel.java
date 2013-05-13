@@ -306,6 +306,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		sm.addSound(6, R.raw.protagonist_damaged);
 		sm.addSound(protagonistSoundIndexStart+0, R.raw.protagonist_1);
 		sm.addSound(protagonistSoundIndexStart+1, R.raw.protagonist_2);
+		sm.addSound(protagonistSoundIndexStart+2, R.raw.protagonist_3);
+		sm.addSound(protagonistSoundIndexStart+3, R.raw.protagonist_4);
+		sm.addSound(protagonistSoundIndexStart+4, R.raw.protagonist_5);
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 	}
 
@@ -617,7 +620,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void handleProtagonistMumbling(){
 		if(time-latestAction > Const.mumbleDelay){
 			latestAction = time;
-			sm.playSound(protagonistSoundIndexStart+(int)(2*Math.random()), effectVolume);
+			sm.playSound(protagonistSoundIndexStart+(int)(5*Math.random()), effectVolume);
 		}
 	}
 
