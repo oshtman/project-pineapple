@@ -27,7 +27,6 @@ public class Enemy {
 	private double slideCoefficient = 0.8;
 	private double typeAcc;
 	private boolean touchingGround;
-	private boolean onPlatform;
 	private final int type;
 	private int leftArmAngle, rightArmAngle, armAngleCounter;
 	private int pupilAngle;
@@ -40,9 +39,8 @@ public class Enemy {
 	private double dashPowerConstant;
 	private double healthLostByDashConstant = 0.5;
 	private double damageGrade;
-	private int count;
 	private boolean hitThisFrame;
-
+	private int platformNumber = -1;
 
 	//------------------------------------------------------------------------------------------------//
 	//CONSTRUCTORS
@@ -169,7 +167,7 @@ public class Enemy {
 	//CHECK-METHODS FOR ENEMY AND SURROUNDING
 	//Check if the enemy is standing on the ground (make sure enemy is)
 	public void checkGround(Ground g){
-		if(this.yPos + height/2 > g.getYFromX(this.xPos)){
+		if(this.getYPos() + this.getHeight()/2 + this.getYVel() > g.getYFromX(this.getXPos())){
 			this.yPos = g.getYFromX(this.xPos)-height/2;
 			this.yVel = 0;
 			this.yAcc = 0;
@@ -179,27 +177,29 @@ public class Enemy {
 
 	//Check if enemy hit platform
 	public void checkPlatform(ArrayList<Platform> platforms) {
-		for (int i = 0; i < platforms.size(); i++) {
-			if (platforms.get(i).spans(this.getXPos())) {
-				//if head is in platform
-				//Log.d(TAG, "Warning: Platform, platform!!");
-				if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
-					this.setYVel(-this.getYVel());
-					Log.d(TAG, "Enemy hit the head!!");
-				} else {
-					//if feet is in platform
-					if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
-						if (this.getYPos() + this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos())) {
-							this.setYPos(platforms.get(i).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
-							this.setYVel(0);
-							this.setYAcc(0);
-							touchingGround = true;
-							onPlatform = true;
-							Log.d(TAG, "Enemy over, and out!!");					
-						}
-					}
+		this.getPlatformNumber(platforms);
+		if (platformNumber == -1){
+			//Do nothing
+		}else{
+			//Check if head hit platform
+			if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos())) {
+				this.setYVel(-this.getYVel());
+				Log.d(TAG, "Enemy hit the head!!");
+			} else {
+				//Check if feet hit platform
+				if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos())) {
+					//if () {
+					this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
+					this.setYVel(0);
+					this.setYAcc(0);
+					touchingGround = true;
+					Log.d(TAG, "Enemy up high!!");					
+					//}
 				}
-			} //if making move towards edge of platform
+			}
+		}
+		//if making move towards edge of platform
+		for (int i = 0; i < platforms.size(); i++){
 			if (platforms.get(i).checkSide(this, -1) && getXPos() < platforms.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > platforms.get(i).getUpperX()[0] && getXVel() > 0) {
 				this.setXVel(0);
 				this.setXPos(platforms.get(i).getUpperX()[0] - getWidth()/2);
@@ -213,9 +213,17 @@ public class Enemy {
 
 	//Check if enemy is airborne
 	public void checkAirborne(Ground g, ArrayList<Platform> platforms){
-		if(Math.abs(this.yPos + height/2 - g.getYFromX(this.xPos)) > this.yPos && !onPlatform){
-			touchingGround = false;
-			onPlatform = false;
+		this.getPlatformNumber(platforms);
+		if (platformNumber == -1 || this.yPos - this.height/2 > platforms.get(platformNumber).getLowerYFromX(this.xPos)){ //Check if above ground
+			if(Math.abs(this.yPos + height/2 - g.getYFromX(this.xPos)) > this.height/4){
+				touchingGround = false;
+				Log.d(TAG, "groundAir! " + touchingGround + " " + platformNumber);
+			}
+		} else { //If above platform
+			if (Math.abs(this.yPos + height/2 - platforms.get(platformNumber).getUpperYFromX(this.xPos)) > this.height/4){
+				touchingGround = false;
+				Log.d(TAG, "platformAir! " + touchingGround + " " + platformNumber);
+			}
 		}
 	}
 	//------------------------------------------------------------------------------------------------//
@@ -416,6 +424,18 @@ public class Enemy {
 	}
 	public void setHitThisFrame(boolean hitThisFrame) {
 		this.hitThisFrame = hitThisFrame;
+	}
+
+	//Others
+	public void getPlatformNumber(ArrayList<Platform> platforms){
+		for(int i = 0; i < platforms.size(); i++){
+			if (platforms.get(i).spans(this.getXPos())){
+				this.platformNumber = i;
+				break;
+			} else {
+				this.platformNumber = -1;
+			}
+		}
 	}
 	//------------------------------------------------------------------------------------------------//
 }
