@@ -494,14 +494,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(i = 0; i < bullets.size(); i++){//All bullets
 			Bullet bullet = bullets.get(i);
 			for(int j = 0; j < enemies.size(); j++){//All enemies
-				Enemy enemy = enemies.get(j);
-				if(bullet.collideEnemy(enemy) && enemy.hasSpawned()){//If collision detected
+				if(bullet.collideEnemy(enemies.get(j)) && enemies.get(j).hasSpawned()){//If collision detected
 					bullets.remove(i);//Remove the bullet from the game
 					i--;
 
-					enemy.takeDamage(bulletDamage*enemies.get(j).getDamageGrade()); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
-					enemy.setHitThisFrame(true);
-					if(enemy.getHealth() <= 0){//If the enemy is dead
+					enemies.get(j).takeDamage(bulletDamage*enemies.get(j).getDamageGrade()); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
+					enemies.get(j).setHitThisFrame(true);
+					if(enemies.get(j).getHealth() <= 0){//If the enemy is dead
 						scoreKill[enemies.get(j).getType()-1]++;
 						enemies.remove(j);
 						j--;
@@ -539,6 +538,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(i = 0; i < enemies.size(); i++){
 			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground, protagonist, platforms) && enemies.get(i).hasSpawned()){
 				enemies.get(i).takeDashDamage(protagonist);
+				enemies.get(i).setHitThisFrame(true);
 				Log.d(TAG, "In reach for dash! Watch me.");
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
 					scoreKill[enemies.get(i).getType()-1]++;
@@ -824,7 +824,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						if(enemies.get(i).getXPos() + enemies.get(i).getWidth() > screenX && enemies.get(i).getXPos() - enemies.get(i).getWidth() < screenX + width){
 							Enemy e = enemies.get(i);
 							feetAngle = (int)(Const.enemyMaxFootAngle*Math.sin(time/3.));
-							if(e.wasHitThisFrame()){
+							if(e.wasHitThisFrame() || time - latestDashTime < 10 && (time-latestDashTime)%2 == 0){
 								enemyPaint = stamper;
 							} else {
 								enemyPaint = null;
