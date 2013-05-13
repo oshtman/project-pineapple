@@ -715,7 +715,7 @@ public class LevelLoader {
 			//Skeletons
 			skeletons.add(new int[]{5400, 10});
 			break;
-		case 9:
+		case 9: //a Maze (ing)
 			//Start and finish
 			startPos = new int[]{10, 0};
 			finishX = 2000;
