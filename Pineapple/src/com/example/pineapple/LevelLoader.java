@@ -143,23 +143,27 @@ public class LevelLoader {
 			break;
 		case 2://Hide and seek, watch out
 			//Start and finish
-			startPos = new int[]{10, 0};
-			finishX = 2400;
+			startPos = new int[]{20, 0};
+			finishX = 2500;
 			//Ground
-			ground = new int[2][2];
-			ground[0][0] = -300;
-			ground[1][0] = 0;
-			ground[0][1] = 2500;
+			ground = new int[2][4];
+			ground[0][0] = -100;
+			ground[1][0] = -20;
+			ground[0][1] = 0;
 			ground[1][1] = 0;
+			ground[0][2] = 2100;
+			ground[1][2] = 0;
+			ground[0][3] = 2600;
+			ground[1][3] = -40;
 			//Enemies
 			//---Drones
-			enemies.add(new int[]{140, 0, 80, 1});
-			enemies.add(new int[]{200, 0, 140, 1});
-			enemies.add(new int[]{230, 0, 170, 1});
+			enemies.add(new int[]{140, 0, 20, 1});
+			enemies.add(new int[]{200, 0, 120, 1});
+			enemies.add(new int[]{230, 0, 160, 1});
 			enemies.add(new int[]{300, 0, 240, 1});
 			enemies.add(new int[]{400, 0, 340, 1});
 			enemies.add(new int[]{420, 0, 490, 1});
-			enemies.add(new int[]{470, 0, 500, 1});
+			enemies.add(new int[]{420, 0, 500, 1});
 			enemies.add(new int[]{660, 0, 600, 1});
 			enemies.add(new int[]{720, 0, 660, 1});
 			enemies.add(new int[]{800, 0, 850, 1});
@@ -169,28 +173,25 @@ public class LevelLoader {
 			enemies.add(new int[]{1420, 0, 1355, 1});
 			enemies.add(new int[]{1620, 0, 1560, 1});
 			enemies.add(new int[]{1660, 0, 1600, 1});
-			enemies.add(new int[]{1740, 0, 1680, 1});
-			enemies.add(new int[]{1800, 0, 1730, 1});
-			enemies.add(new int[]{1840, 0, 1780, 1});
+			enemies.add(new int[]{1740, 0, 1790, 1});
+			enemies.add(new int[]{1840, 0, 1790, 1});
 			enemies.add(new int[]{1950, 0, 1890, 1});
+			enemies.add(new int[]{1990, 0, 2020, 1});
 			//---Ninjas
-			enemies.add(new int[]{2030, 0, 2200, 2});
-			enemies.add(new int[]{2040, 0, 2200, 2});
-			enemies.add(new int[]{2050, 0, 2200, 2});
-			enemies.add(new int[]{2060, 0, 2200, 2});
+			enemies.add(new int[]{2230, -60, 2250, 2});
+			enemies.add(new int[]{2230, -60, 2260, 2});
+			enemies.add(new int[]{2230, -60, 2270, 2});
+			enemies.add(new int[]{2230, -60, 2280, 2});
 			//---Tanks
-			enemies.add(new int[]{-250, 0, 250, 3});
-			enemies.add(new int[]{0, 0, 500, 3});
-			enemies.add(new int[]{250, 0, 750, 3});
+			enemies.add(new int[]{0, 0, 1250, 3});
 			//Trees
-			trees.add(new int[]{-80, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			trees.add(new int[]{-40, (int)(3*Math.random()), (int)(3*Math.random()), 0});
-			trees.add(new int[]{2050, (int)(3*Math.random()), (int)(3*Math.random()), 1});
+			trees.add(new int[]{2200, (int)(3*Math.random()), (int)(3*Math.random()), 1});
 			//Rocks
 			rocks.add(new int[]{50, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{120, (int)(4*Math.random()), 20, 0});
 			rocks.add(new int[]{140, (int)(4*Math.random()), 30, 1});
-			rocks.add(new int[]{150, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{150, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{200, (int)(4*Math.random()), 30, 1});
 			rocks.add(new int[]{230, (int)(4*Math.random()), 30, 1});
 			rocks.add(new int[]{250, (int)(4*Math.random()), 20, 0});
@@ -200,7 +201,7 @@ public class LevelLoader {
 			rocks.add(new int[]{340, (int)(4*Math.random()), 30, 1});
 			rocks.add(new int[]{350, (int)(4*Math.random()), 30, 0});
 			rocks.add(new int[]{400, (int)(4*Math.random()), 30, 1});
-			rocks.add(new int[]{410, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{410, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{420, (int)(4*Math.random()), 30, 1});
 			rocks.add(new int[]{450, (int)(4*Math.random()), 20, 0});
 			rocks.add(new int[]{470, (int)(4*Math.random()), 30, 1});
@@ -267,8 +268,8 @@ public class LevelLoader {
 			rocks.add(new int[]{1920, (int)(4*Math.random()), 30, 0});
 			rocks.add(new int[]{1950, (int)(4*Math.random()), 30, 1});
 			rocks.add(new int[]{1960, (int)(4*Math.random()), 30, 0});
-			rocks.add(new int[]{1980, (int)(4*Math.random()), 40, 0});
-			rocks.add(new int[]{1990, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1980, (int)(4*Math.random()), 35, 0});
+			rocks.add(new int[]{1990, (int)(4*Math.random()), 40, 1});
 			//Flowers
 			flowers.add(new int[]{-10, 0});
 			flowers.add(new int[]{-20, 0});
@@ -580,28 +581,28 @@ public class LevelLoader {
 					{-20, -10, -10, -20, -30}
 			};
 			p2 = new int[][]{
-					{380, 500, 600},
+					{390, 500, 600},
 					{-20, -45, -50},
-					{380, 400, 500, 570, 600},
-					{-20, -20, -10, -20, -50}
+					{390, 400, 500, 580, 600},
+					{-20, -15, -10, -20, -50}
 			};
 			p3 = new int[][]{
 					{680, 800, 1000},
-					{-20, -10, -40},
-					{680, 700, 800, 960, 1000},
-					{-20, 0, 20, -10, -40}
+					{-20, -30, -50},
+					{680, 700, 800, 980, 1000},
+					{-20, -10, 0, -30, -50}
 			};
 			p4 = new int[][]{
-					{1030, 1400, 1600},
-					{-20, -20, -30},
-					{1030, 1060, 1400, 1580, 1600},
-					{-20, 0, 10, -10, -30}
+					{1070, 1400, 1530},
+					{-30, -50, -70},
+					{1070, 1080, 1200, 1500, 1530},
+					{-30, -20, 0, -30, -70}
 			};
 			p5 = new int[][]{
-					{1630, 1700, 1790},
-					{-30, -50, -20},
-					{1630, 1640, 1700, 1780, 1790},
-					{-30, -10, 0, -10, -20}
+					{1600, 1700, 1790},
+					{-30, -40, -25},
+					{1600, 1700, 1780, 1790},
+					{-30, 0, -10, -25}
 			};
 			platforms.add(p1);
 			platforms.add(p2);
@@ -626,10 +627,10 @@ public class LevelLoader {
 			enemies.add(new int[]{950, -40, 690, 1});//3
 			enemies.add(new int[]{970, -40, 690, 1});
 			enemies.add(new int[]{980, -40, 690, 1});
-			enemies.add(new int[]{1520, -30, 1050, 1});//4
-			enemies.add(new int[]{1540, -30, 1050, 1});
-			enemies.add(new int[]{1560, -30, 1050, 1});
-			enemies.add(new int[]{1580, -30, 1050, 1});
+			enemies.add(new int[]{1460, -70, 1080, 1});//4
+			enemies.add(new int[]{1480, -70, 1080, 1});
+			enemies.add(new int[]{1500, -70, 1080, 1});
+			enemies.add(new int[]{1520, -70, 1080, 1});
 			enemies.add(new int[]{1750, -50, 1640, 1});//5
 			enemies.add(new int[]{1760, -50, 1640, 1});
 			enemies.add(new int[]{1770, -50, 1640, 1});
@@ -637,11 +638,21 @@ public class LevelLoader {
 			enemies.add(new int[]{1790, -50, 1640, 1});
 			//Trees
 			trees.add(new int[]{-10, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			trees.add(new int[]{360, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			trees.add(new int[]{640, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			trees.add(new int[]{1030, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			trees.add(new int[]{1570, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			trees.add(new int[]{1900, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			//Rocks
-			rocks.add(new int[]{1000, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{130, (int)(4*Math.random()), 20, 0});
+			rocks.add(new int[]{290, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{950, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{980, (int)(4*Math.random()), 20, 1});
+			rocks.add(new int[]{1530, (int)(4*Math.random()), 30, 0});
 			//Flowers
 			flowers.add(new int[]{0, 0});
+			flowers.add(new int[]{650, 0});
+			flowers.add(new int[]{660, 0});
 			flowers.add(new int[]{1910, 0});
 			//Skeletons
 			skeletons.add(new int[]{40, 0});
