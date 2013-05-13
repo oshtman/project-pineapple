@@ -284,7 +284,6 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				String levelS = (leaderboardLevel > 0)?("level " + leaderboardLevel):"tutorial";
 				String difficultyS = (leaderboardDifficulty == 0)?"normal":"hard";
 				String leaderboardTitle = "Leaderboard for " + levelS + " @difficulty " + difficultyS;
-
 				canvas.drawRect(0, 0, (float)(width*scaleX), (float)(height*scaleY), textBackground);
 				canvas.drawText(leaderboardTitle, (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY/2*scaleY), leaderboardPaint);
 				
@@ -303,6 +302,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				try{ //Try to render the leaderboard
 					for(int i = 0; i < highScoreList.get(2*leaderboardLevel+leaderboardDifficulty).size(); i++){
 						Score s = highScoreList.get(2*leaderboardLevel+leaderboardDifficulty).get(i);
+						String health;
+						
+						health = s.getContext().get("health")+"%";
+						if(s.getContext().get("health") == null){
+							health = "-";
+						}
 						
 						//Format time string
 						int sec = Integer.parseInt(s.getContext().get("secs").toString());
@@ -311,14 +316,14 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 						String mins = ((min < 10)?"0"+min:""+min);
 						String secs = ((sec < 10)?"0"+sec:""+sec);
 						
-						canvas.drawText(s.getRank()+". ", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
-						canvas.drawText(s.getUser().getLogin(), (float)(Const.leaderboardColumns[1]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
-						canvas.drawText(s.getResult().intValue()+"", (float)(Const.leaderboardColumns[2]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
-						canvas.drawText(s.getContext().get("normals")+"", (float)(Const.leaderboardColumns[3]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
-						canvas.drawText(s.getContext().get("ninjas")+"", (float)(Const.leaderboardColumns[4]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
-						canvas.drawText(s.getContext().get("tanks")+"", (float)(Const.leaderboardColumns[5]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
-						canvas.drawText(mins+":"+secs, (float)(Const.leaderboardColumns[6]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
-						canvas.drawText(100+" %", (float)(Const.leaderboardColumns[7]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/20.*scaleY), leaderboardPaint);
+						canvas.drawText(s.getRank()+". ", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
+						canvas.drawText(s.getUser().getLogin(), (float)(Const.leaderboardColumns[1]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
+						canvas.drawText(s.getResult().intValue()+"", (float)(Const.leaderboardColumns[2]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
+						canvas.drawText(s.getContext().get("normals")+"", (float)(Const.leaderboardColumns[3]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
+						canvas.drawText(s.getContext().get("ninjas")+"", (float)(Const.leaderboardColumns[4]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
+						canvas.drawText(s.getContext().get("tanks")+"", (float)(Const.leaderboardColumns[5]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
+						canvas.drawText(mins+":"+secs, (float)(Const.leaderboardColumns[6]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
+						canvas.drawText(health, (float)(Const.leaderboardColumns[7]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 					}
 				} catch(IndexOutOfBoundsException e){ //The rendering might get interrupted by a leaderboard update
 					Log.e(TAG, "The leaderboard rendering got interrupted");
@@ -423,7 +428,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		userPaint.setAntiAlias(true);
 		userPaint.setDither(true);
 
-		leaderboardPaint.setTextSize((float)((height/20.)*scaleY));
+		leaderboardPaint.setTextSize((float)(((height-Const.leaderboardStartY)/Const.leaderboardRows)*scaleY));
 		leaderboardPaint.setAntiAlias(true);
 		leaderboardPaint.setDither(true);
 
@@ -676,7 +681,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		userController.submitUser();
 	}
 
-	public static void loadHighscores(){
+	public void loadHighscores(){
 		if(currentHighScoreMode == 0){
 			highScoreList.clear();
 		}
@@ -696,14 +701,14 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 			@Override
 			public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
-				Log.d(TAG, "Connection to leaderboards failed");
+				((MainActivity)context).displayMessage("Error", "The leaderboards could not be loaded!");
 			}
 		};
 		ScoresController controller = new ScoresController(observer);
-		int maxModes = 20, maxRanks = 20;
+		int maxModes = 20;
 		if(currentHighScoreMode < maxModes){
 			controller.setMode(currentHighScoreMode); 
-			controller.setRangeLength(maxRanks); 
+			controller.setRangeLength((int)Const.leaderboardRows); 
 			controller.loadRangeAtRank(1);
 		} else {
 			leaderboardsLoaded = true;
