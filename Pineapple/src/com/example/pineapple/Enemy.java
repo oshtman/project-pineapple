@@ -177,7 +177,7 @@ public class Enemy {
 
 	//Check if enemy hit platform
 	public void checkPlatform(ArrayList<Platform> platforms) {
-		this.getPlatformNumber(platforms);
+		checkOverPlatform(platforms);
 		if (platformNumber == -1){
 			//Do nothing (no surrounding platform)
 		}else{
@@ -187,8 +187,8 @@ public class Enemy {
 				Log.d(TAG, "Enemy hit the head!!");
 			} else {
 				//Check if feet hit platform
-				if (this.getYVel() > 0 && this.getYPos() + this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos()) && this.getYPos() + this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos())) {
-					//if () {
+				if(this.getYPos() + this.getHeight()/2 + this.getYVel() > platforms.get(platformNumber).getUpperYFromX(this.getXPos())){
+
 					this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 					this.setYVel(0);
 					this.setYAcc(0);
@@ -207,6 +207,21 @@ public class Enemy {
 			if(platforms.get(i).checkSide(this, 1) && getXPos() > platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] && getXPos() - getWidth()/2 < platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] && getXVel() < 0){
 				this.setXVel(0);
 				this.setXPos(platforms.get(i).getUpperX()[platforms.get(i).getUpperX().length-1] + getWidth()/2);
+			}
+		}
+	}
+
+	//Check if enemy is over a platform
+	public void checkOverPlatform(ArrayList<Platform> platforms) { //Add an if block to get the highest platform
+		platformNumber = -1;
+		for (int i = 0; i < platforms.size(); i++) {
+			if (platforms.get(i).spans(this.getXPos()) && platforms.get(i).getLowerYFromX(this.getXPos()) >= this.getYPos() + this.getHeight()/2){
+				if(platformNumber >= 0 && platforms.get(i).getUpperYFromX(getXPos()) > platforms.get(platformNumber).getUpperYFromX(getXPos())){
+					//Do nothing
+				} else {
+					platformNumber = i;
+				}
+
 			}
 		}
 	}
