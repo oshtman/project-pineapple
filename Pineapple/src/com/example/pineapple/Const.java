@@ -133,4 +133,7 @@ public class Const {
 		public static final int tutorialFruitSize = 6;
 		
 		public static final int updateSize = 8;
+		
+		public static final int[] leaderboardColumns = new int[]{5, 12, 65, 80, 100, 114, 128, 140};
+		public static final int leaderboardStartY = 10;
 	}
