@@ -715,6 +715,22 @@ public class LevelLoader {
 			//Skeletons
 			skeletons.add(new int[]{5400, 10});
 			break;
+		case 9:
+			//Start and finish
+			startPos = new int[]{10, 0};
+			finishX = 2000;
+			//Ground
+			ground = new int[2][2];
+			ground[0][0] = -100;
+			ground[1][0] = 0;
+			ground[0][1] = 2100;
+			ground[1][1] = 0;
+			//Platforms
+			//Enemies
+			//Trees
+			//Rocks
+			//Flowers
+			//Skeletons
 		}
 	}
 
