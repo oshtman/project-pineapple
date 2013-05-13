@@ -67,23 +67,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint textBackground = new Paint();
 	private int time;
 	private double bulletDamage = 0.05;
-	private MediaPlayer fireSound;
 	public SoundManager ambientSM, protagonistSM, enemySM, mentorSM;
 	private MediaPlayer theme;
-	private boolean themePlaying = false;
 	private final int[] renderOrder = new int[]{3, 1, 2};
 	private int cloudSpawnDelay = 1000, cloudCounter = cloudSpawnDelay;
-	private boolean running = true;
 	private float aimAngle, feetAngle;
 	private int[] scoreKill = new int[]{0, 0, 0};
 	private double playTimeTotal;
 	private double playTimeMin;
 	private double playTimeS;
 	private SharedPreferences settings;
-	private boolean soundEffects;
 	private double effectVolume;
 	private boolean viewStatistics;
-	private Path newPath;
 	private int i, index, id;
 	private boolean criticalHealthFlag = false;
 	private int latestDashTime = -Const.dustDecayTime;
@@ -102,7 +97,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint textPaint;
 	private Bird bird;
 	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound, mentorPlayCounter, mentorSentencesToSay;
-	private int mentorSoundIndexStart = 15;
 	private boolean tutorialFruitUp = true;
 	private int tutorialFruitYSpeed = 0;
 

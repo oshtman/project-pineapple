@@ -264,7 +264,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			}  else {
 				canvas.drawBitmap(offBitmap, (float)((scoreButton.getX()+Const.HUDPadding+scoreButton.getWidth())*scaleX), (float)(scoreButton.getY()*scaleY), null);
 			}
-			if(settings.getBoolean("difficulty", false)){
+			if(settings.getInt("difficulty", 0) == 0){
 				canvas.drawBitmap(normalBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
 			}  else {
 				canvas.drawBitmap(hardBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
@@ -541,9 +541,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				}
 				if(difficultyButton.isClicked(touchX, touchY)){
 					Editor ed = settings.edit();
-					ed.putFloat("difficulty", settings.getFloat("difficulty", 1)>0?0:1);
+					ed.putInt("difficulty", settings.getInt("difficulty", 0)==0?1:0);
 					ed.commit();
-					difficulty = settings.getFloat("difficulty", 1);
 
 				}
 				if(setNameButton.isClicked(touchX, touchY)){
