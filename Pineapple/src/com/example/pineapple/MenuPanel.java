@@ -43,7 +43,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int PLAY = 4;
 	private final int width = 155, height = 100;
 	private double scaleX, scaleY;
-	private Button playButton, settingsButton, highscoreButton, soundButton, musicButton, scoreButton, setNameButton;
+	private Button playButton, settingsButton, highscoreButton, soundButton, musicButton, scoreButton, setNameButton, difficultyButton;
 	private MainThread thread;
 	private Bitmap backgroundBitmap;
 	private Context context;
@@ -56,7 +56,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[] levelBitmaps;
 	private Bitmap[] butterflyBitmaps;
 	private Bitmap sliderLineBitmap, sliderHandleBitmap;
-	private Bitmap onBitmap, offBitmap, updateBitmap;
+	private Bitmap onBitmap, offBitmap, updateBitmap, normalBitmap, hardBitmap;
 	private int nextLevel;
 	private int menuState;
 	private SoundManager sm;
@@ -69,6 +69,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private float aimAngle, feetAngle;
 	private int time = 0;
 	private Paint userPaint, leaderboardPaint;
+	private static float difficulty;
 
 	private final TermsOfServiceController controller;
 	private static String userName;
@@ -253,11 +254,17 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawBitmap(soundButton.getBitmap(), (float)(soundButton.getX()*scaleX), (float)(soundButton.getY()*scaleY), null);
 			canvas.drawBitmap(musicButton.getBitmap(), (float)(musicButton.getX()*scaleX), (float)(musicButton.getY()*scaleY), null);
 			canvas.drawBitmap(scoreButton.getBitmap(), (float)(scoreButton.getX()*scaleX), (float)(scoreButton.getY()*scaleY), null);
+			canvas.drawBitmap(difficultyButton.getBitmap(), (float)(difficultyButton.getX()*scaleX), (float)(difficultyButton.getY()*scaleY), null);
 			canvas.drawBitmap(setNameButton.getBitmap(), (float)(setNameButton.getX()*scaleX), (float)(setNameButton.getY()*scaleY), null);
 			if(settings.getBoolean("scoring", false)){
 				canvas.drawBitmap(onBitmap, (float)((scoreButton.getX()+Const.HUDPadding+scoreButton.getWidth())*scaleX), (float)(scoreButton.getY()*scaleY), null);
 			}  else {
 				canvas.drawBitmap(offBitmap, (float)((scoreButton.getX()+Const.HUDPadding+scoreButton.getWidth())*scaleX), (float)(scoreButton.getY()*scaleY), null);
+			}
+			if(settings.getBoolean("difficulty", false)){
+				canvas.drawBitmap(normalBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
+			}  else {
+				canvas.drawBitmap(hardBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
 			}
 			break;
 		}
@@ -370,8 +377,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		Bitmap scoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.score), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		scoreButton = new Button(10, (int)(10 + 3*Const.menuButtonHeight), scoreBitmap.getWidth()/scaleX, scoreBitmap.getHeight()/scaleY, scoreBitmap);
 
+		Bitmap difficultyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.difficulty), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+		difficultyButton = new Button(10, (int)(10 + 4.5*Const.menuButtonHeight), difficultyBitmap.getWidth()/scaleX, difficultyBitmap.getHeight()/scaleY, difficultyBitmap);
+
 		Bitmap setNameBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.set_name), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		setNameButton = new Button(10, (int)(10 + 4.5*Const.menuButtonHeight), setNameBitmap.getWidth()/scaleX, setNameBitmap.getHeight()/scaleY, setNameBitmap);
+		setNameButton = new Button(10, (int)(10 + 6*Const.menuButtonHeight), setNameBitmap.getWidth()/scaleX, setNameBitmap.getHeight()/scaleY, setNameBitmap);
 		
 		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth() + Const.HUDPadding, musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
 		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
@@ -416,7 +426,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		onBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
 		offBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
+		normalBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.normal), (int)(difficultyButton.getWidth()*scaleX), (int)(difficultyButton.getHeight()*scaleY), true);
+		hardBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.hard), (int)(difficultyButton.getWidth()*scaleX), (int)(difficultyButton.getHeight()*scaleY), true);
 
+		
 		updateBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update), (int)(Const.updateSize*scaleX), (int)(Const.updateSize*scaleY), true);
 		if(currentLevel > 8)
 			currentLevel = 8;
@@ -521,6 +534,13 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					if(settings.getBoolean("scoring", false)){
 						controller.query(null);
 					}
+				}
+				if(difficultyButton.isClicked(touchX, touchY)){
+					Editor ed = settings.edit();
+					ed.putFloat("difficulty", settings.getFloat("difficulty", 1)>0?0:1);
+					ed.commit();
+					difficulty = settings.getFloat("difficulty", 1);
+
 				}
 				if(setNameButton.isClicked(touchX, touchY)){
 					((MainActivity)context).requestName(settings.getString("userName", "Player"));
