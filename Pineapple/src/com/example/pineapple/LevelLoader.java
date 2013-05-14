@@ -950,7 +950,7 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(85 + 2, - 8, 0.5));
 			butterflies.add(new Butterfly(95 + 2, - 8, -1));
 			//Birds
-			birds.add(new Bird(2390, -340 - 43, true));
+			birds.add(new Bird(2320, -340 - 43, true));
 			break;
 		case 10:
 			startPos = new int[]{10, 0};
