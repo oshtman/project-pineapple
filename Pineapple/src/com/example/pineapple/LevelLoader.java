@@ -289,15 +289,31 @@ public class LevelLoader {
 			skeletons.add(new int[]{1200, 0});
 			break;
 		case 3:
-			finishX = 380;
+			finishX = 900;
 			startPos = new int[]{10, -20};
-			ground = new int[2][21];
+			ground = new int[2][22];
 			for (int i = 0; i<20; i++) {
 				ground[0][i] = i*20;
 				ground[1][i] = 100-(int)(600*Math.exp(-ground[0][i]/100.));
 			}
 			ground[0][20] = 20*25;
 			ground[1][20] = 100-(int)(600*Math.exp(-ground[0][19]/100.));
+			ground[0][21] = 1000;
+			ground[1][21] = 100;
+			p1 = new int[][]{
+					{500, 650, 700},
+					{50, 40, -20},
+					{500, 600, 700},
+					{50, 50, 40}
+			};
+			p2 = new int[][]{
+					{600, 699},
+					{10, -20},
+					{600, 640, 699},
+					{10, 10, -20}
+			};
+			platforms.add(p1);
+			platforms.add(p2);
 			enemies.add(new int[]{20, -40, -40, 1});
 			break;
 

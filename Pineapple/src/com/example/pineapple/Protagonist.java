@@ -261,9 +261,10 @@ public class Protagonist {
 	//CHECK-METHODS FOR PROTAGONIST AND HIS SURROUNDING
 	//Check slope under protagonist
 	public void checkSlope(Ground ground, ArrayList<Platform> platforms){
+		this.checkOverPlatform(platforms);
 		if(touchingGround){ 
 			readyToJump = true;
-			if(getYPos()+getHeight()/2 - ground.getYFromX(getXPos()) > -5){ //On ground
+			if(platformNumber == -1){ //On ground
 				slope = ground.getSlope(this.getXPos());
 				if(Math.abs(slope) > slopeThreshold){
 					setXVel(getXVel()+slope);
@@ -276,18 +277,16 @@ public class Protagonist {
 				}
 			} else { //On platform
 				sliding = false;
-				for(int i = 0; i < platforms.size(); i++){
-					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
-						slope = platforms.get(i).getSlope(this.getXPos());
+					if((platforms.get(platformNumber).getUpperX()[0] <= getXPos() && platforms.get(platformNumber).getUpperX()[platforms.get(platformNumber).getUpperLength()-1] >= getXPos())){
+						slope = platforms.get(platformNumber).getSlope(this.getXPos());
 						if(Math.abs(slope) > slopeThreshold){
 							setXVel(getXVel()+slope);
 							setYVel(slope*getXVel());
 							readyToJump = false;
 							sliding = true;
-							break;
 						}
 					} 
-				}
+				
 			}
 
 			//Check if the speed has to be reduced
