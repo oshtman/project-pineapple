@@ -52,16 +52,16 @@ public class LevelBriefer {
 		String[] rawTexts = new String[]{
 				"Let your mentor teach you how to make it in the friendly world of <INSERT PEOPLE'S NAME HERE>!",
 				"Take your first trembling steps toward uncovering the secrets of the mysterious monsters.",
-				"Hide and seek, watch out for sneaky monsters. The rocky road could be dangerous for someone like you.",
+				"Hide and seek, watch out for sneaky monsters. The rocky road could be dangerous for someone like you. Hurry slowly.",
 				"Text 3",
 				"Short trip, make the best of it!",
 				"Go downhill, are you fast enough to not get caught? Let's see!",
 				"Up and away, are you afraid of heights little one? You better not be!",
-				"Don't fall, it would make it easier to survive. So jump, jump for your life!",
+				"Don't fall, and you will pass. So jump, jump for your life!",
 				"The hunting! Remember, he who fights and runs away may live to fight another day.",
-				"How amazing! Which way should you go?",
-				"Enter the lair of the ",
-				"Text final"
+				"How amazing! Which way should you go? Some say all good things are three, you might say twice.",
+				"Enter the lair of the enemy! The end is good, everything is good. Or is it?",
+				"Final battle. Defeat the evil, or it will defeat you! Evil shall by your hands be expelled!"
 		};
 		//Split the hints up into rows and add them to the final hint list
 		briefingTexts = new ArrayList<ArrayList<String>>();
