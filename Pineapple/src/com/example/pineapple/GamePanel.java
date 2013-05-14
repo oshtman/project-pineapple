@@ -54,6 +54,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<int[]> flowers;
 	private ArrayList<int[]> skeletons;
 	private ArrayList<double[]> clouds;
+	private ArrayList<Hint> hints;
 	private int level;
 	private HeatMeter heatMeter;
 	private boolean firing = false;
@@ -96,7 +97,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Protagonist mentor;
 	private int[] checkpoints;
 	private int currentCheckpoint;
-	private ArrayList<ArrayList<String>> hints;
+	private ArrayList<ArrayList<String>> mentorHints;
 	private Paint textPaint;
 	private Bird bird;
 	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound, mentorPlayCounter, mentorSentencesToSay;
@@ -131,6 +132,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap dustBitmap;
 	private Bitmap skeletonBitmap;
 	private Bitmap fruitBitmap;
+	private Bitmap signBitmap;
 
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -182,6 +184,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadRocks();
 		loadFlowers();
 		loadSkeletons();
+		loadHints();
 		clouds = new ArrayList<double[]>();
 		loadSounds();
 
@@ -202,7 +205,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(level == 0){
 			mentor = new Protagonist(10, 0, this, true);
 			checkpoints = levelLoader.getCheckpoints();
-			hints = new ArrayList<ArrayList<String>>();
+			mentorHints = new ArrayList<ArrayList<String>>();
 
 			pastCheckpointBorder = 10;
 			String[] rawHints = {
@@ -227,21 +230,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			//Split the hints up into rows and add them to the final hint list
 			int lettersPerRow = 50;
 			for(i = 0; i < rawHints.length; i++){
-				hints.add(new ArrayList<String>());
+				mentorHints.add(new ArrayList<String>());
 				while(rawHints[i].length() > lettersPerRow){
 					String row = rawHints[i].substring(0, lettersPerRow-1);
 					int spaceIndex = row.lastIndexOf(" ");
-					hints.get(i).add(rawHints[i].substring(0, spaceIndex));
+					mentorHints.get(i).add(rawHints[i].substring(0, spaceIndex));
 					rawHints[i] = rawHints[i].substring(spaceIndex+1, rawHints[i].length());
 				}
-				hints.get(i).add(rawHints[i]);
+				mentorHints.get(i).add(rawHints[i]);
 			}
 
-			//Paint
-			textPaint = new Paint();
-			textPaint.setColor(Color.WHITE);
-			textPaint.setDither(true);
-			textPaint.setAntiAlias(true);
+			
 
 
 			mentorSM = new SoundManager(getContext(), 1);
@@ -255,6 +254,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			lastMentorSound = -1; //Stops him from repeating the same line
 			mentorSentencesToSay = 3;
 		}
+		//Paint
+		textPaint = new Paint();
+		textPaint.setColor(Color.WHITE);
+		textPaint.setDither(true);
+		textPaint.setAntiAlias(true);
+		
 		stamper.setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.SRC_IN));
 	}
 
@@ -298,6 +303,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		skeletons = levelLoader.getSkeletons();
 	}
 
+	public void loadHints(){
+		hints = levelLoader.getHints();
+	}
 	//Load the sounds
 	public void loadSounds(){
 		ambientSM.addSound(0, R.raw.fire_sound);
@@ -365,6 +373,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				viewStatistics = false;
 			}
 		}
+		if(rightStick.isPointed())
+			Log.d(TAG, ""+rightStick.getAngle());
 		this.time++; //count number of frames passed
 
 		//Tutorial
@@ -835,6 +845,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderFlag(canvas, 0);
 		renderFlowers(canvas);
 		//Focus
+		renderSigns(canvas);
 		renderPlatforms(canvas);
 		renderEnemies(canvas);
 		if(level == 0){ //Tutorial
@@ -861,6 +872,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Tutorial 
 		if(level == 0){
 			renderHint(canvas);
+		} else {
+			for(i = 0; i < hints.size(); i++){
+				if(hints.get(i).inRange(protagonist.getXPos(), protagonist.getYPos())){
+					renderHint(canvas, hints.get(i).getHint());
+					break;
+				}
+			}
 		}
 		if(darknessPercent > 0)
 			renderDarkness(canvas, darknessPercent);
@@ -1102,6 +1120,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 
 	}
+	
+	public void renderSigns(Canvas canvas){
+		for(i = 0; i < hints.size(); i++){
+			canvas.drawBitmap(signBitmap, (float)((hints.get(i).getX()-Const.hintSize/2 - screenX)*scaleX), (float)((hints.get(i).getY() - Const.hintSize - screenY)*scaleY), null);
+		}
+	}
 
 	//Draw the platforms
 	public void renderPlatforms(Canvas canvas){
@@ -1314,11 +1338,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw Hints
 	public void renderHint(Canvas canvas){
-		canvas.drawRect((float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hints.get(currentCheckpoint).size())*textPaint.getTextSize()), (float)((rightStick.getX()-rightStick.getRadius()-5)*scaleX), (float)((leftStick.getY()+leftStick.getRadius())*scaleY), textBackground);
-		for(i = 0; i < hints.get(currentCheckpoint).size(); i++){
-			canvas.drawText(hints.get(currentCheckpoint).get(i), (float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hints.get(currentCheckpoint).size()-i-1)*textPaint.getTextSize()), textPaint);
+		canvas.drawRect((float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (mentorHints.get(currentCheckpoint).size())*textPaint.getTextSize()), (float)((rightStick.getX()-rightStick.getRadius()-5)*scaleX), (float)((leftStick.getY()+leftStick.getRadius())*scaleY), textBackground);
+		for(i = 0; i < mentorHints.get(currentCheckpoint).size(); i++){
+			canvas.drawText(mentorHints.get(currentCheckpoint).get(i), (float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (mentorHints.get(currentCheckpoint).size()-i-1)*textPaint.getTextSize()), textPaint);
 		}
-
+	}
+	
+	public void renderHint(Canvas canvas, String[] hint){
+		canvas.drawRect((float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hint.length)*textPaint.getTextSize()), (float)((rightStick.getX()-rightStick.getRadius()-5)*scaleX), (float)((leftStick.getY()+leftStick.getRadius())*scaleY), textBackground);
+		for(i = 0; i < hint.length; i++){
+			canvas.drawText(hint[i], (float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hint.length-i-1)*textPaint.getTextSize()), textPaint);
+		}
 	}
 
 	public void renderDarkness(Canvas canvas, int percent){
@@ -1369,7 +1399,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public boolean onTouchEvent(MotionEvent e){
 		double x;
 		double y;
-
+		
 		index = e.getActionIndex();
 		id = e.getPointerId(index);
 
@@ -1411,7 +1441,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				id=e.getPointerId(index);
 				x = (int) e.getX(index)/scaleX;
 				y = (int) e.getY(index)/scaleY; 
-
 				if(id == rightStickId) {
 					if(x > width/2){
 						rightStick.handleTouch(x, y);
@@ -1425,6 +1454,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					}
 				}
 			}
+			
 			break;
 
 		case MotionEvent.ACTION_UP:
@@ -1508,6 +1538,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
 		skeletonBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skeleton), (int)(Const.skeletonSize*scaleX), (int)(Const.skeletonSize*scaleY), true);
 		fruitBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fruit), (int)(Const.tutorialFruitSize*scaleX), (int)(Const.tutorialFruitSize*scaleY), true);
+		signBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sign), (int)(Const.hintSize*scaleX), (int)(Const.hintSize*scaleY), true);
 
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
@@ -1565,9 +1596,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		enemyArmorBitmapFlipped = Bitmap.createBitmap(enemyArmorBitmap, 0, 0, enemyArmorBitmap.getWidth(), enemyArmorBitmap.getHeight(), m, false);
 		enemyNinjaBitmapFlipped = Bitmap.createBitmap(enemyNinjaBitmap, 0, 0, enemyNinjaBitmap.getWidth(), enemyNinjaBitmap.getHeight(), m, false);
 
-		if(level == 0){
-			textPaint.setTextSize((int)(4*scaleY));
-		}
+
+		textPaint.setTextSize((int)(4*scaleY));
 		timePaint.setTextSize((int)(Const.timeAreaHeight*scaleY));
 
 		//Start the thread

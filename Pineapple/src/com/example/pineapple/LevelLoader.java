@@ -49,6 +49,8 @@ public class LevelLoader {
 	private ArrayList<int[]> flowers = new ArrayList<int[]>();
 	//List for skeletons {x position, add more to y if visible above ground}
 	private ArrayList<int[]> skeletons = new ArrayList<int[]>();
+	//Hints
+	private ArrayList<Hint> hints = new ArrayList<Hint>();
 
 
 	//Checkpoint array for the tutorial, the mentor will stop at these locations and give some advice
@@ -98,7 +100,7 @@ public class LevelLoader {
 			break;
 		case 1: 
 			//
-			startPos = new int[]{1000, 0};
+			startPos = new int[]{10, 0};
 			finishX = 2000;
 			/*ground = new int[][]{
 					{},
@@ -128,15 +130,16 @@ public class LevelLoader {
 			platforms.add(p2);
 			
 			p3 = new int[][]{
-					{1850, 2000},
-					{90, 90},
-					{700, 730, 759},
-					{90, 100, 90}
+					{1870, 2000},
+					{0, -10},
+					{1870, 1900, 1950, 2000},
+					{0, 10, 10, -10}
 			};
-			platforms.add(p2);
+			platforms.add(p3);
 
 			//Enemies
-			enemies.add(new int[]{300, 20, 150, 1});
+			enemies.add(new int[]{300,  20,  150,  1});
+			enemies.add(new int[]{1990, -20, 1750, 1});
 
 			//Trees
 			trees.add(new int[]{0, 1, 0, 0});
@@ -147,6 +150,8 @@ public class LevelLoader {
 			rocks.add(new int[]{80, 1, 15, 0});
 			rocks.add(new int[]{160, 2, 15, 0});
 
+			hints.add(new Hint(40, 85, "Beware! Continue at your own risk! Strange creatures have been spotted in this area!"));
+			
 			break;
 		case 2://Hide and seek, watch out
 			//Start and finish
@@ -1053,4 +1058,9 @@ public class LevelLoader {
 	public int getFinishX(){
 		return finishX;
 	}
+	
+	public ArrayList<Hint> getHints(){
+		return hints;
+	}
 }
+
