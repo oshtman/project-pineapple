@@ -140,4 +140,6 @@ public class Const {
 		
 		public static final double hintRange = 20;
 		public static final double hintSize = 15;
+		
+		public static final int levelCap = 11;
 	}
