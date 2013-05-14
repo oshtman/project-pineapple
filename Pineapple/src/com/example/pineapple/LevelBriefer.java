@@ -46,7 +46,8 @@ public class LevelBriefer {
 				"Level 7",
 				"Level 8",
 				"Level 9",
-				"Level 10"
+				"Level 10",
+				"Finale"
 		};
 		String[] rawTexts = new String[]{
 				"Let your mentor teach you how to make it in the friendly world of <INSERT PEOPLE'S NAME HERE>!",
@@ -58,8 +59,9 @@ public class LevelBriefer {
 				"Up and away, are you afraid of heights little one? You better not be!",
 				"Don't fall, that would make it easier to survive. So jump for your life!",
 				"The hunting! Remember, he who fights and runs away may live to fight another day.",
-				"How amazing? Which way should you go?",
-				"Enter the lair of the "
+				"How amazing! Which way should you go?",
+				"Enter the lair of the ",
+				"Text final"
 		};
 		//Split the hints up into rows and add them to the final hint list
 		briefingTexts = new ArrayList<ArrayList<String>>();
