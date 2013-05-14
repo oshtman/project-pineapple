@@ -424,6 +424,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_7), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_8), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_9), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_9), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+
 		};
 
 		butterflyBitmaps = new Bitmap[]{
@@ -441,10 +443,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		
 		updateBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update), (int)(Const.updateSize*scaleX), (int)(Const.updateSize*scaleY), true);
-		if(currentLevel > 8)
-			currentLevel = 8;
+		if(currentLevel > 10)
+			currentLevel = 10;
 		levelButtons = new Button[currentLevel+1];
-		for(int i = 0; i <= currentLevel && i < 9; i++){
+		for(int i = 0; i <= currentLevel; i++){
 			levelButtons[i] = new Button(Const.HUDPadding + (int)(Const.menuButtonWidth*(i/Const.levelButtonsPerRow)), Const.HUDPadding + (int)(Const.menuButtonHeight*(i%Const.levelButtonsPerRow)), Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
 		}
 

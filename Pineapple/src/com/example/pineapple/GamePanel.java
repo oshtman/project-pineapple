@@ -87,6 +87,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int protagonistSoundIndexStart = 4;
 	private boolean sentVariables = false;
 	private int latestDroneSound = 0, latestNinjaSound = 0, latestTankSound = 0;
+	private int darknessPercent = 0;
+	private int backgroundColor = Color.rgb(135, 206, 250);
+	private boolean underground = false;
 
 
 	//Special tutorial variables
@@ -381,6 +384,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 			if(protagonist.getXPos() > checkpoints[currentCheckpoint] + pastCheckpointBorder && currentCheckpoint <= 13){
 				protagonist.setXPos(checkpoints[currentCheckpoint] + pastCheckpointBorder);
+			}
+		}
+		if(finished){
+			darknessPercent = (int)(100.*(finishDelayTime-finishDelay)/finishDelayTime);
+		}
+		if(level == 10){
+			if(protagonist.getYPos() > 60 && protagonist.getYPos() < 600 && protagonist.getXPos() < 500){
+				darknessPercent = (int)(50*(protagonist.getYPos()-60)/540.);
+			}
+			if(!underground){
+				if(protagonist.getYPos() > 500){
+					underground = true;
+					backgroundColor = Color.rgb(200, 200, 200);
+				}
 			}
 		}
 	}
@@ -804,10 +821,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
 		//Background
-		canvas.drawColor(Color.rgb(135, 206, 250)); //Sky
-		renderSun(canvas);
-		renderClouds(canvas);
-		renderTrees(canvas, 0);
+		canvas.drawColor(backgroundColor); //Sky
+		if(!underground){
+			renderSun(canvas);
+			renderClouds(canvas);
+			renderTrees(canvas, 0);
+		}
 		renderRocks(canvas, 0);
 		renderFlag(canvas, 0);
 		renderFlowers(canvas);
@@ -839,9 +858,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(level == 0){
 			renderHint(canvas);
 		}
-
-		if(finished)
-			canvas.drawColor(Color.argb(255*(finishDelayTime-finishDelay)/finishDelayTime, 0, 0, 0));
+		if(darknessPercent > 0)
+			renderDarkness(canvas, darknessPercent);
+	
 	}
 
 	//Draw the enemies
@@ -1096,6 +1115,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				//Spikes on top
 				groundPath = new Path();
 				for(int k = 0; k < platforms.get(i).getUpperX().length-1; k++){
+					Log.d(TAG, i + " " + k + " " + (platforms.get(i).getUpperX().length-1));
 					xGap = (platforms.get(i).getUpperX()[k+1]-platforms.get(i).getUpperX()[k]);
 					yGap = (platforms.get(i).getUpperY()[k+1]-platforms.get(i).getUpperY()[k]);
 					gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));
@@ -1298,6 +1318,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	}
 
+	public void renderDarkness(Canvas canvas, int percent){
+		canvas.drawColor(Color.argb((int)(2.55*percent), 0, 0, 0));
+	}
+	
 	//Draw Hints
 	public void renderTime(Canvas canvas){
 		if(viewStatistics){
