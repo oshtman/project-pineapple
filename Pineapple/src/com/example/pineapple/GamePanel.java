@@ -902,6 +902,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderFlowers(canvas);
 		//Focus
 		renderSigns(canvas);
+		renderBird(canvas);
 		renderButterfly(canvas);
 		renderEnemies(canvas);
 		if(level == 0){ //Tutorial
@@ -918,7 +919,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderFlag(canvas, 1);
 		renderRocks(canvas, 1);
 		renderTrees(canvas, 1);
-		renderBird(canvas);
 		renderSkeletons(canvas);
 
 		//HUD

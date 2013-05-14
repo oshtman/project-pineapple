@@ -608,7 +608,7 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(770 + 2, -270 - 8));
 			butterflies.add(new Butterfly(840 + 2, -640 - 8));
 			//Birds
-			birds.add(new Bird(920, -1040, true));
+			birds.add(new Bird(1000, -1040, true));
 			break;
 		case 7://Dont fall
 			//Start and finish
