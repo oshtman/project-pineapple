@@ -23,7 +23,7 @@ public class LevelBriefer {
 	private int state = CLOSED;
 	private int animationTimer = 0;
 	private int animationStop;
-	private final int animationTime = 25; 
+	private final int animationTime = 10; 
 	private double topY, botY;
 	private double scaleX, scaleY;
 	private SharedPreferences localScores, settings;
@@ -45,7 +45,8 @@ public class LevelBriefer {
 				"Level 6",
 				"Level 7",
 				"Level 8",
-				"Level 9"
+				"Level 9",
+				"Level 10"
 		};
 		String[] rawTexts = new String[]{
 				"Let your mentor teach you how to make it in the friendly world of <INSERT PEOPLE'S NAME HERE>!",
@@ -57,7 +58,8 @@ public class LevelBriefer {
 				"Up and away, are you afraid of heights little one? You better not be!",
 				"Text 7",
 				"Text 8",
-				"Text 9"
+				"Text 9",
+				"Text 10"
 		};
 		//Split the hints up into rows and add them to the final hint list
 		briefingTexts = new ArrayList<ArrayList<String>>();
