@@ -57,7 +57,7 @@ public class LevelBriefer {
 				"Short trip, make the best of it!",
 				"Go downhill, are you fast enough to not get caught? Let's see!",
 				"Up and away, are you afraid of heights little one? You better not be!",
-				"Don't fall, that would make it easier to survive. So jump for your life!",
+				"Don't fall, it would make it easier to survive. So jump, jump for your life!",
 				"The hunting! Remember, he who fights and runs away may live to fight another day.",
 				"How amazing! Which way should you go?",
 				"Enter the lair of the ",
@@ -65,7 +65,7 @@ public class LevelBriefer {
 		};
 		//Split the hints up into rows and add them to the final hint list
 		briefingTexts = new ArrayList<ArrayList<String>>();
-		int lettersPerRow = 35;
+		int lettersPerRow = 33;
 		for(int i = 0; i < rawTexts.length; i++){
 			briefingTexts.add(new ArrayList<String>());
 			while(rawTexts[i].length() > lettersPerRow){
