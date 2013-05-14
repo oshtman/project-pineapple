@@ -55,7 +55,7 @@ public class LevelBriefer {
 				"Hide and seek, watch out for sneaky monsters. The rocky road could be dangerous for someone like you. Hurry slowly.",
 				"Text 3",
 				"Short trip, make the best of it!",
-				"Go downhill you. Are you fast enough to not get caught? Let's see!",
+				"Go downhill you must. Are you fast enough to not get caught? Let's see!",
 				"Up, up and away! Are you afraid of heights little one? You better not be!",
 				"Don't fall, and you will pass. Something lurks underneath. So jump, jump for your life!",
 				"The hunting! Remember, he who fights and runs away may live to fight another day.",
