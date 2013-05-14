@@ -19,11 +19,11 @@
         android:theme="@style/AppBaseTheme" >
         <activity
             android:name="com.example.pineapple.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
-                <!-- <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" /> -->
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -48,15 +48,6 @@
         <activity
             android:name="com.example.pineapple.TermsOfServiceActivity"
             android:label="@string/title_activity_terms_of_service" >
-        </activity>
-        <activity
-            android:name="com.example.pineapple.SplashActivity"
-            android:label="@string/title_activity_splash" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

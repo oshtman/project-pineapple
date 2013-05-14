@@ -59,7 +59,7 @@ public class LevelBriefer {
 				"Don't fall, that would make it easier to survive. So jump for your life!",
 				"The hunting! Remember, he who fights and runs away may live to fight another day.",
 				"How amazing? Which way should you go?",
-				"Text 10"
+				"Enter the lair of the "
 		};
 		//Split the hints up into rows and add them to the final hint list
 		briefingTexts = new ArrayList<ArrayList<String>>();
