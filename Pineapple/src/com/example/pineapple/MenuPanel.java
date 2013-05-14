@@ -292,7 +292,14 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderLeaderboards(Canvas canvas){
 		if(menuState == HIGHSCORE_MENU){
 			if(leaderboardsLoaded){
-				String levelS = (leaderboardLevel > 0)?("level " + leaderboardLevel):"tutorial";
+				String levelS;
+				if(leaderboardLevel == 0){
+					levelS = "tutorial";
+				} else if(leaderboardLevel == 11){
+					levelS = "boss";
+				} else {
+					levelS = "level " + leaderboardLevel;
+				}
 				String difficultyS = (leaderboardDifficulty == 0)?"normal":"hard";
 				String leaderboardTitle = "Leaderboard for " + levelS + " @difficulty " + difficultyS;
 				canvas.drawRect(0, 0, (float)(width*scaleX), (float)(height*scaleY), textBackground);
@@ -570,7 +577,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					loadHighscores();
 				} else {
 					leaderboardLevel++;
-					if(leaderboardLevel >= 10)
+					if(leaderboardLevel >= 12)
 						leaderboardLevel = 0;
 				}
 				break;
@@ -742,7 +749,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		};
 		ScoresController controller = new ScoresController(observer);
-		int maxModes = 20;
+		int maxModes = 24;
 		if(currentHighScoreMode < maxModes){
 			controller.setMode(currentHighScoreMode); 
 			controller.setRangeLength((int)Const.leaderboardRows); 
