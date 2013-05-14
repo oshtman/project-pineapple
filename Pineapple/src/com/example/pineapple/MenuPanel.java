@@ -333,8 +333,6 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 						String health;
 						if(s.getUser().equals(Session.getCurrentSession().getUser())){
 							leaderboardPaint.setColor(Color.YELLOW);
-						} else {
-							leaderboardPaint.setColor(Color.WHITE);
 						}
 						health = s.getContext().get("health")+"%";
 						if(s.getContext().get("health") == null){
@@ -356,6 +354,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 						canvas.drawText(s.getContext().get("tanks")+"", (float)(Const.leaderboardColumns[5]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 						canvas.drawText(mins+":"+secs, (float)(Const.leaderboardColumns[6]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 						canvas.drawText(health, (float)(Const.leaderboardColumns[7]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
+						
+						if(s.getUser().equals(Session.getCurrentSession().getUser())){
+							leaderboardPaint.setColor(Color.WHITE);
+						}
 					}
 					for(; i < 15; i++){
 						canvas.drawText((i+1+leaderboardPage*scoresPerPage)+". ", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
