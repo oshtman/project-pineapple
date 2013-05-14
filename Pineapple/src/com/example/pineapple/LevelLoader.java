@@ -94,15 +94,16 @@ public class LevelLoader {
 			break;
 		case 1: 
 			//
-			finishX = 990;
+			startPos = new int[]{1000, 0};
+			finishX = 2000;
 			/*ground = new int[][]{
-					{-350, -50,  -40,   -10,   0,   100, 150, 300, 400, 420, 600},
-					{40,   95,   130,   130,   95,  80,  95,  20,  150, 140, 135}
+					{},
+					{}
 			};*/
 
 			ground = new int[][]{
-					{-155, 322, 368, 417, 518, 609, 691, 782, 863, 900, 1000, 1100},
-					{83,   83,  103, 156, 191, 191, 189, 167, 95,  95,  130, 130}
+					{-155, 322, 368, 417, 518, 609, 691, 782, 863, 900, 1000, 1100, 1150, 1450, 1460, 1490,  1500, 1600, 1650, 1750, 1800, 1820, 1900, 1920, 2100},
+					{83,   83,  103, 156, 191, 191, 189, 167, 95,  95,  130, 110,   100,   95,   130,  130,  95,   80,   95,  40,   20,   40,   150,  140,  135}
 			};
 
 			//Platform 1
@@ -121,26 +122,26 @@ public class LevelLoader {
 					{90, 100, 90}
 			};
 			platforms.add(p2);
+			
+			p3 = new int[][]{
+					{1850, 2000},
+					{90, 90},
+					{700, 730, 759},
+					{90, 100, 90}
+			};
+			platforms.add(p2);
 
 			//Enemies
 			enemies.add(new int[]{300, 20, 150, 1});
 
 			//Trees
 			trees.add(new int[]{0, 1, 0, 0});
-			trees.add(new int[]{50, 2, 0, 1});
-			trees.add(new int[]{100, 0, 2, 0});
 			trees.add(new int[]{140, 1, 1, 1});
-			trees.add(new int[]{180, 1, 0, 0});
-			trees.add(new int[]{240, 2, 0, 1});
 			trees.add(new int[]{300, 0, 2, 0});
-			trees.add(new int[]{320, 0, 1, 1});
 			//Rocks
 			rocks.add(new int[]{20, 0, 20, 0});
 			rocks.add(new int[]{80, 1, 15, 0});
 			rocks.add(new int[]{160, 2, 15, 0});
-			rocks.add(new int[]{180, 2, 20, 0});
-			rocks.add(new int[]{200, 2, 25, 0});
-			rocks.add(new int[]{220, 2, 30, 0});
 
 			break;
 		case 2://Hide and seek, watch out

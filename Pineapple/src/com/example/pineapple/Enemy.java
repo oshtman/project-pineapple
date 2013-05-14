@@ -47,8 +47,8 @@ public class Enemy {
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
 		this(i, j, spawnX, 10000, type, gp);
-		}
-	
+	}
+
 	public Enemy(double i, double j, double spawnX, double spawnY, int type, GamePanel gp) {
 		this.type = type;
 		this.height = baseHeight;
@@ -116,34 +116,34 @@ public class Enemy {
 	//Check the slope and adjust speed accordingly
 	public void checkSlope(Ground ground, ArrayList<Platform> platforms){
 		if(touchingGround){ 
-			if(getYPos()+getHeight()/2 - ground.getYFromX(getXPos()) > -5){ //On ground
+			if(platformNumber == -1){ //On ground
 				double slope = ground.getSlope(this.getXPos());
 				if(Math.abs(slope) > slopeThreshold){
 					setXVel(getXVel()+slope);
 					setYPos(getYPos()+slope*getXVel());
 				}
 			} else { //On platform
-				for(int i = 0; i < platforms.size(); i++){
-					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
-						double slope = platforms.get(i).getSlope(this.getXPos());
-						if(Math.abs(slope) > slopeThreshold){
-							setXVel(getXVel()+slope);
-							setYPos(getYPos()+slope*getXVel());
-							break;
-						}
-					}
-				}
-			}
 
-			//Check if the speed has to be reduced
-			//This doesn't look good in game
-			if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) { //Double code, also in accelerate
-				this.setXVel(this.getMaxSpeed());
-			} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
-				this.setXVel(-this.getMaxSpeed());
+
+				double slope = platforms.get(platformNumber).getSlope(this.getXPos());
+				if(Math.abs(slope) > slopeThreshold){
+					setXVel(getXVel()+slope);
+					setYPos(getYPos()+slope*getXVel());
+
+				}
+
 			}
 		}
+
+		//Check if the speed has to be reduced
+		//This doesn't look good in game
+		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) { //Double code, also in accelerate
+			this.setXVel(this.getMaxSpeed());
+		} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
+			this.setXVel(-this.getMaxSpeed());
+		}
 	}
+
 	//------------------------------------------------------------------------------------------------//
 	//ENEMY ACTIONS
 	//Reduce the enemy's health
@@ -276,7 +276,7 @@ public class Enemy {
 		}
 
 	}
-	
+
 	//Check if enemy is outside track and set back inside level
 	public void contain(int finishX){
 		if(getXPos() < -100){
@@ -392,7 +392,7 @@ public class Enemy {
 	public double getSpawnX(){
 		return spawnX;
 	}
-	
+
 	public double getSpawnY(){
 		return spawnY;
 	}
