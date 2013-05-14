@@ -91,11 +91,13 @@ public class Enemy {
 
 	//Accelerating enemy
 	public void accelerate(double acc) { // acc = 0.2?
-		this.setXVel(this.getXVel() + acc);
-		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {
-			this.setXVel(this.getMaxSpeed());
-		} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
-			this.setXVel(-this.getMaxSpeed());
+		if(touchingGround){
+			this.setXVel(this.getXVel() + acc);
+			if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {
+				this.setXVel(this.getMaxSpeed());
+			} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
+				this.setXVel(-this.getMaxSpeed());
+			}
 		}
 	}
 
