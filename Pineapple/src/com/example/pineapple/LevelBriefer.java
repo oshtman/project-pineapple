@@ -23,7 +23,7 @@ public class LevelBriefer {
 	private int state = CLOSED;
 	private int animationTimer = 0;
 	private int animationStop;
-	private final int animationTime = 25; 
+	private final int animationTime = 10; 
 	private double topY, botY;
 	private double scaleX, scaleY;
 	private SharedPreferences localScores, settings;
