@@ -31,6 +31,7 @@ public class Enemy {
 	private int leftArmAngle, rightArmAngle, armAngleCounter;
 	private int pupilAngle;
 	private final double spawnX;
+	private final double spawnY;
 	private boolean spawned;
 	private final double slopeThreshold = 0.7;
 	private double dashDistanceX;
@@ -45,6 +46,10 @@ public class Enemy {
 	//------------------------------------------------------------------------------------------------//
 	//CONSTRUCTORS
 	public Enemy(double i, double j, double spawnX, int type, GamePanel gp) {
+		this(i, j, spawnX, 10000, type, gp);
+		}
+	
+	public Enemy(double i, double j, double spawnX, double spawnY, int type, GamePanel gp) {
 		this.type = type;
 		this.height = baseHeight;
 		this.width = baseWidth;
@@ -80,6 +85,7 @@ public class Enemy {
 		this.setXPos(i);
 		this.setYPos(j);
 		this.spawnX = spawnX;
+		this.spawnY = spawnY;
 	}
 	//------------------------------------------------------------------------------------------------//
 	//HOW TO MAKE ENEMY MOVE
@@ -91,11 +97,13 @@ public class Enemy {
 
 	//Accelerating enemy
 	public void accelerate(double acc) { // acc = 0.2?
-		this.setXVel(this.getXVel() + acc);
-		if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {
-			this.setXVel(this.getMaxSpeed());
-		} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
-			this.setXVel(-this.getMaxSpeed());
+		if(touchingGround){
+			this.setXVel(this.getXVel() + acc);
+			if(Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() > 0) {
+				this.setXVel(this.getMaxSpeed());
+			} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
+				this.setXVel(-this.getMaxSpeed());
+			}
 		}
 	}
 
@@ -228,7 +236,7 @@ public class Enemy {
 
 	//Check if enemy is airborne
 	public void checkAirborne(Ground g, ArrayList<Platform> platforms){
-		this.getPlatformNumber(platforms);
+		this.checkOverPlatform(platforms);
 		if (platformNumber == -1 || this.yPos - this.height/2 > platforms.get(platformNumber).getLowerYFromX(this.xPos)){ //Check if above ground
 			if(Math.abs(this.yPos + height/2 - g.getYFromX(this.xPos)) > this.height/4){
 				touchingGround = false;
@@ -268,7 +276,16 @@ public class Enemy {
 		}
 
 	}
-
+	
+	//Check if enemy is outside track and set back inside level
+	public void contain(int finishX){
+		if(getXPos() < -100){
+			setXPos(-100);
+		}
+		if(getXPos() > finishX){
+			setXPos(finishX);
+		}
+	}
 	//------------------------------------------------------------------------------------------------//
 	//RENDER PROPERTIES
 	//Look at the protagonist
@@ -374,6 +391,10 @@ public class Enemy {
 
 	public double getSpawnX(){
 		return spawnX;
+	}
+	
+	public double getSpawnY(){
+		return spawnY;
 	}
 
 	public int getWidth() {

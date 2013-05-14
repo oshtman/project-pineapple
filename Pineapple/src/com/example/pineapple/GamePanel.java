@@ -271,7 +271,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		enemies = new ArrayList<Enemy>();
 		for(i = 0; i < levelLoader.getNumberOfEnemies(); i++){
 			int[] enemyData = levelLoader.getEnemyData(i);
-			enemies.add(new Enemy(enemyData[0], enemyData[1], enemyData[2], enemyData[3], this));
+			if (enemyData.length == 4)
+				enemies.add(new Enemy(enemyData[0], enemyData[1], enemyData[2], enemyData[3], this));
+			else
+				enemies.add(new Enemy(enemyData[0], enemyData[1], enemyData[2], enemyData[3], enemyData[4], this));
 		}
 	}
 
@@ -289,7 +292,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void loadFlowers(){
 		flowers = levelLoader.getFlowers();
 	}
-	
+
 	//Load the skeletons from LevelLoader and add them to the platforms list 
 	public void loadSkeletons(){
 		skeletons = levelLoader.getSkeletons();
@@ -449,13 +452,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				enemy.accelerate(protagonist);
 				enemy.checkSlope(ground, platforms);
 				enemy.move();
+				enemy.contain(levelLoader.getFinishX());
 				enemy.checkGround(ground);
 				enemy.checkPlatform(platforms);
 				enemy.checkAirborne(ground, platforms);
 				enemy.waveArms();
 				enemy.lookAt(protagonist);
 			} else {
-				if(protagonist.getXPos() > enemy.getSpawnX()){
+				if(protagonist.getXPos() > enemy.getSpawnX() && protagonist.getYPos() < enemy.getSpawnY()){
 					enemy.spawn();
 					playSound(enemySM, (enemy.getType()-1)*2+1);
 				}
@@ -522,7 +526,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				if(bullet.collideEnemy(enemies.get(j)) && enemies.get(j).hasSpawned()){//If collision detected
 					bullets.remove(i);//Remove the bullet from the game
 					i--;
-					
+
 					enemies.get(j).takeDamage(bulletDamage*enemies.get(j).getDamageGrade()); //Reduce the enemies' health SET A CONSTANT OR SOMETHING HERE INSTEAD OF 0.05
 					enemies.get(j).setHitThisFrame(true);
 					switch(enemies.get(j).getType()){
@@ -551,8 +555,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						j--;
 						Log.d(TAG, "Enemy down.");
 					}
-					
-					
+
+
 					break;
 				}
 			}
