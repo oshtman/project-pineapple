@@ -32,8 +32,10 @@ public class LevelLoader {
 	private ArrayList<int[][]> platforms = new ArrayList<int[][]>();
 
 	//List for enemy-info 
-	//A row should contain {startX, startY, spawnX?, type}
+	//A row should contain {startX, startY, spawnX?, spawnY?, type}
 	//spawnX is the x position the protagonist has to reach in order for the enemy to spawn
+	//spawnY is the y position the protagonist has to reach in order for the enemy to spawn (remember y is "upside down")
+	//spawnY is optional, if not set spawnY = 10000 (spawn right away)
 	private ArrayList<int[]> enemies = new ArrayList<int[]>();
 	//List for trees {x position, baseType, topType, back or foreground}
 	private ArrayList<int[]> trees = new ArrayList<int[]>();
@@ -371,9 +373,9 @@ public class LevelLoader {
 			enemies.add(new int[]{401 - 40, 0, 401, 1});
 			enemies.add(new int[]{401 - 60, 0, 401, 1});
 			//---           ---
-			enemies.add(new int[]{400 + 200, 0, 500, 1});
-			enemies.add(new int[]{700 - 200, 0, 700, 1});
-			enemies.add(new int[]{900 - 200, 0, 900, 1});
+			enemies.add(new int[]{400, 0, 500, 1});
+			enemies.add(new int[]{410, 0, 500, 1});
+			enemies.add(new int[]{420, 0, 500, 1});
 			enemies.add(new int[]{1000 - 200, 1400, 1000, 1});
 			enemies.add(new int[]{1100 - 200, 1400, 1100, 1});
 			enemies.add(new int[]{1200 - 200, 1400, 1200, 1});
@@ -387,25 +389,21 @@ public class LevelLoader {
 			//--- Chase nr2 ---
 			enemies.add(new int[]{3300 - 20, 1100, 3300, 1});
 			enemies.add(new int[]{3300 - 30, 1100, 3300, 1});
-			enemies.add(new int[]{3300 - 40, 1100, 3301, 1});
-			enemies.add(new int[]{3300 - 50, 1000, 3301, 1});
-			enemies.add(new int[]{3300 - 60, 1000, 3301, 1});
+			enemies.add(new int[]{3300 - 40, 1100, 3300, 1});
+			enemies.add(new int[]{3300 - 50, 1000, 3300, 1});
+			enemies.add(new int[]{3300 - 60, 1000, 3300, 1});
 			//---           ---
 			enemies.add(new int[]{3600 - 200, 1000, 3600, 2});
 			enemies.add(new int[]{3600 - 180, 1000, 3600, 2});
 			enemies.add(new int[]{3600 - 160, 1000, 3600, 2});
 			enemies.add(new int[]{3600 - 140, 1000, 3600, 2});
-			enemies.add(new int[]{3600 - 120, 1000, 3600, 2});
 			//--- Final stand ---
 			enemies.add(new int[]{4200 - 300, 1800, 4200, 1});
 			enemies.add(new int[]{4200 - 320, 1800, 4200, 1});
-			enemies.add(new int[]{4200 - 340, 1800, 4200, 1});
-			enemies.add(new int[]{4200 + 180, 1990, 4200, 3});
 			enemies.add(new int[]{4200 + 200, 1990, 4200, 3});
 			enemies.add(new int[]{4300 + 100, 2000, 4300, 2});
 			enemies.add(new int[]{4300 + 120, 2000, 4300, 2});
 			enemies.add(new int[]{4300 + 140, 2000, 4300, 2});
-			enemies.add(new int[]{4300 + 160, 2000, 4300, 2});
 			//---             ---
 			//Trees
 			for (int j = 1; j <= 160; j++){
@@ -441,7 +439,7 @@ public class LevelLoader {
 			finishX = 1100;
 			//Ground
 			ground = new int[2][14];
-			ground[0][0] = -90;
+			ground[0][0] = -200;
 			ground[1][0] = 20;
 			ground[0][1] = 10;
 			ground[1][1] = 20;
@@ -513,26 +511,26 @@ public class LevelLoader {
 			platforms.add(p5);
 			platforms.add(p6);
 			//Enemies
-			enemies.add(new int[]{900, -1000, 100, 1});
-			enemies.add(new int[]{920, -1000, 100, 1});
-			enemies.add(new int[]{940, -1000, 100, 1});
-			enemies.add(new int[]{960, -1000, 100, 1});
-			enemies.add(new int[]{980, -1000, 100, 1});
-			enemies.add(new int[]{0, 20, 400, 2});
-			enemies.add(new int[]{20, 20, 400, 2});
-			//---Enemies on plattforms---
-			enemies.add(new int[]{300, -20, 600, 1});
-			enemies.add(new int[]{280, -160, 600, 1});
-			enemies.add(new int[]{320, -160, 600, 3});
-			enemies.add(new int[]{280, -400, 600, 3});
-			enemies.add(new int[]{300, -400, 600, 1});
-			enemies.add(new int[]{320, -400, 600, 3});
-			enemies.add(new int[]{300, -580, 600, 3});
-			enemies.add(new int[]{280, -760, 600, 1});
-			enemies.add(new int[]{320, -760, 600, 3});
-			enemies.add(new int[]{280, -860, 600, 3});
-			enemies.add(new int[]{300, -860, 600, 1});
-			enemies.add(new int[]{320, -860, 600, 3});
+			enemies.add(new int[]{610, 120, 10, 1});
+			enemies.add(new int[]{630, 120, 10, 1});
+			enemies.add(new int[]{650, 120, 10, 1});
+			enemies.add(new int[]{500, 60, 300, 100, 1});
+			enemies.add(new int[]{520, 60, 300, 100, 1});
+			enemies.add(new int[]{100, 20, 300, 2});
+			enemies.add(new int[]{120, 20, 300, 2});
+			//---Enemies on plattforms nr---
+			enemies.add(new int[]{300, -20, 500, 80, 1});//1
+			enemies.add(new int[]{280, -160, 0, -100, 1});//2
+			enemies.add(new int[]{320, -160, 0, -100, 3});
+			enemies.add(new int[]{280, -400, 600, -270, 3});//3
+			enemies.add(new int[]{300, -400, 600, -270, 1});
+			enemies.add(new int[]{320, -400, 600, -270, 3});
+			enemies.add(new int[]{300, -580, 0, -500, 3});//4
+			enemies.add(new int[]{280, -760, 700, -650, 1});//5
+			enemies.add(new int[]{320, -760, 700, -650, 3});
+			enemies.add(new int[]{280, -860, 0, -800, 3});//6
+			enemies.add(new int[]{300, -860, 0, -800, 1});
+			enemies.add(new int[]{320, -860, 0, -800, 3});
 			//Trees
 			trees.add(new int[]{-10, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			trees.add(new int[]{650, (int)(3*Math.random()), (int)(3*Math.random()), 0});
