@@ -731,6 +731,7 @@ public class LevelLoader {
 			//Rocks
 			//Flowers
 			//Skeletons
+			break;
 		case 10:
 			startPos = new int[]{10, 0};
 			finishX = 2250;
@@ -771,11 +772,21 @@ public class LevelLoader {
 					{1620, 1745, 1887, 1977},
 					{683, 715, 694, 600}
 			};
+			
+			enemies.add(new int[]{580, 640, 490, 3}); //Welcome tank
+			
+			enemies.add(new int[]{627, 655, 868, 2}); //Sneaky ninjas
+			enemies.add(new int[]{647, 655, 868, 2});
+			enemies.add(new int[]{1173, 660, 868, 2});
+			enemies.add(new int[]{1190, 660, 868, 2});
+			
+			
 			platforms.add(p1);
 			platforms.add(p2);
 			platforms.add(p3);
 			platforms.add(p4);
 			platforms.add(p5);
+			break;
 		}
 	}
 
