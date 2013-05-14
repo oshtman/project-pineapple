@@ -49,7 +49,7 @@ public class LevelLoader {
 	private ArrayList<int[]> flowers = new ArrayList<int[]>();
 	//List for skeletons {x position, add more to y if visible above ground}
 	private ArrayList<int[]> skeletons = new ArrayList<int[]>();
-	//List for butterflies, butterflies.add(new Butterfly(x position, y position)}
+	//List for butterflies, butterflies.add(new Butterfly(x position, y position, (alternative) multiplier fly)}
 	private ArrayList<Butterfly> butterflies = new ArrayList<Butterfly>();
 	//Hints
 	private ArrayList<Hint> hints = new ArrayList<Hint>();
@@ -360,6 +360,8 @@ public class LevelLoader {
 			//Skeletons
 			skeletons.add(new int[]{220, 0});
 			skeletons.add(new int[]{-50, 40});
+			//Butterfly
+			butterflies.add(new Butterfly(80 + 2, 150 - 8));
 			break;
 		case 5://Go downhill			
 			//Start and finish
@@ -462,6 +464,8 @@ public class LevelLoader {
 			//Skeletons
 			skeletons.add(new int[]{800, 50});
 			skeletons.add(new int[]{3500, 50});
+			//Butterfly
+			butterflies.add(new Butterfly(4435 + 2, 2000 - 8));
 			break;
 		case 6: //Up and away
 			//Start and finish
@@ -582,6 +586,10 @@ public class LevelLoader {
 			flowers.add(new int[]{1150, 0});
 			//Skeletons
 			skeletons.add(new int[]{640, 10});
+			//Butterfly
+			butterflies.add(new Butterfly(640 + 2, 120 - 8));
+			butterflies.add(new Butterfly(770 + 2, -270 - 8));
+			butterflies.add(new Butterfly(840 + 2, -640 - 8));
 			break;
 		case 7://Dont fall
 			//Start and finish
@@ -684,6 +692,9 @@ public class LevelLoader {
 			flowers.add(new int[]{1910, 0});
 			//Skeletons
 			skeletons.add(new int[]{40, 0});
+			//Butterfly
+			butterflies.add(new Butterfly(130 + 2, 30));
+			butterflies.add(new Butterfly(1570+5, -30));
 			break;
 		case 8: //Hunt
 			//Start and finish
@@ -722,7 +733,7 @@ public class LevelLoader {
 			}
 			//Trees
 			for (int i = 1; i <= 100; i++){
-				if( i % 2 == 0)
+				if( i % 3 == 0)
 					trees.add(new int[]{50*i, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			}
 			trees.add(new int[]{endPoint - 50, 0, 1, 0});
@@ -745,8 +756,8 @@ public class LevelLoader {
 			break;
 		case 9: //How a Maze (ing)
 			//Start and finish
-			startPos = new int[]{1500, -360};
-			//startPos = new int[]{0, 0};
+			//startPos = new int[]{1500, -360};
+			startPos = new int[]{0, 0};
 			finishX = 2600;
 			//Ground
 			ground = new int[2][5];
@@ -913,6 +924,10 @@ public class LevelLoader {
 			flowers.add(new int[]{2620, 0});
 			//Skeletons
 			skeletons.add(new int[]{150, 0});
+			//Butterflies
+			butterflies.add(new Butterfly(70 + 2, - 8));
+			butterflies.add(new Butterfly(85 + 2, - 8, 0.5));
+			butterflies.add(new Butterfly(95 + 2, - 8, -1));
 			break;
 		case 10:
 			startPos = new int[]{10, 0};

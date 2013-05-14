@@ -4,11 +4,15 @@ public class Butterfly {
 	private double x, y, startX, startY;
 	private double counter;
 	private int rot;
-	public Butterfly(double startX, double startY){
+	public Butterfly(double startX, double startY, double multiplier){
 		this.startX = startX;//70
 		this.startY = startY;//73
 		rot = 0;
-		counter = -2*Math.PI;
+		counter = -2*Math.PI*multiplier;
+	}
+	
+	public Butterfly(double startX, double startY){
+		this(startX, startY, 1);
 	}
 	
 	public void update(){
