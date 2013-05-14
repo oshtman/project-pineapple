@@ -469,5 +469,15 @@ public class Enemy {
 			}
 		}
 	}
+	
+	public void collide(Enemy e){
+		if(Math.hypot(getXPos()-e.getXPos(), getYPos() - e.getYPos()) < e.getHeight()/2 + getHeight()/2){
+			if(e.getMaxSpeed() > getMaxSpeed()){
+				setXVel(getXVel()/2);
+			} else {
+				e.setXVel(e.getXVel()/2);
+			}
+		}
+	}
 	//------------------------------------------------------------------------------------------------//
 }

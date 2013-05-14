@@ -70,7 +70,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint textBackground = new Paint();
 	private int time;
 	private double bulletDamage = 0.05;
-	public SoundManager ambientSM, protagonistSM, enemySM, mentorSM;
+	public SoundManager ambientSM, protagonistSM, enemySM, mentorSM, healthSM;
 	private MediaPlayer theme;
 	private final int[] renderOrder = new int[]{3, 1, 2};
 	private int cloudSpawnDelay = 1000, cloudCounter = cloudSpawnDelay;
@@ -82,7 +82,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private SharedPreferences settings;
 	private double effectVolume;
 	private boolean viewStatistics;
-	private int i, index, id;
+	private int i, j, index, id;
 	private boolean criticalHealthFlag = false;
 	private int latestDashTime = -Const.dustDecayTime;
 	private int dashX, dashY;
@@ -178,6 +178,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
 		ambientSM = new SoundManager(getContext(), 10);
+		healthSM = new SoundManager(getContext(), 1);
 		protagonistSM = new SoundManager(getContext(), 1);
 		enemySM = new SoundManager(getContext(), 10);
 
@@ -325,9 +326,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the sounds
 	public void loadSounds(){
 		ambientSM.addSound(0, R.raw.fire_sound);
-		ambientSM.addSound(1, R.raw.low_health);
+		ambientSM.addSound(1, R.raw.overheat);
 		ambientSM.addSound(2, R.raw.bird);
 		ambientSM.addSound(3, R.raw.dash_finish);
+		healthSM.addSound(1, R.raw.low_health);
 		protagonistSM.addSound(0, R.raw.protagonist_jump);
 		protagonistSM.addSound(1, R.raw.dash_start);
 		protagonistSM.addSound(2, R.raw.protagonist_hurt_1);
@@ -369,6 +371,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
 		handleProtagonistEnemyCollisions(ground);
+		handleEnemyEnemyCollisions();
 		moveAndSpawnClouds();
 		handleProtagonistMumbling();
 		checkFinish();
@@ -390,8 +393,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				viewStatistics = false;
 			}
 		}
-		if(rightStick.isPointed())
-			Log.d(TAG, ""+rightStick.getAngle());
 		this.time++; //count number of frames passed
 		for(int i = 0; i < butterflies.size(); i++){ //update butterfly
 			butterflies.get(i).update();
@@ -454,23 +455,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//If left stick pointed, protagonist is moving. If not protagonist slow down
 	public void handleSticks(){
-		if(leftStick.isPointed()) {
-			protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
-		} else if (Math.abs(protagonist.getXVel()) > 0){
-			protagonist.slowDown();
-			protagonist.setStepCount(0);
-		}
+		if(!finished){
+			if(leftStick.isPointed()) {
+				protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
+			} else if (Math.abs(protagonist.getXVel()) > 0){
+				protagonist.slowDown();
+				protagonist.setStepCount(0);
+			}
 
-		if(rightStick.isPointed()){
-			//Aim
-			protagonist.aim(rightStick.getAngle());
-			//Fire
-			if(level > 0 || currentCheckpoint > 6){
-				if(!heatMeter.isCoolingDown()){
-					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(protagonist.getAim()/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(protagonist.getAim()/180*Math.PI), protagonist.getAim(), 10, protagonist));
-					firing = true;
-					playSound(ambientSM, 0);
-					latestAction = time;
+			if(rightStick.isPointed()){
+				//Aim
+				protagonist.aim(rightStick.getAngle());
+				//Fire
+				if(level > 0 || currentCheckpoint > 6){
+					if(!heatMeter.isCoolingDown()){
+						bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(protagonist.getAim()/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(protagonist.getAim()/180*Math.PI), protagonist.getAim(), 10, protagonist));
+						firing = true;
+						playSound(ambientSM, 0);
+						latestAction = time;
+					}
 				}
 			}
 		}
@@ -555,7 +558,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(heatMeter.isCoolingDown()){//If the weapon is overheated
 			heatMeter.coolDown();     //Cool down                      (Not able to fire)
 		} else if(firing){			  //Else if the protagonist has fired
-			heatMeter.addHeat(0.01);  //Heat up the weapon
+			if(heatMeter.addHeat(0.01)){//Heat up the weapon
+				playSound(ambientSM, 1); //If overheated play sound
+			}
 			firing = false;
 		} else {                      //Otherwise cool down the weapon (Still able to fire)
 			heatMeter.coolDown();
@@ -622,12 +627,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.reduceHealth(0.05); //Change this constant
 				if(protagonist.getHealth() < Const.criticalHealth){
 					if(!criticalHealthFlag){
-						playSound(ambientSM, 1);
+						healthSM.playLoopedSound(1, effectVolume);
 						criticalHealthFlag = true;
 					}
 				}
 				latestAction = time;
 				playSound(protagonistSM, 2 + (int)(Math.random()*2));
+			}
+		}
+	}
+
+	public void handleEnemyEnemyCollisions(){
+		for(i = 0; i < enemies.size()-1; i++){
+			if(Math.abs(enemies.get(i).getXPos() - protagonist.getXPos()) < width/2){
+				for(j = i+1; j < enemies.size(); j++){
+					enemies.get(i).collide(enemies.get(j));
+				}
 			}
 		}
 	}
@@ -659,12 +674,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Check if protagonist passes finish line
 	public void checkFinish(){
-		if(protagonist.getXPos() >  levelLoader.getFinishX() && !finished){
+		if(protagonist.getXPos() >  levelLoader.getFinishX() - Const.finishFlagWidth/2 && protagonist.getPlatformNumber() == -1 && protagonist.isTouchingGround() && !finished){
 			finished = true;
 			finishDelay = finishDelayTime;
 			Log.d(TAG, "Finished!");
+		} else if(protagonist.getXPos() >  levelLoader.getFinishX() - Const.finishFlagWidth/2 && !finished){
+			protagonist.setXPos(levelLoader.getFinishX() - Const.finishFlagWidth/2);
 		}
 		if(finished){
+			protagonist.step(1);
+			protagonist.accelerate(1);
 			protagonist.setInvincible(true);
 			if(finishDelay > 0){
 				finishDelay--;
@@ -1692,6 +1711,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		theme.stop();
 		ambientSM.stop(1);
 		ambientSM.stop(2);
+		healthSM.stop(1);
 		thread.setRunning(false);
 	}
 

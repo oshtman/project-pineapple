@@ -40,10 +40,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private final int LEVEL_MENU = 1;
 	private final int SETTINGS_MENU = 2;
 	private final int HIGHSCORE_MENU = 3;
+	private final int LEFT = 0, RIGHT = 1, UP = 2, DOWN = 3, UPDATE = 4;
 	private final int PLAY = 4;
 	private final int width = 155, height = 100;
 	private double scaleX, scaleY;
 	private Button playButton, settingsButton, highscoreButton, soundButton, musicButton, scoreButton, setNameButton, difficultyButton;
+	private Button[] leaderboardButtons;
 	private MainThread thread;
 	private Bitmap backgroundBitmap;
 	private Context context;
@@ -77,9 +79,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private static boolean leaderboardsLoaded = false;
 	private static ArrayList<List<Score>> highScoreList= new ArrayList<List<Score>>();
 	private static int currentHighScoreMode = 0;
-	private static int leaderboardLevel = 0, leaderboardDifficulty = 0;
+	private static int leaderboardLevel = 0, leaderboardDifficulty = 0, leaderboardPage = 0;
 	private static int loaderRotation = 0;
+	private static final int maxPages = 3, scoresPerPage = 15;
 	private Paint textBackground = new Paint();
+	private static int space = 2;
 
 	public MenuPanel(Context context) {
 		super(context);
@@ -92,7 +96,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		butterfly = new Butterfly(70, 73);
 		renderMatrix = new Matrix();
 		setKeepScreenOn(true);
-		
+
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 		currentLevel = settings.getInt("currentLevel", 0);
 		sm = new SoundManager(getContext());
@@ -100,7 +104,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		playTheme();
 
 		userName = (settings.getString("userName", null) == null)?"loading...":settings.getString("userName", null);
-		
+
 		userPaint = new Paint();
 		userPaint.setColor(Color.WHITE);
 
@@ -135,7 +139,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				// insert values into text fields
 				User user = userController.getUser();
 				setUserName(user.getLogin());
-				
+
 			}
 
 			@Override
@@ -233,13 +237,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void render(Canvas canvas){
 		canvas.drawBitmap(backgroundBitmap, 0, 0, null);
 		renderButterfly(canvas);
-		renderButtons(canvas);
 		renderProtagonist(canvas);
-		renderSliders(canvas);
-		renderUser(canvas);
 		renderLeaderboards(canvas);
+		renderButtons(canvas);
+		renderSliders(canvas);
 		renderBriefer(canvas);
-		
+
 	}
 
 	public void renderButtons(Canvas canvas){
@@ -269,6 +272,13 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				canvas.drawBitmap(normalBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
 			}  else {
 				canvas.drawBitmap(hardBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
+			}
+			break;
+		case HIGHSCORE_MENU:
+			if(leaderboardsLoaded){
+				for(int i = 0; i < leaderboardButtons.length; i++){
+					canvas.drawBitmap(leaderboardButtons[i].getBitmap(), (float)(leaderboardButtons[i].getX()*scaleX), (float)(leaderboardButtons[i].getY()*scaleY), null);
+				}
 			}
 			break;
 		}
@@ -304,8 +314,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				String leaderboardTitle = "Leaderboard for " + levelS + " @difficulty " + difficultyS;
 				canvas.drawRect(0, 0, (float)(width*scaleX), (float)(height*scaleY), textBackground);
 				canvas.drawText(leaderboardTitle, (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY/2*scaleY), leaderboardPaint);
-				
-				
+
 				//Draw column heads
 				canvas.drawText("#", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Name", (float)(Const.leaderboardColumns[1]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
@@ -316,24 +325,27 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				canvas.drawText("Time", (float)(Const.leaderboardColumns[6]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Health", (float)(Const.leaderboardColumns[7]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawLine(0, (float)(Const.leaderboardStartY*scaleY), (float)(width*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
-				
+
 				try{ //Try to render the leaderboard
-					for(int i = 0; i < highScoreList.get(2*leaderboardLevel+leaderboardDifficulty).size(); i++){
-						Score s = highScoreList.get(2*leaderboardLevel+leaderboardDifficulty).get(i);
+					int i = 0;
+					for(i = 0; leaderboardPage*scoresPerPage+i < highScoreList.get(2*leaderboardLevel+leaderboardDifficulty).size(); i++){
+						Score s = highScoreList.get(2*leaderboardLevel+leaderboardDifficulty).get(leaderboardPage*scoresPerPage+i);
 						String health;
-						
+						if(s.getUser().equals(Session.getCurrentSession().getUser())){
+							leaderboardPaint.setColor(Color.YELLOW);
+						}
 						health = s.getContext().get("health")+"%";
 						if(s.getContext().get("health") == null){
 							health = "-";
 						}
-						
+
 						//Format time string
 						int sec = Integer.parseInt(s.getContext().get("secs").toString());
 						int min = Integer.parseInt(s.getContext().get("mins").toString());
-				
+
 						String mins = ((min < 10)?"0"+min:""+min);
 						String secs = ((sec < 10)?"0"+sec:""+sec);
-						
+
 						canvas.drawText(s.getRank()+". ", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 						canvas.drawText(s.getUser().getLogin(), (float)(Const.leaderboardColumns[1]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 						canvas.drawText(s.getResult().intValue()+"", (float)(Const.leaderboardColumns[2]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
@@ -342,6 +354,13 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 						canvas.drawText(s.getContext().get("tanks")+"", (float)(Const.leaderboardColumns[5]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 						canvas.drawText(mins+":"+secs, (float)(Const.leaderboardColumns[6]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 						canvas.drawText(health, (float)(Const.leaderboardColumns[7]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
+						
+						if(s.getUser().equals(Session.getCurrentSession().getUser())){
+							leaderboardPaint.setColor(Color.WHITE);
+						}
+					}
+					for(; i < 15; i++){
+						canvas.drawText((i+1+leaderboardPage*scoresPerPage)+". ", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 					}
 				} catch(IndexOutOfBoundsException e){ //The rendering might get interrupted by a leaderboard update
 					Log.e(TAG, "The leaderboard rendering got interrupted");
@@ -361,7 +380,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			briefer.render(canvas);
 		}
 	}
-	
+
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -399,7 +418,19 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		Bitmap setNameBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.set_name), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
 		setNameButton = new Button(10, (int)(10 + 6*Const.menuButtonHeight), setNameBitmap.getWidth()/scaleX, setNameBitmap.getHeight()/scaleY, setNameBitmap);
-		
+
+		Bitmap[] leaderboardBitmaps = new Bitmap[]{
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.prev_level), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.next_level), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.prev_page), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.next_page), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update_b), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true)
+		};
+		leaderboardButtons = new Button[leaderboardBitmaps.length];
+		for(int i = 0; i < leaderboardBitmaps.length; i++){
+			leaderboardButtons[i] = new Button((int)((width-5*Const.menuButtonWidth-6*space)/2+ space + i*(space+Const.menuButtonWidth)), (int)(height-Const.menuButtonHeight-space), Const.menuButtonWidth, Const.menuButtonHeight, leaderboardBitmaps[i]);
+		}
+
 		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth() + Const.HUDPadding, musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
 		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
 
@@ -448,7 +479,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		normalBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.normal), (int)(difficultyButton.getWidth()*scaleX), (int)(difficultyButton.getHeight()*scaleY), true);
 		hardBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.hard), (int)(difficultyButton.getWidth()*scaleX), (int)(difficultyButton.getHeight()*scaleY), true);
 
-		
+
 		updateBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update), (int)(Const.updateSize*scaleX), (int)(Const.updateSize*scaleY), true);
 		if(currentLevel > 11)
 			currentLevel = 11;
@@ -462,7 +493,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		userPaint.setDither(true);
 
 		briefer = new LevelBriefer(70, Const.HUDPadding, (width - 70 - Const.HUDPadding), (height - 2*Const.HUDPadding), scaleX, scaleY, settings, context.getSharedPreferences("localScores", Context.MODE_PRIVATE));
-		
+
 		leaderboardPaint.setTextSize((float)(((height-Const.leaderboardStartY)/Const.leaderboardRows)*scaleY));
 		leaderboardPaint.setAntiAlias(true);
 		leaderboardPaint.setDither(true);
@@ -571,14 +602,30 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				musicSlider.handleTouch(touchX, touchY);
 				break;
 			case HIGHSCORE_MENU:
-				if(leaderboardsLoaded && touchX > width/2 && touchY > height/2){
+				if(leaderboardsLoaded && leaderboardButtons[UPDATE].isClicked(touchX, touchY)){
 					leaderboardsLoaded = false;
 					currentHighScoreMode = 0;
 					loadHighscores();
-				} else {
+				}
+				if(leaderboardButtons[LEFT].isClicked(touchX, touchY)){
+					leaderboardLevel--;
+					leaderboardPage = 0;
+					if(leaderboardLevel < 0)
+						leaderboardLevel = 11;
+				}
+				if(leaderboardButtons[RIGHT].isClicked(touchX, touchY)){
 					leaderboardLevel++;
-					if(leaderboardLevel >= 12)
+					leaderboardPage = 0;
+					if(leaderboardLevel > 11)
 						leaderboardLevel = 0;
+				}
+				if(leaderboardButtons[UP].isClicked(touchX, touchY)){
+					if(leaderboardPage > 0)
+						leaderboardPage--;
+				}
+				if(leaderboardButtons[DOWN].isClicked(touchX, touchY)){
+					if(leaderboardPage < maxPages-1)
+						leaderboardPage++;
 				}
 				break;
 
@@ -752,7 +799,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		int maxModes = 24;
 		if(currentHighScoreMode < maxModes){
 			controller.setMode(currentHighScoreMode); 
-			controller.setRangeLength((int)Const.leaderboardRows); 
+			controller.setRangeLength(maxPages*scoresPerPage); 
 			controller.loadRangeAtRank(1);
 		} else {
 			leaderboardsLoaded = true;
