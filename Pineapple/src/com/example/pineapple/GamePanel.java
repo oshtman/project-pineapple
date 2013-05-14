@@ -54,6 +54,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<int[]> flowers;
 	private ArrayList<int[]> skeletons;
 	private ArrayList<Butterfly> butterflies;
+	private ArrayList<Bird> birds;
 	private ArrayList<double[]> clouds;
 	private ArrayList<Hint> hints;
 	private int level;
@@ -88,10 +89,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int latestAction = 0;
 	private int protagonistSoundIndexStart = 4;
 	private boolean sentVariables = false;
-	private int latestDroneSound = 0, latestNinjaSound = 0, latestTankSound = 0;
+	private int latestDroneSound = 0, latestNinjaSound = 0, latestTankSound = 0, latestBirdSound = 0;
 	private int darknessPercent = 0;
 	private int backgroundColor = Color.rgb(135, 206, 250);
 	private boolean underground = false;
+	private boolean birdSings = false;
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -185,7 +187,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadRocks();
 		loadFlowers();
 		loadSkeletons();
-		loadButterfly();
+		loadButterflies();
+		loadBirds();
 		loadHints();
 		clouds = new ArrayList<double[]>();
 		loadSounds();
@@ -273,7 +276,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
-	//Load the enemies from LevelLoader and add them to the platforms list 
+	//Load the enemies from LevelLoader and add them to the enemy list 
 	public void loadEnemies(){
 		enemies = new ArrayList<Enemy>();
 		for(i = 0; i < levelLoader.getNumberOfEnemies(); i++){
@@ -285,31 +288,37 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
-	//Load the trees from LevelLoader and add them to the platforms list 
+	//Load the trees from LevelLoader and add them to the tree list 
 	public void loadTrees(){
 		trees = levelLoader.getTrees();
 	}
 
-	//Load the rocks from LevelLoader and add them to the platforms list 
+	//Load the rocks from LevelLoader and add them to the rock list 
 	public void loadRocks(){
 		rocks = levelLoader.getRocks();
 	}
 
-	//Load the flowers from LevelLoader and add them to the platforms list 
+	//Load the flowers from LevelLoader and add them to the flower list 
 	public void loadFlowers(){
 		flowers = levelLoader.getFlowers();
 	}
 
-	//Load the skeletons from LevelLoader and add them to the platforms list 
+	//Load the skeletons from LevelLoader and add them to the skeleton list 
 	public void loadSkeletons(){
 		skeletons = levelLoader.getSkeletons();
 	}
 
-	//Load the butterflies from LevelLoader and add them to the platforms list 
-	public void loadButterfly(){
+	//Load the butterflies from LevelLoader and add them to the butterfly list 
+	public void loadButterflies(){
 		butterflies = levelLoader.getButterflies();
 	}
 
+	//Load the birds from LevelLoader and add them to the bird list 
+	public void loadBirds(){
+		birds = levelLoader.getBirds();
+	}
+
+	//Load the hints from LevelLoader and add them to the hint list 
 	public void loadHints(){
 		hints = levelLoader.getHints();
 	}
@@ -337,11 +346,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 	}
 
+	//Play sound
 	public void playSound(SoundManager manager, int index){
 		manager.playSound(index, effectVolume);
 	}
 
-	//PLay the theme in loop
+	//Play the theme in loop
 	public void playTheme(){
 		theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
 		theme.setLooping(true);
@@ -383,9 +393,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(rightStick.isPointed())
 			Log.d(TAG, ""+rightStick.getAngle());
 		this.time++; //count number of frames passed
-		for(int i = 0; i < butterflies.size(); i++){
+		for(int i = 0; i < butterflies.size(); i++){ //update butterfly
 			butterflies.get(i).update();
 		}
+		for(int i = 0; i < birds.size(); i++){ //update bird
+			birds.get(i).update();
+			birds.get(i).collide(bullets);
+			if(!birdSings && Math.abs(protagonist.getXPos() - birds.get(i).getX()) < width/2 && Math.abs(protagonist.getYPos() - birds.get(i).getY()) < height/2){
+				ambientSM.playSound(2, effectVolume);
+				latestBirdSound = time;
+				birdSings = true;
+			}
+			if (time - latestBirdSound > 50 && birdSings){
+				birdSings = false;
+			}
+			if(!birds.get(i).isAlive() && Math.abs(birds.get(i).getStartY() - birds.get(i).getY()) > height){
+				birds.remove(i);
+				ambientSM.stop(2);
+				i--;
+			}
+		}
+		Log.d(TAG, "" + birdSings);
 		//Tutorial
 		if(level == 0){
 			moveMentor();
@@ -859,7 +887,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderEnemies(canvas);
 		if(level == 0){ //Tutorial
 			renderMentor(canvas);
-			renderBird(canvas);
 			renderFruit(canvas);
 		}
 		renderProtagonist(canvas);
@@ -872,6 +899,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderFlag(canvas, 1);
 		renderRocks(canvas, 1);
 		renderTrees(canvas, 1);
+		renderBird(canvas);
 		renderSkeletons(canvas);
 
 		//HUD
@@ -1281,7 +1309,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderDust(Canvas canvas){
 		if(time - latestDashTime < Const.dustDecayTime){
 			cloaker.setAlpha((int)(255 - 255.*(time-latestDashTime)/Const.dustDecayTime));
-			canvas.drawBitmap(dustBitmap, (float)((dashX - Const.dustWidth/2 - screenX)*scaleX), (float)((dashY - Const.dustHeight/2 - screenY)*scaleY), cloaker);
+			canvas.drawBitmap(dustBitmap, (float)((dashX - Const.dustWidth/2 - screenX)*scaleX), (float)((dashY - Const.dustHeight/3 - screenY)*scaleY), cloaker);
 		}
 	}
 
@@ -1401,13 +1429,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw bird
 	public void renderBird(Canvas canvas){
-		renderMatrix = new Matrix();
-		if(bird != null){
-			if(!bird.isAlive()){
-				renderMatrix.setRotate((float)bird.getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
+		for(int i = 0; i < birds.size(); i++){
+			renderMatrix = new Matrix();
+			if(!birds.get(i).isAlive()){
+				renderMatrix.setRotate((float)birds.get(i).getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
 			}
-			renderMatrix.postTranslate((float)((bird.getX() - Bird.getWidth()/2 - screenX)*scaleX), (float)((bird.getY() - Bird.getHeight() - screenY)*scaleY));
+			renderMatrix.postTranslate((float)((birds.get(i).getX() - Bird.getWidth()/2 - screenX)*scaleX), (float)((birds.get(i).getY() - Bird.getHeight() - screenY)*scaleY));
 			canvas.drawBitmap(birdBitmap, renderMatrix, null);
+
 		}
 	}
 
@@ -1662,6 +1691,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void pause(){
 		theme.stop();
 		ambientSM.stop(1);
+		ambientSM.stop(2);
 		thread.setRunning(false);
 	}
 

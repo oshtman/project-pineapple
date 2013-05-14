@@ -49,8 +49,10 @@ public class LevelLoader {
 	private ArrayList<int[]> flowers = new ArrayList<int[]>();
 	//List for skeletons {x position, add more to y if visible above ground}
 	private ArrayList<int[]> skeletons = new ArrayList<int[]>();
-	//List for butterflies, butterflies.add(new Butterfly(x position, y position, (alternative) multiplier fly)}
+	//List for butterflies, butterflies.add(new Butterfly(x position, y position, (optional) multiplier fly)}
 	private ArrayList<Butterfly> butterflies = new ArrayList<Butterfly>();
+	//List for birds, birds.add(new Bird(x position, y position, (optional) killBird (if bird can be killed))}
+	private ArrayList<Bird> birds = new ArrayList<Bird>();
 	//Hints
 	private ArrayList<Hint> hints = new ArrayList<Hint>();
 
@@ -296,6 +298,8 @@ public class LevelLoader {
 			skeletons.add(new int[]{1200, 0});
 			//Butterfly
 			butterflies.add(new Butterfly(-8, -8));
+			//Birds
+			birds.add(new Bird(-60, -40, false));
 			break;
 		case 3:
 			finishX = 900;
@@ -362,6 +366,8 @@ public class LevelLoader {
 			skeletons.add(new int[]{-50, 40});
 			//Butterfly
 			butterflies.add(new Butterfly(80 + 2, 150 - 8));
+			//Birds
+			birds.add(new Bird(finishX + 8, 150 - 43, false));
 			break;
 		case 5://Go downhill			
 			//Start and finish
@@ -466,6 +472,9 @@ public class LevelLoader {
 			skeletons.add(new int[]{3500, 50});
 			//Butterfly
 			butterflies.add(new Butterfly(4435 + 2, 2000 - 8));
+			//Birds
+			birds.add(new Bird(150, 20, true));
+			birds.add(new Bird(3230, 1100 - 43, true));
 			break;
 		case 6: //Up and away
 			//Start and finish
@@ -590,6 +599,8 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(640 + 2, 120 - 8));
 			butterflies.add(new Butterfly(770 + 2, -270 - 8));
 			butterflies.add(new Butterfly(840 + 2, -640 - 8));
+			//Birds
+			birds.add(new Bird(920, -1040, true));
 			break;
 		case 7://Dont fall
 			//Start and finish
@@ -695,6 +706,8 @@ public class LevelLoader {
 			//Butterfly
 			butterflies.add(new Butterfly(130 + 2, 30));
 			butterflies.add(new Butterfly(1570+5, -30));
+			//Birds
+			birds.add(new Bird(finishX - 9, -55 - 41, false));
 			break;
 		case 8: //Hunt
 			//Start and finish
@@ -928,6 +941,8 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(70 + 2, - 8));
 			butterflies.add(new Butterfly(85 + 2, - 8, 0.5));
 			butterflies.add(new Butterfly(95 + 2, - 8, -1));
+			//Birds
+			birds.add(new Bird(2390, -340 - 43, true));
 			break;
 		case 10:
 			startPos = new int[]{10, 0};
@@ -1065,7 +1080,11 @@ public class LevelLoader {
 	public ArrayList<Butterfly> getButterflies(){
 		return butterflies;
 	}
-
+	
+	public ArrayList<Bird> getBirds(){
+		return birds;
+	}
+	
 	public int getStartX(){
 		return startPos[0];
 	}
