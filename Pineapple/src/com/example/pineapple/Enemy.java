@@ -262,7 +262,7 @@ public class Enemy {
 				return true;
 			} else return false;
 			//On platform
-		} else if(p.getPlatformNumber() >= 0 && this.getYPos() <= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos()) && this.getYPos() + this.height >= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos())){
+		} else if(p.getPlatformNumber() >= 0 && platforms.get(p.getPlatformNumber()).spans(this.getXPos()) && this.getYPos() <= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos()) && this.getYPos() + this.height >= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos())){
 			return true;
 		} else{
 			Log.d(TAG, "WHAT? Not dashable enemy?! " + type + " " + this.getXPos());

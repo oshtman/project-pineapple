@@ -26,7 +26,6 @@ public class Button {
 		if(x > this.x && x < this.x + width){
 			if(y > this.y && y < this.y + height){
 				flag = true;
-				Log.d(TAG, this.y + "<" + y +  "<" + (this.y + height)); 
 			}
 		}
 		return flag;

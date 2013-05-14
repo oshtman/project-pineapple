@@ -70,6 +70,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int time = 0;
 	private Paint userPaint, leaderboardPaint;
 	private static float difficulty;
+	private LevelBriefer briefer;
 
 	private final TermsOfServiceController controller;
 	private static String userName;
@@ -91,7 +92,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		butterfly = new Butterfly();
 		renderMatrix = new Matrix();
 		setKeepScreenOn(true);
-
+		
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 		currentLevel = settings.getInt("currentLevel", 0);
 		sm = new SoundManager(getContext());
@@ -168,6 +169,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		protagonist.breathe();
 		protagonist.move();
 		butterfly.update();
+		briefer.update();
 		if(menuState == SETTINGS_MENU){
 			setVolumes();
 		}
@@ -236,6 +238,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderSliders(canvas);
 		renderUser(canvas);
 		renderLeaderboards(canvas);
+		renderBriefer(canvas);
+		
 	}
 
 	public void renderButtons(Canvas canvas){
@@ -261,7 +265,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			}  else {
 				canvas.drawBitmap(offBitmap, (float)((scoreButton.getX()+Const.HUDPadding+scoreButton.getWidth())*scaleX), (float)(scoreButton.getY()*scaleY), null);
 			}
-			if(settings.getBoolean("difficulty", false)){
+			if(settings.getInt("difficulty", 0) == 0){
 				canvas.drawBitmap(normalBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
 			}  else {
 				canvas.drawBitmap(hardBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
@@ -299,7 +303,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				canvas.drawText("#", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Name", (float)(Const.leaderboardColumns[1]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Score", (float)(Const.leaderboardColumns[2]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
-				canvas.drawText("Normals", (float)(Const.leaderboardColumns[3]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
+				canvas.drawText("Drones", (float)(Const.leaderboardColumns[3]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Ninjas", (float)(Const.leaderboardColumns[4]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Tanks", (float)(Const.leaderboardColumns[5]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
 				canvas.drawText("Time", (float)(Const.leaderboardColumns[6]*scaleX), (float)(Const.leaderboardStartY*scaleY), leaderboardPaint);
@@ -345,6 +349,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
+	public void renderBriefer(Canvas canvas){
+		if(menuState == LEVEL_MENU){
+			briefer.render(canvas);
+		}
+	}
+	
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
@@ -442,6 +452,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		userPaint.setAntiAlias(true);
 		userPaint.setDither(true);
 
+		briefer = new LevelBriefer(70, Const.HUDPadding, (width - 70 - Const.HUDPadding), (height - 2*Const.HUDPadding), scaleX, scaleY, settings, context.getSharedPreferences("localScores", Context.MODE_PRIVATE));
+		
 		leaderboardPaint.setTextSize((float)(((height-Const.leaderboardStartY)/Const.leaderboardRows)*scaleY));
 		leaderboardPaint.setAntiAlias(true);
 		leaderboardPaint.setDither(true);
@@ -506,8 +518,10 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			case LEVEL_MENU:
 				for(int i = 0; i < levelButtons.length; i++){
 					if(levelButtons[i].isClicked(touchX, touchY)){
-						nextLevel = i;
-						menuState = PLAY;
+						if(briefer.handleClick(i)){
+							nextLevel = i;
+							menuState = PLAY;
+						}
 					}
 				}
 				break;
@@ -537,9 +551,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				}
 				if(difficultyButton.isClicked(touchX, touchY)){
 					Editor ed = settings.edit();
-					ed.putFloat("difficulty", settings.getFloat("difficulty", 1)>0?0:1);
+					ed.putInt("difficulty", settings.getInt("difficulty", 0)==0?1:0);
 					ed.commit();
-					difficulty = settings.getFloat("difficulty", 1);
 
 				}
 				if(setNameButton.isClicked(touchX, touchY)){
@@ -587,6 +600,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void back(){
 		switch(menuState){
 		case LEVEL_MENU:
+			briefer.close();
 		case SETTINGS_MENU:
 		case HIGHSCORE_MENU:
 			menuState = MAIN_MENU;
