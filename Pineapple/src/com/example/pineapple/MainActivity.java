@@ -44,6 +44,7 @@ public class MainActivity extends BaseActivity {
 	public void onResume(){
 		Log.d(TAG, "Resuming...");
 		menuPanel.resume();
+		overridePendingTransition (0, 0);
 		super.onResume();
 	}
 

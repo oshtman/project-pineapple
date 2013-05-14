@@ -27,7 +27,6 @@ public class GameActivity extends BaseActivity {
 		level = intent.getIntExtra(MenuPanel.LEVEL, 0);
 		gamePanel = new GamePanel(this, level);
 		setContentView(gamePanel);
-		
 	}
 
 	public void onDestroy(){
@@ -49,7 +48,9 @@ public class GameActivity extends BaseActivity {
 	public void onResume(){
 		Log.d(TAG, "Resuming...");
 		gamePanel.resume();
+		overridePendingTransition (0, 0);
 		super.onResume();
+		
 	}
 	
 	@Override

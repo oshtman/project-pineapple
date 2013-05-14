@@ -1,5 +1,7 @@
 package com.example.pineapple;
 
+import android.content.SharedPreferences;
+
 public class HeatMeter {
 	private final double coolingRate;
 	private double heat;
@@ -11,11 +13,14 @@ public class HeatMeter {
 		this.coolingRate = coolingRate;
 	}
 	
-	public void addHeat(double amount){
+	public boolean addHeat(double amount){
 		heat += amount;
 		if(heat >= 1){
 			heat = 1;
 			coolingDown = true;
+			return true;
+		} else {
+			return false;
 		}
 	}
 	

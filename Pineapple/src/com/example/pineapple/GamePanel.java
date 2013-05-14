@@ -80,7 +80,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private SharedPreferences settings;
 	private double effectVolume;
 	private boolean viewStatistics;
-	private int i, index, id;
+	private int i, j, index, id;
 	private boolean criticalHealthFlag = false;
 	private int latestDashTime = -Const.dustDecayTime;
 	private int dashX, dashY;
@@ -241,7 +241,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				mentorHints.get(i).add(rawHints[i]);
 			}
 
-			
+
 
 
 			mentorSM = new SoundManager(getContext(), 1);
@@ -260,7 +260,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		textPaint.setColor(Color.WHITE);
 		textPaint.setDither(true);
 		textPaint.setAntiAlias(true);
-		
+
 		stamper.setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.SRC_IN));
 	}
 
@@ -310,9 +310,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the sounds
 	public void loadSounds(){
 		ambientSM.addSound(0, R.raw.fire_sound);
-		healthSM.addSound(1, R.raw.low_health);
+		ambientSM.addSound(1, R.raw.overheat);
 		ambientSM.addSound(2, R.raw.bird);
 		ambientSM.addSound(3, R.raw.dash_finish);
+		healthSM.addSound(1, R.raw.low_health);
 		protagonistSM.addSound(0, R.raw.protagonist_jump);
 		protagonistSM.addSound(1, R.raw.dash_start);
 		protagonistSM.addSound(2, R.raw.protagonist_hurt_1);
@@ -353,6 +354,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		handleHeatMeter();
 		handleBulletEnemyCollisions();
 		handleProtagonistEnemyCollisions(ground);
+		handleEnemyEnemyCollisions();
 		moveAndSpawnClouds();
 		handleProtagonistMumbling();
 		checkFinish();
@@ -374,8 +376,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				viewStatistics = false;
 			}
 		}
-		if(rightStick.isPointed())
-			Log.d(TAG, ""+rightStick.getAngle());
 		this.time++; //count number of frames passed
 
 		//Tutorial
@@ -418,23 +418,25 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//If left stick pointed, protagonist is moving. If not protagonist slow down
 	public void handleSticks(){
-		if(leftStick.isPointed()) {
-			protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
-		} else if (Math.abs(protagonist.getXVel()) > 0){
-			protagonist.slowDown();
-			protagonist.setStepCount(0);
-		}
+		if(!finished){
+			if(leftStick.isPointed()) {
+				protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
+			} else if (Math.abs(protagonist.getXVel()) > 0){
+				protagonist.slowDown();
+				protagonist.setStepCount(0);
+			}
 
-		if(rightStick.isPointed()){
-			//Aim
-			protagonist.aim(rightStick.getAngle());
-			//Fire
-			if(level > 0 || currentCheckpoint > 6){
-				if(!heatMeter.isCoolingDown()){
-					bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(protagonist.getAim()/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(protagonist.getAim()/180*Math.PI), protagonist.getAim(), 10, protagonist));
-					firing = true;
-					playSound(ambientSM, 0);
-					latestAction = time;
+			if(rightStick.isPointed()){
+				//Aim
+				protagonist.aim(rightStick.getAngle());
+				//Fire
+				if(level > 0 || currentCheckpoint > 6){
+					if(!heatMeter.isCoolingDown()){
+						bullets.add(new Bullet(protagonist.getXPos()+protagonist.getWidth()/2*Math.cos(protagonist.getAim()/180*Math.PI), protagonist.getYPos()-protagonist.getWidth()/2*Math.sin(protagonist.getAim()/180*Math.PI), protagonist.getAim(), 10, protagonist));
+						firing = true;
+						playSound(ambientSM, 0);
+						latestAction = time;
+					}
 				}
 			}
 		}
@@ -519,7 +521,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(heatMeter.isCoolingDown()){//If the weapon is overheated
 			heatMeter.coolDown();     //Cool down                      (Not able to fire)
 		} else if(firing){			  //Else if the protagonist has fired
-			heatMeter.addHeat(0.01);  //Heat up the weapon
+			if(heatMeter.addHeat(0.01)){//Heat up the weapon
+				playSound(ambientSM, 1); //If overheated play sound
+			}
 			firing = false;
 		} else {                      //Otherwise cool down the weapon (Still able to fire)
 			heatMeter.coolDown();
@@ -586,12 +590,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.reduceHealth(0.05); //Change this constant
 				if(protagonist.getHealth() < Const.criticalHealth){
 					if(!criticalHealthFlag){
-						playSound(healthSM, 1);
+						healthSM.playLoopedSound(1, effectVolume);
 						criticalHealthFlag = true;
 					}
 				}
 				latestAction = time;
 				playSound(protagonistSM, 2 + (int)(Math.random()*2));
+			}
+		}
+	}
+
+	public void handleEnemyEnemyCollisions(){
+		for(i = 0; i < enemies.size()-1; i++){
+			if(Math.abs(enemies.get(i).getXPos() - protagonist.getXPos()) < width/2){
+				for(j = i+1; j < enemies.size(); j++){
+					enemies.get(i).collide(enemies.get(j));
+				}
 			}
 		}
 	}
@@ -623,12 +637,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Check if protagonist passes finish line
 	public void checkFinish(){
-		if(protagonist.getXPos() >  levelLoader.getFinishX() && !finished){
+		if(protagonist.getXPos() >  levelLoader.getFinishX() - Const.finishFlagWidth/2 && protagonist.getPlatformNumber() == -1 && protagonist.isTouchingGround() && !finished){
 			finished = true;
 			finishDelay = finishDelayTime;
 			Log.d(TAG, "Finished!");
+		} else if(protagonist.getXPos() >  levelLoader.getFinishX() - Const.finishFlagWidth/2 && !finished){
+			protagonist.setXPos(levelLoader.getFinishX() - Const.finishFlagWidth/2);
 		}
 		if(finished){
+			protagonist.step(1);
+			protagonist.accelerate(1);
 			protagonist.setInvincible(true);
 			if(finishDelay > 0){
 				finishDelay--;
@@ -883,7 +901,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		if(darknessPercent > 0)
 			renderDarkness(canvas, darknessPercent);
-	
+
 	}
 
 	//Draw the enemies
@@ -1121,7 +1139,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 
 	}
-	
+
 	public void renderSigns(Canvas canvas){
 		for(i = 0; i < hints.size(); i++){
 			canvas.drawBitmap(signBitmap, (float)((hints.get(i).getX()-Const.hintSize/2 - screenX)*scaleX), (float)((hints.get(i).getY() - Const.hintSize - screenY)*scaleY), null);
@@ -1344,7 +1362,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawText(mentorHints.get(currentCheckpoint).get(i), (float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (mentorHints.get(currentCheckpoint).size()-i-1)*textPaint.getTextSize()), textPaint);
 		}
 	}
-	
+
 	public void renderHint(Canvas canvas, String[] hint){
 		canvas.drawRect((float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hint.length)*textPaint.getTextSize()), (float)((rightStick.getX()-rightStick.getRadius()-5)*scaleX), (float)((leftStick.getY()+leftStick.getRadius())*scaleY), textBackground);
 		for(i = 0; i < hint.length; i++){
@@ -1355,7 +1373,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderDarkness(Canvas canvas, int percent){
 		canvas.drawColor(Color.argb((int)(2.55*percent), 0, 0, 0));
 	}
-	
+
 	//Draw Hints
 	public void renderTime(Canvas canvas){
 		if(viewStatistics){
@@ -1400,7 +1418,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public boolean onTouchEvent(MotionEvent e){
 		double x;
 		double y;
-		
+
 		index = e.getActionIndex();
 		id = e.getPointerId(index);
 
@@ -1455,7 +1473,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					}
 				}
 			}
-			
+
 			break;
 
 		case MotionEvent.ACTION_UP:
@@ -1636,7 +1654,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Pause the game
 	public void pause(){
 		theme.stop();
-		ambientSM.stop(1);
+		healthSM.stop(1);
 		thread.setRunning(false);
 	}
 

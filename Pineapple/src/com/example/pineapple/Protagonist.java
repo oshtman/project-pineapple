@@ -375,9 +375,6 @@ public class Protagonist {
 		if(getXPos() < 1){
 			setXPos(1);
 		}
-		if(getXPos() > finishX+20){
-			setXPos(finishX+20);
-		}
 	}
 
 	//Check if protagonist is dead
