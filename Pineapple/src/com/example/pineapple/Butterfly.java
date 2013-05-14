@@ -1,12 +1,12 @@
 package com.example.pineapple;
 
 public class Butterfly {
-	private double x, y;
+	private double x, y, startX, startY;
 	private double counter;
 	private int rot;
-	public Butterfly(){
-		this.x = 70;
-		this.y = 80;
+	public Butterfly(double startX, double startY){
+		this.startX = startX;//70
+		this.startY = startY;//73
 		rot = 0;
 		counter = -2*Math.PI;
 	}
@@ -14,15 +14,16 @@ public class Butterfly {
 	public void update(){
 		counter += Math.PI/180;
 		if(counter >= 0){
-		this.x = 70 + 30*Math.sin(counter) + 20*Math.sin(counter/2) + 20*Math.sin(counter/3) + 20*Math.sin(counter/4);
-		this.y = 33 + 10*Math.cos(counter) + 10*Math.cos(counter/2) + 10*Math.cos(counter/3) + 10*Math.cos(counter/4);
+		this.x = startX + 30*Math.sin(counter) + 20*Math.sin(counter/2) + 20*Math.sin(counter/3) + 20*Math.sin(counter/4);
+		this.y = startY - 40 + 10*Math.cos(counter) + 10*Math.cos(counter/2) + 10*Math.cos(counter/3) + 10*Math.cos(counter/4);
 		rot = (int)(30*Math.cos(counter) + 10*Math.cos(counter/2) + 7*Math.cos(counter/3) + 5*Math.cos(counter/4))/3;
 			if(counter > 24*Math.PI){
 				counter = -2*Math.PI;
 			}
 		} else {
-			this.x = 70;
-			this.y = 73;
+			this.x = startX;
+			this.y = startY;
+			this.rot = 0;
 		}
 	}
 

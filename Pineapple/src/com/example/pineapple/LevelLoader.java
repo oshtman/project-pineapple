@@ -49,6 +49,8 @@ public class LevelLoader {
 	private ArrayList<int[]> flowers = new ArrayList<int[]>();
 	//List for skeletons {x position, add more to y if visible above ground}
 	private ArrayList<int[]> skeletons = new ArrayList<int[]>();
+	//List for butterflies, butterflies.add(new Butterfly(x position, y position)}
+	private ArrayList<Butterfly> butterflies = new ArrayList<Butterfly>();
 	//Hints
 	private ArrayList<Hint> hints = new ArrayList<Hint>();
 
@@ -292,6 +294,8 @@ public class LevelLoader {
 			flowers.add(new int[]{2410, 0});
 			//Skeletons
 			skeletons.add(new int[]{1200, 0});
+			//Butterfly
+			butterflies.add(new Butterfly(-8, -8));
 			break;
 		case 3:
 			finishX = 900;
@@ -1041,6 +1045,10 @@ public class LevelLoader {
 
 	public int getNumberOfSkeletons(){
 		return skeletons.size();
+	}
+	
+	public ArrayList<Butterfly> getButterflies(){
+		return butterflies;
 	}
 
 	public int getStartX(){

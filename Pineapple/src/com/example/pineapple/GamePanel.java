@@ -53,6 +53,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private ArrayList<int[]> rocks;
 	private ArrayList<int[]> flowers;
 	private ArrayList<int[]> skeletons;
+	private ArrayList<Butterfly> butterflies;
 	private ArrayList<double[]> clouds;
 	private ArrayList<Hint> hints;
 	private int level;
@@ -91,7 +92,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int darknessPercent = 0;
 	private int backgroundColor = Color.rgb(135, 206, 250);
 	private boolean underground = false;
-
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -132,6 +132,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap dustBitmap;
 	private Bitmap skeletonBitmap;
 	private Bitmap fruitBitmap;
+	private Bitmap[] butterflyBitmaps;
 	private Bitmap signBitmap;
 
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
@@ -184,6 +185,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadRocks();
 		loadFlowers();
 		loadSkeletons();
+		loadButterfly();
 		loadHints();
 		clouds = new ArrayList<double[]>();
 		loadSounds();
@@ -240,7 +242,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				mentorHints.get(i).add(rawHints[i]);
 			}
 
-			
+
 
 
 			mentorSM = new SoundManager(getContext(), 1);
@@ -259,7 +261,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		textPaint.setColor(Color.WHITE);
 		textPaint.setDither(true);
 		textPaint.setAntiAlias(true);
-		
+
 		stamper.setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.SRC_IN));
 	}
 
@@ -301,6 +303,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the skeletons from LevelLoader and add them to the platforms list 
 	public void loadSkeletons(){
 		skeletons = levelLoader.getSkeletons();
+	}
+
+	//Load the butterflies from LevelLoader and add them to the platforms list 
+	public void loadButterfly(){
+		butterflies = levelLoader.getButterflies();
 	}
 
 	public void loadHints(){
@@ -376,7 +383,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(rightStick.isPointed())
 			Log.d(TAG, ""+rightStick.getAngle());
 		this.time++; //count number of frames passed
-
+		for(int i = 0; i < butterflies.size(); i++){
+			butterflies.get(i).update();
+		}
 		//Tutorial
 		if(level == 0){
 			moveMentor();
@@ -847,6 +856,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Focus
 		renderSigns(canvas);
 		renderPlatforms(canvas);
+		renderButterfly(canvas);
 		renderEnemies(canvas);
 		if(level == 0){ //Tutorial
 			renderMentor(canvas);
@@ -882,7 +892,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		if(darknessPercent > 0)
 			renderDarkness(canvas, darknessPercent);
-	
+
 	}
 
 	//Draw the enemies
@@ -1120,7 +1130,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 
 	}
-	
+
 	public void renderSigns(Canvas canvas){
 		for(i = 0; i < hints.size(); i++){
 			canvas.drawBitmap(signBitmap, (float)((hints.get(i).getX()-Const.hintSize/2 - screenX)*scaleX), (float)((hints.get(i).getY() - Const.hintSize - screenY)*scaleY), null);
@@ -1281,6 +1291,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawBitmap(flagBitmaps[index], (float)((levelLoader.getFinishX() - index + (index - 1)*Const.finishFlagWidth/2 - screenX)*scaleX), (float)((ground.getYFromX(levelLoader.getFinishX())-Const.partOfFinishFlagVisible*Const.finishFlagHeight - screenY)*scaleY), null);
 	}
 
+	//Draw butterfly
+	public void renderButterfly(Canvas canvas){
+		for(int i = 0; i < butterflies.size(); i++){
+			if(butterflies.get(i).getX() > screenX - Const.butterflySize/2 && butterflies.get(i).getX() < screenX + width + Const.butterflySize/2){
+				renderMatrix.setRotate(butterflies.get(i).getRot(), butterflyBitmaps[0].getWidth()/2, butterflyBitmaps[0].getHeight()/2);
+				renderMatrix.postTranslate((float)((butterflies.get(i).getX()-Const.butterflySize/2 - screenX)*scaleX), (float)((butterflies.get(i).getY()-Const.butterflySize/2 - screenY)*scaleY));
+				canvas.drawBitmap(butterflyBitmaps[(int)(Math.abs(butterflies.get(i).getCounter() % 2))], renderMatrix, null);
+			}
+		}
+	}
+
 	//Draw mentor
 	public void renderMentor(Canvas canvas){
 		float feetAngle;
@@ -1343,7 +1364,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawText(mentorHints.get(currentCheckpoint).get(i), (float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (mentorHints.get(currentCheckpoint).size()-i-1)*textPaint.getTextSize()), textPaint);
 		}
 	}
-	
+
 	public void renderHint(Canvas canvas, String[] hint){
 		canvas.drawRect((float)((leftStick.getX()+leftStick.getRadius()+5)*scaleX), (float)(((leftStick.getY()+leftStick.getRadius())*scaleY) - (hint.length)*textPaint.getTextSize()), (float)((rightStick.getX()-rightStick.getRadius()-5)*scaleX), (float)((leftStick.getY()+leftStick.getRadius())*scaleY), textBackground);
 		for(i = 0; i < hint.length; i++){
@@ -1354,7 +1375,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void renderDarkness(Canvas canvas, int percent){
 		canvas.drawColor(Color.argb((int)(2.55*percent), 0, 0, 0));
 	}
-	
+
 	//Draw Hints
 	public void renderTime(Canvas canvas){
 		if(viewStatistics){
@@ -1399,7 +1420,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public boolean onTouchEvent(MotionEvent e){
 		double x;
 		double y;
-		
+
 		index = e.getActionIndex();
 		id = e.getPointerId(index);
 
@@ -1454,7 +1475,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					}
 				}
 			}
-			
+
 			break;
 
 		case MotionEvent.ACTION_UP:
@@ -1534,11 +1555,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_5), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
 
 		};
+
 		flowerBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flower), (int)(Const.flowerSize*scaleX), (int)(Const.flowerSize*scaleY), true);
 		dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
 		skeletonBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skeleton), (int)(Const.skeletonSize*scaleX), (int)(Const.skeletonSize*scaleY), true);
 		fruitBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fruit), (int)(Const.tutorialFruitSize*scaleX), (int)(Const.tutorialFruitSize*scaleY), true);
 		signBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sign), (int)(Const.hintSize*scaleX), (int)(Const.hintSize*scaleY), true);
+		butterflyBitmaps = new Bitmap[]{
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_in), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_out), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true)
+		};
 
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	

@@ -89,7 +89,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		this.context = context;
 		sm = new SoundManager(context, 1);
 		protagonist = new Protagonist(-20, 80);
-		butterfly = new Butterfly();
+		butterfly = new Butterfly(70, 73);
 		renderMatrix = new Matrix();
 		setKeepScreenOn(true);
 		
