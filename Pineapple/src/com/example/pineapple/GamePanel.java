@@ -68,7 +68,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint textBackground = new Paint();
 	private int time;
 	private double bulletDamage = 0.05;
-	public SoundManager ambientSM, protagonistSM, enemySM, mentorSM;
+	public SoundManager ambientSM, protagonistSM, enemySM, mentorSM, healthSM;
 	private MediaPlayer theme;
 	private final int[] renderOrder = new int[]{3, 1, 2};
 	private int cloudSpawnDelay = 1000, cloudCounter = cloudSpawnDelay;
@@ -175,6 +175,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		rightStick = new Stick(Stick.RIGHT);
 		thread = new MainThread(this.getHolder(), this);
 		ambientSM = new SoundManager(getContext(), 10);
+		healthSM = new SoundManager(getContext(), 1);
 		protagonistSM = new SoundManager(getContext(), 1);
 		enemySM = new SoundManager(getContext(), 10);
 
@@ -309,7 +310,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Load the sounds
 	public void loadSounds(){
 		ambientSM.addSound(0, R.raw.fire_sound);
-		ambientSM.addSound(1, R.raw.low_health);
+		healthSM.addSound(1, R.raw.low_health);
 		ambientSM.addSound(2, R.raw.bird);
 		ambientSM.addSound(3, R.raw.dash_finish);
 		protagonistSM.addSound(0, R.raw.protagonist_jump);
@@ -585,7 +586,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.reduceHealth(0.05); //Change this constant
 				if(protagonist.getHealth() < Const.criticalHealth){
 					if(!criticalHealthFlag){
-						playSound(ambientSM, 1);
+						playSound(healthSM, 1);
 						criticalHealthFlag = true;
 					}
 				}
