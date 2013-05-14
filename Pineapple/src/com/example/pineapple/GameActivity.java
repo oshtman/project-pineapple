@@ -22,6 +22,7 @@ public class GameActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.activity_game_over);
 		Intent intent = getIntent();
 		level = intent.getIntExtra(MenuPanel.LEVEL, 0);
 		gamePanel = new GamePanel(this, level);

@@ -20,5 +20,7 @@
     <string name="newLevel">You unlocked a new level! :D </string>
     <string name="score">Score</string>
     <string name="title_activity_terms_of_service">TermsOfServiceActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="loading">Loading...</string>
 
 </resources>

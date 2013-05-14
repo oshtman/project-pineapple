@@ -461,7 +461,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			} else {
 				if(protagonist.getXPos() > enemy.getSpawnX() && protagonist.getYPos() < enemy.getSpawnY()){
 					enemy.spawn();
-					playSound(enemySM, (enemy.getType()-1)*2+1);
+					playSound(enemySM, (enemy.getType()-1)*2);
 				}
 			}
 		}
@@ -532,19 +532,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					switch(enemies.get(j).getType()){
 					case 1:
 						if(time - latestDroneSound + 2 - 4*Math.random() > 10){
-							playSound(enemySM, (enemies.get(j).getType()-1)*2);
+							playSound(enemySM, (enemies.get(j).getType()-1)*2+1);
 							latestDroneSound = time;
 						}
 						break;
 					case 2:
 						if(time - latestNinjaSound + 2 - 4*Math.random() > 10){
-							playSound(enemySM, (enemies.get(j).getType()-1)*2);
+							playSound(enemySM, (enemies.get(j).getType()-1)*2+1);
 							latestNinjaSound = time;
 						}
 						break;
 					case 3:
 						if(time - latestTankSound + 2 - 4*Math.random()> 10){
-							playSound(enemySM, (enemies.get(j).getType()-1)*2);
+							playSound(enemySM, (enemies.get(j).getType()-1)*2+1);
 							latestTankSound = time;
 						}
 						break;
@@ -1119,7 +1119,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				//Spikes on top
 				groundPath = new Path();
 				for(int k = 0; k < platforms.get(i).getUpperX().length-1; k++){
-					Log.d(TAG, i + " " + k + " " + (platforms.get(i).getUpperX().length-1));
 					xGap = (platforms.get(i).getUpperX()[k+1]-platforms.get(i).getUpperX()[k]);
 					yGap = (platforms.get(i).getUpperY()[k+1]-platforms.get(i).getUpperY()[k]);
 					gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));

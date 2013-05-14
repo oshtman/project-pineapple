@@ -40,6 +40,7 @@ public class Protagonist {
 	private boolean sliding = false;
 	private double startHeight;
 	private boolean mentor;
+	private double slope;
 	//------------------------------------------------------------------------------------------------//
 	// CONSTRUCTORS
 	public Protagonist(double i, double j, GamePanel gp, boolean mentor) {
@@ -263,7 +264,7 @@ public class Protagonist {
 		if(touchingGround){ 
 			readyToJump = true;
 			if(getYPos()+getHeight()/2 - ground.getYFromX(getXPos()) > -5){ //On ground
-				double slope = ground.getSlope(this.getXPos());
+				slope = ground.getSlope(this.getXPos());
 				if(Math.abs(slope) > slopeThreshold){
 					setXVel(getXVel()+slope);
 					setYVel(slope*getXVel());
@@ -277,7 +278,7 @@ public class Protagonist {
 				sliding = false;
 				for(int i = 0; i < platforms.size(); i++){
 					if((platforms.get(i).getUpperX()[0] <= getXPos() && platforms.get(i).getUpperX()[platforms.get(i).getUpperLength()-1] >= getXPos())){
-						double slope = platforms.get(i).getSlope(this.getXPos());
+						slope = platforms.get(i).getSlope(this.getXPos());
 						if(Math.abs(slope) > slopeThreshold){
 							setXVel(getXVel()+slope);
 							setYVel(slope*getXVel());
@@ -296,7 +297,10 @@ public class Protagonist {
 			} else if (Math.abs(this.getXVel()) > this.getMaxSpeed() && this.getXVel() < 0) {
 				this.setXVel(-this.getMaxSpeed());
 			}
+		} else {
+			sliding = false;
 		}
+		
 	}
 
 	//Check if the protagonist is standing on the ground (make sure he is)
@@ -416,18 +420,18 @@ public class Protagonist {
 				}
 			}
 		} else {
-			faceDirection((int)(getXVel()));
+			faceDirection(slope);
 			if(!right.isPointed()){
-				angleAim = 90 - 90*Math.signum(getXVel());
+				angleAim = 90 - 90*Math.signum(slope);
 			}
 		}
 	}
 
 	//Alternative method (used in tutorial for the mentor)
-	public void faceDirection(int dir){
-		if(dir >= 0){
+	public void faceDirection(double dir){
+		if(dir > 0){
 			facingRight = true;
-		} else {
+		} else if(dir < 0){
 			facingRight = false;
 		}
 	}
