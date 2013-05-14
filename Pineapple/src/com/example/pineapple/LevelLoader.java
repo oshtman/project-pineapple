@@ -331,7 +331,7 @@ public class LevelLoader {
 			skeletons.add(new int[]{220, 0});
 			skeletons.add(new int[]{-50, 40});
 			break;
-		case 5://Downhill			
+		case 5://Go downhill			
 			//Start and finish
 			startPos = new int[]{10,50};
 			finishX = 4400;
@@ -553,7 +553,7 @@ public class LevelLoader {
 			//Skeletons
 			skeletons.add(new int[]{640, 10});
 			break;
-		case 7://Sea
+		case 7://Dont fall
 			//Start and finish
 			startPos = new int[]{10, 20};
 			finishX = 2000;
@@ -713,7 +713,7 @@ public class LevelLoader {
 			//Skeletons
 			skeletons.add(new int[]{5400, 10});
 			break;
-		case 9: //a Maze (ing)
+		case 9: //How a Maze (ing)
 			//Start and finish
 			startPos = new int[]{10, 0};
 			finishX = 2000;
@@ -729,6 +729,7 @@ public class LevelLoader {
 			//Rocks
 			//Flowers
 			//Skeletons
+			break;
 		case 10:
 			startPos = new int[]{10, 0};
 			finishX = 2250;

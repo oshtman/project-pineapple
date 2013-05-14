@@ -56,9 +56,9 @@ public class LevelBriefer {
 				"Short trip, make the best of it!",
 				"Go downhill, are you fast enough to not get caught? Let's see!",
 				"Up and away, are you afraid of heights little one? You better not be!",
-				"Text 7",
-				"Text 8",
-				"Text 9",
+				"Don't fall, that would make it easier to survive. So jump for your life!",
+				"The hunting! Remember, he who fights and runs away may live to fight another day.",
+				"How amazing? Which way should you go?",
 				"Text 10"
 		};
 		//Split the hints up into rows and add them to the final hint list
