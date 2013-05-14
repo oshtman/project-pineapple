@@ -121,37 +121,45 @@ public class LevelLoader {
 			};
 			platforms.add(p1);
 
-			p2 = new int[][]{
-					{700, 759},
-					{90, 90},
-					{700, 730, 759},
-					{90, 100, 90}
-			};
-			platforms.add(p2);
 			
-			p3 = new int[][]{
+			
+			p2 = new int[][]{
 					{1870, 2000},
 					{0, -10},
 					{1870, 1900, 1950, 2000},
 					{0, 10, 10, -10}
 			};
-			platforms.add(p3);
-
+			platforms.add(p2);
+	
 			//Enemies
-			enemies.add(new int[]{300,  20,  150,  1});
+			enemies.add(new int[]{300, 20, 150, 1});
+			enemies.add(new int[]{600, 30, 400, 1});
+			enemies.add(new int[]{1200, 20, 1300, 1});
 			enemies.add(new int[]{1990, -20, 1750, 1});
 
 			//Trees
 			trees.add(new int[]{0, 1, 0, 0});
 			trees.add(new int[]{140, 1, 1, 1});
 			trees.add(new int[]{300, 0, 2, 0});
+			trees.add(new int[]{500, 1, 2, 0});
+			trees.add(new int[]{700, 0, 1, 0});
+			trees.add(new int[]{800, 2, 1, 0});
+			trees.add(new int[]{950, 1, 0, 0});
+			trees.add(new int[]{1100, 1, 2, 0});
+			trees.add(new int[]{1300, 2, 1, 0});
+			trees.add(new int[]{1400, 0, 0, 0});
+			trees.add(new int[]{1700, 2, 1, 0});
+			trees.add(new int[]{1950, 0, 0, 0});
 			//Rocks
 			rocks.add(new int[]{20, 0, 20, 0});
 			rocks.add(new int[]{80, 1, 15, 0});
 			rocks.add(new int[]{160, 2, 15, 0});
+			rocks.add(new int[]{500, 2, 25, 0});
+			rocks.add(new int[]{510, 3, 18, 1});
 
+			//Hints
 			hints.add(new Hint(40, 85, "Beware! Continue at your own risk! Strange creatures have been spotted in this area!"));
-			
+			hints.add(new Hint(1250, 100, "Take care! I've dug a large hole up ahead!      -The Mentor"));
 			break;
 		case 2://Hide and seek, watch out
 			//Start and finish
@@ -907,7 +915,6 @@ public class LevelLoader {
 			enemies.add(new int[]{647, 655, 868, 2});
 			enemies.add(new int[]{1173, 660, 868, 2});
 			enemies.add(new int[]{1190, 660, 868, 2});
-			
 			
 			platforms.add(p1);
 			platforms.add(p2);
