@@ -132,6 +132,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap dustBitmap;
 	private Bitmap skeletonBitmap;
 	private Bitmap fruitBitmap;
+	private Bitmap signBitmap;
 
 	private Bitmap[] enemyBodyBitmap = new Bitmap[3];
 	private Bitmap[] enemyEyeMouthBitmap = new Bitmap[3];
@@ -372,6 +373,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				viewStatistics = false;
 			}
 		}
+		if(rightStick.isPointed())
+			Log.d(TAG, ""+rightStick.getAngle());
 		this.time++; //count number of frames passed
 
 		//Tutorial
@@ -842,6 +845,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderFlag(canvas, 0);
 		renderFlowers(canvas);
 		//Focus
+		renderSigns(canvas);
 		renderPlatforms(canvas);
 		renderEnemies(canvas);
 		if(level == 0){ //Tutorial
@@ -869,9 +873,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(level == 0){
 			renderHint(canvas);
 		} else {
-			for(Hint h: hints){
-				if(h.inRange(protagonist.getXPos(), protagonist.getYPos())){
-					renderHint(canvas, h.getHint());
+			for(i = 0; i < hints.size(); i++){
+				if(hints.get(i).inRange(protagonist.getXPos(), protagonist.getYPos())){
+					renderHint(canvas, hints.get(i).getHint());
 					break;
 				}
 			}
@@ -1115,6 +1119,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 
+	}
+	
+	public void renderSigns(Canvas canvas){
+		for(i = 0; i < hints.size(); i++){
+			canvas.drawBitmap(signBitmap, (float)((hints.get(i).getX()-Const.hintSize/2 - screenX)*scaleX), (float)((hints.get(i).getY() - Const.hintSize - screenY)*scaleY), null);
+		}
 	}
 
 	//Draw the platforms
@@ -1389,7 +1399,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public boolean onTouchEvent(MotionEvent e){
 		double x;
 		double y;
-
+		
 		index = e.getActionIndex();
 		id = e.getPointerId(index);
 
@@ -1431,7 +1441,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				id=e.getPointerId(index);
 				x = (int) e.getX(index)/scaleX;
 				y = (int) e.getY(index)/scaleY; 
-
 				if(id == rightStickId) {
 					if(x > width/2){
 						rightStick.handleTouch(x, y);
@@ -1445,6 +1454,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					}
 				}
 			}
+			
 			break;
 
 		case MotionEvent.ACTION_UP:
@@ -1528,6 +1538,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
 		skeletonBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skeleton), (int)(Const.skeletonSize*scaleX), (int)(Const.skeletonSize*scaleY), true);
 		fruitBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fruit), (int)(Const.tutorialFruitSize*scaleX), (int)(Const.tutorialFruitSize*scaleY), true);
+		signBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sign), (int)(Const.hintSize*scaleX), (int)(Const.hintSize*scaleY), true);
 
 		//Drone
 		enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	

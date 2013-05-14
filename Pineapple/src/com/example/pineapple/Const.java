@@ -139,5 +139,5 @@ public class Const {
 		public static final double leaderboardRows = 20;
 		
 		public static final double hintRange = 20;
-		public static final double hintSize = 10;
+		public static final double hintSize = 15;
 	}

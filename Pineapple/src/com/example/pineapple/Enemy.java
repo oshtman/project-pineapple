@@ -123,8 +123,6 @@ public class Enemy {
 					setYPos(getYPos()+slope*getXVel());
 				}
 			} else { //On platform
-
-
 				double slope = platforms.get(platformNumber).getSlope(this.getXPos());
 				if(Math.abs(slope) > slopeThreshold){
 					setXVel(getXVel()+slope);
