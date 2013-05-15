@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.example.pineapple.R;
 import com.scoreloop.client.android.core.controller.RequestController;
+import com.scoreloop.client.android.core.controller.RequestControllerException;
 import com.scoreloop.client.android.core.controller.RequestControllerObserver;
 import com.scoreloop.client.android.core.controller.ScoreController;
 import com.scoreloop.client.android.core.model.Score;
@@ -70,7 +71,6 @@ public class LevelCompleteActivity extends BaseActivity {
 			dataText = (TextView) findViewById(R.id.tanksKilledText);
 			dataText.setText(""+scoreKill[2]);
 
-			Log.d(TAG, ""+time);
 			int seconds = (int)(time*MainThread.updateInterval/1000);
 			int centiSecs = time*MainThread.updateInterval/10;
 			String mins = (seconds/60 >= 10)?""+seconds/60:"0"+seconds/60;
@@ -87,8 +87,6 @@ public class LevelCompleteActivity extends BaseActivity {
 			dataText = (TextView) findViewById(R.id.scoreText);
 			dataText.setText(""+ score);
 			stats.setVisibility(View.VISIBLE);
-
-			Log.d(TAG, "Seconds: " + seconds + " Centisecs: " + centiSecs + " gives " + mins+":"+secs+","+centisecs);
 
 			int localHighscore = localScores.getInt("score_"+difficulty+"_"+completedLevel, 0);
 			final boolean newHighscore;
@@ -133,6 +131,7 @@ public class LevelCompleteActivity extends BaseActivity {
 					button1.setVisibility(View.VISIBLE);
 					button2.setVisibility(View.VISIBLE);
 					button3.setVisibility(View.VISIBLE);
+					
 					showFinish("Connection failure", "Your connection to the server failed!");
 				}
 			};

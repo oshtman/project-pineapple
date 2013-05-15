@@ -162,22 +162,25 @@ public class LevelLoader {
 			hints.add(new Hint(1940, 140, "This way to enter the wild."));
 			break;
 		case 2:
-			finishX = 900;
-			startPos = new int[]{10, -20};
-			ground = new int[2][22];
-			for (int i = 0; i<20; i++) {
+			finishX = 1500;
+			startPos = new int[]{0, 80};
+			ground = new int[][]{
+					{-150, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 500, 800, 900, 1000, 1030, 1040, 1080, 1120, 1140, 1180, 1220, 1800}, 
+					{80,   80,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 680, 680, 700, 700,  660, 0, 0, 0, 0, 0, 0 ,660}, 
+			};
+			for (int i = 2; i<22; i++) {
 				ground[0][i] = i*20;
-				ground[1][i] = 100-(int)(600*Math.exp(-ground[0][i]/100.));
+				ground[1][i] = 680-(int)(600*Math.exp(-ground[0][i]/100.));
 			}
-			ground[0][20] = 20*25;
-			ground[1][20] = 100-(int)(600*Math.exp(-ground[0][19]/100.));
-			ground[0][21] = 1000;
-			ground[1][21] = 100;
+			for(int i = 27; i < 33; i++){
+				ground[1][i] = 660 - (int)(10*Math.sin((i-27)/5.*Math.PI));
+			}
+			
 			p1 = new int[][]{
-					{500, 650, 700},
-					{50, 40, -20},
-					{500, 600, 700},
-					{50, 50, 40}
+					{490, 500, 1000},
+					{580, 200, 200},
+					{490, 500, 600, 790, 1000},
+					{580, 630, 630, 650, 200}
 			};
 			p2 = new int[][]{
 					{600, 699},
@@ -187,7 +190,21 @@ public class LevelLoader {
 			};
 			platforms.add(p1);
 			platforms.add(p2);
-			enemies.add(new int[]{20, -40, -40, 1});
+			enemies.add(new int[]{800, 670, 600, 3});
+			
+			
+			rocks.add(new int[]{1250, 3, 35, 1});
+			trees.add(new int[]{1300, 2, 2, 0});
+			trees.add(new int[]{900, 2, 1, 0});
+			
+			enemies.add(new int[]{1250, 660, 1300, 2});
+			enemies.add(new int[]{850, 680, 1000, 1});
+			enemies.add(new int[]{820, 680, 1000, 1});
+			
+			enemies.add(new int[]{1250, 660, 1100, 1});
+			
+			hints.add(new Hint(600, 680, "Don't enter! A large armored creature has made its nest here!"));
+			hints.add(new Hint(1180, 660, "Some sort of small and fast creatures seem to be roaming these areas, be careful!"));
 			break;
 		case 3://Hide and seek, watch out
 			//Start and finish
