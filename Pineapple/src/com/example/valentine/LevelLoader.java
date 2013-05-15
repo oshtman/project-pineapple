@@ -382,7 +382,7 @@ public class LevelLoader {
 			startPos = new int[]{10,50};
 			finishX = 4400;
 			//Ground
-			ground = new int[2][14];
+			ground = new int[2][13];
 			ground[0][0] = -100;
 			ground[1][0] = 50;
 			ground[0][1] = 10;
@@ -407,10 +407,8 @@ public class LevelLoader {
 			ground[1][10] = 1100; 
 			ground[0][11] = 4000; //Here
 			ground[1][11] = 2000; 
-			ground[0][12] = 4500;
+			ground[0][12] = 4600;
 			ground[1][12] = 2000;
-			ground[0][13] = 4800;
-			ground[1][13] = 1700;
 			//Enemies
 			enemies.add(new int[]{100 + 200, 0, 100, 1});
 			enemies.add(new int[]{200 + 200, 0, 200, 1});
@@ -484,7 +482,7 @@ public class LevelLoader {
 			birds.add(new Bird(150, 20, true));
 			birds.add(new Bird(3230, 1100 - 43, true));
 			//Hints
-			hints.add(new Hint(20, 100, "More monsters have been seen in the hills. Be careful as you go down there!                   - The Mentor"));
+			hints.add(new Hint(100, 82, "More monsters have been seen in the hills. Be careful as you go down there!                   - The Mentor"));
 			break;
 		case 6: //Up and away
 			//Start and finish
@@ -518,7 +516,7 @@ public class LevelLoader {
 			ground[1][11] = -640;
 			ground[0][12] = 900; //Final ledge
 			ground[1][12] = -1000;
-			ground[0][13] = 1200;
+			ground[0][13] = 1300;
 			ground[1][13] = -1000;
 			//Platform uppx uppy lowx lowy
 			p1 = new int[][]{
@@ -611,6 +609,8 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(840 + 2, -640 - 8));
 			//Birds
 			birds.add(new Bird(920, -1040, true));
+			//Hints
+			hints.add(new Hint(625, 120, "Before your eyes rises Mont Ma, the highest mountain in the whole world. It's a long way up but once you're there, you will see it's worth it. //Traveler from <INSERT HOME OF VALENTINE>"));
 			break;
 		case 7://Dont fall
 			//Start and finish
@@ -718,6 +718,8 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(1570+5, -30));
 			//Birds
 			birds.add(new Bird(finishX - 9, -55 - 41, false));
+			//Hints
+			hints.add(new Hint(80, 0, "Take the upper path. It's hard I know, ask my old legs. Upper is quicker, as you might see!     //Hint from one passed"));
 			break;
 		case 8: //Hunt
 			//Start and finish
@@ -727,7 +729,7 @@ public class LevelLoader {
 			maxLengthPoint = 300;
 			ground = new int[2][maxLengthPoint+1];
 			ground[0][0] = -100;
-			ground[1][0] = 50;
+			ground[1][0] = 74;
 
 			for (int i = 1; i<maxLengthPoint; i++) {
 				ground[0][i] = i*20;
@@ -776,6 +778,9 @@ public class LevelLoader {
 			flowers.add(new int[]{finishX + 20, 0});
 			//Skeletons
 			skeletons.add(new int[]{5400, 10});
+			//Hints
+			hints.add(new Hint(-10, 74, "You are far far away from home little one, and now you are here. Good. Keep on moving.          - The Mentor"));
+			hints.add(new Hint(-10, 75, "You are far far away from home little one, and now you are here. Good. Keep on moving.          - The Mentor"));
 			break;
 		case 9: //How a Maze (ing)
 			//Start and finish
