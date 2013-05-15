@@ -53,7 +53,7 @@ public class LevelLoader {
 	private ArrayList<Butterfly> butterflies = new ArrayList<Butterfly>();
 	//List for birds, birds.add(new Bird(x position, y position, (optional) killBird (if bird can be killed))}
 	private ArrayList<Bird> birds = new ArrayList<Bird>();
-	//Hints
+	//Hints (x,y,message)
 	private ArrayList<Hint> hints = new ArrayList<Hint>();
 
 
@@ -165,7 +165,35 @@ public class LevelLoader {
 			hints.add(new Hint(40, 85, "Beware! Continue at your own risk! Strange creatures have been spotted in this area!"));
 			hints.add(new Hint(1250, 100, "Take care! I've dug a large hole up ahead!      -The Mentor"));
 			break;
-		case 2://Hide and seek, watch out
+		case 2:
+			finishX = 900;
+			startPos = new int[]{10, -20};
+			ground = new int[2][22];
+			for (int i = 0; i<20; i++) {
+				ground[0][i] = i*20;
+				ground[1][i] = 100-(int)(600*Math.exp(-ground[0][i]/100.));
+			}
+			ground[0][20] = 20*25;
+			ground[1][20] = 100-(int)(600*Math.exp(-ground[0][19]/100.));
+			ground[0][21] = 1000;
+			ground[1][21] = 100;
+			p1 = new int[][]{
+					{500, 650, 700},
+					{50, 40, -20},
+					{500, 600, 700},
+					{50, 50, 40}
+			};
+			p2 = new int[][]{
+					{600, 699},
+					{10, -20},
+					{600, 640, 699},
+					{10, 10, -20}
+			};
+			platforms.add(p1);
+			platforms.add(p2);
+			enemies.add(new int[]{20, -40, -40, 1});
+			break;
+		case 3://Hide and seek, watch out
 			//Start and finish
 			startPos = new int[]{20, 0};
 			finishX = 2500;
@@ -308,36 +336,9 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(-8, -8));
 			//Birds
 			birds.add(new Bird(-60, -40, false));
+			//Hints
+			hints.add(new Hint(30, 0, "Welcome to Rocky road"));
 			break;
-		case 3:
-			finishX = 900;
-			startPos = new int[]{10, -20};
-			ground = new int[2][22];
-			for (int i = 0; i<20; i++) {
-				ground[0][i] = i*20;
-				ground[1][i] = 100-(int)(600*Math.exp(-ground[0][i]/100.));
-			}
-			ground[0][20] = 20*25;
-			ground[1][20] = 100-(int)(600*Math.exp(-ground[0][19]/100.));
-			ground[0][21] = 1000;
-			ground[1][21] = 100;
-			p1 = new int[][]{
-					{500, 650, 700},
-					{50, 40, -20},
-					{500, 600, 700},
-					{50, 50, 40}
-			};
-			p2 = new int[][]{
-					{600, 699},
-					{10, -20},
-					{600, 640, 699},
-					{10, 10, -20}
-			};
-			platforms.add(p1);
-			platforms.add(p2);
-			enemies.add(new int[]{20, -40, -40, 1});
-			break;
-
 		case 4: //Short trip (and for meny background (set YPadding = 20?))
 			//Start and finish
 			finishX = 350;
