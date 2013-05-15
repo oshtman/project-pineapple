@@ -163,7 +163,7 @@ public class LevelLoader {
 			break;
 		case 2:
 			finishX = 1500;
-			startPos = new int[]{0, 80};
+			startPos = new int[]{1180, 80};
 			ground = new int[][]{
 					{-150, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 500, 800, 900, 1000, 1030, 1040, 1080, 1120, 1140, 1180, 1220, 1800}, 
 					{80,   80,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 680, 680, 700, 700,  660, 0, 0, 0, 0, 0, 0 ,660}, 
@@ -203,8 +203,8 @@ public class LevelLoader {
 			
 			enemies.add(new int[]{1250, 660, 1100, 1});
 			
-			hints.add(new Hint(600, 680, "Don't enter! A large armored creature has made its nest here!"));
-			hints.add(new Hint(1180, 660, "Some sort of small and fast creatures seem to be roaming these areas, be careful!"));
+			hints.add(new Hint(600, 680, "Do not enter! A large armored creature has made its nest here!"));
+			hints.add(new Hint(1180, 655, "Some sort of small and fast creatures seem to be roaming these areas, be careful!"));
 			break;
 		case 3://Hide and seek, watch out
 			//Start and finish
