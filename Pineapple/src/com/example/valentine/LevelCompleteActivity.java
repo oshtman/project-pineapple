@@ -91,63 +91,67 @@ public class LevelCompleteActivity extends BaseActivity {
 			Log.d(TAG, "Seconds: " + seconds + " Centisecs: " + centiSecs + " gives " + mins+":"+secs+","+centisecs);
 
 			int localHighscore = localScores.getInt("score_"+difficulty+"_"+completedLevel, 0);
+			final boolean newHighscore;
 			if(score > localHighscore){ //New local highscore
-				showNewHighscore();
-				
 				Editor ed = localScores.edit();
 				ed.putInt("score_"+difficulty+"_"+completedLevel, score);
 				ed.commit();
-				
-				Log.d(TAG, "You beat your previous best!");
-
-				final ImageButton button1 = (ImageButton)findViewById(R.id.button1);
-				final ImageButton button2 = (ImageButton)findViewById(R.id.button2);
-				final ImageButton button3 = (ImageButton)findViewById(R.id.button3);
-
-				button1.setVisibility(View.INVISIBLE);
-				button2.setVisibility(View.INVISIBLE);
-				button3.setVisibility(View.INVISIBLE);
-
-
-				//Upload highscore to server
-				RequestControllerObserver observer = new RequestControllerObserver(){
-
-					@Override
-					public void requestControllerDidReceiveResponse(RequestController requestController) {
-						Log.d(TAG, "Score upload successful");
-						button1.setVisibility(View.VISIBLE);
-						button2.setVisibility(View.VISIBLE);
-						button3.setVisibility(View.VISIBLE);
-						showFinish("Success", "Your score was successfully uploaded!");
-						//Upload score
-					}
-
-					@Override
-					public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
-						Log.d(TAG, "Score connect failed");
-						button1.setVisibility(View.VISIBLE);
-						button2.setVisibility(View.VISIBLE);
-						button3.setVisibility(View.VISIBLE);
-						
-						showFinish("Upload failure", "Your score upload failed!");
-					}
-				};
-				final ScoreController myScoreController = new ScoreController(observer);
-				Score s = new Score((double)score, null);
-				Map<String, Object> context = new HashMap<String, Object>();
-				context.put("normals", scoreKill[0]);
-				context.put("ninjas", scoreKill[1]);
-				context.put("tanks", scoreKill[2]);
-				context.put("health", health);
-				context.put("mins", (int)(seconds/60));
-				context.put("secs", (int)(seconds%60));
-				context.put("cSecs", (int)((time*MainThread.updateInterval/10)%100));
-
-				s.setMode(2*completedLevel+difficulty); 
-				s.setContext(context);
-				myScoreController.submitScore(s);
-
+				showNewHighscore();
+				newHighscore = true;
+			} else {
+				newHighscore = false;
 			}
+
+			final ImageButton button1 = (ImageButton)findViewById(R.id.button1);
+			final ImageButton button2 = (ImageButton)findViewById(R.id.button2);
+			final ImageButton button3 = (ImageButton)findViewById(R.id.button3);
+
+			button1.setVisibility(View.INVISIBLE);
+			button2.setVisibility(View.INVISIBLE);
+			button3.setVisibility(View.INVISIBLE);
+
+
+			//Upload score to server
+			RequestControllerObserver observer = new RequestControllerObserver(){
+
+				@Override
+				public void requestControllerDidReceiveResponse(RequestController requestController) {
+					Log.d(TAG, "Score upload successful");
+					button1.setVisibility(View.VISIBLE);
+					button2.setVisibility(View.VISIBLE);
+					button3.setVisibility(View.VISIBLE);
+					if(newHighscore)
+						showFinish("Success", "Your score was successfully uploaded to Scoreloop!");
+					else
+						dismiss();
+					//Upload score
+				}
+
+				@Override
+				public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
+					Log.d(TAG, "Score connect failed");
+					button1.setVisibility(View.VISIBLE);
+					button2.setVisibility(View.VISIBLE);
+					button3.setVisibility(View.VISIBLE);
+					showFinish("Upload failure", "Your score upload failed!");
+				}
+			};
+			final ScoreController myScoreController = new ScoreController(observer);
+			Score s = new Score((double)score, null);
+			Map<String, Object> context = new HashMap<String, Object>();
+			context.put("normals", scoreKill[0]);
+			context.put("ninjas", scoreKill[1]);
+			context.put("tanks", scoreKill[2]);
+			context.put("health", health);
+			context.put("mins", (int)(seconds/60));
+			context.put("secs", (int)(seconds%60));
+			context.put("cSecs", (int)((time*MainThread.updateInterval/10)%100));
+
+			s.setMode(2*completedLevel+difficulty); 
+			s.setContext(context);
+			myScoreController.submitScore(s);
+
+
 		} else {
 			stats.setVisibility(View.INVISIBLE);
 		}
@@ -158,10 +162,6 @@ public class LevelCompleteActivity extends BaseActivity {
 		} else {
 			newLevelText.setVisibility(ImageView.INVISIBLE);
 		}
-	}
-
-	public static void viewButtons(){
-
 	}
 
 	@Override
@@ -192,16 +192,29 @@ public class LevelCompleteActivity extends BaseActivity {
 	public void onBackPressed() { //Override so that the player cannot go to a previous activity
 		Log.d(TAG, "Back button");
 	}
-	
+
 	public void showNewHighscore(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("New Highscore!");
-		builder.setMessage("Congratulations, you beat your previous best!");
+		builder.setMessage("Congratulations, you beat your previous best! Connecting...");
 		builder.setCancelable(false);
 		alert = builder.create();
 		alert.show();
 	}
-	
+
+	public void showNoHighscore(){
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Connecting to server");
+		builder.setMessage("Connecting...");
+		builder.setCancelable(false);
+		alert = builder.create();
+		alert.show();
+	}
+
+	public void dismiss(){
+		alert.dismiss();
+	}
+
 	public void showFinish(String title, String msg){
 		alert.dismiss();
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -211,10 +224,10 @@ public class LevelCompleteActivity extends BaseActivity {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				
-				
+
+
 			}
-			
+
 		});
 		alert = builder.create();
 		alert.show();
