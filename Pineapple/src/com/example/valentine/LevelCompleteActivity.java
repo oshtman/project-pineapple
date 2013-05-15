@@ -96,10 +96,11 @@ public class LevelCompleteActivity extends BaseActivity {
 				Editor ed = localScores.edit();
 				ed.putInt("score_"+difficulty+"_"+completedLevel, score);
 				ed.commit();
-				showNewHighscore();
+				showConnecting();
 				newHighscore = true;
 			} else {
 				newHighscore = false;
+				showConnecting();
 			}
 
 			final ImageButton button1 = (ImageButton)findViewById(R.id.button1);
@@ -121,7 +122,7 @@ public class LevelCompleteActivity extends BaseActivity {
 					button2.setVisibility(View.VISIBLE);
 					button3.setVisibility(View.VISIBLE);
 					if(newHighscore)
-						showFinish("Success", "Your score was successfully uploaded to Scoreloop!");
+						showFinish("New highscore!", "Congratulations! Your new highscore was successfully uploaded!");
 					else
 						dismiss();
 				}
@@ -132,7 +133,7 @@ public class LevelCompleteActivity extends BaseActivity {
 					button1.setVisibility(View.VISIBLE);
 					button2.setVisibility(View.VISIBLE);
 					button3.setVisibility(View.VISIBLE);
-					showFinish("Upload failure", "Your score upload failed!");
+					showFinish("Connection failure", "Your connection to the server failed!");
 				}
 			};
 			final ScoreController myScoreController = new ScoreController(observer);
@@ -201,10 +202,10 @@ public class LevelCompleteActivity extends BaseActivity {
 		alert.show();
 	}
 
-	public void showNoHighscore(){
+	public void showConnecting(){
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Connecting to server");
-		builder.setMessage("Connecting...");
+		builder.setMessage("Please wait...");
 		builder.setCancelable(false);
 		alert = builder.create();
 		alert.show();
