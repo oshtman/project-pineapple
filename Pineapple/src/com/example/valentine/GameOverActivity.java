@@ -27,12 +27,14 @@ public class GameOverActivity extends BaseActivity {
 	public void goToMain(View view){
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
+		this.finish();
 	}
 
 	public void goToSameLevel(View view){
 		Intent intent = new Intent(this, GameActivity.class);
 		intent.putExtra(MenuPanel.LEVEL, failedLevel);
 		startActivity(intent);
+		this.finish();
 	}
 	
 	@Override

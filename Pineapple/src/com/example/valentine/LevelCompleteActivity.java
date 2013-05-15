@@ -175,18 +175,21 @@ public class LevelCompleteActivity extends BaseActivity {
 	public void goToMain(View view){
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
+		this.finish();
 	}
 
 	public void goToSameLevel(View view){
 		Intent intent = new Intent(this, GameActivity.class);
 		intent.putExtra(MenuPanel.LEVEL, completedLevel);
 		startActivity(intent);
+		this.finish();
 	}
 
 	public void goToNextLevel(View view){
 		Intent intent = new Intent(this, GameActivity.class);
 		intent.putExtra(MenuPanel.LEVEL, completedLevel+1);
 		startActivity(intent);
+		this.finish();
 	}
 
 	@Override
