@@ -189,7 +189,48 @@ public class LevelLoader {
 			platforms.add(p2);
 			enemies.add(new int[]{20, -40, -40, 1});
 			break;
-		case 3://Hide and seek, watch out
+		case 3: //Short trip (and for meny background (set YPadding = 20?))
+			//Start and finish
+			finishX = 350;
+			startPos = new int[]{10,150};
+			//Ground
+			ground = new int[][]{
+					{-100, -2, -1, 500},
+					{0, 100, 150, 150}
+			};
+			//Enemy
+			enemies.add(new int[]{10 - 100, 100, 10, 1});
+			enemies.add(new int[]{10 - 100, 100, 10, 1});
+			enemies.add(new int[]{10 - 100, 100, 10, 2});
+			enemies.add(new int[]{60 - 100, 100, 60, 1});
+			enemies.add(new int[]{60 - 100, 100, 60, 1});
+			enemies.add(new int[]{60 - 100, 100, 60, 2});
+			enemies.add(new int[]{110 - 100, 100, 110, 1});
+			enemies.add(new int[]{110 - 100, 100, 110, 2});
+			enemies.add(new int[]{110 - 100, 100, 110, 3});
+			enemies.add(new int[]{160 - 100, 100, 160, 1});
+			enemies.add(new int[]{160 - 100, 100, 160, 2});
+			enemies.add(new int[]{160 - 100, 100, 160, 3});
+			//Tree
+			trees.add(new int[]{130, 2, 0, 0});
+			trees.add(new int[]{400, 1, 2, 0});
+			//Rock
+			rocks.add(new int[]{70, 3, 20, 0});
+			//Flower
+			flowers.add(new int[]{-10, 0});
+			flowers.add(new int[]{80, 0});
+			flowers.add(new int[]{finishX + 10, 0});
+			//Skeletons
+			skeletons.add(new int[]{220, 0});
+			skeletons.add(new int[]{-50, 40});
+			//Butterfly
+			butterflies.add(new Butterfly(80 + 2, 150 - 8));
+			//Birds
+			birds.add(new Bird(finishX + 8, 150 - 43, false));
+			//Hints
+			hints.add(new Hint(250, 150, "You are now leaving <INSERT PEOPLES HOME/NAME/>!                     Have a nice trip and welcome back again!"));
+			break;
+		case 4://Hide and seek, watch out
 			//Start and finish
 			startPos = new int[]{20, 0};
 			finishX = 2500;
@@ -336,47 +377,6 @@ public class LevelLoader {
 			hints.add(new Hint(30, 0, "Welcome to Rocky road!                       Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
 			hints.add(new Hint(2050, 0, "Welcome to Rocky road!                       Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
 			break;
-		case 4: //Short trip (and for meny background (set YPadding = 20?))
-			//Start and finish
-			finishX = 350;
-			startPos = new int[]{10,150};
-			//Ground
-			ground = new int[][]{
-					{-100, -2, -1, 500},
-					{0, 100, 150, 150}
-			};
-			//Enemy
-			enemies.add(new int[]{10 - 100, 100, 10, 1});
-			enemies.add(new int[]{10 - 100, 100, 10, 1});
-			enemies.add(new int[]{10 - 100, 100, 10, 2});
-			enemies.add(new int[]{60 - 100, 100, 60, 1});
-			enemies.add(new int[]{60 - 100, 100, 60, 1});
-			enemies.add(new int[]{60 - 100, 100, 60, 2});
-			enemies.add(new int[]{110 - 100, 100, 110, 1});
-			enemies.add(new int[]{110 - 100, 100, 110, 2});
-			enemies.add(new int[]{110 - 100, 100, 110, 3});
-			enemies.add(new int[]{160 - 100, 100, 160, 1});
-			enemies.add(new int[]{160 - 100, 100, 160, 2});
-			enemies.add(new int[]{160 - 100, 100, 160, 3});
-			//Tree
-			trees.add(new int[]{130, 2, 0, 0});
-			trees.add(new int[]{400, 1, 2, 0});
-			//Rock
-			rocks.add(new int[]{70, 3, 20, 0});
-			//Flower
-			flowers.add(new int[]{-10, 0});
-			flowers.add(new int[]{80, 0});
-			flowers.add(new int[]{finishX + 10, 0});
-			//Skeletons
-			skeletons.add(new int[]{220, 0});
-			skeletons.add(new int[]{-50, 40});
-			//Butterfly
-			butterflies.add(new Butterfly(80 + 2, 150 - 8));
-			//Birds
-			birds.add(new Bird(finishX + 8, 150 - 43, false));
-			//Hints
-			hints.add(new Hint(350, 150, "You are now leaving <INSERT PEOPLES HOME/NAME/>, have a nice trip and welcome back again!"));
-			break;
 		case 5://Go downhill			
 			//Start and finish
 			startPos = new int[]{10,50};
@@ -484,7 +484,7 @@ public class LevelLoader {
 			birds.add(new Bird(150, 20, true));
 			birds.add(new Bird(3230, 1100 - 43, true));
 			//Hints
-			hints.add(new Hint(20, 100, "More monsters have been spotted in the hills. Be careful as you go downhill!                   - The Mentor"));
+			hints.add(new Hint(20, 100, "More monsters have been seen in the hills. Be careful as you go down there!                   - The Mentor"));
 			break;
 		case 6: //Up and away
 			//Start and finish
