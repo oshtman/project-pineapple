@@ -1,4 +1,4 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;

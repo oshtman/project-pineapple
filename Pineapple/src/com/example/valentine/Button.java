@@ -1,4 +1,4 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 import android.graphics.Bitmap;
 import android.util.Log;

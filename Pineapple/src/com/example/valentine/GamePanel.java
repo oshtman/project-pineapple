@@ -1,6 +1,8 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 import java.util.ArrayList;
+
+import com.example.pineapple.R;
 
 import android.app.Activity;
 import android.content.Context;

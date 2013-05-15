@@ -1,4 +1,4 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 public class Stick {
 	public static final int LEFT = 1;

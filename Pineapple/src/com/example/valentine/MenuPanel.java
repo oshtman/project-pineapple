@@ -1,4 +1,4 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.EditText;
 
+import com.example.pineapple.R;
 import com.scoreloop.client.android.core.controller.RequestController;
 import com.scoreloop.client.android.core.controller.RequestControllerException;
 import com.scoreloop.client.android.core.controller.RequestControllerObserver;
