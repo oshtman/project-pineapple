@@ -216,7 +216,7 @@ public class LevelCompleteActivity extends BaseActivity {
 	}
 
 	public void showFinish(String title, String msg){
-		alert.dismiss();
+		dismiss();
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(title);
 		builder.setMessage(msg);
