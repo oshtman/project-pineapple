@@ -121,8 +121,8 @@ public class LevelLoader {
 			};
 			platforms.add(p1);
 
-			
-			
+
+
 			p2 = new int[][]{
 					{1870, 2000},
 					{0, -10},
@@ -130,7 +130,7 @@ public class LevelLoader {
 					{0, 10, 10, -10}
 			};
 			platforms.add(p2);
-	
+
 			//Enemies
 			enemies.add(new int[]{300, 20, 150, 1});
 			enemies.add(new int[]{600, 30, 400, 1});
@@ -161,7 +161,35 @@ public class LevelLoader {
 			hints.add(new Hint(1250, 100, "Take care! I've dug a large hole up ahead!      -The Mentor"));
 			hints.add(new Hint(1940, 140, "This way to enter the wild."));
 			break;
-		case 2://Hide and seek, watch out
+		case 2:
+			finishX = 900;
+			startPos = new int[]{10, -20};
+			ground = new int[2][22];
+			for (int i = 0; i<20; i++) {
+				ground[0][i] = i*20;
+				ground[1][i] = 100-(int)(600*Math.exp(-ground[0][i]/100.));
+			}
+			ground[0][20] = 20*25;
+			ground[1][20] = 100-(int)(600*Math.exp(-ground[0][19]/100.));
+			ground[0][21] = 1000;
+			ground[1][21] = 100;
+			p1 = new int[][]{
+					{500, 650, 700},
+					{50, 40, -20},
+					{500, 600, 700},
+					{50, 50, 40}
+			};
+			p2 = new int[][]{
+					{600, 699},
+					{10, -20},
+					{600, 640, 699},
+					{10, 10, -20}
+			};
+			platforms.add(p1);
+			platforms.add(p2);
+			enemies.add(new int[]{20, -40, -40, 1});
+			break;
+		case 3://Hide and seek, watch out
 			//Start and finish
 			startPos = new int[]{20, 0};
 			finishX = 2500;
@@ -173,7 +201,7 @@ public class LevelLoader {
 			ground[1][1] = 0;
 			ground[0][2] = 2100;
 			ground[1][2] = 0;
-			ground[0][3] = 2600;
+			ground[0][3] = 2700;
 			ground[1][3] = -40;
 			//Enemies
 			//---Drones
@@ -304,36 +332,10 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(-8, -8));
 			//Birds
 			birds.add(new Bird(-60, -40, false));
+			//Hints
+			hints.add(new Hint(30, 0, "Welcome to Rocky road!                       Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
+			hints.add(new Hint(2050, 0, "Welcome to Rocky road!                       Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
 			break;
-		case 3:
-			finishX = 900;
-			startPos = new int[]{10, -20};
-			ground = new int[2][22];
-			for (int i = 0; i<20; i++) {
-				ground[0][i] = i*20;
-				ground[1][i] = 100-(int)(600*Math.exp(-ground[0][i]/100.));
-			}
-			ground[0][20] = 20*25;
-			ground[1][20] = 100-(int)(600*Math.exp(-ground[0][19]/100.));
-			ground[0][21] = 1000;
-			ground[1][21] = 100;
-			p1 = new int[][]{
-					{500, 650, 700},
-					{50, 40, -20},
-					{500, 600, 700},
-					{50, 50, 40}
-			};
-			p2 = new int[][]{
-					{600, 699},
-					{10, -20},
-					{600, 640, 699},
-					{10, 10, -20}
-			};
-			platforms.add(p1);
-			platforms.add(p2);
-			enemies.add(new int[]{20, -40, -40, 1});
-			break;
-
 		case 4: //Short trip (and for meny background (set YPadding = 20?))
 			//Start and finish
 			finishX = 350;
@@ -372,6 +374,8 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(80 + 2, 150 - 8));
 			//Birds
 			birds.add(new Bird(finishX + 8, 150 - 43, false));
+			//Hints
+			hints.add(new Hint(350, 150, "You are now leaving <INSERT PEOPLES HOME/NAME/>, have a nice trip and welcome again!"));
 			break;
 		case 5://Go downhill			
 			//Start and finish
@@ -955,7 +959,7 @@ public class LevelLoader {
 					{-100, 147, 154, 187, 208, 241, 281, 381, 479, 591, 728, 980, 1172, 1404, 1491, 1596, 1790, 2037, 2154, 2300},
 					{  57,  57, 151, 200, 268, 432, 531, 683, 678, 651, 736, 770, 762,  767,  793,  860,  900,  569,  526,  526} 
 			};
-			
+
 			//Roof
 			p1 = new int[][]{
 					{210, 240, 2300},
@@ -963,7 +967,7 @@ public class LevelLoader {
 					{210, 260, 293, 340, 405, 490, 602, 780, 1062, 1189, 1218, 1407, 1578, 2017, 2161, 2285, 2300},
 					{57,  183, 410, 538, 635, 638, 615, 548, 570,  661,  706,  710,  564,  442,  453,  450,  15}
 			};
-			
+
 			p2 = new int[][]{
 					{727, 964, 1052},
 					{680,  647, 681},
@@ -988,14 +992,14 @@ public class LevelLoader {
 					{1620, 1745, 1887, 1977},
 					{683, 715, 694, 600}
 			};
-			
+
 			enemies.add(new int[]{580, 640, 490, 3}); //Welcome tank
-			
+
 			enemies.add(new int[]{627, 655, 868, 2}); //Sneaky ninjas
 			enemies.add(new int[]{647, 655, 868, 2});
 			enemies.add(new int[]{1173, 660, 868, 2});
 			enemies.add(new int[]{1190, 660, 868, 2});
-			
+
 			platforms.add(p1);
 			platforms.add(p2);
 			platforms.add(p3);
@@ -1071,7 +1075,7 @@ public class LevelLoader {
 	public int getNumberOfFlowers(){
 		return flowers.size();
 	}
-	
+
 	public ArrayList<int[]> getSkeletons(){
 		return skeletons;
 	}
@@ -1079,15 +1083,15 @@ public class LevelLoader {
 	public int getNumberOfSkeletons(){
 		return skeletons.size();
 	}
-	
+
 	public ArrayList<Butterfly> getButterflies(){
 		return butterflies;
 	}
-	
+
 	public ArrayList<Bird> getBirds(){
 		return birds;
 	}
-	
+
 	public int getStartX(){
 		return startPos[0];
 	}
@@ -1103,7 +1107,7 @@ public class LevelLoader {
 	public int getFinishX(){
 		return finishX;
 	}
-	
+
 	public ArrayList<Hint> getHints(){
 		return hints;
 	}
