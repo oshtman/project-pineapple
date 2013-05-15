@@ -206,7 +206,48 @@ public class LevelLoader {
 			hints.add(new Hint(600, 680, "Do not enter! A large armored creature has made its nest here!"));
 			hints.add(new Hint(1180, 655, "Some sort of small and fast creatures seem to be roaming these areas, be careful!"));
 			break;
-		case 3://Hide and seek, watch out
+		case 3: //Short trip (and for meny background (set YPadding = 20?))
+			//Start and finish
+			finishX = 350;
+			startPos = new int[]{10,150};
+			//Ground
+			ground = new int[][]{
+					{-100, -2, -1, 500},
+					{0, 100, 150, 150}
+			};
+			//Enemy
+			enemies.add(new int[]{10 - 100, 100, 10, 1});
+			enemies.add(new int[]{10 - 100, 100, 10, 1});
+			enemies.add(new int[]{10 - 100, 100, 10, 2});
+			enemies.add(new int[]{60 - 100, 100, 60, 1});
+			enemies.add(new int[]{60 - 100, 100, 60, 1});
+			enemies.add(new int[]{60 - 100, 100, 60, 2});
+			enemies.add(new int[]{110 - 100, 100, 110, 1});
+			enemies.add(new int[]{110 - 100, 100, 110, 2});
+			enemies.add(new int[]{110 - 100, 100, 110, 3});
+			enemies.add(new int[]{160 - 100, 100, 160, 1});
+			enemies.add(new int[]{160 - 100, 100, 160, 2});
+			enemies.add(new int[]{160 - 100, 100, 160, 3});
+			//Tree
+			trees.add(new int[]{130, 2, 0, 0});
+			trees.add(new int[]{400, 1, 2, 0});
+			//Rock
+			rocks.add(new int[]{70, 3, 20, 0});
+			//Flower
+			flowers.add(new int[]{-10, 0});
+			flowers.add(new int[]{80, 0});
+			flowers.add(new int[]{finishX + 10, 0});
+			//Skeletons
+			skeletons.add(new int[]{220, 0});
+			skeletons.add(new int[]{-50, 40});
+			//Butterfly
+			butterflies.add(new Butterfly(80 + 2, 150 - 8));
+			//Birds
+			birds.add(new Bird(finishX + 8, 150 - 43, false));
+			//Hints
+			hints.add(new Hint(250, 150, "You are now leaving <INSERT PEOPLES HOME/NAME/>!                     Have a nice trip and welcome back again!"));
+			break;
+		case 4://Hide and seek, watch out
 			//Start and finish
 			startPos = new int[]{20, 0};
 			finishX = 2500;
@@ -353,53 +394,12 @@ public class LevelLoader {
 			hints.add(new Hint(30, 0, "Welcome to Rocky road!                       Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
 			hints.add(new Hint(2050, 0, "Welcome to Rocky road!                       Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
 			break;
-		case 4: //Short trip (and for meny background (set YPadding = 20?))
-			//Start and finish
-			finishX = 350;
-			startPos = new int[]{10,150};
-			//Ground
-			ground = new int[][]{
-					{-100, -2, -1, 500},
-					{0, 100, 150, 150}
-			};
-			//Enemy
-			enemies.add(new int[]{10 - 100, 100, 10, 1});
-			enemies.add(new int[]{10 - 100, 100, 10, 1});
-			enemies.add(new int[]{10 - 100, 100, 10, 2});
-			enemies.add(new int[]{60 - 100, 100, 60, 1});
-			enemies.add(new int[]{60 - 100, 100, 60, 1});
-			enemies.add(new int[]{60 - 100, 100, 60, 2});
-			enemies.add(new int[]{110 - 100, 100, 110, 1});
-			enemies.add(new int[]{110 - 100, 100, 110, 2});
-			enemies.add(new int[]{110 - 100, 100, 110, 3});
-			enemies.add(new int[]{160 - 100, 100, 160, 1});
-			enemies.add(new int[]{160 - 100, 100, 160, 2});
-			enemies.add(new int[]{160 - 100, 100, 160, 3});
-			//Tree
-			trees.add(new int[]{130, 2, 0, 0});
-			trees.add(new int[]{400, 1, 2, 0});
-			//Rock
-			rocks.add(new int[]{70, 3, 20, 0});
-			//Flower
-			flowers.add(new int[]{-10, 0});
-			flowers.add(new int[]{80, 0});
-			flowers.add(new int[]{finishX + 10, 0});
-			//Skeletons
-			skeletons.add(new int[]{220, 0});
-			skeletons.add(new int[]{-50, 40});
-			//Butterfly
-			butterflies.add(new Butterfly(80 + 2, 150 - 8));
-			//Birds
-			birds.add(new Bird(finishX + 8, 150 - 43, false));
-			//Hints
-			hints.add(new Hint(350, 150, "You are now leaving <INSERT PEOPLES HOME/NAME/>, have a nice trip and welcome again!"));
-			break;
 		case 5://Go downhill			
 			//Start and finish
 			startPos = new int[]{10,50};
 			finishX = 4400;
 			//Ground
-			ground = new int[2][14];
+			ground = new int[2][13];
 			ground[0][0] = -100;
 			ground[1][0] = 50;
 			ground[0][1] = 10;
@@ -424,10 +424,8 @@ public class LevelLoader {
 			ground[1][10] = 1100; 
 			ground[0][11] = 4000; //Here
 			ground[1][11] = 2000; 
-			ground[0][12] = 4500;
+			ground[0][12] = 4600;
 			ground[1][12] = 2000;
-			ground[0][13] = 4800;
-			ground[1][13] = 1700;
 			//Enemies
 			enemies.add(new int[]{100 + 200, 0, 100, 1});
 			enemies.add(new int[]{200 + 200, 0, 200, 1});
@@ -500,6 +498,8 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(150, 20, true));
 			birds.add(new Bird(3230, 1100 - 43, true));
+			//Hints
+			hints.add(new Hint(100, 82, "More monsters have been seen in the hills. Be careful as you go down there!                   - The Mentor"));
 			break;
 		case 6: //Up and away
 			//Start and finish
@@ -533,7 +533,7 @@ public class LevelLoader {
 			ground[1][11] = -640;
 			ground[0][12] = 900; //Final ledge
 			ground[1][12] = -1000;
-			ground[0][13] = 1200;
+			ground[0][13] = 1300;
 			ground[1][13] = -1000;
 			//Platform uppx uppy lowx lowy
 			p1 = new int[][]{
@@ -626,6 +626,8 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(840 + 2, -640 - 8));
 			//Birds
 			birds.add(new Bird(920, -1040, true));
+			//Hints
+			hints.add(new Hint(625, 120, "Before your eyes rises Mont Ma, the highest mountain in the whole world. It's a long way up but once you're there, you will see it's worth it. //Traveler from <INSERT HOME OF VALENTINE>"));
 			break;
 		case 7://Dont fall
 			//Start and finish
@@ -733,6 +735,8 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(1570+5, -30));
 			//Birds
 			birds.add(new Bird(finishX - 9, -55 - 41, false));
+			//Hints
+			hints.add(new Hint(80, 0, "Take the upper path. It's hard I know, ask my old legs. Upper is quicker, as you might see!     //Hint from one passed"));
 			break;
 		case 8: //Hunt
 			//Start and finish
@@ -742,13 +746,13 @@ public class LevelLoader {
 			maxLengthPoint = 300;
 			ground = new int[2][maxLengthPoint+1];
 			ground[0][0] = -100;
-			ground[1][0] = 50;
+			ground[1][0] = 74;
 
 			for (int i = 1; i<maxLengthPoint; i++) {
 				ground[0][i] = i*20;
 				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
 			}
-			ground[0][maxLengthPoint] = maxLengthPoint*20;
+			ground[0][maxLengthPoint] = maxLengthPoint*20 + 100;
 			ground[1][maxLengthPoint] = 50 + (int)(25*Math.cos((double)ground[0][maxLengthPoint-1]/200*Math.PI));
 			//Enemy
 			enemies.add(new int[]{this.getStartX() + 200, 0, this.getStartX(), 3});
@@ -791,6 +795,9 @@ public class LevelLoader {
 			flowers.add(new int[]{finishX + 20, 0});
 			//Skeletons
 			skeletons.add(new int[]{5400, 10});
+			//Hints
+			hints.add(new Hint(-10, 74, "You are far far away from home little one, and now you are here. Good. Keep on moving.          - The Mentor"));
+			hints.add(new Hint(3002, 26, "What a lovely place to rest. I think I am half way there. Puh, my legs! But I will recommend this place to the ones back home. Maybe I rise a sign so I find my way back here! This one!        //Old man"));
 			break;
 		case 9: //How a Maze (ing)
 			//Start and finish
@@ -967,7 +974,10 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(85 + 2, - 8, 0.5));
 			butterflies.add(new Butterfly(95 + 2, - 8, -1));
 			//Birds
-			birds.add(new Bird(2390, -340 - 43, true));
+			birds.add(new Bird(2330, -340 - 43, true));
+			//Hints
+			hints.add(new Hint(50, 0, "Oh a butterfly! I love butterflies! There's one more. And there! Over there, on the flower! What a nice flower, I can count to SIX of them. Maybe I'll take one with me when I go back home. Oh well, I should start climbing.. //A happy <INSERT PEAOPLENAME>"));
+			hints.add(new Hint(2000, 0, "I did climb all of them, and counted to nine! NINE! My legs are killing me! //A tired <INSERT PEOPLENAME>"));
 			break;
 		case 10:
 			startPos = new int[]{10, 0};
