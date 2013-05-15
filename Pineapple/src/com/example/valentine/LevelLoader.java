@@ -378,6 +378,8 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(80 + 2, 150 - 8));
 			//Birds
 			birds.add(new Bird(finishX + 8, 150 - 43, false));
+			//Hints
+			hints.add(new Hint(350, 150, "You are now leaving <INSERT PEOPLES HOME/NAME/>, have a nice trip and welcome again!"));
 			break;
 		case 5://Go downhill			
 			//Start and finish
