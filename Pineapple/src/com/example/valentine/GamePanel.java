@@ -95,7 +95,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int darknessPercent = 0;
 	private int backgroundColor = Color.rgb(135, 206, 250);
 	private boolean underground = false;
-	private boolean birdSings = false;
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -402,13 +401,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		for(int i = 0; i < birds.size(); i++){ //update bird
 			birds.get(i).update();
 			birds.get(i).collide(bullets);
-			if(!birdSings && Math.abs(protagonist.getXPos() - birds.get(i).getX()) < width/2 && Math.abs(protagonist.getYPos() - birds.get(i).getY()) < height/2){
+			if(time - latestBirdSound > 50 && Math.abs(protagonist.getXPos() - birds.get(i).getX()) < width/2 && Math.abs(protagonist.getYPos() - birds.get(i).getY()) < height/2){
 				ambientSM.playSound(2, effectVolume);
 				latestBirdSound = time;
-				birdSings = true;
-			}
-			if (time - latestBirdSound > 50 && birdSings){
-				birdSings = false;
 			}
 			if(!birds.get(i).isAlive() && Math.abs(birds.get(i).getStartY() - birds.get(i).getY()) > height){
 				birds.remove(i);
@@ -416,7 +411,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				i--;
 			}
 		}
-		Log.d(TAG, "" + birdSings);
 		//Tutorial
 		if(level == 0){
 			moveMentor();

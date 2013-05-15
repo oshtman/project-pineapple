@@ -337,7 +337,8 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(-60, -40, false));
 			//Hints
-			hints.add(new Hint(30, 0, "Welcome to Rocky road"));
+			hints.add(new Hint(30, 0, "Welcome to Rocky road!                       Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
+			hints.add(new Hint(2050, 0, "Welcome to Rocky road!                       Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
 			break;
 		case 4: //Short trip (and for meny background (set YPadding = 20?))
 			//Start and finish

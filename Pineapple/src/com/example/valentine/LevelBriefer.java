@@ -53,7 +53,7 @@ public class LevelBriefer {
 				"Let your mentor teach you how to make it in the friendly world of <INSERT PEOPLE'S NAME HERE>!",
 				"Take your first trembling steps toward uncovering the secrets of the mysterious monsters.",
 				"Text 3",
-				"Hide and seek, watch out for sneaky monsters. The rocky road could be dangerous for someone like you. Hurry slowly.",
+				"Hide and seek, watch out for sneaky monsters. The Rocky road could be dangerous for someone like you. Hurry slowly.",
 				"Short trip, make the best of it!",
 				"Go downhill you must. Are you fast enough to not get caught? Let's see!",
 				"Up, up and away! Are you afraid of heights little one? You better not be!",
