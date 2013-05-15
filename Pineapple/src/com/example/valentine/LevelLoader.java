@@ -205,7 +205,7 @@ public class LevelLoader {
 			ground[1][1] = 0;
 			ground[0][2] = 2100;
 			ground[1][2] = 0;
-			ground[0][3] = 2600;
+			ground[0][3] = 2700;
 			ground[1][3] = -40;
 			//Enemies
 			//---Drones
