@@ -160,10 +160,10 @@ public class LevelLoader {
 			rocks.add(new int[]{160, 2, 15, 0});
 			rocks.add(new int[]{500, 2, 25, 0});
 			rocks.add(new int[]{510, 3, 18, 1});
-
 			//Hints
 			hints.add(new Hint(40, 85, "Beware! Continue at your own risk! Strange creatures have been spotted in this area!"));
 			hints.add(new Hint(1250, 100, "Take care! I've dug a large hole up ahead!      -The Mentor"));
+			hints.add(new Hint(1940, 140, "This way to enter the wild."));
 			break;
 		case 2://Hide and seek, watch out
 			//Start and finish

@@ -124,7 +124,6 @@ public class LevelCompleteActivity extends BaseActivity {
 						showFinish("Success", "Your score was successfully uploaded to Scoreloop!");
 					else
 						dismiss();
-					//Upload score
 				}
 
 				@Override
@@ -212,6 +211,7 @@ public class LevelCompleteActivity extends BaseActivity {
 	}
 
 	public void dismiss(){
+		if(alert != null)
 		alert.dismiss();
 	}
 
