@@ -379,7 +379,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(finishX + 8, 150 - 43, false));
 			//Hints
-			hints.add(new Hint(350, 150, "You are now leaving <INSERT PEOPLES HOME/NAME/>, have a nice trip and welcome again!"));
+			hints.add(new Hint(350, 150, "You are now leaving <INSERT PEOPLES HOME/NAME/>, have a nice trip and welcome back again!"));
 			break;
 		case 5://Go downhill			
 			//Start and finish
@@ -487,6 +487,8 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(150, 20, true));
 			birds.add(new Bird(3230, 1100 - 43, true));
+			//Hints
+			hints.add(new Hint(20, 100, "More monsters have been spotted in the hills. Be careful as you go downhill!                   - The Mentor"));
 			break;
 		case 6: //Up and away
 			//Start and finish
