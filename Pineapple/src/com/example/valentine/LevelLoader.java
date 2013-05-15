@@ -976,7 +976,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(2330, -340 - 43, true));
 			//Hints
-			hints.add(new Hint(50, 0, "Oh a butterfly! I love butterflies! There's one more. And there! Over there, on the flower! What a nice flower, I can count to SIX of them. Maybe I'll take one with me when I go back home. I should start climbing.. //A happy <INSERT PEAOPLENAME>"));
+			hints.add(new Hint(50, 0, "Oh a butterfly! I love butterflies! There's one more. And there! Over there, on the flower! What a nice flower, I can count to SIX of them. Maybe I'll take one with me when I go back home. Oh well, I should start climbing.. //A happy <INSERT PEAOPLENAME>"));
 			hints.add(new Hint(2000, 0, "I did climb all of them, and counted to nine! NINE! My legs are killing me! //A tired <INSERT PEOPLENAME>"));
 			break;
 		case 10:
