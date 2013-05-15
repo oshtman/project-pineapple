@@ -125,8 +125,8 @@ public class LevelLoader {
 			};
 			platforms.add(p1);
 
-			
-			
+
+
 			p2 = new int[][]{
 					{1870, 2000},
 					{0, -10},
@@ -134,7 +134,7 @@ public class LevelLoader {
 					{0, 10, 10, -10}
 			};
 			platforms.add(p2);
-	
+
 			//Enemies
 			enemies.add(new int[]{300, 20, 150, 1});
 			enemies.add(new int[]{600, 30, 400, 1});
@@ -961,7 +961,7 @@ public class LevelLoader {
 					{-100, 147, 154, 187, 208, 241, 281, 381, 479, 591, 728, 980, 1172, 1404, 1491, 1596, 1790, 2037, 2154, 2300},
 					{  57,  57, 151, 200, 268, 432, 531, 683, 678, 651, 736, 770, 762,  767,  793,  860,  900,  569,  526,  526} 
 			};
-			
+
 			//Roof
 			p1 = new int[][]{
 					{210, 240, 2300},
@@ -969,7 +969,7 @@ public class LevelLoader {
 					{210, 260, 293, 340, 405, 490, 602, 780, 1062, 1189, 1218, 1407, 1578, 2017, 2161, 2285, 2300},
 					{57,  183, 410, 538, 635, 638, 615, 548, 570,  661,  706,  710,  564,  442,  453,  450,  15}
 			};
-			
+
 			p2 = new int[][]{
 					{727, 964, 1052},
 					{680,  647, 681},
@@ -994,14 +994,14 @@ public class LevelLoader {
 					{1620, 1745, 1887, 1977},
 					{683, 715, 694, 600}
 			};
-			
+
 			enemies.add(new int[]{580, 640, 490, 3}); //Welcome tank
-			
+
 			enemies.add(new int[]{627, 655, 868, 2}); //Sneaky ninjas
 			enemies.add(new int[]{647, 655, 868, 2});
 			enemies.add(new int[]{1173, 660, 868, 2});
 			enemies.add(new int[]{1190, 660, 868, 2});
-			
+
 			platforms.add(p1);
 			platforms.add(p2);
 			platforms.add(p3);
@@ -1077,7 +1077,7 @@ public class LevelLoader {
 	public int getNumberOfFlowers(){
 		return flowers.size();
 	}
-	
+
 	public ArrayList<int[]> getSkeletons(){
 		return skeletons;
 	}
@@ -1085,15 +1085,15 @@ public class LevelLoader {
 	public int getNumberOfSkeletons(){
 		return skeletons.size();
 	}
-	
+
 	public ArrayList<Butterfly> getButterflies(){
 		return butterflies;
 	}
-	
+
 	public ArrayList<Bird> getBirds(){
 		return birds;
 	}
-	
+
 	public int getStartX(){
 		return startPos[0];
 	}
@@ -1109,7 +1109,7 @@ public class LevelLoader {
 	public int getFinishX(){
 		return finishX;
 	}
-	
+
 	public ArrayList<Hint> getHints(){
 		return hints;
 	}
