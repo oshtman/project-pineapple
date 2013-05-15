@@ -112,7 +112,7 @@ public class Protagonist {
 	//Protagonist is aiming
 	public void aim(double angle) {
 		if(sliding){
-			if(getXVel() > 0){
+			if(slope > 0){
 				if(angle > 90 && angle < 180){
 					angleAim = 90;
 				} else if(angle >= 180 && angle < 270){
