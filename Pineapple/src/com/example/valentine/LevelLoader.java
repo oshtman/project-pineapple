@@ -752,7 +752,7 @@ public class LevelLoader {
 				ground[0][i] = i*20;
 				ground[1][i] = 50 + (int)(25*Math.cos((double)ground[0][i]/200*Math.PI));
 			}
-			ground[0][maxLengthPoint] = maxLengthPoint*20;
+			ground[0][maxLengthPoint] = maxLengthPoint*20 + 100;
 			ground[1][maxLengthPoint] = 50 + (int)(25*Math.cos((double)ground[0][maxLengthPoint-1]/200*Math.PI));
 			//Enemy
 			enemies.add(new int[]{this.getStartX() + 200, 0, this.getStartX(), 3});
@@ -797,7 +797,7 @@ public class LevelLoader {
 			skeletons.add(new int[]{5400, 10});
 			//Hints
 			hints.add(new Hint(-10, 74, "You are far far away from home little one, and now you are here. Good. Keep on moving.          - The Mentor"));
-			hints.add(new Hint(-10, 75, "You are far far away from home little one, and now you are here. Good. Keep on moving.          - The Mentor"));
+			hints.add(new Hint(3002, 26, "What a lovely place to rest. I think I am half way there. Puh, my legs! But I will recommend this place to the ones back home. Maybe I rise a sign so I find my way back here! This one!        //Old man"));
 			break;
 		case 9: //How a Maze (ing)
 			//Start and finish
@@ -974,7 +974,10 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(85 + 2, - 8, 0.5));
 			butterflies.add(new Butterfly(95 + 2, - 8, -1));
 			//Birds
-			birds.add(new Bird(2390, -340 - 43, true));
+			birds.add(new Bird(2330, -340 - 43, true));
+			//Hints
+			hints.add(new Hint(50, 0, "Oh a butterfly! I love butterflies! There's one more. And there! Over there, on the flower! What a nice flower, I can count to SIX of them. Maybe I'll take one with me when I go back home. I should start climbing.. //A happy <INSERT PEAOPLENAME>"));
+			hints.add(new Hint(2000, 0, "I did climb all of them, and counted to nine! NINE! My legs are killing me! //A tired <INSERT PEOPLENAME>"));
 			break;
 		case 10:
 			startPos = new int[]{10, 0};
