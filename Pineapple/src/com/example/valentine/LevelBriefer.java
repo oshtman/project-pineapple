@@ -52,7 +52,7 @@ public class LevelBriefer {
 		String[] rawTexts = new String[]{
 				"Let your mentor teach you how to make it in the friendly world of <INSERT PEOPLE'S NAME HERE>!",
 				"Take your first trembling steps toward uncovering the secrets of the mysterious monsters.",
-				"Text 2",
+				"More of the strange monsters appear out of nowhere in different forms.",
 				"Hide and seek, watch out for sneaky monsters. The Rocky road could be dangerous for someone like you. Hurry slowly.",
 				"Short trip, make the best of it!",
 				"Go downhill, are you fast enough to not get caught? Let's see!",

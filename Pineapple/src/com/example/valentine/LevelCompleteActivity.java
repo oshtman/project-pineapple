@@ -120,6 +120,7 @@ public class LevelCompleteActivity extends BaseActivity {
 					Log.d(TAG, "Score upload successful");
 					button1.setVisibility(View.VISIBLE);
 					button2.setVisibility(View.VISIBLE);
+					if(completedLevel < Const.levelCap)
 					button3.setVisibility(View.VISIBLE);
 					if(newHighscore)
 						showFinish("New highscore!", "Congratulations! Your new highscore was successfully uploaded!");
@@ -132,6 +133,7 @@ public class LevelCompleteActivity extends BaseActivity {
 					Log.d(TAG, "Score connect failed");
 					button1.setVisibility(View.VISIBLE);
 					button2.setVisibility(View.VISIBLE);
+					if(completedLevel < Const.levelCap)
 					button3.setVisibility(View.VISIBLE);
 					
 					showFinish("Connection failure", "Your connection to the server failed!");
