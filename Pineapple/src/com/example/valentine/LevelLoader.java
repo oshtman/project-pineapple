@@ -1,4 +1,4 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 import java.util.ArrayList;
 
@@ -608,7 +608,7 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(770 + 2, -270 - 8));
 			butterflies.add(new Butterfly(840 + 2, -640 - 8));
 			//Birds
-			birds.add(new Bird(1000, -1040, true));
+			birds.add(new Bird(920, -1040, true));
 			break;
 		case 7://Dont fall
 			//Start and finish
@@ -950,7 +950,7 @@ public class LevelLoader {
 			butterflies.add(new Butterfly(85 + 2, - 8, 0.5));
 			butterflies.add(new Butterfly(95 + 2, - 8, -1));
 			//Birds
-			birds.add(new Bird(2320, -340 - 43, true));
+			birds.add(new Bird(2390, -340 - 43, true));
 			break;
 		case 10:
 			startPos = new int[]{10, 0};

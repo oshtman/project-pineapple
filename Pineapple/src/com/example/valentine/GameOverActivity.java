@@ -1,4 +1,6 @@
-package com.example.pineapple;
+package com.example.valentine;
+
+import com.example.pineapple.R;
 
 import android.os.Bundle;
 import android.app.Activity;

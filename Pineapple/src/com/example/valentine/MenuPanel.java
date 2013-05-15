@@ -1,4 +1,4 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.EditText;
 
+import com.example.pineapple.R;
 import com.scoreloop.client.android.core.controller.RequestController;
 import com.scoreloop.client.android.core.controller.RequestControllerException;
 import com.scoreloop.client.android.core.controller.RequestControllerObserver;
@@ -481,8 +482,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 
 		updateBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update), (int)(Const.updateSize*scaleX), (int)(Const.updateSize*scaleY), true);
-		if(currentLevel > 11)
-			currentLevel = 11;
+		if(currentLevel > Const.levelCap)
+			currentLevel = Const.levelCap;
 		levelButtons = new Button[currentLevel+1];
 		for(int i = 0; i <= currentLevel; i++){
 			levelButtons[i] = new Button(Const.HUDPadding + (int)(Const.menuButtonWidth*(i/Const.levelButtonsPerRow)), Const.HUDPadding + (int)(Const.menuButtonHeight*(i%Const.levelButtonsPerRow)), Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
@@ -793,6 +794,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			@Override
 			public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
 				((MainActivity)context).displayMessage("Error", "The leaderboards could not be loaded!");
+				menuState = MAIN_MENU;
 			}
 		};
 		ScoresController controller = new ScoresController(observer);

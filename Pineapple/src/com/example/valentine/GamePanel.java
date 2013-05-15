@@ -1,6 +1,8 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 import java.util.ArrayList;
+
+import com.example.pineapple.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -902,7 +904,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderFlowers(canvas);
 		//Focus
 		renderSigns(canvas);
-		renderBird(canvas);
 		renderButterfly(canvas);
 		renderEnemies(canvas);
 		if(level == 0){ //Tutorial
@@ -919,6 +920,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		renderFlag(canvas, 1);
 		renderRocks(canvas, 1);
 		renderTrees(canvas, 1);
+		renderBird(canvas);
 		renderSkeletons(canvas);
 
 		//HUD
@@ -1458,14 +1460,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				canvas.drawBitmap(birdBitmap, renderMatrix, null);
 			}
 		} else {
-		for(int i = 0; i < birds.size(); i++){
-			renderMatrix = new Matrix();
-			if(!birds.get(i).isAlive()){
-				renderMatrix.setRotate((float)birds.get(i).getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
+			for(int i = 0; i < birds.size(); i++){
+				renderMatrix = new Matrix();
+				if(!birds.get(i).isAlive()){
+					renderMatrix.setRotate((float)birds.get(i).getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
+				}
+				renderMatrix.postTranslate((float)((birds.get(i).getX() - Bird.getWidth()/2 - screenX)*scaleX), (float)((birds.get(i).getY() - Bird.getHeight() - screenY)*scaleY));
+				canvas.drawBitmap(birdBitmap, renderMatrix, null);
 			}
-			renderMatrix.postTranslate((float)((birds.get(i).getX() - Bird.getWidth()/2 - screenX)*scaleX), (float)((birds.get(i).getY() - Bird.getHeight() - screenY)*scaleY));
-			canvas.drawBitmap(birdBitmap, renderMatrix, null);
-		}
 		}
 	}
 

@@ -1,4 +1,4 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 public class Const {
 	//Scaling coefficients, from an imagined rectangle around the protagonist
@@ -140,4 +140,6 @@ public class Const {
 		
 		public static final double hintRange = 20;
 		public static final double hintSize = 15;
+		
+		public static final int levelCap = 11;
 	}

@@ -1,10 +1,10 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.example.pineapple.GamePanel;
+import com.example.valentine.GamePanel;
 
 public class MainThread extends Thread{
 

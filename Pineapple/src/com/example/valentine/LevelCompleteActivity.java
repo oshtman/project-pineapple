@@ -1,4 +1,4 @@
-package com.example.pineapple;
+package com.example.valentine;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.example.pineapple.R;
 import com.scoreloop.client.android.core.controller.RequestController;
 import com.scoreloop.client.android.core.controller.RequestControllerObserver;
 import com.scoreloop.client.android.core.controller.ScoreController;
@@ -90,7 +91,6 @@ public class LevelCompleteActivity extends BaseActivity {
 			Log.d(TAG, "Seconds: " + seconds + " Centisecs: " + centiSecs + " gives " + mins+":"+secs+","+centisecs);
 
 			int localHighscore = localScores.getInt("score_"+difficulty+"_"+completedLevel, 0);
-			Log.d(TAG, "score_"+difficulty+"_"+completedLevel);
 			if(score > localHighscore){ //New local highscore
 				showNewHighscore();
 				
