@@ -1450,14 +1450,24 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Draw bird
 	public void renderBird(Canvas canvas){
-		for(int i = 0; i < birds.size(); i++){
-			renderMatrix = new Matrix();
-			if(!birds.get(i).isAlive()){
-				renderMatrix.setRotate((float)birds.get(i).getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
+		if(level == 0){
+			if(bird != null){
+				renderMatrix = new Matrix();
+				if(!bird.isAlive()){
+					renderMatrix.setRotate((float)bird.getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
+				}
+				renderMatrix.postTranslate((float)((bird.getX() - Bird.getWidth()/2 - screenX)*scaleX), (float)((bird.getY() - Bird.getHeight() - screenY)*scaleY));
+				canvas.drawBitmap(birdBitmap, renderMatrix, null);
 			}
-			renderMatrix.postTranslate((float)((birds.get(i).getX() - Bird.getWidth()/2 - screenX)*scaleX), (float)((birds.get(i).getY() - Bird.getHeight() - screenY)*scaleY));
-			canvas.drawBitmap(birdBitmap, renderMatrix, null);
-
+		} else {
+			for(int i = 0; i < birds.size(); i++){
+				renderMatrix = new Matrix();
+				if(!birds.get(i).isAlive()){
+					renderMatrix.setRotate((float)birds.get(i).getRotation(), (float)(birdBitmap.getWidth()/2), (float)(birdBitmap.getHeight()/2));
+				}
+				renderMatrix.postTranslate((float)((birds.get(i).getX() - Bird.getWidth()/2 - screenX)*scaleX), (float)((birds.get(i).getY() - Bird.getHeight() - screenY)*scaleY));
+				canvas.drawBitmap(birdBitmap, renderMatrix, null);
+			}
 		}
 	}
 
