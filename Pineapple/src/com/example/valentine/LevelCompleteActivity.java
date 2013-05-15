@@ -83,7 +83,9 @@ public class LevelCompleteActivity extends BaseActivity {
 			dataText = (TextView) findViewById(R.id.healthText);
 			dataText.setText(health + "%");
 
-			int score = (100 - centiSecs/100 + 5*scoreKill[0] + 7*scoreKill[1] + 10*scoreKill[2] + health)*10;
+			int score = (5000 - time + 50*scoreKill[0] + 50*scoreKill[1] + 100*scoreKill[2] + 25*health);
+			if(score < 0)
+				score = 0;
 			dataText = (TextView) findViewById(R.id.scoreText);
 			dataText.setText(""+ score);
 			stats.setVisibility(View.VISIBLE);
@@ -118,6 +120,7 @@ public class LevelCompleteActivity extends BaseActivity {
 					Log.d(TAG, "Score upload successful");
 					button1.setVisibility(View.VISIBLE);
 					button2.setVisibility(View.VISIBLE);
+					if(completedLevel < Const.levelCap)
 					button3.setVisibility(View.VISIBLE);
 					if(newHighscore)
 						showFinish("New highscore!", "Congratulations! Your new highscore was successfully uploaded!");
@@ -130,6 +133,7 @@ public class LevelCompleteActivity extends BaseActivity {
 					Log.d(TAG, "Score connect failed");
 					button1.setVisibility(View.VISIBLE);
 					button2.setVisibility(View.VISIBLE);
+					if(completedLevel < Const.levelCap)
 					button3.setVisibility(View.VISIBLE);
 					
 					showFinish("Connection failure", "Your connection to the server failed!");
@@ -149,8 +153,6 @@ public class LevelCompleteActivity extends BaseActivity {
 			s.setMode(2*completedLevel+difficulty); 
 			s.setContext(context);
 			myScoreController.submitScore(s);
-
-
 		} else {
 			stats.setVisibility(View.INVISIBLE);
 		}

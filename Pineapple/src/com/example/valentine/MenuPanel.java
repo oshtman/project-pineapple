@@ -758,8 +758,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				}
 				else if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_INVALID_USERNAME)) {
 					((MainActivity)context).displayMessage("Error uploading name", "The name is invalid");
-				}
-
+				} 
 			}
 		};
 

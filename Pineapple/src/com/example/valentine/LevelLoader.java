@@ -68,7 +68,7 @@ public class LevelLoader {
 			startPos = new int[]{10, 70};
 			finishX = 1750;
 			ground = new int[][]{
-					{-100,  258, 395, 580, 590, 600, 610, 620, 649, 725, 800, 875, 983, 1254, 1264, 1300, 1310, 1528, 1600, 1610, 1900},
+					{-100,  258, 395, 580, 590, 600, 610, 620, 649, 725, 800, 875, 983, 1254, 1264, 1300, 1310, 1528, 1600, 1610, 2000},
 					{90,    90,  208, 208, 203, 200, 203, 208, 208, 160, 146, 160, 208, 208,  240,  240,  208,  208,  270,  275,  275 }
 			};			
 			checkpoints = new int[]{30, 200, 200, 250, 420, 530, 600, 780, 780, Const.tutorialFruitX, 950, 1240, 1240, 1400, 1400, 1700, 1700};
@@ -108,7 +108,7 @@ public class LevelLoader {
 			finishX = 2000;
 	
 			ground = new int[][]{
-					{-155, 322, 368, 417, 518, 609, 691, 782, 863, 900, 1000, 1100, 1150, 1450, 1460, 1490,  1500, 1600, 1650, 1750, 1800, 1820, 1900, 1920, 2100},
+					{-155, 322, 368, 417, 518, 609, 691, 782, 863, 900, 1000, 1100, 1150, 1450, 1460, 1490,  1500, 1600, 1650, 1750, 1800, 1820, 1900, 1920, 2200},
 					{83,   83,  103, 156, 191, 191, 189, 167, 95,  95,  130, 110,   100,   95,   130,  130,  95,   80,   95,  40,   20,   40,   150,  140,  135}
 			};
 
@@ -163,7 +163,7 @@ public class LevelLoader {
 			break;
 		case 2:
 			finishX = 1500;
-			startPos = new int[]{0, 80};
+			startPos = new int[]{1180, 80};
 			ground = new int[][]{
 					{-150, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 500, 800, 900, 1000, 1030, 1040, 1080, 1120, 1140, 1180, 1220, 1800}, 
 					{80,   80,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 680, 680, 700, 700,  660, 0, 0, 0, 0, 0, 0 ,660}, 
@@ -203,8 +203,8 @@ public class LevelLoader {
 			
 			enemies.add(new int[]{1250, 660, 1100, 1});
 			
-			hints.add(new Hint(600, 680, "Don't enter! A large armored creature has made its nest here!"));
-			hints.add(new Hint(1180, 660, "Some sort of small and fast creatures seem to be roaming these areas, be careful!"));
+			hints.add(new Hint(600, 680, "Do not enter! A large armored creature has made its nest here!"));
+			hints.add(new Hint(1180, 655, "Some sort of small and fast creatures seem to be roaming these areas, be careful!"));
 			break;
 		case 3: //Short trip (and for meny background (set YPadding = 20?))
 			//Start and finish
