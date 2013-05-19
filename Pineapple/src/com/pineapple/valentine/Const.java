@@ -1,4 +1,4 @@
-package com.example.valentine;
+package com.pineapple.valentine;
 
 public class Const {
 	//Scaling coefficients, from an imagined rectangle around the protagonist

@@ -1,4 +1,4 @@
-package com.example.valentine;
+package com.pineapple.valentine;
 
 public class Butterfly {
 	private double x, y, startX, startY;

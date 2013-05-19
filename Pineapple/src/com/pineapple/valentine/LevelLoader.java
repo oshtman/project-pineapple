@@ -1,4 +1,4 @@
-package com.example.valentine;
+package com.pineapple.valentine;
 
 import java.util.ArrayList;
 
@@ -163,7 +163,7 @@ public class LevelLoader {
 			break;
 		case 2:
 			finishX = 1500;
-			startPos = new int[]{1180, 80};
+			startPos = new int[]{0, 80};
 			ground = new int[][]{
 					{-150, 40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 500, 800, 900, 1000, 1030, 1040, 1080, 1120, 1140, 1180, 1220, 1800}, 
 					{80,   80,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 680, 680, 700, 700,  660, 0, 0, 0, 0, 0, 0 ,660}, 
@@ -245,7 +245,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(finishX + 8, 150 - 43, false));
 			//Hints
-			hints.add(new Hint(250, 150, "You are now leaving <INSERT PEOPLES HOME/NAME/>!                     Have a nice trip and welcome back again!"));
+			hints.add(new Hint(250, 150, "You are now leaving homeland!                                Have a nice trip and welcome back again!"));
 			break;
 		case 4://Hide and seek, watch out
 			//Start and finish

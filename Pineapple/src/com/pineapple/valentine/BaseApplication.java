@@ -1,4 +1,4 @@
-package com.example.valentine;
+package com.pineapple.valentine;
 
 import com.scoreloop.client.android.core.model.Client;
 

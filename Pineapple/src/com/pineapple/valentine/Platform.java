@@ -1,4 +1,4 @@
-package com.example.valentine;
+package com.pineapple.valentine;
 
 import android.graphics.Path;
 import android.util.Log;

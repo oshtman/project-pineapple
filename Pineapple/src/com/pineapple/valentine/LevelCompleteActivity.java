@@ -1,4 +1,4 @@
-package com.example.valentine;
+package com.pineapple.valentine;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,7 +62,7 @@ public class LevelCompleteActivity extends BaseActivity {
 			e.commit();
 		}
 		TableLayout stats = (TableLayout) findViewById(R.id.tableLayout1);
-		if(settings.getBoolean("scoring", false)){
+		if(settings.getBoolean("scoring", true)){
 			TextView dataText;
 			dataText = (TextView) findViewById(R.id.normalsKilledText);
 			dataText.setText(""+scoreKill[0]);

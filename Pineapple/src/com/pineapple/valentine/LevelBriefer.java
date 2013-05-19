@@ -1,4 +1,4 @@
-package com.example.valentine;
+package com.pineapple.valentine;
 
 import java.util.ArrayList;
 
@@ -50,7 +50,7 @@ public class LevelBriefer {
 				"Finale"
 		};
 		String[] rawTexts = new String[]{
-				"Let your mentor teach you how to make it in the friendly world of <INSERT PEOPLE'S NAME HERE>!",
+				"Let your mentor teach you how to make it in this friendly world!",
 				"Take your first trembling steps toward uncovering the secrets of the mysterious monsters.",
 				"More of the strange monsters appear out of nowhere in different forms.",
 				"Short trip, but leaving home. Make the best of it! We wish you good luck.",

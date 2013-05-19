@@ -12,13 +12,13 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
-        android:name="com.example.valentine.BaseApplication"
+        android:name="com.pineapple.valentine.BaseApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/AppBaseTheme" android:logo="@drawable/logo">
         <activity
-            android:name="com.example.valentine.MainActivity"
+            android:name="com.pineapple.valentine.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,26 +26,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.valentine.GameActivity"
+            android:name="com.pineapple.valentine.GameActivity"
             android:label="@string/title_activity_game" >
         </activity>
         <activity
-            android:name="com.example.valentine.BaseActivity"
+            android:name="com.pineapple.valentine.BaseActivity"
             android:label="@string/title_activity_base" >
         </activity>
         <activity
-            android:name="com.example.valentine.LevelCompleteActivity"
+            android:name="com.pineapple.valentine.LevelCompleteActivity"
             android:label="@string/title_activity_level_complete" >
         </activity>
         <activity
-            android:name="com.example.valentine.GameOverActivity"
+            android:name="com.pineapple.valentine.GameOverActivity"
             android:label="@string/title_activity_game_over" >
         </activity>
         <activity
             android:name="com.scoreloop.client.android.core.ui.ProxyActivity"
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|smallestScreenSize" />
         <activity
-            android:name="com.example.valentine.TermsOfServiceActivity"
+            android:name="com.pineapple.valentine.TermsOfServiceActivity"
             android:label="@string/title_activity_terms_of_service" >
         </activity>
     </application>

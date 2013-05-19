@@ -1,4 +1,4 @@
-package com.example.valentine;
+package com.pineapple.valentine;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;

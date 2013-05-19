@@ -1,4 +1,4 @@
-package com.example.valentine;
+package com.pineapple.valentine;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -262,18 +262,18 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawBitmap(soundButton.getBitmap(), (float)(soundButton.getX()*scaleX), (float)(soundButton.getY()*scaleY), null);
 			canvas.drawBitmap(musicButton.getBitmap(), (float)(musicButton.getX()*scaleX), (float)(musicButton.getY()*scaleY), null);
 			canvas.drawBitmap(scoreButton.getBitmap(), (float)(scoreButton.getX()*scaleX), (float)(scoreButton.getY()*scaleY), null);
-			canvas.drawBitmap(difficultyButton.getBitmap(), (float)(difficultyButton.getX()*scaleX), (float)(difficultyButton.getY()*scaleY), null);
+			//canvas.drawBitmap(difficultyButton.getBitmap(), (float)(difficultyButton.getX()*scaleX), (float)(difficultyButton.getY()*scaleY), null);
 			canvas.drawBitmap(setNameButton.getBitmap(), (float)(setNameButton.getX()*scaleX), (float)(setNameButton.getY()*scaleY), null);
-			if(settings.getBoolean("scoring", false)){
+			if(settings.getBoolean("scoring", true)){
 				canvas.drawBitmap(onBitmap, (float)((scoreButton.getX()+Const.HUDPadding+scoreButton.getWidth())*scaleX), (float)(scoreButton.getY()*scaleY), null);
 			}  else {
 				canvas.drawBitmap(offBitmap, (float)((scoreButton.getX()+Const.HUDPadding+scoreButton.getWidth())*scaleX), (float)(scoreButton.getY()*scaleY), null);
 			}
-			if(settings.getInt("difficulty", 0) == 0){
+			/*if(settings.getInt("difficulty", 0) == 0){
 				canvas.drawBitmap(normalBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
 			}  else {
 				canvas.drawBitmap(hardBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
-			}
+			}*/
 			break;
 		case HIGHSCORE_MENU:
 			if(leaderboardsLoaded){
@@ -355,7 +355,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 						canvas.drawText(s.getContext().get("tanks")+"", (float)(Const.leaderboardColumns[5]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 						canvas.drawText(mins+":"+secs, (float)(Const.leaderboardColumns[6]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 						canvas.drawText(health, (float)(Const.leaderboardColumns[7]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
-						
+
 						if(s.getUser().equals(Session.getCurrentSession().getUser())){
 							leaderboardPaint.setColor(Color.WHITE);
 						}
@@ -538,107 +538,108 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
+		if(playButton != null){
+			touchX = (int)(e.getX()/scaleX);
+			touchY = (int)(e.getY()/scaleY);
+			if(e.getAction() == MotionEvent.ACTION_DOWN){
 
-		touchX = (int)(e.getX()/scaleX);
-		touchY = (int)(e.getY()/scaleY);
-		if(e.getAction() == MotionEvent.ACTION_DOWN){
-
-			switch(menuState){
-			case MAIN_MENU:
-				if(playButton.isClicked(touchX, touchY)){
-					menuState = LEVEL_MENU;
-				}
-				if(settingsButton.isClicked(touchX, touchY)){
-					menuState = SETTINGS_MENU;
-				}
-				if(highscoreButton.isClicked(touchX, touchY)){
-					menuState = HIGHSCORE_MENU;
-					loadHighscores();
-				}
-				break;
-			case LEVEL_MENU:
-				for(int i = 0; i < levelButtons.length; i++){
-					if(levelButtons[i].isClicked(touchX, touchY)){
-						if(briefer.handleClick(i)){
-							nextLevel = i;
-							menuState = PLAY;
+				switch(menuState){
+				case MAIN_MENU:
+					if(playButton.isClicked(touchX, touchY)){
+						menuState = LEVEL_MENU;
+					}
+					if(settingsButton.isClicked(touchX, touchY)){
+						menuState = SETTINGS_MENU;
+					}
+					if(highscoreButton.isClicked(touchX, touchY)){
+						menuState = HIGHSCORE_MENU;
+						loadHighscores();
+					}
+					break;
+				case LEVEL_MENU:
+					for(int i = 0; i < levelButtons.length; i++){
+						if(levelButtons[i].isClicked(touchX, touchY)){
+							if(briefer.handleClick(i)){
+								nextLevel = i;
+								menuState = PLAY;
+							}
 						}
 					}
-				}
-				break;
-			case SETTINGS_MENU:
-				if(soundButton.isClicked(touchX, touchY)){
-					Editor ed = settings.edit();
-					ed.putFloat("soundVolume", settings.getFloat("soundVolume", 1)>0?0:1);
-					ed.commit();
-					soundSlider.setValue(settings.getFloat("soundVolume", 1));
-					sm.playSound(0, settings.getFloat("soundVolume", 0));
+					break;
+				case SETTINGS_MENU:
+					if(soundButton.isClicked(touchX, touchY)){
+						Editor ed = settings.edit();
+						ed.putFloat("soundVolume", settings.getFloat("soundVolume", 1)>0?0:1);
+						ed.commit();
+						soundSlider.setValue(settings.getFloat("soundVolume", 1));
+						sm.playSound(0, settings.getFloat("soundVolume", 0));
 
-				}
-				if(musicButton.isClicked(touchX, touchY)){
-					Editor ed = settings.edit();
-					ed.putFloat("musicVolume", settings.getFloat("musicVolume", 1)>0?0:1);
-					ed.commit();
-					theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
-					musicSlider.setValue(settings.getFloat("musicVolume", 1));
-				}
-				if(scoreButton.isClicked(touchX, touchY)){
-					Editor ed = settings.edit();
-					ed.putBoolean("scoring", settings.getBoolean("scoring", false)?false:true);
-					ed.commit();
-					if(settings.getBoolean("scoring", false)){
-						controller.query(null);
 					}
-				}
-				if(difficultyButton.isClicked(touchX, touchY)){
+					if(musicButton.isClicked(touchX, touchY)){
+						Editor ed = settings.edit();
+						ed.putFloat("musicVolume", settings.getFloat("musicVolume", 1)>0?0:1);
+						ed.commit();
+						theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
+						musicSlider.setValue(settings.getFloat("musicVolume", 1));
+					}
+					if(scoreButton.isClicked(touchX, touchY)){
+						Editor ed = settings.edit();
+						ed.putBoolean("scoring", settings.getBoolean("scoring", true)?false:true);
+						ed.commit();
+						if(settings.getBoolean("scoring", true)){
+							controller.query(null);
+						}
+					}
+					/*if(difficultyButton.isClicked(touchX, touchY)){
 					Editor ed = settings.edit();
 					ed.putInt("difficulty", settings.getInt("difficulty", 0)==0?1:0);
 					ed.commit();
 
+				}*/
+					if(setNameButton.isClicked(touchX, touchY)){
+						((MainActivity)context).requestName(settings.getString("userName", "Player"));
+					}
+					soundSlider.handleTouch(touchX, touchY);
+					musicSlider.handleTouch(touchX, touchY);
+					break;
+				case HIGHSCORE_MENU:
+					if(leaderboardsLoaded && leaderboardButtons[UPDATE].isClicked(touchX, touchY)){
+						leaderboardsLoaded = false;
+						currentHighScoreMode = 0;
+						loadHighscores();
+					}
+					if(leaderboardButtons[LEFT].isClicked(touchX, touchY)){
+						leaderboardLevel--;
+						leaderboardPage = 0;
+						if(leaderboardLevel < 0)
+							leaderboardLevel = 11;
+					}
+					if(leaderboardButtons[RIGHT].isClicked(touchX, touchY)){
+						leaderboardLevel++;
+						leaderboardPage = 0;
+						if(leaderboardLevel > 11)
+							leaderboardLevel = 0;
+					}
+					if(leaderboardButtons[UP].isClicked(touchX, touchY)){
+						if(leaderboardPage > 0)
+							leaderboardPage--;
+					}
+					if(leaderboardButtons[DOWN].isClicked(touchX, touchY)){
+						if(leaderboardPage < maxPages-1)
+							leaderboardPage++;
+					}
+					break;
+
 				}
-				if(setNameButton.isClicked(touchX, touchY)){
-					((MainActivity)context).requestName(settings.getString("userName", "Player"));
-				}
+			}
+			if(e.getAction() == MotionEvent.ACTION_MOVE){
 				soundSlider.handleTouch(touchX, touchY);
 				musicSlider.handleTouch(touchX, touchY);
-				break;
-			case HIGHSCORE_MENU:
-				if(leaderboardsLoaded && leaderboardButtons[UPDATE].isClicked(touchX, touchY)){
-					leaderboardsLoaded = false;
-					currentHighScoreMode = 0;
-					loadHighscores();
-				}
-				if(leaderboardButtons[LEFT].isClicked(touchX, touchY)){
-					leaderboardLevel--;
-					leaderboardPage = 0;
-					if(leaderboardLevel < 0)
-						leaderboardLevel = 11;
-				}
-				if(leaderboardButtons[RIGHT].isClicked(touchX, touchY)){
-					leaderboardLevel++;
-					leaderboardPage = 0;
-					if(leaderboardLevel > 11)
-						leaderboardLevel = 0;
-				}
-				if(leaderboardButtons[UP].isClicked(touchX, touchY)){
-					if(leaderboardPage > 0)
-						leaderboardPage--;
-				}
-				if(leaderboardButtons[DOWN].isClicked(touchX, touchY)){
-					if(leaderboardPage < maxPages-1)
-						leaderboardPage++;
-				}
-				break;
-
 			}
-		}
-		if(e.getAction() == MotionEvent.ACTION_MOVE){
-			soundSlider.handleTouch(touchX, touchY);
-			musicSlider.handleTouch(touchX, touchY);
-		}
-		if(e.getAction() == MotionEvent.ACTION_UP){
-			musicSlider.release();
-			soundSlider.release();
+			if(e.getAction() == MotionEvent.ACTION_UP){
+				musicSlider.release();
+				soundSlider.release();
+			}
 		}
 		return true;
 	}
@@ -749,6 +750,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			public void requestControllerDidFail(RequestController controller, Exception exception) {
 
 				Log.d(TAG, "Name change failed because:");
+				try{
 				RequestControllerException ctrlException = (RequestControllerException) exception;
 				if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_USERNAME_TAKEN)) {
 					((MainActivity)context).displayMessage("Error uploading name", "Name is already taken");
@@ -759,6 +761,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				else if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_INVALID_USERNAME)) {
 					((MainActivity)context).displayMessage("Error uploading name", "The name is invalid");
 				} 
+				} catch(ClassCastException e){}
 			}
 		};
 
