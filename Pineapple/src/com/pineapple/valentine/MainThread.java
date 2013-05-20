@@ -46,7 +46,8 @@ public class MainThread extends Thread{
 					synchronized (surfaceHolder) {
 						this.gamePanel.render(canvas);
 					}
-				} finally {
+				} catch(NullPointerException e){}
+				finally {
 					if (canvas != null) {
 						surfaceHolder.unlockCanvasAndPost(canvas);
 					}
@@ -81,11 +82,11 @@ public class MainThread extends Thread{
 					canvas = this.surfaceHolder.lockCanvas();
 					
 					synchronized (surfaceHolder) {
-						if(canvas!=null)
 						this.menuPanel.render(canvas);
 					}
 					
-				} finally {
+				} catch(NullPointerException e){}
+				finally {
 					if (canvas != null) {
 						surfaceHolder.unlockCanvasAndPost(canvas);
 					}
