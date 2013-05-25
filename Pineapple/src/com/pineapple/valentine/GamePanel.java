@@ -109,6 +109,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound, mentorPlayCounter, mentorSentencesToSay;
 	private boolean tutorialFruitUp = true;
 	private int tutorialFruitYSpeed = 0;
+	
+	//Special final variables
+	private int mentorLife = 3;
+	
 
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;

@@ -101,6 +101,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		setKeepScreenOn(true);
 
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
+		
+		
+		
 		currentLevel = settings.getInt("currentLevel", 0);
 		sm = new SoundManager(getContext());
 		loadSounds();
@@ -159,7 +162,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		}
 		thread.setRunning(true);
-		try{thread.start();} catch(IllegalThreadStateException e){}
+		try{thread.start();} catch(IllegalThreadStateException err){}
 	}
 
 	public void update(){
@@ -394,7 +397,6 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		new LoadOperation().execute("");
-
 
 
 	}
@@ -777,6 +779,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_9), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
 					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_10), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
 					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.the_final), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.credits), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true)
 			};
 
 			butterflyBitmaps = new Bitmap[]{
