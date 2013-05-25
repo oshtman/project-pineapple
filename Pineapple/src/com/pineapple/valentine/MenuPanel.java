@@ -75,6 +75,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint userPaint, leaderboardPaint;
 	private static float difficulty;
 	private LevelBriefer briefer;
+	private boolean loading = true;
 
 	private final TermsOfServiceController controller;
 	private static String userName;
@@ -100,6 +101,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		setKeepScreenOn(true);
 
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
+		
+		
+		
 		currentLevel = settings.getInt("currentLevel", 0);
 		sm = new SoundManager(getContext());
 		loadSounds();
@@ -152,10 +156,17 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		// and fire the request
 		userController.loadUser();
 		thread = new MainThread(this.getHolder(), this);
-		
+		//Start the thread
+		if (thread.getState()==Thread.State.TERMINATED) { 
+			thread = new MainThread(getHolder(),this);
+
+		}
+		thread.setRunning(true);
+		try{thread.start();} catch(IllegalThreadStateException err){}
 	}
 
 	public void update(){
+		if(!loading){
 		if(Math.abs(protagonist.getXPos() - desiredX[menuState]) > 10){
 			protagonist.accelerate(0.3*Math.signum(desiredX[menuState]-protagonist.getXPos()));
 			protagonist.faceDirection((int)Math.signum(desiredX[menuState]-protagonist.getXPos()));
@@ -179,7 +190,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 
 		time++;
-
+		}
 	}
 
 	public void playTheme(){
@@ -235,14 +246,15 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void render(Canvas canvas){
-		canvas.drawBitmap(backgroundBitmap, 0, 0, null);
-		renderButterfly(canvas);
-		renderProtagonist(canvas);
-		renderLeaderboards(canvas);
-		renderButtons(canvas);
-		renderSliders(canvas);
-		renderBriefer(canvas);
-
+		if(loading){} else {
+			canvas.drawBitmap(backgroundBitmap, 0, 0, null);
+			renderButterfly(canvas);
+			renderProtagonist(canvas);
+			renderLeaderboards(canvas);
+			renderButtons(canvas);
+			renderSliders(canvas);
+			renderBriefer(canvas);
+		}
 	}
 
 	public void renderButtons(Canvas canvas){
@@ -384,123 +396,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
+		new LoadOperation().execute("");
 
-		scaleY = (double)getHeight()/height;
-		scaleX = (double)getWidth()/width;
-
-
-		Bitmap playBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.start), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		playButton = new Button(10, 10, playBitmap.getWidth()/scaleX, playBitmap.getHeight()/scaleY, playBitmap);
-
-		Bitmap settingsBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.settings), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		settingsButton = new Button(10, (int)(10 + 1.5*Const.menuButtonHeight), settingsBitmap.getWidth()/scaleX, settingsBitmap.getHeight()/scaleY, settingsBitmap);
-
-		Bitmap highscoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.highscore), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		highscoreButton = new Button(10, (int)(10 + 2*1.5*Const.menuButtonHeight), highscoreBitmap.getWidth()/scaleX, highscoreBitmap.getHeight()/scaleY, highscoreBitmap);
-
-		Bitmap soundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.effects), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		soundButton = new Button(10, 10, soundBitmap.getWidth()/scaleX, soundBitmap.getHeight()/scaleY, soundBitmap);
-
-		Bitmap musicBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.music), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		musicButton = new Button(10, (int)(10 + 1.5*Const.menuButtonHeight), musicBitmap.getWidth()/scaleX, musicBitmap.getHeight()/scaleY, musicBitmap);
-
-		Bitmap scoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.score), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		scoreButton = new Button(10, (int)(10 + 3*Const.menuButtonHeight), scoreBitmap.getWidth()/scaleX, scoreBitmap.getHeight()/scaleY, scoreBitmap);
-
-		Bitmap difficultyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.difficulty), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		difficultyButton = new Button(10, (int)(10 + 4.5*Const.menuButtonHeight), difficultyBitmap.getWidth()/scaleX, difficultyBitmap.getHeight()/scaleY, difficultyBitmap);
-
-		Bitmap setNameBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.set_name), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
-		setNameButton = new Button(10, (int)(10 + 6*Const.menuButtonHeight), setNameBitmap.getWidth()/scaleX, setNameBitmap.getHeight()/scaleY, setNameBitmap);
-
-		Bitmap[] leaderboardBitmaps = new Bitmap[]{
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.prev_level), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.next_level), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.prev_page), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.next_page), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update_b), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true)
-		};
-		leaderboardButtons = new Button[leaderboardBitmaps.length];
-		for(int i = 0; i < leaderboardBitmaps.length; i++){
-			leaderboardButtons[i] = new Button((int)((width-5*Const.menuButtonWidth-6*space)/2+ space + i*(space+Const.menuButtonWidth)), (int)(height-Const.menuButtonHeight-space), Const.menuButtonWidth, Const.menuButtonHeight, leaderboardBitmaps[i]);
-		}
-
-		musicSlider = new Slider(musicButton.getX() + musicButton.getWidth() + Const.HUDPadding, musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
-		soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
-
-
-		backgroundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.menu_background), (int)(width*scaleX), (int)(height*scaleY), true);
-		Log.d(TAG, "Loaded");
-		bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
-		eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_eye_mouth), (int)(protagonist.getWidth()*scaleX*Const.eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeMouthYScale), true);
-		footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_foot), (int)(protagonist.getWidth()*scaleX*Const.footXScale), (int)(protagonist.getHeight()*scaleY*Const.footYScale), true);
-		weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_weapon), (int)(protagonist.getWidth()*scaleX*Const.weaponXScale), (int)(protagonist.getHeight()*scaleY*Const.weaponYScale), true);
-		pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
-
-		//Flip images
-		renderMatrix.setScale(-1, 1);
-		bodyBitmapFlipped = Bitmap.createBitmap(bodyBitmap, 0, 0, bodyBitmap.getWidth(), bodyBitmap.getHeight(), renderMatrix,false);
-		eyeMouthBitmapFlipped = Bitmap.createBitmap(eyeMouthBitmap, 0, 0, eyeMouthBitmap.getWidth(), eyeMouthBitmap.getHeight(), renderMatrix,false);
-		footBitmapFlipped = Bitmap.createBitmap(footBitmap, 0, 0, footBitmap.getWidth(), footBitmap.getHeight(), renderMatrix,false);
-		weaponBitmapFlipped = Bitmap.createBitmap(weaponBitmap, 0, 0, weaponBitmap.getWidth(), weaponBitmap.getHeight(), renderMatrix,false);
-		pupilBitmapFlipped = Bitmap.createBitmap(pupilBitmap, 0, 0, pupilBitmap.getWidth(), pupilBitmap.getHeight(), renderMatrix,false);
-
-		levelBitmaps = new Bitmap[]{
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tutorial), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_1), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_2), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_3), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_4), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_5), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_6), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_7), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_8), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_9), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_10), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.the_final), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.credits), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
-
-		};
-
-		butterflyBitmaps = new Bitmap[]{
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_in), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_out), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true)
-		};
-
-		sliderLineBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_line), (int)(musicSlider.getWidth()*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
-		sliderHandleBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_handle), (int)(Const.sliderHandleWidth*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
-
-		onBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
-		offBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
-		normalBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.normal), (int)(difficultyButton.getWidth()*scaleX), (int)(difficultyButton.getHeight()*scaleY), true);
-		hardBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.hard), (int)(difficultyButton.getWidth()*scaleX), (int)(difficultyButton.getHeight()*scaleY), true);
-
-
-		updateBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update), (int)(Const.updateSize*scaleX), (int)(Const.updateSize*scaleY), true);
-		if(currentLevel > Const.levelCap)
-			currentLevel = Const.levelCap;
-		levelButtons = new Button[currentLevel+1];
-		for(int i = 0; i <= currentLevel; i++){
-			levelButtons[i] = new Button(Const.HUDPadding + (int)(Const.menuButtonWidth*(i/Const.levelButtonsPerRow)), Const.HUDPadding + (int)(Const.menuButtonHeight*(i%Const.levelButtonsPerRow)), Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
-		}
-
-		userPaint.setTextSize((float)(10*scaleY));
-		userPaint.setAntiAlias(true);
-		userPaint.setDither(true);
-
-		briefer = new LevelBriefer(70, Const.HUDPadding, (width - 70 - Const.HUDPadding), (height - 2*Const.HUDPadding), scaleX, scaleY, settings, context.getSharedPreferences("localScores", Context.MODE_PRIVATE));
-
-		leaderboardPaint.setTextSize((float)(((height-Const.leaderboardStartY)/Const.leaderboardRows)*scaleY));
-		leaderboardPaint.setAntiAlias(true);
-		leaderboardPaint.setDither(true);
-
-		//Start the thread
-		if (thread.getState()==Thread.State.TERMINATED) { 
-			thread = new MainThread(getHolder(),this);
-
-		}
-		thread.setRunning(true);
-		try{thread.start();} catch(IllegalThreadStateException e){}
 
 	}
 
@@ -805,7 +702,139 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
-	
+	private class LoadOperation extends AsyncTask<String, Integer, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			scaleY = (double)getHeight()/height;
+			scaleX = (double)getWidth()/width;
+
+
+			Bitmap playBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.start), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+			playButton = new Button(10, 10, playBitmap.getWidth()/scaleX, playBitmap.getHeight()/scaleY, playBitmap);
+
+			Bitmap settingsBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.settings), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+			settingsButton = new Button(10, (int)(10 + 1.5*Const.menuButtonHeight), settingsBitmap.getWidth()/scaleX, settingsBitmap.getHeight()/scaleY, settingsBitmap);
+
+			Bitmap highscoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.highscore), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+			highscoreButton = new Button(10, (int)(10 + 2*1.5*Const.menuButtonHeight), highscoreBitmap.getWidth()/scaleX, highscoreBitmap.getHeight()/scaleY, highscoreBitmap);
+
+			Bitmap soundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.effects), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+			soundButton = new Button(10, 10, soundBitmap.getWidth()/scaleX, soundBitmap.getHeight()/scaleY, soundBitmap);
+
+			Bitmap musicBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.music), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+			musicButton = new Button(10, (int)(10 + 1.5*Const.menuButtonHeight), musicBitmap.getWidth()/scaleX, musicBitmap.getHeight()/scaleY, musicBitmap);
+
+			Bitmap scoreBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.score), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+			scoreButton = new Button(10, (int)(10 + 3*Const.menuButtonHeight), scoreBitmap.getWidth()/scaleX, scoreBitmap.getHeight()/scaleY, scoreBitmap);
+
+			Bitmap difficultyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.difficulty), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+			difficultyButton = new Button(10, (int)(10 + 4.5*Const.menuButtonHeight), difficultyBitmap.getWidth()/scaleX, difficultyBitmap.getHeight()/scaleY, difficultyBitmap);
+
+			Bitmap setNameBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.set_name), (int)(1.5*Const.menuButtonWidth*scaleX), (int)(1.5*Const.menuButtonHeight*scaleY), true);
+			setNameButton = new Button(10, (int)(10 + 6*Const.menuButtonHeight), setNameBitmap.getWidth()/scaleX, setNameBitmap.getHeight()/scaleY, setNameBitmap);
+
+			Bitmap[] leaderboardBitmaps = new Bitmap[]{
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.prev_level), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.next_level), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.prev_page), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.next_page), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update_b), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true)
+			};
+			leaderboardButtons = new Button[leaderboardBitmaps.length];
+			for(int i = 0; i < leaderboardBitmaps.length; i++){
+				leaderboardButtons[i] = new Button((int)((width-5*Const.menuButtonWidth-6*space)/2+ space + i*(space+Const.menuButtonWidth)), (int)(height-Const.menuButtonHeight-space), Const.menuButtonWidth, Const.menuButtonHeight, leaderboardBitmaps[i]);
+			}
+
+			musicSlider = new Slider(musicButton.getX() + musicButton.getWidth() + Const.HUDPadding, musicButton.getY(), musicButton.getWidth(), musicButton.getHeight(), settings.getFloat("musicVolume", 1));
+			soundSlider = new Slider(soundButton.getX() + soundButton.getWidth() + Const.HUDPadding, soundButton.getY(), soundButton.getWidth(), soundButton.getHeight(), settings.getFloat("soundVolume", 1));
+
+
+			backgroundBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.menu_background), (int)(width*scaleX), (int)(height*scaleY), true);
+			Log.d(TAG, "Loaded");
+			bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
+			eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_eye_mouth), (int)(protagonist.getWidth()*scaleX*Const.eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeMouthYScale), true);
+			footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_foot), (int)(protagonist.getWidth()*scaleX*Const.footXScale), (int)(protagonist.getHeight()*scaleY*Const.footYScale), true);
+			weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_weapon), (int)(protagonist.getWidth()*scaleX*Const.weaponXScale), (int)(protagonist.getHeight()*scaleY*Const.weaponYScale), true);
+			pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
+
+			//Flip images
+			renderMatrix.setScale(-1, 1);
+			bodyBitmapFlipped = Bitmap.createBitmap(bodyBitmap, 0, 0, bodyBitmap.getWidth(), bodyBitmap.getHeight(), renderMatrix,false);
+			eyeMouthBitmapFlipped = Bitmap.createBitmap(eyeMouthBitmap, 0, 0, eyeMouthBitmap.getWidth(), eyeMouthBitmap.getHeight(), renderMatrix,false);
+			footBitmapFlipped = Bitmap.createBitmap(footBitmap, 0, 0, footBitmap.getWidth(), footBitmap.getHeight(), renderMatrix,false);
+			weaponBitmapFlipped = Bitmap.createBitmap(weaponBitmap, 0, 0, weaponBitmap.getWidth(), weaponBitmap.getHeight(), renderMatrix,false);
+			pupilBitmapFlipped = Bitmap.createBitmap(pupilBitmap, 0, 0, pupilBitmap.getWidth(), pupilBitmap.getHeight(), renderMatrix,false);
+
+			levelBitmaps = new Bitmap[]{
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.tutorial), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_1), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_2), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_3), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_4), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_5), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_6), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_7), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_8), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_9), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.level_10), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.the_final), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.credits), (int)(Const.menuButtonWidth*scaleX), (int)(Const.menuButtonHeight*scaleY), true)
+			};
+
+			butterflyBitmaps = new Bitmap[]{
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_in), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_out), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true)
+			};
+
+			sliderLineBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_line), (int)(musicSlider.getWidth()*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
+			sliderHandleBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.slider_handle), (int)(Const.sliderHandleWidth*scaleX), (int)(musicSlider.getHeight()*scaleY), true);
+
+			onBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
+			offBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
+			normalBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.normal), (int)(difficultyButton.getWidth()*scaleX), (int)(difficultyButton.getHeight()*scaleY), true);
+			hardBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.hard), (int)(difficultyButton.getWidth()*scaleX), (int)(difficultyButton.getHeight()*scaleY), true);
+
+
+			updateBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update), (int)(Const.updateSize*scaleX), (int)(Const.updateSize*scaleY), true);
+			if(currentLevel > Const.levelCap)
+				currentLevel = Const.levelCap;
+			levelButtons = new Button[currentLevel+1];
+			for(int i = 0; i <= currentLevel; i++){
+				levelButtons[i] = new Button(Const.HUDPadding + (int)(Const.menuButtonWidth*(i/Const.levelButtonsPerRow)), Const.HUDPadding + (int)(Const.menuButtonHeight*(i%Const.levelButtonsPerRow)), Const.menuButtonWidth, Const.menuButtonHeight, levelBitmaps[i]);
+			}
+
+			userPaint.setTextSize((float)(10*scaleY));
+			userPaint.setAntiAlias(true);
+			userPaint.setDither(true);
+
+			briefer = new LevelBriefer(70, Const.HUDPadding, (width - 70 - Const.HUDPadding), (height - 2*Const.HUDPadding), scaleX, scaleY, settings, context.getSharedPreferences("localScores", Context.MODE_PRIVATE));
+
+			leaderboardPaint.setTextSize((float)(((height-Const.leaderboardStartY)/Const.leaderboardRows)*scaleY));
+			leaderboardPaint.setAntiAlias(true);
+			leaderboardPaint.setDither(true);
+
+			return "Executed";
+		}      
+
+		@Override
+		protected void onPostExecute(String result) {
+			Log.d(TAG, "Finished loadOperation");
+			loading = false;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			Log.d(TAG, "Starting loadOperation");
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			Log.d(TAG, ""+values);
+		}
+	}   
+
+
 
 
 }

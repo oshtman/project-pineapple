@@ -23,12 +23,7 @@ public class MainActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		new LoadOperation().execute(this);
-		/*while(loading){
-			try{
-				Thread.sleep(20);
-			} catch(InterruptedException e){}
-		}*/
+		
 		Log.d(TAG, "Start load...");
 		menuPanel = new MenuPanel(this);
 		Log.d(TAG, "Finished!");
@@ -61,7 +56,6 @@ public class MainActivity extends BaseActivity {
 	@Override
 	public void onBackPressed() { //Override so that the player cannot go to a previous activity
 		menuPanel.back();
-		//menuPanel.uploadUserName("UltraBeaver");
 		Log.d(TAG, "Back button");	
 	}
 
@@ -105,28 +99,5 @@ public class MainActivity extends BaseActivity {
 		alert.show();
 	}
 
-	private class LoadOperation extends AsyncTask<MainActivity, Integer, String> {
-
-		@Override
-		protected String doInBackground(MainActivity... params) {
-			//menuPanel = new MenuPanel(params[0]);
-			return "Executed";
-		}      
-
-		@Override
-		protected void onPostExecute(String result) {
-			Log.d(TAG, "Finished loadOperation");
-			loading = false;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			Log.d(TAG, "Starting loadOperation");
-		}
-
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			Log.d(TAG, ""+values);
-		}
-	}   
+	
 }

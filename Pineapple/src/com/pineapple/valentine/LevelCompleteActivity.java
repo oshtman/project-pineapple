@@ -57,7 +57,7 @@ public class LevelCompleteActivity extends BaseActivity {
 
 
 
-		if(completedLevel == currentLevel){
+		if(completedLevel == currentLevel && completedLevel < Const.levelCap){
 			newLevel = true;
 			Editor e = settings.edit();
 			e.putInt("currentLevel", completedLevel+1);
