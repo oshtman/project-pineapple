@@ -1043,6 +1043,139 @@ public class LevelLoader {
 			ground[0][1] = 200;
 			ground[1][1] = 0;
 			break;
+		case 12: //Credits
+			startPos = new int[]{10, 70};
+			finishX = 1750;
+			ground = new int[][]{
+					{-100,  258, 395, 580, 590, 600, 610, 620, 649, 725, 800, 875, 983, 1254, 1264, 1300, 1310, 1528, 1600, 1610, 2000},
+					{90,    90,  208, 208, 203, 200, 203, 208, 208, 160, 146, 160, 208, 208,  240,  240,  208,  208,  270,  275,  275 }
+			};			
+			//Platform 1
+			p1 = new int[][]{
+					{889, 1042},
+					{133, 133},
+					{889, 890, 949, 1041, 1042},
+					{133, 140, 154, 140, 133}
+			};
+			platforms.add(p1);
+			//Trees
+			trees.add(new int[]{-20, (int)(3*Math.random()), (int)(3*Math.random()), 1});
+			trees.add(new int[]{30, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			trees.add(new int[]{200, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			trees.add(new int[]{240, (int)(3*Math.random()), (int)(3*Math.random()), 1});
+			trees.add(new int[]{260, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			trees.add(new int[]{300, (int)(3*Math.random()), (int)(3*Math.random()), 1});
+			trees.add(new int[]{890, (int)(3*Math.random()), (int)(3*Math.random()), 1});
+			trees.add(new int[]{1200, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			trees.add(new int[]{1230, (int)(3*Math.random()), (int)(3*Math.random()), 1});
+
+			//Rocks
+			rocks.add(new int[]{50, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{400, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{600, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1500, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1700, (int)(4*Math.random()), 30, 0});
+			//Flowers
+			flowers.add(new int[]{55, 0});
+			flowers.add(new int[]{57, 0});
+			flowers.add(new int[]{60, 0});
+			flowers.add(new int[]{62, 0});
+			flowers.add(new int[]{64, 0});
+			flowers.add(new int[]{67, 0});
+			flowers.add(new int[]{75, 0});
+			flowers.add(new int[]{85, 0});
+			flowers.add(new int[]{87, 0});
+			flowers.add(new int[]{80, 0});
+			flowers.add(new int[]{162, 0});
+			flowers.add(new int[]{164, 0});
+			flowers.add(new int[]{167, 0});			
+			flowers.add(new int[]{155, 0});
+			flowers.add(new int[]{157, 0});
+			flowers.add(new int[]{160, 0});
+			flowers.add(new int[]{261, 0});
+			flowers.add(new int[]{212, 0});
+			flowers.add(new int[]{224, 0});			
+			flowers.add(new int[]{835, 0});
+			flowers.add(new int[]{574, 0});
+			flowers.add(new int[]{603, 0});
+			flowers.add(new int[]{626, 0});
+			flowers.add(new int[]{935, 0});
+			flowers.add(new int[]{725, 0});
+			flowers.add(new int[]{345, 0});
+			flowers.add(new int[]{865, 0});
+			flowers.add(new int[]{907, 0});
+			flowers.add(new int[]{258, 0});
+			flowers.add(new int[]{825, 0});
+			flowers.add(new int[]{809, 0});
+			flowers.add(new int[]{443, 0});
+			flowers.add(new int[]{239, 0});
+			flowers.add(new int[]{745, 0});
+			flowers.add(new int[]{163, 0});
+			flowers.add(new int[]{375, 0});
+			flowers.add(new int[]{425, 0});
+			flowers.add(new int[]{178, 0});
+			flowers.add(new int[]{845, 0});
+			flowers.add(new int[]{1163, 0});
+			flowers.add(new int[]{686, 0});
+			flowers.add(new int[]{356, 0});
+			flowers.add(new int[]{987, 0});
+			flowers.add(new int[]{465, 0});
+			flowers.add(new int[]{1362, 0});
+			flowers.add(new int[]{1764, 0});
+			flowers.add(new int[]{1348, 0});
+			flowers.add(new int[]{1245, 0});
+			flowers.add(new int[]{1594, 0});
+			flowers.add(new int[]{1222, 0});
+			flowers.add(new int[]{1129, 0});
+			flowers.add(new int[]{1325, 0});
+			flowers.add(new int[]{1762, 0});
+			flowers.add(new int[]{1354, 0});
+			flowers.add(new int[]{1235, 0});
+			flowers.add(new int[]{1249, 0});
+			flowers.add(new int[]{1534, 0});
+			flowers.add(new int[]{1532, 0});
+			flowers.add(new int[]{1556, 0});
+			flowers.add(new int[]{1634, 0});
+			flowers.add(new int[]{1745, 0});
+			flowers.add(new int[]{1534, 0});
+			flowers.add(new int[]{1235, 0});
+			flowers.add(new int[]{1364, 0});
+			
+			flowers.add(new int[]{580, 0});
+			flowers.add(new int[]{584, 0});
+			flowers.add(new int[]{587, 0});
+			flowers.add(new int[]{590, 0});
+			flowers.add(new int[]{592, 0});
+			flowers.add(new int[]{598, 0});
+			flowers.add(new int[]{600, 0});
+			
+			flowers.add(new int[]{10, 0});
+			flowers.add(new int[]{14, 0});
+			flowers.add(new int[]{20, 0});
+			flowers.add(new int[]{21, 0});
+			flowers.add(new int[]{24, 0});
+			flowers.add(new int[]{26, 0});
+			flowers.add(new int[]{33, 0});
+			//Skeletons
+			skeletons.add(new int[]{800, 0});
+			//Butterflies
+			butterflies.add(new Butterfly(580 + 2, 208 - 8));
+			butterflies.add(new Butterfly(590 + 2, 203 - 8, 0.5));
+			butterflies.add(new Butterfly(600 + 2, 200 - 8, -1));
+			butterflies.add(new Butterfly(10 + 2, 90 - 8));
+			butterflies.add(new Butterfly(14 + 2, 203 - 8, 0.5));
+			butterflies.add(new Butterfly(21 + 2, 200 - 8, -1));
+			butterflies.add(new Butterfly(33 + 2, 208 - 8, 0.3));
+			butterflies.add(new Butterfly(-20 + 2, 203 - 8, 0.2));
+			butterflies.add(new Butterfly(1200 + 2, 208 - 8, -1));
+			//Birds
+			birds.add(new Bird(25, 90 - 43, false));
+			//Hints
+			hints.add(new Hint(100, 90, "Thank you for playing Valentine's quest! Good job defeating the evil. Keep it up! Now run along!"));
+			hints.add(new Hint(395, 208, "This game is a result of a bachelor thesis for the university of uppsala, spring 2013."));
+			hints.add(new Hint(620, 208, "Thanks to Martin Sjšdin, Sven-Erik Ekstršm and Henrik Olsson for your work! And thank you betasquad for testing!"));
+			hints.add(new Hint(1300, 90, "Are you number ONE in the leaderboards? If yes, well, how nice!! If not, why don't you give it a try then mate?"));
+			hints.add(new Hint(1730, 90, "And welcome back :) // Oskar and Joar"));
 		}
 	}
 
