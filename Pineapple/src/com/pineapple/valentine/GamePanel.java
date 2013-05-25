@@ -95,6 +95,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int darknessPercent = 0;
 	private int backgroundColor = Color.rgb(135, 206, 250);
 	private boolean underground = false;
+	private double touchX, touchY;
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -433,9 +434,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.setXPos(checkpoints[currentCheckpoint] + pastCheckpointBorder);
 			}
 		}
-		if(finished){
-			darknessPercent = (int)(100.*(finishDelayTime-finishDelay)/finishDelayTime);
-		}
+		
 		if(level == 10){
 			if(protagonist.getYPos() > 60 && protagonist.getYPos() < 600 && protagonist.getXPos() < 500){
 				darknessPercent = (int)(50*(protagonist.getYPos()-60)/540.);
@@ -443,8 +442,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(!underground){
 				if(protagonist.getYPos() > 500){
 					underground = true;
-					backgroundColor = Color.rgb(200, 200, 200);
+					backgroundColor = Color.rgb(150, 150, 150);
 				}
+			}
+		}
+		if(finished){
+			if(level == 10){
+				darknessPercent = Math.max((int)(100.*(finishDelayTime-finishDelay)/finishDelayTime), 50);
+			} else {
+				darknessPercent = (int)(100.*(finishDelayTime-finishDelay)/finishDelayTime);
 			}
 		}
 	}
@@ -1472,23 +1478,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
-		double x;
-		double y;
-
+		
 		index = e.getActionIndex();
 		id = e.getPointerId(index);
 
 		switch(e.getActionMasked()){
 
 		case MotionEvent.ACTION_DOWN:
-			x = e.getX()/scaleX;
-			y = e.getY()/scaleY;
+			touchX = e.getX()/scaleX;
+			touchY = e.getY()/scaleY;
 
-			if(x > width/2){
-				rightStick.handleTouch(x, y);
+			if(touchX > width/2){
+				rightStick.handleTouch(touchX, touchY);
 				rightStickId = id;
 			} else {
-				leftStick.handleTouch(x, y);
+				leftStick.handleTouch(touchX, touchY);
 				leftStickId = id;
 			}
 
@@ -1496,15 +1500,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		case MotionEvent.ACTION_POINTER_DOWN:
 
-			x = e.getX(index)/scaleX;
-			y = e.getY(index)/scaleY;
+			touchX = e.getX(index)/scaleX;
+			touchY = e.getY(index)/scaleY;
 
 
-			if(x > width/2){
-				rightStick.handleTouch(x, y);
+			if(touchX > width/2){
+				rightStick.handleTouch(touchX, touchY);
 				rightStickId = id;
 			} else {
-				leftStick.handleTouch(x, y);
+				leftStick.handleTouch(touchX, touchY);
 				leftStickId = id;
 			}
 
@@ -1514,17 +1518,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 			for(index=0; index<e.getPointerCount(); index++) {
 				id=e.getPointerId(index);
-				x = (int) e.getX(index)/scaleX;
-				y = (int) e.getY(index)/scaleY; 
+				touchX = (int) e.getX(index)/scaleX;
+				touchY = (int) e.getY(index)/scaleY; 
 				if(id == rightStickId) {
-					if(x > width/2){
-						rightStick.handleTouch(x, y);
+					if(touchX > width/2){
+						rightStick.handleTouch(touchX, touchY);
 						rightStickId = id;
 					} 
 				}
 				else if(id == leftStickId){
-					if(x < width/2){
-						leftStick.handleTouch(x, y);
+					if(touchX < width/2){
+						leftStick.handleTouch(touchX, touchY);
 						leftStickId = id;
 					}
 				}

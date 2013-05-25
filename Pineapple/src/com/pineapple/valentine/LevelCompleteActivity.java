@@ -118,10 +118,7 @@ public class LevelCompleteActivity extends BaseActivity {
 				@Override
 				public void requestControllerDidReceiveResponse(RequestController requestController) {
 					Log.d(TAG, "Score upload successful");
-					button1.setVisibility(View.VISIBLE);
-					button2.setVisibility(View.VISIBLE);
-					if(completedLevel < Const.levelCap)
-					button3.setVisibility(View.VISIBLE);
+					showButtons();
 					if(newHighscore)
 						showFinish("New highscore!", "Congratulations! Your new highscore was successfully uploaded!");
 					else
@@ -131,11 +128,7 @@ public class LevelCompleteActivity extends BaseActivity {
 				@Override
 				public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
 					Log.d(TAG, "Score connect failed");
-					button1.setVisibility(View.VISIBLE);
-					button2.setVisibility(View.VISIBLE);
-					if(completedLevel < Const.levelCap)
-					button3.setVisibility(View.VISIBLE);
-					
+					showButtons();
 					showFinish("Connection failure", "Your connection to the server failed!");
 				}
 			};
@@ -155,6 +148,7 @@ public class LevelCompleteActivity extends BaseActivity {
 			myScoreController.submitScore(s);
 		} else {
 			stats.setVisibility(View.INVISIBLE);
+			((ImageButton)findViewById(R.id.button3)).setVisibility(View.INVISIBLE);
 		}
 		ImageView newLevelText = (ImageView) findViewById(R.id.newLevelText);
 
@@ -164,12 +158,15 @@ public class LevelCompleteActivity extends BaseActivity {
 			newLevelText.setVisibility(ImageView.INVISIBLE);
 		}
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.level_complete, menu);
-		return true;
+	
+	public void showButtons(){
+		final ImageButton button1 = (ImageButton)findViewById(R.id.button1);
+		final ImageButton button2 = (ImageButton)findViewById(R.id.button2);
+		final ImageButton button3 = (ImageButton)findViewById(R.id.button3);
+		button1.setVisibility(View.VISIBLE);
+		button2.setVisibility(View.VISIBLE);
+		if(completedLevel < Const.levelCap)
+		button3.setVisibility(View.VISIBLE);
 	}
 
 	public void goToMain(View view){
