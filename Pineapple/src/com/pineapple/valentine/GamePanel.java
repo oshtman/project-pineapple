@@ -168,7 +168,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		this.level = level;
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 		effectVolume = settings.getFloat("soundVolume", 1);
-		viewStatistics = settings.getBoolean("scoring", false);
+		viewStatistics = settings.getBoolean("scoring", true);
 
 		//Create game components
 		levelLoader = new LevelLoader(level);
@@ -1572,7 +1572,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		scaleY = (double)getHeight()/height;
 		scaleX = (double)getWidth()/width;
 		Log.d(TAG, "ScaleX = " + scaleX);
-
+		
+		Log.d(TAG, "This shit is wide up in here: " + BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body).getWidth());
+		
 		//Load Bitmaps
 		bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
 		mentorBodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.mentor_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);

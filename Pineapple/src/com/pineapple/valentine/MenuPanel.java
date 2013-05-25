@@ -16,11 +16,12 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.example.pineapple.R;
 import com.scoreloop.client.android.core.controller.RequestController;
@@ -119,13 +120,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			@Override
 			public void termsOfServiceControllerDidFinish(final TermsOfServiceController controller, final Boolean accepted) {
 				if(accepted != null) {
-					// we have conclusive result
-					if(accepted) {
-						// user did accept
-					}
-					else {
-						// user declined
-					}
+					Editor e = settings.edit();
+					e.putBoolean("TOSAccepted", accepted);
+					e.commit();
 				}
 			}
 		});
@@ -155,7 +152,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		// and fire the request
 		userController.loadUser();
 		thread = new MainThread(this.getHolder(), this);
+		
 	}
+
 	public void update(){
 		if(Math.abs(protagonist.getXPos() - desiredX[menuState]) > 10){
 			protagonist.accelerate(0.3*Math.signum(desiredX[menuState]-protagonist.getXPos()));
@@ -269,11 +268,6 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			}  else {
 				canvas.drawBitmap(offBitmap, (float)((scoreButton.getX()+Const.HUDPadding+scoreButton.getWidth())*scaleX), (float)(scoreButton.getY()*scaleY), null);
 			}
-			/*if(settings.getInt("difficulty", 0) == 0){
-				canvas.drawBitmap(normalBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
-			}  else {
-				canvas.drawBitmap(hardBitmap, (float)((difficultyButton.getX()+Const.HUDPadding+difficultyButton.getWidth())*scaleX), (float)(difficultyButton.getY()*scaleY), null);
-			}*/
 			break;
 		case HIGHSCORE_MENU:
 			if(leaderboardsLoaded){
@@ -750,16 +744,16 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 				Log.d(TAG, "Name change failed because:");
 				try{
-				RequestControllerException ctrlException = (RequestControllerException) exception;
-				if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_USERNAME_TAKEN)) {
-					((MainActivity)context).displayMessage("Error uploading name", "Name is already taken");
-				}
-				else if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_USERNAME_TOO_SHORT)) {
-					((MainActivity)context).displayMessage("Error uploading name", "Name is too short");
-				}
-				else if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_INVALID_USERNAME)) {
-					((MainActivity)context).displayMessage("Error uploading name", "The name is invalid");
-				} 
+					RequestControllerException ctrlException = (RequestControllerException) exception;
+					if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_USERNAME_TAKEN)) {
+						((MainActivity)context).displayMessage("Error uploading name", "Name is already taken");
+					}
+					else if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_USERNAME_TOO_SHORT)) {
+						((MainActivity)context).displayMessage("Error uploading name", "Name is too short");
+					}
+					else if(ctrlException.hasDetail(RequestControllerException.DETAIL_USER_UPDATE_REQUEST_INVALID_USERNAME)) {
+						((MainActivity)context).displayMessage("Error uploading name", "The name is invalid");
+					} 
 				} catch(ClassCastException e){}
 			}
 		};
@@ -809,7 +803,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 	}
 
-
+	
 
 
 }
