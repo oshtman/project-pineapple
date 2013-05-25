@@ -457,6 +457,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				darknessPercent = (int)(100.*(finishDelayTime-finishDelay)/finishDelayTime);
 			}
 		}
+		
+	/*	if(level == 11){
+			if(protagonist.getYPos() > -350){
+				backgroundColor = Color.rgb(150,  150,  150);
+				underground = true;
+			}
+		}*/
 	}
 
 	//If left stick pointed, protagonist is moving. If not protagonist slow down

@@ -245,7 +245,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(finishX + 8, 150 - 43, false));
 			//Hints
-			hints.add(new Hint(250, 150, "You are now leaving your homeland!                                Have a nice trip and welcome back again!"));
+			hints.add(new Hint(250, 150, "You are now leaving your homeland! Have a nice trip and welcome back again!"));
 			break;
 		case 4://Hide and seek, watch out
 			//Start and finish
@@ -627,7 +627,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(920, -1040, true));
 			//Hints
-			hints.add(new Hint(625, 120, "Before your eyes rises Mont Ma, the highest mountain in the whole world. It's a long way up but once you're there, you will see it's worth it. //Traveler from <INSERT HOME OF VALENTINE>"));
+			hints.add(new Hint(625, 120, "Before your eyes rises Mount Papilio, the highest mountain in the whole world. It's a long way up but once you're there, you will see it's worth it. //Traveler from <INSERT HOME OF VALENTINE>"));
 			break;
 		case 7://Dont fall
 			//Start and finish
