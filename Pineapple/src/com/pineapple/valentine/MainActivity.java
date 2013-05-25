@@ -3,6 +3,7 @@ package com.pineapple.valentine;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
@@ -14,14 +15,23 @@ import android.widget.EditText;
 public class MainActivity extends BaseActivity {
 
 	private final String TAG = MainActivity.class.getSimpleName();
-	private MenuPanel menuPanel;
+	public MenuPanel menuPanel;
+	public boolean loading = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		new LoadOperation().execute(this);
+		/*while(loading){
+			try{
+				Thread.sleep(20);
+			} catch(InterruptedException e){}
+		}*/
+		Log.d(TAG, "Start load...");
 		menuPanel = new MenuPanel(this);
+		Log.d(TAG, "Finished!");
 		setContentView(menuPanel);
 	}
 
@@ -54,7 +64,7 @@ public class MainActivity extends BaseActivity {
 		//menuPanel.uploadUserName("UltraBeaver");
 		Log.d(TAG, "Back button");	
 	}
-	
+
 	public void requestName(String currentName){
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Enter your desired name");
@@ -66,32 +76,57 @@ public class MainActivity extends BaseActivity {
 		alert.setView(input);
 
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		public void onClick(DialogInterface dialog, int whichButton) {
-		  String name = input.getText().toString();
-		  menuPanel.uploadUserName(name);
-		  }
+			public void onClick(DialogInterface dialog, int whichButton) {
+				String name = input.getText().toString();
+				menuPanel.uploadUserName(name);
+			}
 		});
 
 		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-		  public void onClick(DialogInterface dialog, int whichButton) {
-		    // Canceled.
-		  }
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// Canceled.
+			}
 		});
 
 		alert.show();
 	}
-	
+
 	public void displayMessage(String title, String message){
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle(title);
 		alert.setMessage(message);
-		
+
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		public void onClick(DialogInterface dialog, int whichButton) {
-		 
-		  }
+			public void onClick(DialogInterface dialog, int whichButton) {
+
+			}
 		});
 
 		alert.show();
 	}
+
+	private class LoadOperation extends AsyncTask<MainActivity, Integer, String> {
+
+		@Override
+		protected String doInBackground(MainActivity... params) {
+			//menuPanel = new MenuPanel(params[0]);
+			return "Executed";
+		}      
+
+		@Override
+		protected void onPostExecute(String result) {
+			Log.d(TAG, "Finished loadOperation");
+			loading = false;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			Log.d(TAG, "Starting loadOperation");
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			Log.d(TAG, ""+values);
+		}
+	}   
 }

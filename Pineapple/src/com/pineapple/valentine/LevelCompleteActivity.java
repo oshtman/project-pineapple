@@ -44,6 +44,8 @@ public class LevelCompleteActivity extends BaseActivity {
 		SharedPreferences settings = this.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 		SharedPreferences localScores = this.getSharedPreferences("localScores", Context.MODE_PRIVATE);
 
+
+		boolean accepted = settings.getBoolean("TOSAccepted", false);
 		int difficulty = settings.getInt("difficulty", 0);
 		int currentLevel = settings.getInt("currentLevel", 0);
 		completedLevel = getIntent().getExtras().getInt(GamePanel.LEVEL);
@@ -96,59 +98,60 @@ public class LevelCompleteActivity extends BaseActivity {
 				Editor ed = localScores.edit();
 				ed.putInt("score_"+difficulty+"_"+completedLevel, score);
 				ed.commit();
-				showConnecting();
 				newHighscore = true;
 			} else {
 				newHighscore = false;
-				showConnecting();
 			}
+			if(accepted){
+				showConnecting();
 
-			final ImageButton button1 = (ImageButton)findViewById(R.id.button1);
-			final ImageButton button2 = (ImageButton)findViewById(R.id.button2);
-			final ImageButton button3 = (ImageButton)findViewById(R.id.button3);
+				final ImageButton button1 = (ImageButton)findViewById(R.id.button1);
+				final ImageButton button2 = (ImageButton)findViewById(R.id.button2);
+				final ImageButton button3 = (ImageButton)findViewById(R.id.button3);
 
-			button1.setVisibility(View.INVISIBLE);
-			button2.setVisibility(View.INVISIBLE);
-			button3.setVisibility(View.INVISIBLE);
+				button1.setVisibility(View.INVISIBLE);
+				button2.setVisibility(View.INVISIBLE);
+				button3.setVisibility(View.INVISIBLE);
 
+				//Upload score to server
+				RequestControllerObserver observer = new RequestControllerObserver(){
 
-			//Upload score to server
-			RequestControllerObserver observer = new RequestControllerObserver(){
+					@Override
+					public void requestControllerDidReceiveResponse(RequestController requestController) {
+						Log.d(TAG, "Score upload successful");
+						showButtons();
+						if(newHighscore)
+							showFinish("New highscore!", "Congratulations! Your new highscore was successfully uploaded!");
+						else
+							dismiss();
+					}
 
-				@Override
-				public void requestControllerDidReceiveResponse(RequestController requestController) {
-					Log.d(TAG, "Score upload successful");
-					showButtons();
-					if(newHighscore)
-						showFinish("New highscore!", "Congratulations! Your new highscore was successfully uploaded!");
-					else
-						dismiss();
-				}
+					@Override
+					public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
+						Log.d(TAG, "Score connect failed");
+						showButtons();
+						showFinish("Connection failure", "Your connection to the server failed!");
+					}
+				};
+				final ScoreController myScoreController = new ScoreController(observer);
+				Score s = new Score((double)score, null);
+				Map<String, Object> context = new HashMap<String, Object>();
+				context.put("normals", scoreKill[0]);
+				context.put("ninjas", scoreKill[1]);
+				context.put("tanks", scoreKill[2]);
+				context.put("health", health);
+				context.put("mins", (int)(seconds/60));
+				context.put("secs", (int)(seconds%60));
+				context.put("cSecs", (int)((time*MainThread.updateInterval/10)%100));
 
-				@Override
-				public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
-					Log.d(TAG, "Score connect failed");
-					showButtons();
-					showFinish("Connection failure", "Your connection to the server failed!");
-				}
-			};
-			final ScoreController myScoreController = new ScoreController(observer);
-			Score s = new Score((double)score, null);
-			Map<String, Object> context = new HashMap<String, Object>();
-			context.put("normals", scoreKill[0]);
-			context.put("ninjas", scoreKill[1]);
-			context.put("tanks", scoreKill[2]);
-			context.put("health", health);
-			context.put("mins", (int)(seconds/60));
-			context.put("secs", (int)(seconds%60));
-			context.put("cSecs", (int)((time*MainThread.updateInterval/10)%100));
-
-			s.setMode(2*completedLevel+difficulty); 
-			s.setContext(context);
-			myScoreController.submitScore(s);
+				s.setMode(2*completedLevel+difficulty); 
+				s.setContext(context);
+				myScoreController.submitScore(s);
+			}
 		} else {
 			stats.setVisibility(View.INVISIBLE);
-			((ImageButton)findViewById(R.id.button3)).setVisibility(View.INVISIBLE);
+			if(completedLevel == Const.levelCap)
+				((ImageButton)findViewById(R.id.button3)).setVisibility(View.INVISIBLE);
 		}
 		ImageView newLevelText = (ImageView) findViewById(R.id.newLevelText);
 
@@ -158,7 +161,7 @@ public class LevelCompleteActivity extends BaseActivity {
 			newLevelText.setVisibility(ImageView.INVISIBLE);
 		}
 	}
-	
+
 	public void showButtons(){
 		final ImageButton button1 = (ImageButton)findViewById(R.id.button1);
 		final ImageButton button2 = (ImageButton)findViewById(R.id.button2);
@@ -166,7 +169,7 @@ public class LevelCompleteActivity extends BaseActivity {
 		button1.setVisibility(View.VISIBLE);
 		button2.setVisibility(View.VISIBLE);
 		if(completedLevel < Const.levelCap)
-		button3.setVisibility(View.VISIBLE);
+			button3.setVisibility(View.VISIBLE);
 	}
 
 	public void goToMain(View view){
@@ -214,7 +217,7 @@ public class LevelCompleteActivity extends BaseActivity {
 
 	public void dismiss(){
 		if(alert != null)
-		alert.dismiss();
+			alert.dismiss();
 	}
 
 	public void showFinish(String title, String msg){
