@@ -311,8 +311,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				} else {
 					levelS = "level " + leaderboardLevel;
 				}
-				String difficultyS = (leaderboardDifficulty == 0)?"normal":"hard";
-				String leaderboardTitle = "Leaderboard for " + levelS + " @difficulty " + difficultyS;
+				String leaderboardTitle = "Leaderboard for " + levelS;
 				canvas.drawRect(0, 0, (float)(width*scaleX), (float)(height*scaleY), textBackground);
 				canvas.drawText(leaderboardTitle, (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY/2*scaleY), leaderboardPaint);
 

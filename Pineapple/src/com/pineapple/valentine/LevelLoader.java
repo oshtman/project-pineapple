@@ -245,7 +245,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(finishX + 8, 150 - 43, false));
 			//Hints
-			hints.add(new Hint(250, 150, "You are now leaving homeland!                                Have a nice trip and welcome back again!"));
+			hints.add(new Hint(250, 150, "You are now leaving your homeland!                                Have a nice trip and welcome back again!"));
 			break;
 		case 4://Hide and seek, watch out
 			//Start and finish
@@ -983,7 +983,7 @@ public class LevelLoader {
 			startPos = new int[]{10, 0};
 			finishX = 2250;
 			ground = new int[][]{
-					{-100, 147, 154, 187, 208, 241, 281, 381, 479, 591, 728, 980, 1172, 1404, 1491, 1596, 1790, 2037, 2154, 2300},
+					{-100, 147, 154, 187, 208, 241, 281, 381, 479, 591, 728, 980, 1172, 1404, 1491, 1596, 1790, 2037, 2154, 2400},
 					{  57,  57, 151, 200, 268, 432, 531, 683, 678, 651, 736, 770, 762,  767,  793,  860,  900,  569,  526,  526} 
 			};
 
