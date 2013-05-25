@@ -1034,14 +1034,87 @@ public class LevelLoader {
 			platforms.add(p5);
 			break;
 		case 11: //Final boss fight
-			startPos = new int[]{0, 0};
-			finishX = 100;
+			startPos = new int[]{10, 0};
+			finishX = 2300;
 			//Ground
-			ground = new int[2][2];
+			ground = new int[2][6];
 			ground[0][0] = -200;
-			ground[1][0] = 0;
-			ground[0][1] = 200;
+			ground[1][0] = -10;
+			ground[0][1] = 0;
 			ground[1][1] = 0;
+			ground[0][2] = 1500;
+			ground[1][2] = 0;
+			ground[0][3] = 2000;
+			ground[1][3] = -300;
+			ground[0][4] = 2200;
+			ground[1][4] = -420;
+			ground[0][5] = 2500;
+			ground[1][5] = -420;
+			//Platforms
+			p1 = new int[][]{
+					{-400,-399, 2200},
+					{0, -470, -470},
+					{-400, 200, 500, 1000, 1500, 2000, 2200},
+					{0, -40, -40, -80, -30, -330, -470}
+			};
+			platforms.add(p1);
+			//Trees
+			trees.add(new int[]{2300, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			//Rocks
+			rocks.add(new int[]{-100, (int)(4*Math.random()), 50, 1});
+			rocks.add(new int[]{-80, (int)(4*Math.random()), 40, 1});
+			rocks.add(new int[]{-50, (int)(4*Math.random()), 50, 0});
+			rocks.add(new int[]{-30, (int)(4*Math.random()), 40, 1});
+			rocks.add(new int[]{-10, (int)(4*Math.random()), 50, 0});
+			rocks.add(new int[]{-5, (int)(4*Math.random()), 50, 1});
+			rocks.add(new int[]{200, (int)(4*Math.random()), 20, 0});
+			rocks.add(new int[]{250, (int)(4*Math.random()), 20, 0});
+			rocks.add(new int[]{280, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{400, (int)(4*Math.random()), 40, 0});
+			
+			rocks.add(new int[]{500, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{540, (int)(4*Math.random()), 50, 0});
+			rocks.add(new int[]{560, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{590, (int)(4*Math.random()), 40, 1});
+			rocks.add(new int[]{600, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{660, (int)(4*Math.random()), 50, 0});
+			rocks.add(new int[]{680, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{700, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{720, (int)(4*Math.random()), 50, 1});
+			rocks.add(new int[]{740, (int)(4*Math.random()), 60, 0});
+			rocks.add(new int[]{770, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{830, (int)(4*Math.random()), 60, 0});
+			rocks.add(new int[]{840, (int)(4*Math.random()), 40, 1});
+			rocks.add(new int[]{850, (int)(4*Math.random()), 50, 0});
+			rocks.add(new int[]{900, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{920, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{950, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{960, (int)(4*Math.random()), 40, 1});
+			rocks.add(new int[]{980, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{1020, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{1050, (int)(4*Math.random()), 50, 0});
+			rocks.add(new int[]{1080, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1120, (int)(4*Math.random()), 50, 1});
+			rocks.add(new int[]{1140, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{1180, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{1200, (int)(4*Math.random()), 50, 1});
+			rocks.add(new int[]{1230, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{1250, (int)(4*Math.random()), 50, 0});
+			rocks.add(new int[]{1280, (int)(4*Math.random()), 50, 1});
+			rocks.add(new int[]{1300, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{1330, (int)(4*Math.random()), 50, 0});
+			rocks.add(new int[]{1340, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1350, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1400, (int)(4*Math.random()), 40, 1});
+			rocks.add(new int[]{1410, (int)(4*Math.random()), 60, 0});
+			rocks.add(new int[]{1450, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{1470, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1500, (int)(4*Math.random()), 40, 1});
+			//Flowers
+			flowers.add(new int[]{2360, 0});
+			//Birds
+			birds.add(new Bird(2400, -420 - 43, false));
+			//Antagonist
 			break;
 		case 12: //Credits
 			startPos = new int[]{45, 70};
