@@ -333,7 +333,7 @@ public class Protagonist {
 		for(int i = 0; i < platforms.size(); i++){
 			//if head is in platform
 			if (platforms.get(i).spans(getXPos()) && this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
-				this.setYVel(-this.getYVel());
+				this.setYVel(-this.getYVel()*0.5);
 				Log.d(TAG, "Headache!!");
 			} else if (platforms.get(i).checkSide(this, -1) && getXPos() < platforms.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > platforms.get(i).getUpperX()[0] && getXVel() > 0) {
 				this.setXVel(0);
