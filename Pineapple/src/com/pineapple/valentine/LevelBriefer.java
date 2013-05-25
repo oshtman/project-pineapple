@@ -47,7 +47,8 @@ public class LevelBriefer {
 				"Level 8",
 				"Level 9",
 				"Level 10",
-				"Finale"
+				"Finale",
+				"Credits"
 		};
 		String[] rawTexts = new String[]{
 				"Let your mentor teach you how to make it in this friendly world!",
@@ -61,8 +62,9 @@ public class LevelBriefer {
 				"The hunting! Remember, he who fights and runs away may live to fight another day.",
 				"How amazing! Which way should you go? Some say all good things are three, you might say twice.",
 				"Enter the lair of the enemy! The end is good, everything is good. Or is it?",
-				"Final battle. Defeat the evil, or it will defeat you! Evil shall by your hands be expelled!"
-		};
+				"Final battle. Defeat the evil, or it will defeat you! Evil shall by your hands be expelled!",
+				"How much do I love that noble man More than I could tell with words I fear though he'll remain alone With a holy halo of his own"
+				};
 		//Split the hints up into rows and add them to the final hint list
 		briefingTexts = new ArrayList<ArrayList<String>>();
 		int lettersPerRow = 33;
