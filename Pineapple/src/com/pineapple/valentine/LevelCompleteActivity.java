@@ -148,6 +148,7 @@ public class LevelCompleteActivity extends BaseActivity {
 			myScoreController.submitScore(s);
 		} else {
 			stats.setVisibility(View.INVISIBLE);
+			if(completedLevel == Const.levelCap)
 			((ImageButton)findViewById(R.id.button3)).setVisibility(View.INVISIBLE);
 		}
 		ImageView newLevelText = (ImageView) findViewById(R.id.newLevelText);
