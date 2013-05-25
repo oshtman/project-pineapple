@@ -17,7 +17,6 @@ public class GameActivity extends BaseActivity {
 	
 	
 	GamePanel gamePanel;
-	int level = 0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -25,7 +24,7 @@ public class GameActivity extends BaseActivity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_game_over);
 		Intent intent = getIntent();
-		level = intent.getIntExtra(MenuPanel.LEVEL, 0);
+		int level = intent.getIntExtra(MenuPanel.LEVEL, 0);
 		gamePanel = new GamePanel(this, level);
 		setContentView(gamePanel);
 	}
