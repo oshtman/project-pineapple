@@ -50,7 +50,6 @@ public class Protagonist {
 		this.gp = gp;
 		this.stepCount = 0;
 		this.mentor = mentor;
-		Log.d(TAG, "Me");
 
 	}
 	
@@ -146,7 +145,6 @@ public class Protagonist {
 		if(readyToJump){
 			touchingGround = false;
 			this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
-			Log.d(TAG, "Jump!!");
 			readyToJump = false;
 			if(!mentor)
 				gp.playSound(gp.protagonistSM, 0);
@@ -163,20 +161,16 @@ public class Protagonist {
 			this.setXAcc(0);
 			this.checkOverPlatform(platforms); // Can perhaps be removed later
 			if(platformNumber >= 0){
-				Log.d(TAG, "Coming down 2 u!! #onPlatform");
 				//Check if protagonist get dash bonus (if he is high enough)
 				if(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
 					dashBonus = true;
 					invincible = true;
-					Log.d(TAG, "DASH!!");
 				} 
 			} else { //Over ground
-				Log.d(TAG, "Coming down 2 u!! #hitGround");
 				//Check if protagonist get dash bonus
 				if(g.getYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
 					invincible = true;
 					dashBonus = true;
-					Log.d(TAG, "DASH!!");
 				}
 			}
 			gp.playSound(gp.protagonistSM, 1);
@@ -334,7 +328,6 @@ public class Protagonist {
 			//if head is in platform
 			if (platforms.get(i).spans(getXPos()) && this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
 				this.setYVel(-this.getYVel()*0.5);
-				Log.d(TAG, "Headache!!");
 			} else if (platforms.get(i).checkSide(this, -1) && getXPos() < platforms.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > platforms.get(i).getUpperX()[0] && getXVel() > 0) {
 				this.setXVel(0);
 				this.setXPos(platforms.get(i).getUpperX()[0] - getWidth()/2);

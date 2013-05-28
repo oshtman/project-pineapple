@@ -190,7 +190,6 @@ public class Enemy {
 			//Check if head hit platform
 			if (this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(platformNumber).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(platformNumber).getUpperYFromX(this.getXPos())) {
 				this.setYVel(-this.getYVel());
-				Log.d(TAG, "Enemy hit the head!!");
 			} else {
 				//Check if feet hit platform
 				if(this.getYPos() + this.getHeight()/2 + this.getYVel() > platforms.get(platformNumber).getUpperYFromX(this.getXPos())){
@@ -198,8 +197,7 @@ public class Enemy {
 					this.setYPos(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - this.getHeight()/2);
 					this.setYVel(0);
 					this.setYAcc(0);
-					touchingGround = true;
-					Log.d(TAG, "Enemy up high!!");					
+					touchingGround = true;				
 					//}
 				}
 			}
@@ -262,14 +260,14 @@ public class Enemy {
 		//On ground
 		if(p.getPlatformNumber() == -1){
 			if(this.getYPos() + this.height >=  g.getYFromX(this.getXPos())){
-				Log.d(TAG, "Dashable enemy");
+				
 				return true;
 			} else return false;
 			//On platform
 		} else if(p.getPlatformNumber() >= 0 && platforms.get(p.getPlatformNumber()).spans(this.getXPos()) && this.getYPos() <= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos()) && this.getYPos() + this.height >= platforms.get(p.getPlatformNumber()).getUpperYFromX(this.getXPos())){
 			return true;
 		} else{
-			Log.d(TAG, "WHAT? Not dashable enemy?! " + type + " " + this.getXPos());
+			
 			return false;
 		}
 

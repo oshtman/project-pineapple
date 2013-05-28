@@ -423,10 +423,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					playTimeTotal = MainThread.updateInterval*time/1000; //time in seconds
 					playTimeMin = (int)(playTimeTotal/60);
 					playTimeS = playTimeTotal - playTimeMin*60;
-					Log.d(TAG, "Killed in action! Statistics: " + "Killed Drones: " + scoreKill[0] + 
-							" Ninjas: " + scoreKill[1] + " Tanks: " + scoreKill[2] +
-							" Health: " + (int)(protagonist.getHealth()*100) + 
-							" Time: 0" + (int)playTimeMin + ":" + (int)playTimeS);
 					viewStatistics = false;
 				}
 			}
@@ -643,7 +639,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						scoreKill[enemies.get(j).getType()-1]++;
 						enemies.remove(j);
 						j--;
-						Log.d(TAG, "Enemy down.");
 					}
 
 
@@ -690,12 +685,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(Math.abs(protagonist.getXPos() - enemies.get(i).getXPos()) < protagonist.getWidth()*5 && Math.abs(protagonist.getYPos() - enemies.get(i).getYPos()) < protagonist.getHeight()*5 && protagonist.isDashBonus() && enemies.get(i).dashable(ground, protagonist, platforms) && enemies.get(i).hasSpawned()){
 				enemies.get(i).takeDashDamage(protagonist);
 				enemies.get(i).setHitThisFrame(true);
-				Log.d(TAG, "In reach for dash! Watch me.");
 				if(enemies.get(i).getHealth() <= 0){//If the enemy is dead
 					scoreKill[enemies.get(i).getType()-1]++;
 					enemies.remove(i);
 					i--;
-					Log.d(TAG, "Enemy down. Splash.");
 				}
 
 			}
@@ -715,7 +708,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(protagonist.getXPos() >  levelLoader.getFinishX() - Const.finishFlagWidth/2 && protagonist.getPlatformNumber() == -1 && protagonist.isTouchingGround() && !finished){
 			finished = true;
 			finishDelay = finishDelayTime;
-			Log.d(TAG, "Finished!");
 		} else if(protagonist.getXPos() >  levelLoader.getFinishX() - Const.finishFlagWidth/2 && !finished){
 			protagonist.setXPos(levelLoader.getFinishX() - Const.finishFlagWidth/2);
 		}
@@ -732,10 +724,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					playTimeTotal = MainThread.updateInterval*time/1000;
 					playTimeMin = (int)(playTimeTotal/60);
 					playTimeS = playTimeTotal - playTimeMin*60;
-					Log.d(TAG, "Reached finish! Statistics: " + "Killed Drones: " + scoreKill[0] + 
-							" Ninjas: " + scoreKill[1] + " Tanks: " + scoreKill[2] +
-							" Health: " + (int)(protagonist.getHealth()*100) + 
-							" Time: 0" + (int)playTimeMin + ":" + (int)playTimeS);
 					viewStatistics = false;
 				}
 				Context context = getContext();
@@ -1665,85 +1653,84 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			//Calculate the scale that we will use to render the game
 			scaleY = (double)getHeight()/height;
 			scaleX = (double)getWidth()/width;
-			Log.d(TAG, "ScaleX = " + scaleX);
-
-			Log.d(TAG, "This shit is wide up in here: " + BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body).getWidth());
+			BitmapFactory.Options mNoScale = new BitmapFactory.Options();
+			mNoScale.inScaled = false;
 
 			//Load Bitmaps
-			bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
-			mentorBodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.mentor_body), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
-			eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_eye_mouth), (int)(protagonist.getWidth()*scaleX*Const.eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeMouthYScale), true);
-			eyeBeardBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.eye_beard), (int)(protagonist.getWidth()*scaleX*Const.eyeBeardXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeBeardYScale), true);
-			footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_foot), (int)(protagonist.getWidth()*scaleX*Const.footXScale), (int)(protagonist.getHeight()*scaleY*Const.footYScale), true);
-			weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_weapon), (int)(protagonist.getWidth()*scaleX*Const.weaponXScale), (int)(protagonist.getHeight()*scaleY*Const.weaponYScale), true);
-			pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_pupil), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
-			stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
-			bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
-			sunBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sun), (int)(Const.sunSize*scaleX), (int)(Const.sunSize*scaleX), true);
-			birdBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bird), (int)(Bird.getWidth()*scaleX), (int)(Bird.getHeight()*scaleY), true);
+			bodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_body, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
+			mentorBodyBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.mentor_body, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.bodyXScale), (int)(protagonist.getHeight()*scaleY*Const.bodyYScale), true);
+			eyeMouthBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_eye_mouth, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.eyeMouthXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeMouthYScale), true);
+			eyeBeardBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.eye_beard, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.eyeBeardXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeBeardYScale), true);
+			footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_foot, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.footXScale), (int)(protagonist.getHeight()*scaleY*Const.footYScale), true);
+			weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_weapon, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.weaponXScale), (int)(protagonist.getHeight()*scaleY*Const.weaponYScale), true);
+			pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_pupil, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
+			stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick, mNoScale), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
+			bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet, mNoScale), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
+			sunBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sun, mNoScale), (int)(Const.sunSize*scaleX), (int)(Const.sunSize*scaleX), true);
+			birdBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bird, mNoScale), (int)(Bird.getWidth()*scaleX), (int)(Bird.getHeight()*scaleY), true);
 			flagBitmaps = new Bitmap[]{
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flag_back), (int)(Const.finishFlagWidth/2*scaleX), (int)(Const.finishFlagHeight*scaleY), true),
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flag_front), (int)(Const.finishFlagWidth/2*scaleX), (int)(Const.finishFlagHeight*scaleY), true)
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flag_back, mNoScale), (int)(Const.finishFlagWidth/2*scaleX), (int)(Const.finishFlagHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flag_front, mNoScale), (int)(Const.finishFlagWidth/2*scaleX), (int)(Const.finishFlagHeight*scaleY), true)
 			};
 			treeBitmaps = new Bitmap[][]{{
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_1), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_2), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_3), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true)
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_1, mNoScale), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_2, mNoScale), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.base_3, mNoScale), (int)(Const.maxTreeWidth/2*scaleX), (int)(Const.maxTreeHeight*0.8*scaleY), true)
 			},
 			{
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_1), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*0.7*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_2), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*0.7*scaleY), true),
-				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_3), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*0.7*scaleY), true)
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_1, mNoScale), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*0.7*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_2, mNoScale), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*0.7*scaleY), true),
+				Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.top_3, mNoScale), (int)(Const.maxTreeWidth*scaleX), (int)(Const.maxTreeHeight*0.7*scaleY), true)
 			}};
 			rockBitmap = new Bitmap[]{
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_1), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_2), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_3), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_4), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_1, mNoScale), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_2, mNoScale), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_3, mNoScale), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stone_4, mNoScale), (int)(Const.maxRockSize*scaleX), (int)(Const.maxRockSize*scaleY), true),
 			};
 			cloudBitmaps = new Bitmap[]{
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_1), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_2), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_3), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_4), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_5), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_1, mNoScale), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_2, mNoScale), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_3, mNoScale), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_4, mNoScale), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cloud_5, mNoScale), (int)(Const.maxCloudWidth*scaleX), (int)(Const.maxCloudHeight*scaleY), true),
 
 			};
 
-			flowerBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flower), (int)(Const.flowerSize*scaleX), (int)(Const.flowerSize*scaleY), true);
-			dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
-			skeletonBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skeleton), (int)(Const.skeletonSize*scaleX), (int)(Const.skeletonSize*scaleY), true);
-			fruitBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fruit), (int)(Const.tutorialFruitSize*scaleX), (int)(Const.tutorialFruitSize*scaleY), true);
-			signBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sign), (int)(Const.hintSize*scaleX), (int)(Const.hintSize*scaleY), true);
+			flowerBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.flower, mNoScale), (int)(Const.flowerSize*scaleX), (int)(Const.flowerSize*scaleY), true);
+			dustBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.dash_dust, mNoScale), (int)(Const.dustWidth*scaleX), (int)(Const.dustHeight*scaleY), true);
+			skeletonBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.skeleton, mNoScale), (int)(Const.skeletonSize*scaleX), (int)(Const.skeletonSize*scaleY), true);
+			fruitBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.fruit, mNoScale), (int)(Const.tutorialFruitSize*scaleX), (int)(Const.tutorialFruitSize*scaleY), true);
+			signBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.sign, mNoScale), (int)(Const.hintSize*scaleX), (int)(Const.hintSize*scaleY), true);
 			butterflyBitmaps = new Bitmap[]{
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_in), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true),
-					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_out), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true)
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_in, mNoScale), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true),
+					Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.butterfly_out, mNoScale), (int)(Const.butterflySize*scaleX), (int)(Const.butterflySize*scaleY), true)
 			};
 
 			//Drone
-			enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
-			enemyEyeMouthBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyEyeMouthYScale*scaleY), true);
-			enemyLeftArmBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm), (int)(Enemy.getBaseWidth()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyArmYScale*scaleY), true);
-			enemyFootBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot), (int)(Enemy.getBaseWidth()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyFootYScale*scaleY), true);
-			enemyPupilBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil), (int)(Enemy.getBaseWidth()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyPupilYScale*scaleY), true);
+			enemyBodyBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body, mNoScale), (int)(Enemy.getBaseWidth()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyBodyYScale*scaleY), true);	
+			enemyEyeMouthBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth, mNoScale), (int)(Enemy.getBaseWidth()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyEyeMouthYScale*scaleY), true);
+			enemyLeftArmBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm, mNoScale), (int)(Enemy.getBaseWidth()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyArmYScale*scaleY), true);
+			enemyFootBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot, mNoScale), (int)(Enemy.getBaseWidth()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyFootYScale*scaleY), true);
+			enemyPupilBitmap[0] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil, mNoScale), (int)(Enemy.getBaseWidth()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Const.enemyPupilYScale*scaleY), true);
 
 			//Ninja
-			enemyBodyBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyBodyYScale*scaleY), true);	
-			enemyEyeMouthBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyEyeMouthYScale*scaleY), true);
-			enemyLeftArmBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyArmYScale*scaleY), true);
-			enemyFootBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyFootYScale*scaleY), true);
-			enemyPupilBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyPupilYScale*scaleY), true);
+			enemyBodyBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyBodyYScale*scaleY), true);	
+			enemyEyeMouthBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyEyeMouthYScale*scaleY), true);
+			enemyLeftArmBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyArmYScale*scaleY), true);
+			enemyFootBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyFootYScale*scaleY), true);
+			enemyPupilBitmap[1] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyPupilYScale*scaleY), true);
 
 			//Tank
-			enemyBodyBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyBodyYScale*scaleY), true);	
-			enemyEyeMouthBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyEyeMouthYScale*scaleY), true);
-			enemyLeftArmBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyArmYScale*scaleY), true);
-			enemyFootBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyFootYScale*scaleY), true);
-			enemyPupilBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyPupilYScale*scaleY), true);
+			enemyBodyBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_body, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyBodyXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyBodyYScale*scaleY), true);	
+			enemyEyeMouthBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_eye_mouth, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyEyeMouthXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyEyeMouthYScale*scaleY), true);
+			enemyLeftArmBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_arm, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyArmXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyArmYScale*scaleY), true);
+			enemyFootBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_foot, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyFootXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyFootYScale*scaleY), true);
+			enemyPupilBitmap[2] = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_pupil, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyPupilXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyPupilYScale*scaleY), true);
 
 			//Special enemy accessories
-			enemyArmorBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_armor), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyArmorXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyArmorYScale*scaleY), true);
-			enemyNinjaBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_ninja), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyNinjaXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyNinjaYScale*scaleY), true);
+			enemyArmorBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_armor, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleTank()*Const.enemyArmorXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleTank()*Const.enemyArmorYScale*scaleY), true);
+			enemyNinjaBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.enemy_ninja, mNoScale), (int)(Enemy.getBaseWidth()*Enemy.getScaleNinja()*Const.enemyNinjaXScale*scaleX), (int)(Enemy.getBaseHeight()*Enemy.getScaleNinja()*Const.enemyNinjaYScale*scaleY), true);
 
 			Matrix m = new Matrix();
 			//Flip images
@@ -1788,18 +1775,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		@Override
 		protected void onPostExecute(String result) {
-			Log.d(TAG, "Finished loadOperation");
 			loading = false;
 		}
 
 		@Override
 		protected void onPreExecute() {
-			Log.d(TAG, "Starting loadOperation");
 		}
 
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-			Log.d(TAG, ""+values);
+			
 		}
 	}   
 
