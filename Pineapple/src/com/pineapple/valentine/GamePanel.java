@@ -1,5 +1,6 @@
 package com.pineapple.valentine;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.example.pineapple.R;
@@ -71,6 +72,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint enemyPaint = new Paint();
 	private Paint timePaint = new Paint();
 	private Paint textBackground = new Paint();
+	private Paint loadPaint = new Paint();
 	private int time;
 	private double bulletDamage = 0.05;
 	public SoundManager ambientSM, protagonistSM, enemySM, mentorSM, healthSM;
@@ -109,10 +111,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound, mentorPlayCounter, mentorSentencesToSay;
 	private boolean tutorialFruitUp = true;
 	private int tutorialFruitYSpeed = 0;
-	
+
 	//Special final variables
 	private int mentorLife = 3;
-	
+
 
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
@@ -200,8 +202,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		loadBirds();
 		loadHints();
 		clouds = new ArrayList<double[]>();
-		loadSounds();
 
+		loadPaint.setColor(Color.WHITE);
+		
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
 		groundPaint.setColor(Color.rgb(10, 250, 10));
@@ -275,6 +278,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		textPaint.setAntiAlias(true);
 
 		stamper.setColorFilter(new PorterDuffColorFilter(Color.RED, PorterDuff.Mode.SRC_IN));
+
+		//Start the thread
+		if (thread.getState()==Thread.State.TERMINATED) { 
+			thread = new MainThread(getHolder(),this);
+		}
+		thread.setRunning(true);
+		thread.start();
 	}
 
 	//Load the platforms from LevelLoader and add them to the platforms list 
@@ -353,7 +363,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		enemySM.addSound(3, R.raw.ninja_hurt);
 		enemySM.addSound(4, R.raw.tank_entry);
 		enemySM.addSound(5, R.raw.tank_hurt);
-		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 	}
 
 	//Play sound
@@ -363,9 +372,28 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Play the theme in loop
 	public void playTheme(){
-		theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
+		if(theme == null){ //If theme is null
+			loadTheme();
+			theme.start();
+		}
+		else if(!theme.isPlaying()){ //If theme isn't already playing, reset before loading
+			theme.reset();
+			loadTheme();
+			theme.start();
+		}
+	}
+
+	public void loadTheme(){
+		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
+		try {
+			theme.prepare();
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		theme.setLooping(true);
-		theme.start();
+		theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
 	}
 
 	//Method that gets called every frame to update the games state
@@ -900,7 +928,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
-		if(loading){} else {
+		if(loading){
+			canvas.drawText("Loading...", 0, 20, loadPaint);
+		} else {
 			//Background
 			canvas.drawColor(backgroundColor); //Sky
 			if(!underground){
@@ -1487,84 +1517,85 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
+		if(!loading){
+			index = e.getActionIndex();
+			id = e.getPointerId(index);
 
-		index = e.getActionIndex();
-		id = e.getPointerId(index);
+			switch(e.getActionMasked()){
 
-		switch(e.getActionMasked()){
+			case MotionEvent.ACTION_DOWN:
+				touchX = e.getX()/scaleX;
+				touchY = e.getY()/scaleY;
 
-		case MotionEvent.ACTION_DOWN:
-			touchX = e.getX()/scaleX;
-			touchY = e.getY()/scaleY;
-
-			if(touchX > width/2){
-				rightStick.handleTouch(touchX, touchY);
-				rightStickId = id;
-			} else {
-				leftStick.handleTouch(touchX, touchY);
-				leftStickId = id;
-			}
-
-			break;
-
-		case MotionEvent.ACTION_POINTER_DOWN:
-
-			touchX = e.getX(index)/scaleX;
-			touchY = e.getY(index)/scaleY;
-
-
-			if(touchX > width/2){
-				rightStick.handleTouch(touchX, touchY);
-				rightStickId = id;
-			} else {
-				leftStick.handleTouch(touchX, touchY);
-				leftStickId = id;
-			}
-
-			break;
-
-		case MotionEvent.ACTION_MOVE:
-
-			for(index=0; index<e.getPointerCount(); index++) {
-				id=e.getPointerId(index);
-				touchX = (int) e.getX(index)/scaleX;
-				touchY = (int) e.getY(index)/scaleY; 
-				if(id == rightStickId) {
-					if(touchX > width/2){
-						rightStick.handleTouch(touchX, touchY);
-						rightStickId = id;
-					} 
+				if(touchX > width/2){
+					rightStick.handleTouch(touchX, touchY);
+					rightStickId = id;
+				} else {
+					leftStick.handleTouch(touchX, touchY);
+					leftStickId = id;
 				}
-				else if(id == leftStickId){
-					if(touchX < width/2){
-						leftStick.handleTouch(touchX, touchY);
-						leftStickId = id;
+
+				break;
+
+			case MotionEvent.ACTION_POINTER_DOWN:
+
+				touchX = e.getX(index)/scaleX;
+				touchY = e.getY(index)/scaleY;
+
+
+				if(touchX > width/2){
+					rightStick.handleTouch(touchX, touchY);
+					rightStickId = id;
+				} else {
+					leftStick.handleTouch(touchX, touchY);
+					leftStickId = id;
+				}
+
+				break;
+
+			case MotionEvent.ACTION_MOVE:
+
+				for(index=0; index<e.getPointerCount(); index++) {
+					id=e.getPointerId(index);
+					touchX = (int) e.getX(index)/scaleX;
+					touchY = (int) e.getY(index)/scaleY; 
+					if(id == rightStickId) {
+						if(touchX > width/2){
+							rightStick.handleTouch(touchX, touchY);
+							rightStickId = id;
+						} 
+					}
+					else if(id == leftStickId){
+						if(touchX < width/2){
+							leftStick.handleTouch(touchX, touchY);
+							leftStickId = id;
+						}
 					}
 				}
-			}
 
-			break;
+				break;
 
-		case MotionEvent.ACTION_UP:
-			rightStick.release();
-			leftStick.release();
-			leftStickId = INVALID_POINTER;
-			rightStickId = INVALID_POINTER;
-
-
-			break;
-
-
-		case MotionEvent.ACTION_POINTER_UP:
-			if(id == leftStickId){
+			case MotionEvent.ACTION_UP:
+				rightStick.release();
 				leftStick.release();
 				leftStickId = INVALID_POINTER;
-			}
-			if(id == rightStickId){
-				rightStick.release();
 				rightStickId = INVALID_POINTER;
+
+
+				break;
+
+
+			case MotionEvent.ACTION_POINTER_UP:
+				if(id == leftStickId){
+					leftStick.release();
+					leftStickId = INVALID_POINTER;
+				}
+				if(id == rightStickId){
+					rightStick.release();
+					rightStickId = INVALID_POINTER;
+				}
+				break;
 			}
-			break;
 		}
 		return true;
 	}
@@ -1578,13 +1609,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		new LoadOperation().execute("");
-
-		//Start the thread
-		if (thread.getState()==Thread.State.TERMINATED) { 
-			thread = new MainThread(getHolder(),this);
-		}
-		thread.setRunning(true);
-		thread.start();
 	}
 
 	@Override
@@ -1613,7 +1637,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Pause the game
 	public void pause(){
-		theme.stop();
+		if(theme != null && theme.isPlaying()){
+			theme.stop();
+		}
 		ambientSM.stop(1);
 		ambientSM.stop(2);
 		healthSM.stop(1);
@@ -1622,10 +1648,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	//Resume the game
 	public void resume(){
-		thread.setRunning(true);
-		if(!theme.isPlaying()){
+		if(theme!=null)
 			playTheme();
+		if (thread.getState()==Thread.State.TERMINATED) { 
+			thread = new MainThread(getHolder(),this);
+
 		}
+		thread.setRunning(true);
+		try{thread.start();} catch(IllegalThreadStateException err){}
 	}
 
 	private class LoadOperation extends AsyncTask<String, Integer, String> {
@@ -1749,6 +1779,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 			textPaint.setTextSize((int)(4*scaleY));
 			timePaint.setTextSize((int)(Const.timeAreaHeight*scaleY));
+
+			loadSounds();
+			playTheme();
 
 			return "Executed";
 		}      

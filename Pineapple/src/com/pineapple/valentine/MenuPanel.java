@@ -60,7 +60,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap[] levelBitmaps;
 	private Bitmap[] butterflyBitmaps;
 	private Bitmap sliderLineBitmap, sliderHandleBitmap;
-	private Bitmap onBitmap, offBitmap, updateBitmap, normalBitmap, hardBitmap;
+	private Bitmap onBitmap, offBitmap, updateBitmap;
 	private int nextLevel;
 	private int menuState;
 	private SoundManager sm;
@@ -72,8 +72,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Butterfly butterfly;
 	private float aimAngle, feetAngle;
 	private int time = 0;
-	private Paint userPaint, leaderboardPaint;
-	private static float difficulty;
+	private Paint userPaint, leaderboardPaint, loadPaint;
 	private LevelBriefer briefer;
 	private boolean loading = true;
 
@@ -101,19 +100,16 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		setKeepScreenOn(true);
 
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
-		
-		
-		
+
 		currentLevel = settings.getInt("currentLevel", 0);
-		sm = new SoundManager(getContext());
-		loadSounds();
-		playTheme();
 
 		userName = (settings.getString("userName", null) == null)?"loading...":settings.getString("userName", null);
 
 		userPaint = new Paint();
 		userPaint.setColor(Color.WHITE);
 
+		loadPaint = new Paint();
+		loadPaint.setColor(Color.WHITE);
 		leaderboardPaint = new Paint();
 		leaderboardPaint.setColor(Color.WHITE);
 
@@ -167,37 +163,46 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void update(){
 		if(!loading){
-		if(Math.abs(protagonist.getXPos() - desiredX[menuState]) > 10){
-			protagonist.accelerate(0.3*Math.signum(desiredX[menuState]-protagonist.getXPos()));
-			protagonist.faceDirection((int)Math.signum(desiredX[menuState]-protagonist.getXPos()));
-			protagonist.setAim(90 - (int)Math.signum(desiredX[menuState]-protagonist.getXPos())*90);
-			protagonist.step(1);
-		} else {
-			protagonist.slowDown();
-			protagonist.setStepCount(0);
-			protagonist.faceDirection((int)Math.signum(butterfly.getX()-protagonist.getXPos()));
-			protagonist.setAim((int)(180/Math.PI * Math.atan2(butterfly.getY() - protagonist.getYPos(), butterfly.getX() - protagonist.getXPos())));
-		}
-		if(protagonist.getXPos() > 160){
-			goToGame(nextLevel);
-		}
-		protagonist.breathe();
-		protagonist.move();
-		butterfly.update();
-		briefer.update();
-		if(menuState == SETTINGS_MENU){
-			setVolumes();
-		}
+			if(Math.abs(protagonist.getXPos() - desiredX[menuState]) > 10){
+				protagonist.accelerate(0.3*Math.signum(desiredX[menuState]-protagonist.getXPos()));
+				protagonist.faceDirection((int)Math.signum(desiredX[menuState]-protagonist.getXPos()));
+				protagonist.setAim(90 - (int)Math.signum(desiredX[menuState]-protagonist.getXPos())*90);
+				protagonist.step(1);
+			} else {
+				protagonist.slowDown();
+				protagonist.setStepCount(0);
+				protagonist.faceDirection((int)Math.signum(butterfly.getX()-protagonist.getXPos()));
+				protagonist.setAim((int)(180/Math.PI * Math.atan2(butterfly.getY() - protagonist.getYPos(), butterfly.getX() - protagonist.getXPos())));
+			}
+			if(protagonist.getXPos() > 160){
+				goToGame(nextLevel);
+			}
+			protagonist.breathe();
+			protagonist.move();
+			butterfly.update();
+			briefer.update();
+			if(menuState == SETTINGS_MENU){
+				setVolumes();
+			}
 
-		time++;
+			time++;
 		}
 	}
 
 	public void playTheme(){
-		if(!theme.isPlaying()){ //If theme isn't already playing
+		if(theme == null){ //If theme is null
+			try {
+				loadTheme();
+				theme.prepare();
+			} catch(IOException e){	}
+			theme.setLooping(true);
+			theme.setVolume(settings.getFloat("musicVolume", 1), settings.getFloat("musicVolume", 1));
+			theme.start();
+		}
+		else if(!theme.isPlaying()){ //If theme isn't already playing, reset before loading
 			try {
 				theme.reset();
-				loadSounds();
+				loadTheme();
 				theme.prepare();
 			} catch(IOException e){	}
 			theme.setLooping(true);
@@ -218,7 +223,11 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void loadSounds(){
+		sm = new SoundManager(getContext());
 		sm.addSound(0, R.raw.fire_sound);
+	}
+
+	public void loadTheme(){
 		theme = MediaPlayer.create(getContext(), R.raw.short_instrumental);
 		try {
 			theme.prepare();
@@ -246,7 +255,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void render(Canvas canvas){
-		if(loading){} else {
+		if(loading){
+			canvas.drawText("Loading...", 0, 20, loadPaint);
+		} else {
 			canvas.drawBitmap(backgroundBitmap, 0, 0, null);
 			renderButterfly(canvas);
 			renderProtagonist(canvas);
@@ -417,19 +428,28 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void resume(){
-		playTheme();
+		if(theme!=null)
+			playTheme();
+		if (thread.getState()==Thread.State.TERMINATED) { 
+			thread = new MainThread(getHolder(),this);
+
+		}
+		thread.setRunning(true);
+		try{thread.start();} catch(IllegalThreadStateException err){}
 		leaderboardsLoaded = false;
 		currentHighScoreMode = 0;
 	}
 
 	//Pause the game
 	public void pause(){
-		stopTheme();
+		if(theme != null && theme.isPlaying())
+			stopTheme();
 		thread.setRunning(false);
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
+		if(!loading){
 		if(playButton != null){
 			touchX = (int)(e.getX()/scaleX);
 			touchY = (int)(e.getY()/scaleY);
@@ -533,7 +553,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 				soundSlider.release();
 			}
 		}
+		}
 		return true;
+		
 	}
 
 	public void goToGame(int level){
@@ -792,10 +814,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 			onBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.on), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
 			offBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.off), (int)(scoreButton.getWidth()*scaleX), (int)(scoreButton.getHeight()*scaleY), true);
-			normalBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.normal), (int)(difficultyButton.getWidth()*scaleX), (int)(difficultyButton.getHeight()*scaleY), true);
-			hardBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.hard), (int)(difficultyButton.getWidth()*scaleX), (int)(difficultyButton.getHeight()*scaleY), true);
-
-
+		
 			updateBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.update), (int)(Const.updateSize*scaleX), (int)(Const.updateSize*scaleY), true);
 			if(currentLevel > Const.levelCap)
 				currentLevel = Const.levelCap;
@@ -813,6 +832,9 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			leaderboardPaint.setTextSize((float)(((height-Const.leaderboardStartY)/Const.leaderboardRows)*scaleY));
 			leaderboardPaint.setAntiAlias(true);
 			leaderboardPaint.setDither(true);
+
+			loadSounds();
+			playTheme();
 
 			return "Executed";
 		}      
