@@ -20,8 +20,8 @@ public class Protagonist {
 	private double jumpAcc = 0.4;
 	private double maxSpeed = 3;
 	private double slideCoefficient = 0.8;
-	private final int height = 15;
-	private final int width = (int)(height/1.5); //Change 1.42 to ratio of bitmap
+	private double height = 15;
+	private double width = (int)(height/1.5); //Change 1.42 to ratio of bitmap
 	private boolean touchingGround;
 	private GamePanel gp;
 	private int stepCount;
@@ -357,11 +357,20 @@ public class Protagonist {
 	//Check collision with enemy
 	public boolean collide(Enemy e){
 		if(getXPos() - getWidth()/2 < e.getXPos() + e.getWidth()/2 && getXPos() + getWidth()/2 > e.getXPos() - e.getWidth()/2 &&
-				getYPos() - getWidth()/2 < e.getYPos() + e.getHeight()/2 && getYPos() + getWidth()/2 > e.getYPos() - e.getHeight()/2){
+				getYPos() - getHeight()/2 < e.getYPos() + e.getHeight()/2 && getYPos() + getHeight()/2 > e.getYPos() - e.getHeight()/2){
 			return true;
 		} else 
 			return false;
 	}
+	
+	//Check collision with enemy
+		public boolean collide(Bullet b){
+			if(getXPos() - getWidth()/2 < b.getXPos() + Bullet.getRadius() && getXPos() + getWidth()/2 > b.getXPos() - Bullet.getRadius() &&
+					getYPos() - getHeight()/2 < b.getYPos() + Bullet.getRadius() && getYPos() + getHeight()/2 > b.getYPos() - Bullet.getRadius()){
+				return true;
+			} else 
+				return false;
+		}
 
 	//Check if protagonist is outside track and set back inside level
 	public void contain(int finishX){
@@ -516,11 +525,11 @@ public class Protagonist {
 		this.jumpAcc = jumpAcc;
 	}
 
-	private double getMaxSpeed() {
+	public double getMaxSpeed() {
 		return maxSpeed;
 	}
 
-	private void setMaxSpeed(double maxSpeed) {
+	public void setMaxSpeed(double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
 
@@ -532,12 +541,20 @@ public class Protagonist {
 		this.slideCoefficient = slideCoefficient;
 	}
 
-	public int getHeight() {
+	public double getHeight() {
 		return height;
 	}
 
-	public int getWidth() {
+	public double getWidth() {
 		return width;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
+	public void setWidth(double width) {
+		this.width = width;
 	}
 
 	public void setStepCount(int step){

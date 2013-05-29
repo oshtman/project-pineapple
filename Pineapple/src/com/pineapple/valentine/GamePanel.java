@@ -100,10 +100,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private boolean underground = false;
 	private double touchX, touchY;
 	private boolean loading = true;
-	private boolean startedMentorMonolog;
-	private int monologTimer;
-	private String[] mentorMessage;
 	private boolean showHUD = true;
+	
+	//Boss variables
+	private boolean startedMentorMonolog;
+	private int monologTimer, mentorDeathTimer;
+	private String[] mentorMessage;
+	private boolean mentorFighting;
+	private double mentorBaseX, mentorBaseY;
+	private int bossState = 0;
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -272,8 +277,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentorSentencesToSay = 3;
 		}
 		if(level == 11){
-			mentor = new Protagonist(200, -20, this, true);
-			
+			mentor = new Protagonist(550, -20, this, true);
+
 			mentorSM = new SoundManager(getContext(), 1);
 			//Load all the things the mentor can say
 			mentorSM.addSound(0, R.raw.mentor_sound_1);
@@ -491,7 +496,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					}
 				}
 			}
-			if(level == 11){
+			if(level == 11){//Boss
 				if(protagonist.getYPos() > -350){
 					backgroundColor = Color.rgb(150,  150,  150);
 					underground = true;
@@ -517,12 +522,121 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						break;
 					case 90:
 						mentorMessage = new String[]{"Bla bla bla..."};
+						break;
 					}
 				}
-				if(monologTimer == 300){
+				if(bossState == 4){
+					mentorDeathTimer++;
+					if(mentorDeathTimer < 25){
+						mentor.slowDown();
+						if(Math.abs(protagonist.getXPos()-mentor.getXPos()) > 50){
+							protagonist.accelerate(Math.signum(mentor.getXPos()-protagonist.getXPos()));
+							protagonist.step(1);
+						} else if(Math.abs(protagonist.getXPos()-mentor.getXPos()) < 20){
+							protagonist.accelerate(-Math.signum(mentor.getXPos()-protagonist.getXPos()));
+							protagonist.step(1);
+						} else {
+							protagonist.slowDown();
+							protagonist.setStepCount(0);
+						}
+					}
+					if(mentorDeathTimer <= 175){
+						switch(mentorDeathTimer){
+						case 25:
+							protagonist.faceDirection(mentor.getXPos()-protagonist.getXPos());
+							mentor.faceDirection(protagonist.getXPos()-mentor.getXPos());
+							mentorMessage = new String[]{"I can't believe this. How did you become so powerful?"};
+							break;
+						case 75:
+							mentorMessage = new String[]{"I guess my desire for world dominance has clouded my judgement..."};
+							break;
+						case 125:
+							mentorMessage = new String[]{"I should never have underestimated you, Valentine. Good bye!"};
+							break;
+						case 175:
+							mentorMessage = null;
+							mentorBaseX = (int)mentor.getXPos();
+							mentorBaseY = (int)mentor.getYPos();
+							break;
+						}
+					} else if(mentorDeathTimer <= 200){
+						mentorBaseY -= 0.5;
+						mentor.setXPos(mentorBaseX + Math.random()*2-1);
+						mentor.setYPos(mentorBaseY + Math.random()*2-1);
+					} else if(mentorDeathTimer == 201){
+						mentorSM.playSound(5, effectVolume);
+						mentor.setYVel(-20);
+					} else if(mentorDeathTimer == 225){
+						showHUD = true;
+						monologTimer++;
+					} else if(mentorDeathTimer > 225){
+						screenY += Math.random() * 4 - 2;
+						for(i = 2; i <= 15; i++){
+							//ground.setY(i, (int)(6*Math.sin(mentorDeathTimer + i)));
+							ground.setY(i, (int)(6*Math.random() - 3));
+						}
+					}
+
+				}
+				if(monologTimer == 299){
 					showHUD = true;
 					mentorMessage = null;
+					mentorFighting = true;
 				}
+				if(monologTimer == 300){//Fighting
+					screenY = -90;
+					if(mentorFighting){
+						if(mentor.isTouchingGround()){
+							mentor.accelerate((0.3-0.07*bossState)*Math.signum(protagonist.getXPos()-mentor.getXPos()));
+							mentor.step(1);
+						}
+						if(mentor.getHealth() <= (0.75 - bossState * 0.25) && mentorFighting){
+							mentorFighting = false;
+							bossState+=4;
+							//Spawn enemies
+							switch(bossState){
+							case 3: 
+								enemies.get(4).spawn();
+								enemies.get(5).spawn();
+							case 2: 
+								enemies.get(2).spawn();
+								enemies.get(3).spawn();
+							case 1:
+								enemies.get(0).spawn();
+								enemies.get(1).spawn();
+								mentor.jump();
+								mentor.setYVel(mentor.getYVel()*1.5);
+								break;
+							case 4: //Dead
+								showHUD = false;
+								mentorDeathTimer = 0;
+								break;
+							}
+						}
+						handleMentorBulletCollisions();
+					} else {
+						mentor.slowDown();
+						mentor.setStepCount(0);
+						//Wave vanquished
+						if(bossState == 1 && enemies.size() == 10 || bossState == 2 && enemies.size() == 6 || bossState == 3 && enemies.size() == 0){
+							mentorFighting = true;
+							mentor.setMaxSpeed(mentor.getMaxSpeed()+1);
+						}
+					}
+				}
+
+				mentor.inAir(platforms, ground);
+				mentor.checkGround(ground);
+				mentor.faceDirection(protagonist.getXPos()-mentor.getXPos());
+				mentor.setAim((int)(180/Math.PI*Math.atan2(protagonist.getYPos() - mentor.getYPos(), protagonist.getXPos() - mentor.getXPos())));
+				if(mentor.getYVel() > 0 && !mentorFighting)
+					mentor.checkPlatform(platforms);
+				if(mentorDeathTimer < 175 || mentorDeathTimer > 200){
+					mentor.gravity();
+					mentor.move();
+				}
+				mentor.breathe();
+				
 			}
 			if(finished){
 				if(level == 10){
@@ -723,6 +837,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				for(j = i+1; j < enemies.size(); j++){
 					enemies.get(i).collide(enemies.get(j));
 				}
+			}
+		}
+	}
+
+	public void handleMentorBulletCollisions(){
+		for(i = 0; i < bullets.size(); i++){
+			if(mentor.collide(bullets.get(i))){
+				bullets.remove(i);
+				i--;
+				mentor.reduceHealth(0.002);
 			}
 		}
 	}
@@ -985,6 +1109,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				renderMentor(canvas);
 				renderFruit(canvas);
 			}
+			if(level == 11){
+				renderMentor(canvas);
+				renderMentorHealthMeter(canvas);
+			}
 			renderProtagonist(canvas);
 			renderPlatforms(canvas);
 			renderGround(canvas);
@@ -1026,9 +1154,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Draw the enemies
 	public void renderEnemies(Canvas canvas){
 
-		for(int j: renderOrder){ //Different types
+		for(int type: renderOrder){ //Different types
 			for(i = 0; i < enemies.size(); i++){
-				if(enemies.get(i).getType() == j){
+				if(enemies.get(i).getType() == type){
 					if(enemies.get(i).hasSpawned()){
 						if(enemies.get(i).getXPos() + enemies.get(i).getWidth() > screenX && enemies.get(i).getXPos() - enemies.get(i).getWidth() < screenX + width){
 							Enemy e = enemies.get(i);
@@ -1225,18 +1353,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			dirtPath.lineTo((int)((ground.getX(i)-screenX)*scaleX), (int)((ground.getY(i)+groundThickness-screenY)*scaleY));
 			canvas.drawPath(dirtPath, dirtPaint);			
 		}
-		//Experiment (Different ground details)
-		//Balls
-
-		/*for(i = startIndex; i <= stopIndex; i++){
-			xGap = (ground.getX(i+1)-ground.getX(i));
-			yGap = (ground.getY(i+1)-ground.getY(i));
-			gap = Math.sqrt(Math.pow(xGap, 2) + Math.pow(yGap, 2));
-			numberOfPatches = (int)(gap/foliageSize/2+2);
-			for(int j = 0; j < numberOfPatches; j++){
-				canvas.drawOval(new RectF((float)((ground.getX(i)+xGap*j/numberOfPatches - foliageSize - screenX)*scaleX), (float)((ground.getY(i)+yGap*j/numberOfPatches-foliageSize - screenY)*scaleY), (float)((ground.getX(i)+xGap*j/numberOfPatches+foliageSize - screenX)*scaleX), (float)((ground.getY(i)+yGap*j/numberOfPatches+foliageSize - screenY)*scaleY)), groundPaint);
-			}
-		}*/
 
 		//Spikes
 		groundPath = new Path();
@@ -1350,15 +1466,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Draw red indicator that moves with current heat level
 		canvas.drawRect((float)(Const.HUDPadding*scaleX), (float)(Const.HUDPadding*scaleY), (float)((Const.HUDPadding+Const.meterWidth*protagonist.getHealth())*scaleX), (float)((Const.HUDPadding+Const.meterHeight)*scaleY), green);
 	}
-	
+
 	public void renderMentorHealthMeter(Canvas canvas){
 		frame.setColor(Color.BLACK);
 		//Draw frame
-		canvas.drawRect((float)((mentor.getXPos() - Const.mentorHealthBarWidth/2 - Const.meterFrameSize)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2-Const.mentorHealthBarHeight - Const.meterFrameSize)*scaleY), (float)((mentor.getXPos() + Const.mentorHealthBarWidth/2 + Const.meterFrameSize)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2 + Const.meterFrameSize)*scaleY), frame);
+		canvas.drawRect((float)((mentor.getXPos() - Const.mentorHealthBarWidth/2 - Const.meterFrameSize - screenX)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2-Const.mentorHealthBarHeight - Const.meterFrameSize - screenY)*scaleY), (float)((mentor.getXPos() + Const.mentorHealthBarWidth/2 + Const.meterFrameSize - screenX)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2 + Const.meterFrameSize - screenY)*scaleY), frame);
 		//Draw green background
-		canvas.drawRect((float)((mentor.getXPos() - Const.mentorHealthBarWidth/2)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2-Const.mentorHealthBarHeight)*scaleY), (float)((mentor.getXPos() + Const.mentorHealthBarWidth/2)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2)*scaleY), red);
+		canvas.drawRect((float)((mentor.getXPos() - Const.mentorHealthBarWidth/2 - screenX)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2-Const.mentorHealthBarHeight - screenY)*scaleY), (float)((mentor.getXPos() + Const.mentorHealthBarWidth/2 - screenX)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2 - screenY)*scaleY), red);
 		//Draw red indicator that moves with current heat level
-		canvas.drawRect((float)((mentor.getXPos() - Const.mentorHealthBarWidth/2)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2-Const.mentorHealthBarHeight)*scaleY), (float)((mentor.getXPos() - Const.mentorHealthBarWidth/2 + mentor.getHealth()*Const.mentorHealthBarWidth)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2)*scaleY), green);
+		canvas.drawRect((float)((mentor.getXPos() - Const.mentorHealthBarWidth/2 - screenX)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2-Const.mentorHealthBarHeight - screenY)*scaleY), (float)((mentor.getXPos() - Const.mentorHealthBarWidth/2 + mentor.getHealth()*Const.mentorHealthBarWidth - screenX)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2 - screenY)*scaleY), green);
 	}
 
 	//Draw the sun, moving in time

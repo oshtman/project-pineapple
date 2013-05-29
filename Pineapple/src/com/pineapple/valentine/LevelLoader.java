@@ -1017,17 +1017,43 @@ public class LevelLoader {
 			finishX = 2300;
 			//Ground
 			ground = new int[][]{
-				{-200, 0, 1500, 2000, 2200, 2500},
-				{-10, 0, 0, -300, -420, -420}
+				{-200, 0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 2000, 2200, 2500},
+				{-10,  0, 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,    0,    0,    0,    0,    0,    -300, -420, -420}
 			};
 			//Platforms
-			p1 = new int[][]{
+			p1 = new int[][]{//Roof
 					{-400,-399, 2200},
 					{0, -600, -600},
-					{-400, 200, 500, 1000, 1500, 2000, 2199, 2200},
-					{0, -40, -40, -80, -30, -330, -470, -600}
+					{-400, 0, 200, 1300, 1500, 2000, 2199, 2200},
+					{0, -30, -100, -100, -30, -330, -470, -600}
+			};
+			p2 = new int[][]{//Mentor haven
+					{200, 220, 1280, 1300},
+					{-70, -70, -70, -70},
+					{200, 205, 750, 1295, 1300},
+					{-70, -60, -55, -60, -70}
 			};
 			platforms.add(p1);
+			platforms.add(p2);
+			
+			//1st wave
+			enemies.add(new int[]{0, -20, 2000, 1});
+			enemies.add(new int[]{1500, -20, 2000, 1});
+			
+			//2nd wave
+			enemies.add(new int[]{0, -20, 2000, 1});
+			enemies.add(new int[]{1500, -20, 2000, 1});
+			enemies.add(new int[]{50, -20, 2000, 2});
+			enemies.add(new int[]{1450, -20, 2000, 2});
+			
+			//3rd wave
+			enemies.add(new int[]{50, -20, 2000, 1});
+			enemies.add(new int[]{1450, -20, 2000, 1});
+			enemies.add(new int[]{100, -20, 2000, 2});
+			enemies.add(new int[]{1400, -20, 2000, 2});
+			enemies.add(new int[]{0, -20, 2000, 3});
+			enemies.add(new int[]{1500, -20, 2000, 3});
+			
 			//Trees
 			trees.add(new int[]{2300, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			//Rocks
@@ -1042,35 +1068,25 @@ public class LevelLoader {
 			rocks.add(new int[]{280, (int)(4*Math.random()), 30, 0});
 			rocks.add(new int[]{400, (int)(4*Math.random()), 40, 0});
 
-			rocks.add(new int[]{500, (int)(4*Math.random()), 30, 1});
 			rocks.add(new int[]{540, (int)(4*Math.random()), 50, 0});
 			rocks.add(new int[]{560, (int)(4*Math.random()), 40, 0});
-			rocks.add(new int[]{590, (int)(4*Math.random()), 40, 1});
 			rocks.add(new int[]{600, (int)(4*Math.random()), 30, 0});
 			rocks.add(new int[]{660, (int)(4*Math.random()), 50, 0});
-			rocks.add(new int[]{680, (int)(4*Math.random()), 30, 1});
 			rocks.add(new int[]{700, (int)(4*Math.random()), 40, 0});
-			rocks.add(new int[]{720, (int)(4*Math.random()), 50, 1});
 			rocks.add(new int[]{740, (int)(4*Math.random()), 60, 0});
 			rocks.add(new int[]{770, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{830, (int)(4*Math.random()), 60, 0});
-			rocks.add(new int[]{840, (int)(4*Math.random()), 40, 1});
 			rocks.add(new int[]{850, (int)(4*Math.random()), 50, 0});
 			rocks.add(new int[]{900, (int)(4*Math.random()), 40, 0});
-			rocks.add(new int[]{920, (int)(4*Math.random()), 30, 1});
 			rocks.add(new int[]{950, (int)(4*Math.random()), 30, 0});
-			rocks.add(new int[]{960, (int)(4*Math.random()), 40, 1});
 			rocks.add(new int[]{980, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{1020, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{1050, (int)(4*Math.random()), 50, 0});
 			rocks.add(new int[]{1080, (int)(4*Math.random()), 30, 0});
-			rocks.add(new int[]{1120, (int)(4*Math.random()), 50, 1});
 			rocks.add(new int[]{1140, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{1180, (int)(4*Math.random()), 40, 0});
-			rocks.add(new int[]{1200, (int)(4*Math.random()), 50, 1});
 			rocks.add(new int[]{1230, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{1250, (int)(4*Math.random()), 50, 0});
-			rocks.add(new int[]{1280, (int)(4*Math.random()), 50, 1});
 			rocks.add(new int[]{1300, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{1330, (int)(4*Math.random()), 50, 0});
 			rocks.add(new int[]{1340, (int)(4*Math.random()), 30, 1});
