@@ -106,7 +106,7 @@ public class LevelLoader {
 			//
 			startPos = new int[]{10, 0};
 			finishX = 2000;
-	
+
 			ground = new int[][]{
 					{-155, 322, 368, 417, 518, 609, 691, 782, 863, 900, 1000, 1100, 1150, 1450, 1460, 1490,  1500, 1600, 1650, 1750, 1800, 1820, 1900, 1920, 2200},
 					{83,   83,  103, 156, 191, 191, 189, 167, 95,  95,  130, 110,   100,   95,   130,  130,  95,   80,   95,  40,   20,   40,   150,  140,  135}
@@ -175,7 +175,7 @@ public class LevelLoader {
 			for(int i = 27; i < 33; i++){
 				ground[1][i] = 660 - (int)(10*Math.sin((i-27)/5.*Math.PI));
 			}
-			
+
 			p1 = new int[][]{
 					{490, 500, 1000},
 					{580, 200, 200},
@@ -191,18 +191,18 @@ public class LevelLoader {
 			platforms.add(p1);
 			platforms.add(p2);
 			enemies.add(new int[]{800, 670, 600, 3});
-			
-			
+
+
 			rocks.add(new int[]{1250, 3, 35, 1});
 			trees.add(new int[]{1300, 2, 2, 0});
 			trees.add(new int[]{900, 2, 1, 0});
-			
+
 			enemies.add(new int[]{1250, 660, 1300, 2});
 			enemies.add(new int[]{850, 680, 1000, 1});
 			enemies.add(new int[]{820, 680, 1000, 1});
-			
+
 			enemies.add(new int[]{1250, 660, 1100, 1});
-			
+
 			hints.add(new Hint(600, 680, "Do not enter! A large armored creature has made its nest here!"));
 			hints.add(new Hint(1180, 655, "Some sort of small and fast creatures seem to be roaming these areas, be careful!"));
 			break;
@@ -399,33 +399,11 @@ public class LevelLoader {
 			startPos = new int[]{10,50};
 			finishX = 4400;
 			//Ground
-			ground = new int[2][13];
-			ground[0][0] = -100;
-			ground[1][0] = 50;
-			ground[0][1] = 10;
-			ground[1][1] = 60;
-			ground[0][2] = 20;
-			ground[1][2] = 100;
-			ground[0][3] = 400; //Down
-			ground[1][3] = 10;
-			ground[0][4] = 1400; //Here
-			ground[1][4] = 1500;
-			ground[0][5] = 2000;
-			ground[1][5] = 1400;
-			ground[0][6] = 2600;
-			ground[1][6] = 1300;
-			ground[0][7] = 3000;
-			ground[1][7] = 1200;
-			ground[0][8] = 3100;
-			ground[1][8] = 1150;
-			ground[0][9] = 3200;
-			ground[1][9] = 1100;
-			ground[0][10] = 3300; //Down
-			ground[1][10] = 1100; 
-			ground[0][11] = 4000; //Here
-			ground[1][11] = 2000; 
-			ground[0][12] = 4600;
-			ground[1][12] = 2000;
+			ground = new int[][]{
+					{-100, 10, 20, 400, 490, 580, 760, 800, 820, 821, 880, 931, 1000, 1200, 1400, 2000, 2600, 3000, 3100, 3200, 3300, 4000, 4600},
+					{50, 60, 100, 10,  150,  285, 550, 600, 615, 650, 740, 780, 930,  1230, 1500, 1400, 1300, 1200, 1150, 1100, 1100, 2000, 2000}
+			};
+			
 			//Enemies
 			enemies.add(new int[]{100 + 200, 0, 100, 1});
 			enemies.add(new int[]{200 + 200, 0, 200, 1});
@@ -475,6 +453,7 @@ public class LevelLoader {
 			trees.add(new int[]{4200, (int)(3*Math.random()), (int)(3*Math.random()), 0});
 			trees.add(new int[]{4300, (int)(3*Math.random()), (int)(3*Math.random()), 1});
 			//Rocks
+			rocks.add(new int[]{810, 0, 20, 1});
 			rocks.add(new int[]{4150, 1, 20, 0});
 			rocks.add(new int[]{4250, 3, 20, 0});
 			rocks.add(new int[]{-50, 2, 50, 0});
@@ -491,7 +470,7 @@ public class LevelLoader {
 			flowers.add(new int[]{4460, 0});
 			flowers.add(new int[]{1, 0});
 			//Skeletons
-			skeletons.add(new int[]{800, 50});
+			skeletons.add(new int[]{750, 50});
 			skeletons.add(new int[]{3500, 50});
 			//Butterfly
 			butterflies.add(new Butterfly(4435 + 2, 2000 - 8));
@@ -1037,19 +1016,10 @@ public class LevelLoader {
 			startPos = new int[]{10, 0};
 			finishX = 2300;
 			//Ground
-			ground = new int[2][6];
-			ground[0][0] = -200;
-			ground[1][0] = -10;
-			ground[0][1] = 0;
-			ground[1][1] = 0;
-			ground[0][2] = 1500;
-			ground[1][2] = 0;
-			ground[0][3] = 2000;
-			ground[1][3] = -300;
-			ground[0][4] = 2200;
-			ground[1][4] = -420;
-			ground[0][5] = 2500;
-			ground[1][5] = -420;
+			ground = new int[][]{
+				{-200, 0, 1500, 2000, 2200, 2500},
+				{-10, 0, 0, -300, -420, -420}
+			};
 			//Platforms
 			p1 = new int[][]{
 					{-400,-399, 2200},
@@ -1071,7 +1041,7 @@ public class LevelLoader {
 			rocks.add(new int[]{250, (int)(4*Math.random()), 20, 0});
 			rocks.add(new int[]{280, (int)(4*Math.random()), 30, 0});
 			rocks.add(new int[]{400, (int)(4*Math.random()), 40, 0});
-			
+
 			rocks.add(new int[]{500, (int)(4*Math.random()), 30, 1});
 			rocks.add(new int[]{540, (int)(4*Math.random()), 50, 0});
 			rocks.add(new int[]{560, (int)(4*Math.random()), 40, 0});
@@ -1200,13 +1170,13 @@ public class LevelLoader {
 			flowers.add(new int[]{1534, 0});
 			flowers.add(new int[]{1235, 0});
 			flowers.add(new int[]{1364, 0});
-			
+
 			flowers.add(new int[]{580, 0});
 			flowers.add(new int[]{587, 0});
 			flowers.add(new int[]{590, 0});
 			flowers.add(new int[]{598, 0});
 			flowers.add(new int[]{600, 0});
-			
+
 			flowers.add(new int[]{10, 0});
 			flowers.add(new int[]{14, 0});
 			flowers.add(new int[]{20, 0});

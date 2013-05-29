@@ -142,4 +142,8 @@ public class Const {
 		public static final double hintSize = 15;
 		
 		public static final int levelCap = 12;
+		
+		public static final int mentorMaxLife = 200;
+		public static final int mentorHealthBarWidth = 10;
+		public static final int mentorHealthBarHeight = 4;
 	}

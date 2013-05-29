@@ -100,6 +100,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private boolean underground = false;
 	private double touchX, touchY;
 	private boolean loading = true;
+	private boolean startedMentorMonolog;
+	private int monologTimer;
+	private String[] mentorMessage;
+	private boolean showHUD = true;
 
 	//Special tutorial variables
 	private Protagonist mentor;
@@ -111,10 +115,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound, mentorPlayCounter, mentorSentencesToSay;
 	private boolean tutorialFruitUp = true;
 	private int tutorialFruitYSpeed = 0;
-
-	//Special final variables
-	private int mentorLife = 3;
-
 
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
@@ -204,7 +204,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		clouds = new ArrayList<double[]>();
 
 		loadPaint.setColor(Color.WHITE);
-		
+
 		green.setColor(Color.GREEN);
 		red.setColor(Color.RED);
 		groundPaint.setColor(Color.rgb(10, 250, 10));
@@ -270,6 +270,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentorSM.addSound(5, R.raw.mentor_sound_woohoo);
 			lastMentorSound = -1; //Stops him from repeating the same line
 			mentorSentencesToSay = 3;
+		}
+		if(level == 11){
+			mentor = new Protagonist(200, -20, this, true);
+			
+			mentorSM = new SoundManager(getContext(), 1);
+			//Load all the things the mentor can say
+			mentorSM.addSound(0, R.raw.mentor_sound_1);
+			mentorSM.addSound(1, R.raw.mentor_sound_2);
+			mentorSM.addSound(2, R.raw.mentor_sound_3);
+			mentorSM.addSound(3, R.raw.mentor_sound_4);
+			mentorSM.addSound(4, R.raw.mentor_sound_5);
+			mentorSM.addSound(5, R.raw.mentor_sound_woohoo);
+			lastMentorSound = -1; //Stops him from repeating the same line
 		}
 		//Paint
 		textPaint = new Paint();
@@ -426,77 +439,104 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					viewStatistics = false;
 				}
 			}
-		}
-		this.time++; //count number of frames passed
-		for(int i = 0; i < butterflies.size(); i++){ //update butterfly
-			butterflies.get(i).update();
-		}
-		for(int i = 0; i < birds.size(); i++){ //update bird
-			birds.get(i).update();
-			birds.get(i).collide(bullets);
-			if(time - latestBirdSound > 50 && Math.abs(protagonist.getXPos() - birds.get(i).getX()) < width/2 && Math.abs(protagonist.getYPos() - birds.get(i).getY()) < height/2){
-				ambientSM.playSound(2, effectVolume);
-				latestBirdSound = time;
-			}
-			if(!birds.get(i).isAlive() && Math.abs(birds.get(i).getStartY() - birds.get(i).getY()) > height){
-				birds.remove(i);
-				ambientSM.stop(2);
-				i--;
-			}
-		}
-		//Tutorial
-		if(level == 0){
-			moveMentor();
-			handleCheckpoints();
-			if(bird != null){
-				bird.update();
-			}
-			if(!tutorialFruitUp && Const.tutorialFruitY < 200){
-				tutorialFruitYSpeed++;
-				Const.tutorialFruitY += tutorialFruitYSpeed;
-			}
-			if(currentCheckpoint == 8){
-				screenY += (50-screenY)/20;
-			}
-			if(currentCheckpoint == 12){
-				screenY += (183-screenY)/20;
-				screenX += (1207-screenX)/20;
-			}
-			if(protagonist.getXPos() > checkpoints[currentCheckpoint] + pastCheckpointBorder && currentCheckpoint <= 13){
-				protagonist.setXPos(checkpoints[currentCheckpoint] + pastCheckpointBorder);
-			}
-		}
 
-		if(level == 10){
-			if(protagonist.getYPos() > 60 && protagonist.getYPos() < 600 && protagonist.getXPos() < 500){
-				darknessPercent = (int)(50*(protagonist.getYPos()-60)/540.);
+			this.time++; //count number of frames passed
+			for(int i = 0; i < butterflies.size(); i++){ //update butterfly
+				butterflies.get(i).update();
 			}
-			if(!underground){
-				if(protagonist.getYPos() > 500){
+			for(int i = 0; i < birds.size(); i++){ //update bird
+				birds.get(i).update();
+				birds.get(i).collide(bullets);
+				if(time - latestBirdSound > 50 && Math.abs(protagonist.getXPos() - birds.get(i).getX()) < width/2 && Math.abs(protagonist.getYPos() - birds.get(i).getY()) < height/2){
+					ambientSM.playSound(2, effectVolume);
+					latestBirdSound = time;
+				}
+				if(!birds.get(i).isAlive() && Math.abs(birds.get(i).getStartY() - birds.get(i).getY()) > height){
+					birds.remove(i);
+					ambientSM.stop(2);
+					i--;
+				}
+			}
+			//Tutorial
+			if(level == 0){
+				moveMentor();
+				handleCheckpoints();
+				if(bird != null){
+					bird.update();
+				}
+				if(!tutorialFruitUp && Const.tutorialFruitY < 200){
+					tutorialFruitYSpeed++;
+					Const.tutorialFruitY += tutorialFruitYSpeed;
+				}
+				if(currentCheckpoint == 8){
+					screenY += (50-screenY)/20;
+				}
+				if(currentCheckpoint == 12){
+					screenY += (183-screenY)/20;
+					screenX += (1207-screenX)/20;
+				}
+				if(protagonist.getXPos() > checkpoints[currentCheckpoint] + pastCheckpointBorder && currentCheckpoint <= 13){
+					protagonist.setXPos(checkpoints[currentCheckpoint] + pastCheckpointBorder);
+				}
+			}
+
+			if(level == 10){
+				if(protagonist.getYPos() > 60 && protagonist.getYPos() < 600 && protagonist.getXPos() < 500){
+					darknessPercent = (int)(50*(protagonist.getYPos()-60)/540.);
+				}
+				if(!underground){
+					if(protagonist.getYPos() > 500){
+						underground = true;
+						backgroundColor = Color.rgb(150, 150, 150);
+					}
+				}
+			}
+			if(level == 11){
+				if(protagonist.getYPos() > -350){
+					backgroundColor = Color.rgb(150,  150,  150);
 					underground = true;
-					backgroundColor = Color.rgb(150, 150, 150);
+				}
+				if(protagonist.getXPos() > 200 && !startedMentorMonolog){
+					startedMentorMonolog = true;
+					leftStick.setPointed(false);
+					monologTimer = 0;
+					showHUD = false;
+				}
+				if(startedMentorMonolog && monologTimer < 300){
+					monologTimer++;
+					if(protagonist.getXPos() < 500){
+						protagonist.accelerate(1);
+						protagonist.step(1);
+					} else {
+						protagonist.slowDown();
+						protagonist.setStepCount(0);
+					}
+					switch(monologTimer){
+					case 15:
+						mentorMessage = new String[]{"So, you made it here at last. When I left you at home I didn't think that you would make it this far!"};
+						break;
+					case 90:
+						mentorMessage = new String[]{"Bla bla bla..."};
+					}
+				}
+				if(monologTimer == 300){
+					showHUD = true;
+					mentorMessage = null;
+				}
+			}
+			if(finished){
+				if(level == 10){
+					darknessPercent = Math.max((int)(100.*(finishDelayTime-finishDelay)/finishDelayTime), 50);
+				} else {
+					darknessPercent = (int)(100.*(finishDelayTime-finishDelay)/finishDelayTime);
 				}
 			}
 		}
-		if(finished){
-			if(level == 10){
-				darknessPercent = Math.max((int)(100.*(finishDelayTime-finishDelay)/finishDelayTime), 50);
-			} else {
-				darknessPercent = (int)(100.*(finishDelayTime-finishDelay)/finishDelayTime);
-			}
-		}
-		
-	/*	if(level == 11){
-			if(protagonist.getYPos() > -350){
-				backgroundColor = Color.rgb(150,  150,  150);
-				underground = true;
-			}
-		}*/
 	}
 
 	//If left stick pointed, protagonist is moving. If not protagonist slow down
 	public void handleSticks(){
-		if(!finished){
+		if(showHUD){
 			if(leftStick.isPointed()) {
 				protagonist.handleLeftStick(leftStick.getAngle(), 0.4);
 			} else if (Math.abs(protagonist.getXVel()) > 0){
@@ -714,6 +754,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	public void checkFinish(){
 		if(protagonist.getXPos() >  levelLoader.getFinishX() - Const.finishFlagWidth/2 && protagonist.getPlatformNumber() == -1 && protagonist.isTouchingGround() && !finished){
 			finished = true;
+			showHUD = false;
 			finishDelay = finishDelayTime;
 		} else if(protagonist.getXPos() >  levelLoader.getFinishX() - Const.finishFlagWidth/2 && !finished){
 			protagonist.setXPos(levelLoader.getFinishX() - Const.finishFlagWidth/2);
@@ -958,13 +999,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderSkeletons(canvas);
 
 			//HUD
-			renderSticks(canvas);
-			renderHeatMeter(canvas);
-			renderHealthMeter(canvas);
-			renderTime(canvas);
+			if(showHUD){
+				renderSticks(canvas);
+				renderHeatMeter(canvas);
+				renderHealthMeter(canvas);
+				renderTime(canvas);
+			}
 			//Tutorial 
 			if(level == 0){
 				renderHint(canvas);
+			} else if(mentorMessage != null){
+				renderHint(canvas, mentorMessage);
 			} else {
 				for(i = 0; i < hints.size(); i++){
 					if(hints.get(i).inRange(protagonist.getXPos(), protagonist.getYPos())){
@@ -1305,6 +1350,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		//Draw red indicator that moves with current heat level
 		canvas.drawRect((float)(Const.HUDPadding*scaleX), (float)(Const.HUDPadding*scaleY), (float)((Const.HUDPadding+Const.meterWidth*protagonist.getHealth())*scaleX), (float)((Const.HUDPadding+Const.meterHeight)*scaleY), green);
 	}
+	
+	public void renderMentorHealthMeter(Canvas canvas){
+		frame.setColor(Color.BLACK);
+		//Draw frame
+		canvas.drawRect((float)((mentor.getXPos() - Const.mentorHealthBarWidth/2 - Const.meterFrameSize)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2-Const.mentorHealthBarHeight - Const.meterFrameSize)*scaleY), (float)((mentor.getXPos() + Const.mentorHealthBarWidth/2 + Const.meterFrameSize)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2 + Const.meterFrameSize)*scaleY), frame);
+		//Draw green background
+		canvas.drawRect((float)((mentor.getXPos() - Const.mentorHealthBarWidth/2)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2-Const.mentorHealthBarHeight)*scaleY), (float)((mentor.getXPos() + Const.mentorHealthBarWidth/2)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2)*scaleY), red);
+		//Draw red indicator that moves with current heat level
+		canvas.drawRect((float)((mentor.getXPos() - Const.mentorHealthBarWidth/2)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2-Const.mentorHealthBarHeight)*scaleY), (float)((mentor.getXPos() - Const.mentorHealthBarWidth/2 + mentor.getHealth()*Const.mentorHealthBarWidth)*scaleX), (float)((mentor.getYPos()-mentor.getHeight()/2)*scaleY), green);
+	}
 
 	//Draw the sun, moving in time
 	public void renderSun(Canvas canvas){
@@ -1512,7 +1567,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
-		if(!loading){
+		if(!loading && showHUD){
 			index = e.getActionIndex();
 			id = e.getPointerId(index);
 
@@ -1791,7 +1846,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		@Override
 		protected void onProgressUpdate(Integer... values) {
-			
+
 		}
 	}   
 
