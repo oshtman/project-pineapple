@@ -73,10 +73,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint timePaint = new Paint();
 	private Paint textBackground = new Paint();
 	private Paint loadPaint = new Paint();
+	private Paint backgroundPaint;
 	private int time;
 	private double bulletDamage = 0.05;
 	public SoundManager ambientSM, protagonistSM, enemySM, mentorSM, healthSM;
-	private MediaPlayer theme;
+	private MediaPlayer theme, earthquake;
 	private final int[] renderOrder = new int[]{3, 1, 2};
 	private int cloudSpawnDelay = 1000, cloudCounter = cloudSpawnDelay;
 	private float aimAngle, feetAngle;
@@ -288,6 +289,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentorSM.addSound(4, R.raw.mentor_sound_5);
 			mentorSM.addSound(5, R.raw.mentor_sound_woohoo);
 			lastMentorSound = -1; //Stops him from repeating the same line
+			
+			backgroundPaint = new Paint();
+			backgroundPaint.setColor(Color.rgb(150,  150,  150));
+			
+			darknessPercent = 50;
 		}
 		//Paint
 		textPaint = new Paint();
@@ -497,144 +503,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				}
 			}
 			if(level == 11){//Boss
-				if(protagonist.getYPos() > -350){
-					backgroundColor = Color.rgb(150,  150,  150);
-					underground = true;
-				}
-				if(protagonist.getXPos() > 200 && !startedMentorMonolog){
-					startedMentorMonolog = true;
-					leftStick.setPointed(false);
-					monologTimer = 0;
-					showHUD = false;
-				}
-				if(startedMentorMonolog && monologTimer < 300){
-					monologTimer++;
-					if(protagonist.getXPos() < 500){
-						protagonist.accelerate(1);
-						protagonist.step(1);
-					} else {
-						protagonist.slowDown();
-						protagonist.setStepCount(0);
-					}
-					switch(monologTimer){
-					case 15:
-						mentorMessage = new String[]{"So, you made it here at last. When I left you at home I didn't think that you would make it this far!"};
-						break;
-					case 90:
-						mentorMessage = new String[]{"Bla bla bla..."};
-						break;
-					}
-				}
-				if(bossState == 4){
-					mentorDeathTimer++;
-					if(mentorDeathTimer < 25){
-						mentor.slowDown();
-						if(Math.abs(protagonist.getXPos()-mentor.getXPos()) > 50){
-							protagonist.accelerate(Math.signum(mentor.getXPos()-protagonist.getXPos()));
-							protagonist.step(1);
-						} else if(Math.abs(protagonist.getXPos()-mentor.getXPos()) < 20){
-							protagonist.accelerate(-Math.signum(mentor.getXPos()-protagonist.getXPos()));
-							protagonist.step(1);
-						} else {
-							protagonist.slowDown();
-							protagonist.setStepCount(0);
-						}
-					}
-					if(mentorDeathTimer <= 175){
-						switch(mentorDeathTimer){
-						case 25:
-							protagonist.faceDirection(mentor.getXPos()-protagonist.getXPos());
-							mentor.faceDirection(protagonist.getXPos()-mentor.getXPos());
-							mentorMessage = new String[]{"I can't believe this. How did you become so powerful?"};
-							break;
-						case 75:
-							mentorMessage = new String[]{"I guess my desire for world dominance has clouded my judgement..."};
-							break;
-						case 125:
-							mentorMessage = new String[]{"I should never have underestimated you, Valentine. Good bye!"};
-							break;
-						case 175:
-							mentorMessage = null;
-							mentorBaseX = (int)mentor.getXPos();
-							mentorBaseY = (int)mentor.getYPos();
-							break;
-						}
-					} else if(mentorDeathTimer <= 200){
-						mentorBaseY -= 0.5;
-						mentor.setXPos(mentorBaseX + Math.random()*2-1);
-						mentor.setYPos(mentorBaseY + Math.random()*2-1);
-					} else if(mentorDeathTimer == 201){
-						mentorSM.playSound(5, effectVolume);
-						mentor.setYVel(-20);
-					} else if(mentorDeathTimer == 225){
-						showHUD = true;
-						monologTimer++;
-					} else if(mentorDeathTimer > 225){
-						screenY += Math.random() * 4 - 2;
-						for(i = 2; i <= 15; i++){
-							ground.setY(i, (int)(6*Math.random() - 3));//Earthquake
-						}
-					}
-
-				}
-				if(monologTimer == 299){
-					showHUD = true;
-					mentorMessage = null;
-					mentorFighting = true;
-				}
-				if(monologTimer == 300){//Fighting
-					screenY = -90;
-					if(mentorFighting){
-						if(mentor.isTouchingGround()){
-							mentor.accelerate((0.3-0.07*bossState)*Math.signum(protagonist.getXPos()-mentor.getXPos()));
-							mentor.step(1);
-						}
-						if(mentor.getHealth() <= (0.75 - bossState * 0.25) && mentorFighting){
-							mentorFighting = false;
-							bossState++;
-							//Spawn enemies
-							switch(bossState){
-							case 3: 
-								enemies.get(4).spawn();
-								enemies.get(5).spawn();
-							case 2: 
-								enemies.get(2).spawn();
-								enemies.get(3).spawn();
-							case 1:
-								enemies.get(0).spawn();
-								enemies.get(1).spawn();
-								mentor.jump();
-								mentor.setYVel(mentor.getYVel()*1.5);
-								break;
-							case 4: //Dead
-								showHUD = false;
-								mentorDeathTimer = 0;
-								break;
-							}
-						}
-						handleMentorBulletCollisions();
-					} else {
-						mentor.slowDown();
-						mentor.setStepCount(0);
-						//Wave vanquished
-						if(bossState == 1 && enemies.size() == 10 || bossState == 2 && enemies.size() == 6 || bossState == 3 && enemies.size() == 0){
-							mentorFighting = true;
-							mentor.setMaxSpeed(mentor.getMaxSpeed()+1);
-						}
-					}
-				}
-
-				mentor.inAir(platforms, ground);
-				mentor.checkGround(ground);
-				mentor.faceDirection(protagonist.getXPos()-mentor.getXPos());
-				mentor.setAim((int)(180/Math.PI*Math.atan2(protagonist.getYPos() - mentor.getYPos(), protagonist.getXPos() - mentor.getXPos())));
-				if(mentor.getYVel() > 0 && !mentorFighting)
-					mentor.checkPlatform(platforms);
-				if(mentorDeathTimer < 175 || mentorDeathTimer > 200){
-					mentor.gravity();
-					mentor.move();
-				}
-				mentor.breathe();
+				bossScripts();
 				
 			}
 			if(finished){
@@ -671,6 +540,200 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				}
 			}
 		}
+	}
+	
+	public void bossScripts(){
+		if(protagonist.getXPos() < 2108){
+			backgroundColor = Color.rgb(150,  150,  150);
+			underground = true;
+		} else {
+			backgroundColor = Color.rgb(135, 206, 250);
+			underground = false;
+		}
+		if(protagonist.getXPos() > 200 && !startedMentorMonolog){
+			startedMentorMonolog = true;
+			leftStick.setPointed(false);
+			monologTimer = 0;
+			showHUD = false;
+			leftStick.release();
+			rightStick.release();
+		}
+		if(startedMentorMonolog && monologTimer < 240){
+			monologTimer++;
+			if(protagonist.getXPos() < 500){
+				protagonist.accelerate(1);
+				protagonist.step(1);
+			} else {
+				protagonist.slowDown();
+				protagonist.setStepCount(0);
+			}
+			switch(monologTimer){
+			case 15:
+				mentorMessage = new String[]{
+						"So, you made it here at last. When I left you at home I", 
+						"didn't think that you would make it this far!"};
+				mentorSentencesToSay = 2;
+				break;
+			case 90:
+				mentorMessage = new String[]{
+						"Yes, Valentine, it was me all along.", 
+						"I created these creatures to gain world dominance!"};
+				mentorSentencesToSay = 2;
+				break;
+			case 165:
+				mentorMessage = new String[]{
+						"Now it seems you are the only obstacle in my path!",
+						"Let's end this..."};
+				mentorSentencesToSay = 2;
+				break;
+			}
+			
+		}
+		if(bossState == 4){
+			mentorDeathTimer++;
+			if(protagonist.getXPos() > 1600 && protagonist.getXPos() < 2000){
+				darknessPercent = (int)(50*((2000-protagonist.getXPos()))/400);
+			}
+			if(mentorDeathTimer < 25){
+				mentor.slowDown();
+				if(Math.abs(protagonist.getXPos()-mentor.getXPos()) > 50){
+					protagonist.accelerate(Math.signum(mentor.getXPos()-protagonist.getXPos()));
+					protagonist.step(1);
+				} else if(Math.abs(protagonist.getXPos()-mentor.getXPos()) < 20){
+					protagonist.accelerate(-Math.signum(mentor.getXPos()-protagonist.getXPos()));
+					protagonist.step(1);
+				} else {
+					protagonist.slowDown();
+					protagonist.setStepCount(0);
+				}
+			}
+			if(mentorDeathTimer <= 175){
+				protagonist.slowDown();
+				protagonist.faceDirection(mentor.getXPos()-protagonist.getXPos());
+				mentor.faceDirection(protagonist.getXPos()-mentor.getXPos());
+				switch(mentorDeathTimer){
+				case 25:
+					mentorMessage = new String[]{"I can't believe this. How did you become so powerful?"};
+					mentorSentencesToSay = 2;
+					leftStick.release();
+					rightStick.release();
+					break;
+				case 75:
+					mentorMessage = new String[]{"I guess my desire for world dominance",  "has clouded my judgement..."};
+					mentorSentencesToSay = 2;
+					break;
+				case 125:
+					mentorMessage = new String[]{"I should never have underestimated you, Valentine.", "Good bye!"};
+					mentorSentencesToSay = 1;
+					break;
+				case 175:
+					mentorBaseX = (int)mentor.getXPos();
+					mentorBaseY = (int)mentor.getYPos();
+					break;
+				}
+			} else if(mentorDeathTimer <= 200){
+				mentorBaseY -= 0.5;
+				mentor.setXPos(mentorBaseX + Math.random()*2-1);
+				mentor.setYPos(mentorBaseY + Math.random()*2-1);
+			} else if(mentorDeathTimer == 201){
+				mentorSM.playSound(5, effectVolume);
+				mentor.setYVel(-20);
+			} else if(mentorDeathTimer == 225){
+				showHUD = true;
+				earthquake = MediaPlayer.create(getContext(), R.raw.earthquake);
+				earthquake.setLooping(true);
+				earthquake.setVolume((float)effectVolume, (float)effectVolume);
+				earthquake.start();
+				monologTimer++;
+			} else if(mentorDeathTimer > 225){
+				screenY += Math.random() * 4 - 2;
+				for(i = 2; i <= 15; i++){
+					ground.setY(i, (int)(6*Math.random() - 3));//Earthquake
+				}
+			}
+
+		}
+		if(monologTimer == 239){
+			showHUD = true;
+			mentorMessage = null;
+			mentorFighting = true;
+		}
+		if(monologTimer == 240){//Fighting
+			screenY = -90;
+			if(mentorFighting){
+				if(mentor.isTouchingGround()){
+					mentor.accelerate((0.3-0.07*bossState)*Math.signum(protagonist.getXPos()-mentor.getXPos()));
+					mentor.step(1);
+				}
+				if(mentor.getHealth() <= (0.75 - bossState * 0.25) && mentorFighting){
+					mentorFighting = false;
+					bossState++;
+					//Spawn enemies
+					switch(bossState){
+				
+					
+					case 1:
+						mentorMessage = new String[]{"So... You want to do this the hard way?", "Maybe my creatures can change your mind?"};
+						mentorSentencesToSay = 2;
+						enemies.get(0).spawn();
+						enemies.get(1).spawn();
+						mentor.jump();
+						mentor.setYVel(mentor.getYVel()*1.5);
+						break;
+						
+					case 2: 
+						mentorMessage = new String[]{"Hmpf, stop struggling! Minions, attack!"};
+						mentorSentencesToSay = 2;
+						enemies.get(0).spawn();
+						enemies.get(1).spawn();
+						enemies.get(2).spawn();
+						enemies.get(3).spawn();
+						mentor.jump();
+						mentor.setYVel(mentor.getYVel()*1.5);
+						break;
+					case 3: 
+						mentorMessage = new String[]{"I've had enough of this! Release the monsters!"};
+						mentorSentencesToSay = 2;
+						enemies.get(0).spawn();
+						enemies.get(1).spawn();
+						enemies.get(2).spawn();
+						enemies.get(3).spawn();
+						enemies.get(4).spawn();
+						enemies.get(5).spawn();
+						mentor.jump();
+						mentor.setYVel(mentor.getYVel()*1.5);
+						break;
+					case 4: //Dead
+						showHUD = false;
+						mentorDeathTimer = 0;
+						break;
+					}
+				}
+				handleMentorBulletCollisions();
+			} else {
+				mentor.slowDown();
+				mentor.setStepCount(0);
+				//Wave vanquished
+				if(bossState == 1 && enemies.size() == 10 || bossState == 2 && enemies.size() == 6 || bossState == 3 && enemies.size() == 0){
+					mentorFighting = true;
+					mentor.setMaxSpeed(mentor.getMaxSpeed()+1);
+				}
+			}
+		}
+
+		mentor.inAir(platforms, ground);
+		mentor.checkGround(ground);
+		mentor.faceDirection(protagonist.getXPos()-mentor.getXPos());
+		mentor.setAim((int)(180/Math.PI*Math.atan2(protagonist.getYPos() - mentor.getYPos(), protagonist.getXPos() - mentor.getXPos())));
+		if(mentor.getYVel() > 0 && !mentorFighting)
+			mentor.checkPlatform(platforms);
+		if(mentorDeathTimer < 175 || mentorDeathTimer > 200){
+			mentor.gravity();
+			mentor.move();
+		}
+		handleMentorTalking();
+		mentor.breathe();
+		
 	}
 
 	//Move protagonist
@@ -975,6 +1038,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentorPlayCounter = mentorSM.getDuration(nextSound);
 			mentorSentencesToSay--;
 		}
+		if(mentorSentencesToSay == 0 && mentorPlayCounter <= 0 && mentorMessage != null){
+			mentorMessage = null;
+		}
 		mentorPlayCounter--;
 	}
 
@@ -1097,6 +1163,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				renderClouds(canvas);
 				renderTrees(canvas, 0);
 			}
+			
+			if(level == 11){//Boss cave exit transition
+				if(protagonist.getXPos() > 2108 && protagonist.getXPos() < 2263){//?
+					canvas.drawRect((float)((2030-screenX)*scaleX), (float)((-500-screenY)*scaleY), (float)((2185-screenX)*scaleX), (float)((-200-screenY)*scaleY), backgroundPaint);
+				}
+			}
+			
 			renderRocks(canvas, 0);
 			renderFlag(canvas, 0);
 			//Focus
@@ -1110,7 +1183,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 			if(level == 11){
 				renderMentor(canvas);
-				renderMentorHealthMeter(canvas);
+				if(showHUD)
+					renderMentorHealthMeter(canvas);
 			}
 			renderProtagonist(canvas);
 			renderPlatforms(canvas);
@@ -1805,6 +1879,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(theme != null && theme.isPlaying()){
 			theme.stop();
 		}
+		if(earthquake != null && earthquake.isPlaying()){
+			earthquake.stop();
+		}
+		
 		ambientSM.stop(1);
 		ambientSM.stop(2);
 		healthSM.stop(1);

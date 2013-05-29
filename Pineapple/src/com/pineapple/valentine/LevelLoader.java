@@ -1025,7 +1025,7 @@ public class LevelLoader {
 					{-400,-399, 2200},
 					{0, -600, -600},
 					{-400, 0, 200, 1300, 1500, 2000, 2199, 2200},
-					{0, -30, -100, -100, -30, -330, -470, -600}
+					{0, -30, -100, -100, -30, -330, -435, -600}
 			};
 			p2 = new int[][]{//Mentor haven
 					{200, 220, 1280, 1300},
@@ -1096,6 +1096,10 @@ public class LevelLoader {
 			rocks.add(new int[]{1450, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{1470, (int)(4*Math.random()), 30, 0});
 			rocks.add(new int[]{1500, (int)(4*Math.random()), 40, 1});
+			
+			//Exit
+			rocks.add(new int[]{2185, 3, 30, 1});
+			
 			//Flowers
 			flowers.add(new int[]{2280, 0});
 			//Birds
