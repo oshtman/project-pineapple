@@ -572,8 +572,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					} else if(mentorDeathTimer > 225){
 						screenY += Math.random() * 4 - 2;
 						for(i = 2; i <= 15; i++){
-							//ground.setY(i, (int)(6*Math.sin(mentorDeathTimer + i)));
-							ground.setY(i, (int)(6*Math.random() - 3));
+							ground.setY(i, (int)(6*Math.random() - 3));//Earthquake
 						}
 					}
 
@@ -592,7 +591,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						}
 						if(mentor.getHealth() <= (0.75 - bossState * 0.25) && mentorFighting){
 							mentorFighting = false;
-							bossState+=4;
+							bossState++;
 							//Spawn enemies
 							switch(bossState){
 							case 3: 
