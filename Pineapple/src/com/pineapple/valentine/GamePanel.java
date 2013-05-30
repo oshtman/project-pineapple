@@ -135,6 +135,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap footBitmap;
 	private Bitmap eyeMouthBitmap;
 	private Bitmap weaponBitmap;
+	private Bitmap handsBitmap;
 	private Bitmap pupilBitmap;
 	private Bitmap stickBitmap;
 	private Bitmap bulletBitmap;
@@ -165,6 +166,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Bitmap footBitmapFlipped;
 	private Bitmap eyeMouthBitmapFlipped;
 	private Bitmap weaponBitmapFlipped;
+	private Bitmap handsBitmapFlipped;
 	private Bitmap pupilBitmapFlipped;
 	private Bitmap mentorBodyBitmapFlipped;
 	private Bitmap eyeBeardBitmapFlipped;
@@ -626,7 +628,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.slowDown();
 				protagonist.faceDirection(mentor.getXPos()-protagonist.getXPos());
 				mentor.faceDirection(protagonist.getXPos()-mentor.getXPos());
-				protagonist.aim((mentor.getXPos()-protagonist.getXPos() > 0)?0:180);
 				switch(mentorDeathTimer){
 				case 25:
 					mentorMessage = new String[]{"I can't believe this. How did you become so powerful?"};
@@ -685,7 +686,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					mentor.step(1);
 				}
 				if(mentor.collide(protagonist)){
-					if(!protagonist.isInvincible()){
+					if(protagonist.isDashBonus()){
+						mentor.reduceHealth(0.005);
+					} else if(!protagonist.isInvincible()){
 						protagonist.reduceHealth(0.1);
 						protagonist.setInvincible(true);
 						protagonist.setXVel(0);
@@ -983,11 +986,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 			}
 		}
-		if(mentor != null && mentor.isTouchingGround() && mentor.getPlatformNumber() == protagonist.getPlatformNumber() && Math.abs(mentor.getXPos()-protagonist.getXPos()) < 30){
+		if(mentor != null && mentor.isTouchingGround()){
 			mentor.setYVel(-5);
-			if(level == 11){
-				mentor.reduceHealth(0.03);
-			}
 		}
 		dashX = (int)protagonist.getXPos();
 		dashY = (int)(protagonist.getYPos() - protagonist.getHeight()/4);
@@ -1719,7 +1719,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			canvas.drawBitmap(pupilBitmap, renderMatrix, null);
 			//Draw weapon
 			renderMatrix.setTranslate((float)((mentor.getXPos() - mentor.getWidth()*(0.5-Const.weaponXAxis-Const.weaponRadius) - screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.weaponYAxis-0.5) - screenY)*scaleY));
-			canvas.drawBitmap(weaponBitmap, renderMatrix, null);
+			canvas.drawBitmap(handsBitmap, renderMatrix, null);
 		} else {
 			//Draw back foot
 			renderMatrix.setRotate(feetAngle, footBitmapFlipped.getWidth()/2, footBitmapFlipped.getHeight()/2);
@@ -1739,8 +1739,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			renderMatrix.setTranslate((float)((mentor.getXPos() + mentor.getWidth()*(Const.pupilXOffset-0.5)+mentor.getWidth()*Const.pupilRadius*Math.cos(aimAngle*Math.PI/180)-screenX)*scaleX), (float)((mentor.getYPos() + mentor.getHeight()*(Const.pupilYOffset-0.5)+mentor.getHeight()*Const.pupilRadius*Math.sin(aimAngle*Math.PI/180) - screenY)*scaleY));
 			canvas.drawBitmap(pupilBitmapFlipped, renderMatrix, null);
 			//Draw weapon
-			renderMatrix.setTranslate((float)((mentor.getXPos()  + mentor.getWidth()*(0.5-Const.weaponXAxis-Const.weaponRadius) - screenX)*scaleX - weaponBitmapFlipped.getWidth()), (float)((mentor.getYPos() + mentor.getHeight()*(Const.weaponYAxis-0.5) - screenY)*scaleY));
-			canvas.drawBitmap(weaponBitmapFlipped, renderMatrix, null);
+			renderMatrix.setTranslate((float)((mentor.getXPos()  + mentor.getWidth()*(0.5-Const.weaponXAxis-Const.weaponRadius) - screenX)*scaleX - handsBitmapFlipped.getWidth()), (float)((mentor.getYPos() + mentor.getHeight()*(Const.weaponYAxis-0.5) - screenY)*scaleY));
+			canvas.drawBitmap(handsBitmapFlipped, renderMatrix, null);
 		}
 	}
 
@@ -1984,6 +1984,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			eyeBeardBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.eye_beard, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.eyeBeardXScale), (int)(protagonist.getHeight()*scaleY*Const.eyeBeardYScale), true);
 			footBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_foot, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.footXScale), (int)(protagonist.getHeight()*scaleY*Const.footYScale), true);
 			weaponBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_weapon, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.weaponXScale), (int)(protagonist.getHeight()*scaleY*Const.weaponYScale), true);
+			handsBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_hand_of_god, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.weaponXScale), (int)(protagonist.getHeight()*scaleY*Const.weaponYScale), true);
 			pupilBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.protagonist_pupil, mNoScale), (int)(protagonist.getWidth()*scaleX*Const.pupilXScale), (int)(protagonist.getHeight()*scaleY*Const.pupilYScale), true);
 			stickBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.stick, mNoScale), (int)(2*leftStick.getRadius()*scaleX), (int)(2*leftStick.getRadius()*scaleX), true);
 			bulletBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bullet, mNoScale), (int)(Bullet.getRadius()*2*scaleX), (int)(Bullet.getRadius()*2*scaleY), true);
@@ -2063,6 +2064,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			eyeBeardBitmapFlipped = Bitmap.createBitmap(eyeBeardBitmap, 0, 0, eyeBeardBitmap.getWidth(), eyeBeardBitmap.getHeight(), m, false);
 			footBitmapFlipped = Bitmap.createBitmap(footBitmap, 0, 0, footBitmap.getWidth(), footBitmap.getHeight(), m, false);
 			weaponBitmapFlipped = Bitmap.createBitmap(weaponBitmap, 0, 0, weaponBitmap.getWidth(), weaponBitmap.getHeight(), m, false);
+			handsBitmapFlipped = Bitmap.createBitmap(handsBitmap, 0, 0, handsBitmap.getWidth(), handsBitmap.getHeight(), m, false);
 			pupilBitmapFlipped = Bitmap.createBitmap(pupilBitmap, 0, 0, pupilBitmap.getWidth(), pupilBitmap.getHeight(), m, false);
 
 			enemyBodyBitmapFlipped[0] = Bitmap.createBitmap(enemyBodyBitmap[0], 0, 0, enemyBodyBitmap[0].getWidth(), enemyBodyBitmap[0].getHeight(), m, false);
