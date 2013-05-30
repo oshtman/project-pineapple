@@ -51,7 +51,7 @@ public class LevelBriefer {
 				"Credits"
 		};
 		String[] rawTexts = new String[]{
-				"Let your mentor teach you how to make it in this friendly world!",
+				"Let your mentor teach you how to make it in this friendly world, the land of Papilio",
 				"Take your first trembling steps toward uncovering the secrets of the mysterious monsters.",
 				"More of the strange monsters appear out of nowhere in different forms.",
 				"Short trip, but leaving home. Make the best of it! We wish you good luck.",

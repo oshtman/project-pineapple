@@ -245,7 +245,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(finishX + 8, 150 - 43, false));
 			//Hints
-			hints.add(new Hint(250, 150, "You are now leaving your homeland! Have a nice trip and welcome back again!"));
+			hints.add(new Hint(250, 150, "You are now leaving land of Papilio! Have a nice trip and welcome back again!"));
 			break;
 		case 4://Hide and seek, watch out
 			//Start and finish
@@ -606,7 +606,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(920, -1040, true));
 			//Hints
-			hints.add(new Hint(625, 120, "Before your eyes rises Mount Papilio, the highest mountain in the whole world. It's a long way up but once you're there, you will see it's worth it. //Traveler from <INSERT HOME OF VALENTINE>"));
+			hints.add(new Hint(625, 120, "Before your eyes rises Mount Papilio, the highest mountain in the whole world. It's a long way up but once you're there, you will see it's worth it. //Traveler from the land of Papilio"));
 			break;
 		case 7://Dont fall
 			//Start and finish
@@ -955,8 +955,8 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(2330, -340 - 43, true));
 			//Hints
-			hints.add(new Hint(50, 0, "Oh a butterfly! I love butterflies! There's one more. And there! Over there, on the flower! What a nice flower, I can count to SIX of them. Maybe I'll take one with me when I go back home. Oh well, I should start climbing.. //A happy <INSERT PEAOPLENAME>"));
-			hints.add(new Hint(2000, 0, "Aah!! I did climb all of them... and counted to nine! NINE!! My legs are killing me! //A tired <INSERT PEOPLENAME>"));
+			hints.add(new Hint(50, 0, "Oh a butterfly! I love butterflies! There's one more. And there! Over there, on the flower! What a nice flower, I can count to SIX of them. Maybe I'll take one with me when I go back home. Oh well, I should start climbing.. //A happy Papilio"));
+			hints.add(new Hint(2000, 0, "Aah!! I did climb all of them... and counted to nine! NINE!! My legs are killing me! //A tired Papilio"));
 			break;
 		case 10:
 			startPos = new int[]{10, 0};
@@ -1226,7 +1226,7 @@ public class LevelLoader {
 			birds.add(new Bird(35, 90 - 43, false));
 			//Hints
 			hints.add(new Hint(120, 90, "Thank you for playing Valentine's quest! Good job defeating the evil. Keep it up! Welcome to credits. Now run along!"));
-			hints.add(new Hint(410, 208, "This game is a result of a bachelor thesis, 'Independent Project in Engineering Physics, 15c', at the university of uppsala in the spring of 2013."));
+			hints.add(new Hint(410, 208, "This game is a result of a bachelor thesis, 'Independent Project in Engineering Physics, 15c', at Uppsala University in the spring of 2013."));
 			hints.add(new Hint(620, 208, "Thanks to Martin Sjodin, Sven-Erik Ekstrom and Henrik Olsson for your work! And thank you betasquad for testing!"));
 			hints.add(new Hint(1040, 133, "But wait, little one! Are you NUMBER ONE on the leaderboard yet? If yes, well then, nice for you!! If not, why don't you give it a try then mate?"));
 			hints.add(new Hint(1730, 275, "And welcome back :) // Oskar and Joar 2013-05-30"));
