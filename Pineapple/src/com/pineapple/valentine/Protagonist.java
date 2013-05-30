@@ -93,9 +93,10 @@ public class Protagonist {
 		} else if (angle >= 135 && angle <= 225) {
 			this.accelerate(-acc);
 			step(1);
-		} else if (angle > 45 && angle < 135 && this.isTouchingGround()) {
-			if(readyToJump) //If the protagonist isn't standing in a steep slope
+		} else if (angle > 45 && angle < 135) {
+			if(readyToJump && touchingGround) //If the protagonist isn't standing in a steep slope
 				this.jump();
+			this.accelerate(acc*Math.sqrt(2)*Math.cos(angle*Math.PI/180));
 		} else if (angle > 225 && angle < 315) {
 			if(!touchingGround){
 				this.down(gp.getGround(), gp.getPlatforms());
@@ -144,7 +145,7 @@ public class Protagonist {
 	public void jump() {
 		if(readyToJump){
 			touchingGround = false;
-			this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
+			this.setYVel(this.getJumpVel() + this.getJumpAcc());
 			readyToJump = false;
 			if(!mentor)
 				gp.playSound(gp.protagonistSM, 0);

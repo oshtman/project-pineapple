@@ -569,8 +569,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			leftStick.release();
 			rightStick.release();
 			keepInCave = true;
-			rocks.add(new int[]{170, 0, 60, 1});
-			rocks.add(new int[]{1330, 0, 60, 1});
+			
 		}
 		if(startedMentorMonolog && monologTimer < 240){
 			monologTimer++;
@@ -593,6 +592,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						"Yes, Valentine, it was me all along.", 
 				"I created these creatures to gain world dominance!"};
 				mentorSentencesToSay = 2;
+				rocks.add(new int[]{170, 0, 60, 1});
+				rocks.add(new int[]{1330, 0, 60, 1});
 				break;
 			case 165:
 				mentorMessage = new String[]{
@@ -1853,8 +1854,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 				for(index=0; index<e.getPointerCount(); index++) {
 					id=e.getPointerId(index);
-					touchX = (int) e.getX(index)/scaleX;
-					touchY = (int) e.getY(index)/scaleY; 
+					touchX = e.getX(index)/scaleX;
+					touchY = e.getY(index)/scaleY; 
 					if(id == rightStickId) {
 						if(touchX > width/2){
 							rightStick.handleTouch(touchX, touchY);
@@ -1956,6 +1957,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		thread.setRunning(true);
 		try{thread.start();} catch(IllegalThreadStateException err){}
+		if(mentorDeathTimer > 225){
+			earthquake = MediaPlayer.create(getContext(), R.raw.earthquake);
+			earthquake.setLooping(true);
+			earthquake.setVolume((float)effectVolume, (float)effectVolume);
+			earthquake.start();
+		}
 	}
 
 	private class LoadOperation extends AsyncTask<String, Integer, String> {
