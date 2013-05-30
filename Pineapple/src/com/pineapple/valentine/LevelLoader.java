@@ -158,7 +158,7 @@ public class LevelLoader {
 			rocks.add(new int[]{510, 3, 18, 1});
 			//Hints
 			hints.add(new Hint(40, 85, "Beware! Continue at your own risk! Strange creatures have been spotted in this area!"));
-			hints.add(new Hint(1250, 100, "Take care! I've dug a large hole up ahead!      -The Mentor"));
+			hints.add(new Hint(1250, 100, "Take care! I've dug a large hole up ahead!*- The Mentor"));
 			hints.add(new Hint(1940, 140, "This way to enter the wild."));
 			break;
 		case 2:
@@ -245,7 +245,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(finishX + 8, 150 - 43, false));
 			//Hints
-			hints.add(new Hint(250, 150, "You are now leaving land of Papilio! Have a nice trip and welcome back again!"));
+			hints.add(new Hint(250, 150, "You are now leaving land of Papilio!*Have a nice trip and welcome back again!"));
 			break;
 		case 4://Hide and seek, watch out
 			//Start and finish
@@ -391,8 +391,8 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(-60, -40, false));
 			//Hints
-			hints.add(new Hint(30, 0, "Welcome to Rocky road!                       Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
-			hints.add(new Hint(2050, 0, "Welcome to Rocky road!                       Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
+			hints.add(new Hint(30, 0, "Welcome to Rocky road!*Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
+			hints.add(new Hint(2050, 0, "Welcome to Rocky road!*Warning! This area is home for many animals, some more dangerous than others. Keep calm and watch your step!"));
 			break;
 		case 5://Go downhill			
 			//Start and finish
@@ -478,7 +478,7 @@ public class LevelLoader {
 			birds.add(new Bird(150, 20, true));
 			birds.add(new Bird(3230, 1100 - 43, true));
 			//Hints
-			hints.add(new Hint(100, 82, "More monsters have been seen in the hills. Be careful as you go down there!                   - The Mentor"));
+			hints.add(new Hint(100, 82, "More monsters have been seen in the hills. Be careful as you go down there!*- The Mentor"));
 			break;
 		case 6: //Up and away
 			//Start and finish
@@ -715,7 +715,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(finishX - 9, -55 - 41, false));
 			//Hints
-			hints.add(new Hint(80, 0, "Take the upper path. It's hard I know, ask my old legs. Upper is quicker, as you might see!     //Hint from one passed"));
+			hints.add(new Hint(80, 0, "Take the upper path. It's hard I know, ask my old legs. Upper is quicker, as you might see!*//Hint from one passed"));
 			break;
 		case 8: //Hunt
 			//Start and finish
@@ -775,8 +775,8 @@ public class LevelLoader {
 			//Skeletons
 			skeletons.add(new int[]{5400, 10});
 			//Hints
-			hints.add(new Hint(-10, 74, "You are far far away from home little one, and now you are here. Good. Keep on moving.          - The Mentor"));
-			hints.add(new Hint(3002, 26, "What a lovely place to rest. I think I am half way there. Puh, my legs! But I will recommend this place to the ones back home. Maybe I rise a sign so I find my way back here! This one!        //Old man"));
+			hints.add(new Hint(-10, 74, "You are far far away from home little one, and now you are here. Good. Keep on moving.*- The Mentor"));
+			hints.add(new Hint(3002, 26, "What a lovely place to rest. I think I am half way there. Puh, my legs! But I will recommend this place to the ones back home. Maybe I rise a sign so I find my way back here! This one!*//Old man"));
 			break;
 		case 9: //How a Maze (ing)
 			//Start and finish
