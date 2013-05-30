@@ -120,7 +120,7 @@ public class Const {
 		public static final double blinkInterval = 0.05;
 		public static final int HUDPadding = 4;
 		
-		public static final int levelButtonsPerRow = 6;
+		public static final int levelButtonsPerRow = 7;
 		
 		public static final double dustWidth = 40;
 		public static final double dustHeight = 20; 

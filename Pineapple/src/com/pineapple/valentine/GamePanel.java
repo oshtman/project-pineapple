@@ -102,9 +102,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double touchX, touchY;
 	private boolean loading = true;
 	private boolean showHUD = true;
-	
+
 	//Boss variables
-	private boolean startedMentorMonolog;
+	private boolean startedMentorMonolog, keepInCave;
 	private int monologTimer, mentorDeathTimer;
 	private String[] mentorMessage;
 	private boolean mentorFighting;
@@ -289,10 +289,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentorSM.addSound(4, R.raw.mentor_sound_5);
 			mentorSM.addSound(5, R.raw.mentor_sound_woohoo);
 			lastMentorSound = -1; //Stops him from repeating the same line
-			
+
 			backgroundPaint = new Paint();
 			backgroundPaint.setColor(Color.rgb(150,  150,  150));
-			
+
 			darknessPercent = 50;
 		}
 		//Paint
@@ -504,7 +504,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 			if(level == 11){//Boss
 				bossScripts();
-				
+
 			}
 			if(finished){
 				if(level == 10){
@@ -541,7 +541,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			}
 		}
 	}
-	
+
 	public void bossScripts(){
 		if(protagonist.getXPos() < 2108){
 			backgroundColor = Color.rgb(150,  150,  150);
@@ -550,6 +550,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			backgroundColor = Color.rgb(135, 206, 250);
 			underground = false;
 		}
+		if(keepInCave){
+			if(protagonist.getXPos() < 200){
+				protagonist.setXPos(200);
+			}
+			if(protagonist.getXPos() > 1300){
+				protagonist.setXPos(1300);
+			}
+			if(mentor.getXPos() < 200 && mentor.getXVel() < 0 || mentor.getXPos() > 1300 && mentor.getXVel() > 0){
+				mentor.setXVel(-mentor.getXVel()/2);
+			}
+		}
 		if(protagonist.getXPos() > 200 && !startedMentorMonolog){
 			startedMentorMonolog = true;
 			leftStick.setPointed(false);
@@ -557,6 +568,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			showHUD = false;
 			leftStick.release();
 			rightStick.release();
+			keepInCave = true;
 		}
 		if(startedMentorMonolog && monologTimer < 240){
 			monologTimer++;
@@ -571,23 +583,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			case 15:
 				mentorMessage = new String[]{
 						"So, you made it here at last. When I left you at home I", 
-						"didn't think that you would make it this far!"};
+				"didn't think that you would make it this far!"};
 				mentorSentencesToSay = 2;
 				break;
 			case 90:
 				mentorMessage = new String[]{
 						"Yes, Valentine, it was me all along.", 
-						"I created these creatures to gain world dominance!"};
+				"I created these creatures to gain world dominance!"};
 				mentorSentencesToSay = 2;
 				break;
 			case 165:
 				mentorMessage = new String[]{
 						"Now it seems you are the only obstacle in my path!",
-						"Let's end this..."};
+				"Let's end this..."};
 				mentorSentencesToSay = 2;
 				break;
 			}
-			
+
 		}
 		if(bossState == 4){
 			mentorDeathTimer++;
@@ -638,12 +650,15 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			} else if(mentorDeathTimer == 201){
 				mentorSM.playSound(5, effectVolume);
 				mentor.setYVel(-20);
+				keepInCave = false;
 			} else if(mentorDeathTimer == 225){
 				showHUD = true;
 				earthquake = MediaPlayer.create(getContext(), R.raw.earthquake);
 				earthquake.setLooping(true);
 				earthquake.setVolume((float)effectVolume, (float)effectVolume);
 				earthquake.start();
+				mentor.setXPos(-100);
+				mentor.setYPos(-200);
 				monologTimer++;
 			} else if(mentorDeathTimer > 225){
 				screenY += Math.random() * 4 - 2;
@@ -670,8 +685,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					bossState++;
 					//Spawn enemies
 					switch(bossState){
-				
-					
+
+
 					case 1:
 						mentorMessage = new String[]{"So... You want to do this the hard way?", "Maybe my creatures can change your mind?"};
 						mentorSentencesToSay = 2;
@@ -680,7 +695,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						mentor.jump();
 						mentor.setYVel(mentor.getYVel()*1.5);
 						break;
-						
+
 					case 2: 
 						mentorMessage = new String[]{"Hmpf, stop struggling! Minions, attack!"};
 						mentorSentencesToSay = 2;
@@ -717,6 +732,21 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				if(bossState == 1 && enemies.size() == 10 || bossState == 2 && enemies.size() == 6 || bossState == 3 && enemies.size() == 0){
 					mentorFighting = true;
 					mentor.setMaxSpeed(mentor.getMaxSpeed()+1);
+					switch(bossState){
+					case 1:
+						mentorMessage = new String[]{"Stupid creatures! En garde!"};
+						mentorSentencesToSay = 2;
+						break;
+					case 2:
+						mentorMessage = new String[]{"I should have trained them better!"};
+						mentorSentencesToSay = 2;
+						break;
+					case 3:
+						mentorMessage = new String[]{"Okay Valentine, looks like I will have to finish this myself!"};
+						mentorSentencesToSay = 2;
+						break;
+					}
+
 				}
 			}
 		}
@@ -733,7 +763,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		}
 		handleMentorTalking();
 		mentor.breathe();
-		
+
 	}
 
 	//Move protagonist
@@ -1163,13 +1193,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				renderClouds(canvas);
 				renderTrees(canvas, 0);
 			}
-			
+
 			if(level == 11){//Boss cave exit transition
 				if(protagonist.getXPos() > 2108 && protagonist.getXPos() < 2263){//?
 					canvas.drawRect((float)((2030-screenX)*scaleX), (float)((-500-screenY)*scaleY), (float)((2185-screenX)*scaleX), (float)((-200-screenY)*scaleY), backgroundPaint);
 				}
 			}
-			
+
 			renderRocks(canvas, 0);
 			renderFlag(canvas, 0);
 			//Focus
@@ -1882,7 +1912,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		if(earthquake != null && earthquake.isPlaying()){
 			earthquake.stop();
 		}
-		
+
 		ambientSM.stop(1);
 		ambientSM.stop(2);
 		healthSM.stop(1);
