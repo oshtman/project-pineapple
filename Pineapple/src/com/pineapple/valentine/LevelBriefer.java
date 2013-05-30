@@ -164,7 +164,6 @@ public class LevelBriefer {
 		case SWITCHING:
 			topY += 100./animationTime;
 			botY += 100./animationTime;
-			Log.d("Briefer", topY+"");
 			if(animationTimer >= animationStop){
 				state = OPEN;
 			}

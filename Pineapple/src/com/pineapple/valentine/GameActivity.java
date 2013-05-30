@@ -30,23 +30,19 @@ public class GameActivity extends BaseActivity {
 	}
 
 	public void onDestroy(){
-		Log.d(TAG, "Destroying...");
 		super.onDestroy();
 	}
 	
 	public void onStop(){
-		Log.d(TAG, "Stopping...");
 		super.onStop();
 	}
 	
 	public void onPause(){
-		Log.d(TAG, "Pausing...");
 		gamePanel.pause();
 		super.onPause();
 	}
 	
 	public void onResume(){
-		Log.d(TAG, "Resuming...");
 		gamePanel.resume();
 		overridePendingTransition (0, 0);
 		super.onResume();
@@ -55,9 +51,9 @@ public class GameActivity extends BaseActivity {
 	
 	@Override
 	public void onBackPressed() { //Override so that the player cannot go to a previous activity
-		Log.d(TAG, "Back button");
 		Intent intent = new Intent(this, MainActivity.class);
 		startActivity(intent);
+		this.finish();
 	}
 
 }

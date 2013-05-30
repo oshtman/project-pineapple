@@ -385,7 +385,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 						canvas.drawText((i+1+leaderboardPage*scoresPerPage)+". ", (float)(Const.leaderboardColumns[0]*scaleX), (float)(Const.leaderboardStartY*scaleY+(i+1)*(height-Const.leaderboardStartY)/Const.leaderboardRows*scaleY), leaderboardPaint);
 					}
 				} catch(IndexOutOfBoundsException e){ //The rendering might get interrupted by a leaderboard update
-					Log.e(TAG, "The leaderboard rendering got interrupted");
+					
 				}
 			} else {
 				loaderRotation += 10;

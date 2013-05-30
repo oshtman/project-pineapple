@@ -39,6 +39,6 @@ public class GameOverActivity extends BaseActivity {
 	
 	@Override
 	public void onBackPressed() { //Override so that the player cannot go to a previous activity
-		Log.d(TAG, "Back button");
+		
 	}
 }
