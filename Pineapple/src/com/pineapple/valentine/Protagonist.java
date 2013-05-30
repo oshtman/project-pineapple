@@ -363,7 +363,16 @@ public class Protagonist {
 			return false;
 	}
 	
-	//Check collision with enemy
+	//Check collision with protagonist
+		public boolean collide(Protagonist p){
+			if(getXPos() - getWidth()/2 < p.getXPos() + p.getWidth()/2 && getXPos() + getWidth()/2 > p.getXPos() - p.getWidth()/2 &&
+					getYPos() - getHeight()/2 < p.getYPos() + p.getHeight()/2 && getYPos() + getHeight()/2 > p.getYPos() - p.getHeight()/2){
+				return true;
+			} else 
+				return false;
+		}
+	
+	//Check collision with bullet
 		public boolean collide(Bullet b){
 			if(getXPos() - getWidth()/2 < b.getXPos() + Bullet.getRadius() && getXPos() + getWidth()/2 > b.getXPos() - Bullet.getRadius() &&
 					getYPos() - getHeight()/2 < b.getYPos() + Bullet.getRadius() && getYPos() + getHeight()/2 > b.getYPos() - Bullet.getRadius()){

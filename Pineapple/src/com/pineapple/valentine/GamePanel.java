@@ -569,6 +569,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			leftStick.release();
 			rightStick.release();
 			keepInCave = true;
+			rocks.add(new int[]{170, 0, 60, 1});
+			rocks.add(new int[]{1330, 0, 60, 1});
 		}
 		if(startedMentorMonolog && monologTimer < 240){
 			monologTimer++;
@@ -677,8 +679,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			screenY = -90;
 			if(mentorFighting){
 				if(mentor.isTouchingGround()){
-					mentor.accelerate((0.3-0.07*bossState)*Math.signum(protagonist.getXPos()-mentor.getXPos()));
+					mentor.accelerate((0.3-0.03*bossState)*Math.signum(protagonist.getXPos()-mentor.getXPos()));
 					mentor.step(1);
+				}
+				if(mentor.collide(protagonist)){
+					if(protagonist.isDashBonus()){
+						mentor.reduceHealth(0.005);
+					} else if(!protagonist.isInvincible()){
+						protagonist.reduceHealth(0.1);
+						protagonist.setInvincible(true);
+						protagonist.setXVel(0);
+						protagonist.setYVel(-5);
+						protagonist.setTouchingGround(false);
+						if(protagonist.getHealth() < Const.criticalHealth){
+							if(!criticalHealthFlag){
+								healthSM.playLoopedSound(1, effectVolume);
+								criticalHealthFlag = true;
+							}
+						}
+						latestAction = time;
+						playSound(protagonistSM, 2 + (int)(Math.random()*2));
+					}
 				}
 				if(mentor.getHealth() <= (0.75 - bossState * 0.25) && mentorFighting){
 					mentorFighting = false;
@@ -692,6 +713,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						mentorSentencesToSay = 2;
 						enemies.get(0).spawn();
 						enemies.get(1).spawn();
+						enemySM.playSound(0, effectVolume);
 						mentor.jump();
 						mentor.setYVel(mentor.getYVel()*1.5);
 						break;
@@ -703,6 +725,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						enemies.get(1).spawn();
 						enemies.get(2).spawn();
 						enemies.get(3).spawn();
+						enemySM.playSound(0, effectVolume);
+						enemySM.playSound(2, effectVolume);
 						mentor.jump();
 						mentor.setYVel(mentor.getYVel()*1.5);
 						break;
@@ -715,6 +739,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						enemies.get(3).spawn();
 						enemies.get(4).spawn();
 						enemies.get(5).spawn();
+						enemySM.playSound(0, effectVolume);
+						enemySM.playSound(2, effectVolume);
+						enemySM.playSound(4, effectVolume);
 						mentor.jump();
 						mentor.setYVel(mentor.getYVel()*1.5);
 						break;
@@ -910,7 +937,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.setXVel(0);
 				protagonist.setYVel(-5);
 				protagonist.setTouchingGround(false);
-				protagonist.reduceHealth(0.05); //Change this constant
+				protagonist.reduceHealth(enemies.get(i).getDamageDealt()); 
 				if(protagonist.getHealth() < Const.criticalHealth){
 					if(!criticalHealthFlag){
 						healthSM.playLoopedSound(1, effectVolume);

@@ -86,6 +86,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private static final int maxPages = 3, scoresPerPage = 15;
 	private Paint textBackground = new Paint();
 	private static int space = 2;
+	private boolean clientLoaded = false;
 
 	public MenuPanel(Context context) {
 		super(context);
@@ -118,6 +119,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		textBackground.setARGB(120, 40, 40, 40);
 
+	
+		
 		//controller to handle the user's acceptance of the Terms Of Service
 		controller = new TermsOfServiceController(new TermsOfServiceControllerObserver() {
 			@Override
@@ -410,8 +413,6 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		new LoadOperation().execute("");
-
-
 	}
 
 	@Override
@@ -440,6 +441,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		try{thread.start();} catch(IllegalThreadStateException err){}
 		leaderboardsLoaded = false;
 		currentHighScoreMode = 0;
+		menuState = MAIN_MENU;
 	}
 
 	//Pause the game
