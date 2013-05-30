@@ -41,6 +41,7 @@ public class Enemy {
 	private double healthLostByDashConstant = 0.5;
 	private double damageGrade;
 	private boolean hitThisFrame;
+	private double damageDealt = 0;
 	private int platformNumber = -1;
 
 	//------------------------------------------------------------------------------------------------//
@@ -59,6 +60,7 @@ public class Enemy {
 			this.typeAcc = 0.2*baseAcc;
 			leftArmAngle = -45;
 			rightArmAngle = 45;
+			this.damageDealt = 0.05;
 		}
 		//type 2 is ninja
 		else if (type == 2) {
@@ -69,6 +71,7 @@ public class Enemy {
 			this.jumpVel = 2*jumpVel;
 			this.jumpAcc = 2*jumpAcc;
 			this.damageGrade = 1.5;
+			this.damageDealt = 0.03;
 
 		}
 		//type 3 is tank
@@ -80,6 +83,7 @@ public class Enemy {
 			this.jumpVel = 0.5*jumpVel;
 			this.jumpAcc = 0.5*jumpAcc;
 			this.damageGrade = 0.5;
+			this.damageDealt = 0.07;
 
 		}
 		this.setXPos(i);
@@ -468,6 +472,10 @@ public class Enemy {
 		}
 	}
 	
+	public double getDamageDealt() {
+		return damageDealt;
+	}
+
 	public void collide(Enemy e){
 		if(Math.hypot(getXPos()-e.getXPos(), getYPos() - e.getYPos()) < e.getHeight()/2 + getHeight()/2){
 			if(e.getMaxSpeed() > getMaxSpeed()){
