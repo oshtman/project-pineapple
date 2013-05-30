@@ -67,7 +67,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private MediaPlayer theme;
 	private int currentLevel;
 	private int touchX, touchY;
-	private int[] desiredX = new int[]{30, 60, 100, 120, 170};
+	private int[] desiredX = new int[]{30, 60, 100, 120, 190};
 	private SharedPreferences settings;
 	private Butterfly butterfly;
 	private float aimAngle, feetAngle;
@@ -86,7 +86,6 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private static final int maxPages = 3, scoresPerPage = 15;
 	private Paint textBackground = new Paint();
 	private static int space = 2;
-	private boolean clientLoaded = false;
 
 	public MenuPanel(Context context) {
 		super(context);
