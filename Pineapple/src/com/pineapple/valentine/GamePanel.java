@@ -685,9 +685,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					mentor.step(1);
 				}
 				if(mentor.collide(protagonist)){
-					if(protagonist.isDashBonus()){
-						mentor.reduceHealth(0.005);
-					} else if(!protagonist.isInvincible()){
+					if(!protagonist.isInvincible()){
 						protagonist.reduceHealth(0.1);
 						protagonist.setInvincible(true);
 						protagonist.setXVel(0);
@@ -705,7 +703,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				}
 				if(mentor.getHealth() <= (0.75 - bossState * 0.25) && mentorFighting){
 					mentorFighting = false;
-					bossState+=4;
+					bossState++;
 					//Spawn enemies
 					switch(bossState){
 
@@ -985,8 +983,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 			}
 		}
-		if(mentor != null && mentor.isTouchingGround()){
+		if(mentor != null && mentor.isTouchingGround() && mentor.getPlatformNumber() == protagonist.getPlatformNumber() && Math.abs(mentor.getXPos()-protagonist.getXPos()) < 30){
 			mentor.setYVel(-5);
+			if(level == 11){
+				mentor.reduceHealth(0.03);
+			}
 		}
 		dashX = (int)protagonist.getXPos();
 		dashY = (int)(protagonist.getYPos() - protagonist.getHeight()/4);
