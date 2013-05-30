@@ -35,7 +35,6 @@ public class MainThread extends Thread{
 	@Override
 	public void run(){
 		Canvas canvas;
-		Log.d(TAG, "Starting game loop");
 		if(!(gamePanel == null)){
 			while (running) {
 				startTime = System.currentTimeMillis();
@@ -58,7 +57,7 @@ public class MainThread extends Thread{
 						Thread.sleep(updateInterval + startTime - endTime);
 					} catch(InterruptedException e){}
 				} else { //If the rendering took too long, we try to catch up by only updating the game state
-					//Log.d(TAG, "Overtime!");
+					
 					overTime = endTime - startTime - updateInterval;
 					while(overTime >= 0){
 						startTime = System.currentTimeMillis();

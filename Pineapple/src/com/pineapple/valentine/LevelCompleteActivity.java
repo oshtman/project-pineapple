@@ -118,7 +118,6 @@ public class LevelCompleteActivity extends BaseActivity {
 
 					@Override
 					public void requestControllerDidReceiveResponse(RequestController requestController) {
-						Log.d(TAG, "Score upload successful");
 						showButtons();
 						if(newHighscore)
 							showFinish("New highscore!", "Congratulations! Your new highscore was successfully uploaded!");
@@ -128,7 +127,6 @@ public class LevelCompleteActivity extends BaseActivity {
 
 					@Override
 					public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
-						Log.d(TAG, "Score connect failed");
 						showButtons();
 						showFinish("Connection failure", "Your connection to the server failed!");
 					}
@@ -194,7 +192,6 @@ public class LevelCompleteActivity extends BaseActivity {
 
 	@Override
 	public void onBackPressed() { //Override so that the player cannot go to a previous activity
-		Log.d(TAG, "Back button");
 	}
 
 	public void showNewHighscore(){

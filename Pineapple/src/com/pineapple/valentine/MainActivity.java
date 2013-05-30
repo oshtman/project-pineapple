@@ -24,30 +24,24 @@ public class MainActivity extends BaseActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		
-		Log.d(TAG, "Start load...");
 		menuPanel = new MenuPanel(this);
-		Log.d(TAG, "Finished!");
 		setContentView(menuPanel);
 	}
 
 	public void onDestroy(){
-		Log.d(TAG, "Destroying...");
 		super.onDestroy();
 	}
 
 	public void onStop(){
-		Log.d(TAG, "Stopping...");
 		super.onStop();
 	}
 
 	public void onPause(){
-		Log.d(TAG, "Pausing...");
 		menuPanel.pause();
 		super.onPause();
 	}
 
 	public void onResume(){
-		Log.d(TAG, "Resuming...");
 		menuPanel.resume();
 		overridePendingTransition (0, 0);
 		super.onResume();
