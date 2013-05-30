@@ -20,8 +20,8 @@ public class Protagonist {
 	private double jumpAcc = 0.4;
 	private double maxSpeed = 3;
 	private double slideCoefficient = 0.8;
-	private final int height = 15;
-	private final int width = (int)(height/1.5); //Change 1.42 to ratio of bitmap
+	private double height = 15;
+	private double width = (int)(height/1.5); //Change 1.42 to ratio of bitmap
 	private boolean touchingGround;
 	private GamePanel gp;
 	private int stepCount;
@@ -50,7 +50,6 @@ public class Protagonist {
 		this.gp = gp;
 		this.stepCount = 0;
 		this.mentor = mentor;
-		Log.d(TAG, "Me");
 
 	}
 	
@@ -146,7 +145,6 @@ public class Protagonist {
 		if(readyToJump){
 			touchingGround = false;
 			this.setYVel(this.getYVel() + this.getJumpVel() + this.getJumpAcc());
-			Log.d(TAG, "Jump!!");
 			readyToJump = false;
 			if(!mentor)
 				gp.playSound(gp.protagonistSM, 0);
@@ -163,20 +161,16 @@ public class Protagonist {
 			this.setXAcc(0);
 			this.checkOverPlatform(platforms); // Can perhaps be removed later
 			if(platformNumber >= 0){
-				Log.d(TAG, "Coming down 2 u!! #onPlatform");
 				//Check if protagonist get dash bonus (if he is high enough)
 				if(platforms.get(platformNumber).getUpperYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
 					dashBonus = true;
 					invincible = true;
-					Log.d(TAG, "DASH!!");
 				} 
 			} else { //Over ground
-				Log.d(TAG, "Coming down 2 u!! #hitGround");
 				//Check if protagonist get dash bonus
 				if(g.getYFromX(this.getXPos()) - startHeight > 2*this.getHeight()) {
 					invincible = true;
 					dashBonus = true;
-					Log.d(TAG, "DASH!!");
 				}
 			}
 			gp.playSound(gp.protagonistSM, 1);
@@ -334,7 +328,6 @@ public class Protagonist {
 			//if head is in platform
 			if (platforms.get(i).spans(getXPos()) && this.getYVel() < 0 && this.getYPos() - this.getHeight()/2 < platforms.get(i).getLowerYFromX(this.getXPos()) && this.getYPos() - this.getHeight()/2 > platforms.get(i).getUpperYFromX(this.getXPos())) {
 				this.setYVel(-this.getYVel()*0.5);
-				Log.d(TAG, "Headache!!");
 			} else if (platforms.get(i).checkSide(this, -1) && getXPos() < platforms.get(i).getUpperX()[0] && getXPos() + getWidth()/2 > platforms.get(i).getUpperX()[0] && getXVel() > 0) {
 				this.setXVel(0);
 				this.setXPos(platforms.get(i).getUpperX()[0] - getWidth()/2);
@@ -364,11 +357,20 @@ public class Protagonist {
 	//Check collision with enemy
 	public boolean collide(Enemy e){
 		if(getXPos() - getWidth()/2 < e.getXPos() + e.getWidth()/2 && getXPos() + getWidth()/2 > e.getXPos() - e.getWidth()/2 &&
-				getYPos() - getWidth()/2 < e.getYPos() + e.getHeight()/2 && getYPos() + getWidth()/2 > e.getYPos() - e.getHeight()/2){
+				getYPos() - getHeight()/2 < e.getYPos() + e.getHeight()/2 && getYPos() + getHeight()/2 > e.getYPos() - e.getHeight()/2){
 			return true;
 		} else 
 			return false;
 	}
+	
+	//Check collision with enemy
+		public boolean collide(Bullet b){
+			if(getXPos() - getWidth()/2 < b.getXPos() + Bullet.getRadius() && getXPos() + getWidth()/2 > b.getXPos() - Bullet.getRadius() &&
+					getYPos() - getHeight()/2 < b.getYPos() + Bullet.getRadius() && getYPos() + getHeight()/2 > b.getYPos() - Bullet.getRadius()){
+				return true;
+			} else 
+				return false;
+		}
 
 	//Check if protagonist is outside track and set back inside level
 	public void contain(int finishX){
@@ -523,11 +525,11 @@ public class Protagonist {
 		this.jumpAcc = jumpAcc;
 	}
 
-	private double getMaxSpeed() {
+	public double getMaxSpeed() {
 		return maxSpeed;
 	}
 
-	private void setMaxSpeed(double maxSpeed) {
+	public void setMaxSpeed(double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
 
@@ -539,12 +541,20 @@ public class Protagonist {
 		this.slideCoefficient = slideCoefficient;
 	}
 
-	public int getHeight() {
+	public double getHeight() {
 		return height;
 	}
 
-	public int getWidth() {
+	public double getWidth() {
 		return width;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
+	}
+
+	public void setWidth(double width) {
+		this.width = width;
 	}
 
 	public void setStepCount(int step){

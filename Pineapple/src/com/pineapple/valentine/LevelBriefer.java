@@ -47,7 +47,7 @@ public class LevelBriefer {
 				"Level 8",
 				"Level 9",
 				"Level 10",
-				"Finale",
+				"Final",
 				"Credits"
 		};
 		String[] rawTexts = new String[]{
@@ -56,7 +56,7 @@ public class LevelBriefer {
 				"More of the strange monsters appear out of nowhere in different forms.",
 				"Short trip, but leaving home. Make the best of it! We wish you good luck.",
 				"Hide and seek, watch out for sneaky monsters. The Rocky road could be dangerous for someone like you. Hurry slowly.",
-				"Go downhill you must as your journey continues. Are you fast enough to not get caught? Let's see!",
+				"Go downhill you must as your journey continues. Are you fast enough to not get caught?",
 				"Up, up and away! Are you afraid of heights little one? You better not be!",
 				"Don't fall, and you will pass. So jump, jump for your life!",
 				"The hunting! Remember, he who fights and runs away may live to fight another day.",

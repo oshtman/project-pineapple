@@ -50,4 +50,8 @@ public class Ground {
 	public int getY(int index){
 		return y[index];
 	}
+	
+	public void setY(int i, int value){
+		y[i] = value;
+	}
 }
