@@ -1880,7 +1880,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				leftStickId = INVALID_POINTER;
 				rightStickId = INVALID_POINTER;
 
-
 				break;
 
 
@@ -1893,6 +1892,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					rightStick.release();
 					rightStickId = INVALID_POINTER;
 				}
+
 				break;
 			}
 		}
@@ -2108,5 +2108,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		}
 	}   
+	public Stick getLeftStick(){
+		return leftStick;
+	}
 
 }
