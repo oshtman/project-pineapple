@@ -245,7 +245,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(finishX + 8, 150 - 43, false));
 			//Hints
-			hints.add(new Hint(250, 150, "You are now leaving your homeland! Have a nice trip and welcome back again!"));
+			hints.add(new Hint(250, 150, "You are now leaving land of Papilio! Have a nice trip and welcome back again!"));
 			break;
 		case 4://Hide and seek, watch out
 			//Start and finish
@@ -606,7 +606,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(920, -1040, true));
 			//Hints
-			hints.add(new Hint(625, 120, "Before your eyes rises Mount Papilio, the highest mountain in the whole world. It's a long way up but once you're there, you will see it's worth it. //Traveler from <INSERT HOME OF VALENTINE>"));
+			hints.add(new Hint(625, 120, "Before your eyes rises Mount Papilio, the highest mountain in the whole world. It's a long way up but once you're there, you will see it's worth it. //Traveler from the land of Papilio"));
 			break;
 		case 7://Dont fall
 			//Start and finish
@@ -955,17 +955,18 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(2330, -340 - 43, true));
 			//Hints
-			hints.add(new Hint(50, 0, "Oh a butterfly! I love butterflies! There's one more. And there! Over there, on the flower! What a nice flower, I can count to SIX of them. Maybe I'll take one with me when I go back home. Oh well, I should start climbing.. //A happy <INSERT PEAOPLENAME>"));
-			hints.add(new Hint(2000, 0, "Aah!! I did climb all of them... and counted to nine! NINE!! My legs are killing me! //A tired <INSERT PEOPLENAME>"));
+			hints.add(new Hint(50, 0, "Oh a butterfly! I love butterflies! There's one more. And there! Over there, on the flower! What a nice flower, I can count to SIX of them. Maybe I'll take one with me when I go back home. Oh well, I should start climbing.. //A happy Papilio"));
+			hints.add(new Hint(2000, 0, "Aah!! I did climb all of them... and counted to nine! NINE!! My legs are killing me! //A tired Papilio"));
 			break;
 		case 10:
+			//Start and finish
 			startPos = new int[]{10, 0};
 			finishX = 2250;
+			//Ground
 			ground = new int[][]{
 					{-100, 147, 154, 187, 208, 241, 281, 381, 479, 591, 728, 980, 1172, 1404, 1491, 1596, 1790, 2037, 2154, 2400},
 					{  57,  57, 151, 200, 268, 432, 531, 683, 678, 651, 736, 770, 762,  767,  793,  860,  900,  569,  526,  526} 
 			};
-
 			//Roof
 			p1 = new int[][]{
 					{210, 240, 2300},
@@ -998,19 +999,75 @@ public class LevelLoader {
 					{1620, 1745, 1887, 1977},
 					{683, 715, 694, 600}
 			};
-
-			enemies.add(new int[]{580, 640, 490, 3}); //Welcome tank
-
-			enemies.add(new int[]{627, 655, 868, 2}); //Sneaky ninjas
-			enemies.add(new int[]{647, 655, 868, 2});
-			enemies.add(new int[]{1173, 660, 868, 2});
-			enemies.add(new int[]{1190, 660, 868, 2});
-
 			platforms.add(p1);
 			platforms.add(p2);
 			platforms.add(p3);
 			platforms.add(p4);
 			platforms.add(p5);
+			//Enemies
+			enemies.add(new int[]{580, 640, 490, 3}); //Welcome tank
+			enemies.add(new int[]{627, 655, 868, 2}); //Sneaky ninjas
+			enemies.add(new int[]{647, 655, 868, 2});
+			enemies.add(new int[]{1173, 660, 868, 2});
+			enemies.add(new int[]{1190, 660, 868, 2});
+			//Trees
+			trees.add(new int[]{10, (int)(3*Math.random()), (int)(3*Math.random()), 0});
+			//Rocks
+			rocks.add(new int[]{50, 3, 40, 0});
+			rocks.add(new int[]{155, 2, 40, 1});
+			rocks.add(new int[]{230, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{250, (int)(4*Math.random()), 20, 0});
+			rocks.add(new int[]{300, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{350, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{410, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{420, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{470, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{500, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{590, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{650, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{660, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{700, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{720, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{770, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{800, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{840, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{850, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{960, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{990, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1080, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1120, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1180, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{1200, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1230, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1280, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1300, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1350, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1400, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1470, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1500, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{1560, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1590, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1680, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1720, (int)(4*Math.random()), 25, 0});
+			rocks.add(new int[]{1770, (int)(4*Math.random()), 30, 0});
+			rocks.add(new int[]{1800, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1850, (int)(4*Math.random()), 40, 0});
+			rocks.add(new int[]{1900, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1950, (int)(4*Math.random()), 30, 1});
+			rocks.add(new int[]{1980, (int)(4*Math.random()), 35, 0});
+			rocks.add(new int[]{1990, (int)(4*Math.random()), 40, 1});
+			rocks.add(new int[]{2270, (int)(4*Math.random()), 35, 0});
+			rocks.add(new int[]{2300, (int)(4*Math.random()), 40, 1});			
+			rocks.add(new int[]{2350, (int)(4*Math.random()), 35, 0});
+			rocks.add(new int[]{2370, (int)(4*Math.random()), 40, 1});
+			//Flowers
+			flowers.add(new int[]{20, 0});
+			flowers.add(new int[]{98, 0});
+			flowers.add(new int[]{105, 0});
+			//Skeletons
+			skeletons.add(new int[]{2200, 0});
+			//Hints
+			hints.add(new Hint(100, 57, "This is Cave Timor. Enter at your own risk."));
 			break;
 		case 11: //Final boss fight
 			startPos = new int[]{10, 0};
@@ -1105,10 +1162,8 @@ public class LevelLoader {
 			rocks.add(new int[]{1450, (int)(4*Math.random()), 40, 0});
 			rocks.add(new int[]{1470, (int)(4*Math.random()), 30, 0});
 			rocks.add(new int[]{1500, (int)(4*Math.random()), 40, 1});
-			
 			//Exit
 			rocks.add(new int[]{2185, 3, 30, 1});
-			
 			//Flowers
 			flowers.add(new int[]{2280, 0});
 			//Birds
@@ -1226,10 +1281,10 @@ public class LevelLoader {
 			birds.add(new Bird(35, 90 - 43, false));
 			//Hints
 			hints.add(new Hint(120, 90, "Thank you for playing Valentine's quest! Good job defeating the evil. Keep it up! Welcome to credits. Now run along!"));
-			hints.add(new Hint(410, 208, "This game is a result of a bachelor thesis, 'Independent Project in Engineering Physics, 15c', at the university of uppsala in the spring of 2013."));
-			hints.add(new Hint(620, 208, "Thanks to Martin Sjodin, Sven-Erik Ekstrom and Henrik Olsson for your work! And thank you betasquad for testing!"));
+			hints.add(new Hint(410, 208, "This game is a result of a bachelor thesis, 'Independent Project in Engineering Physics, 15c', at Uppsala University in the spring of 2013."));
+			hints.add(new Hint(620, 208, "Thanks to Martin, Sven-Erik and Henrik for your work! And thank you betasquad for testing!"));
 			hints.add(new Hint(1040, 133, "But wait, little one! Are you NUMBER ONE on the leaderboard yet? If yes, well then, nice for you!! If not, why don't you give it a try then mate?"));
-			hints.add(new Hint(1730, 275, "And welcome back :) // Oskar and Joar 2013-05-25"));
+			hints.add(new Hint(1730, 275, "And welcome back :) // Oskar and Joar 2013-05-30"));
 		}
 	}
 
@@ -1244,20 +1299,23 @@ public class LevelLoader {
 	public int[] getPlatformUpperX(int platform){
 		return platforms.get(platform)[0];
 	}
+	
 	public int[] getPlatformUpperY(int platform){
 		return platforms.get(platform)[1];
 	}
+	
 	public int[] getPlatformLowerX(int platform){
 		return platforms.get(platform)[2];
 	}
+	
 	public int[] getPlatformLowerY(int platform){
 		return platforms.get(platform)[3];
 	}
-
+	
 	public int getNumberOfPlatforms(){
 		return platforms.size();
 	}
-
+	
 	public int[] getEnemyData(int enemy){
 		return enemies.get(enemy);
 	}

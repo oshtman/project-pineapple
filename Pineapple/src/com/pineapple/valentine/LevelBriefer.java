@@ -51,15 +51,15 @@ public class LevelBriefer {
 				"Credits"
 		};
 		String[] rawTexts = new String[]{
-				"Let your mentor teach you how to make it in this friendly world!",
+				"Let your mentor teach you how to make it in this friendly world, the land of Papilio",
 				"Take your first trembling steps toward uncovering the secrets of the mysterious monsters.",
 				"More of the strange monsters appear out of nowhere in different forms.",
-				"Short trip, but leaving home. Make the best of it! We wish you good luck.",
-				"Hide and seek, watch out for sneaky monsters. The Rocky road could be dangerous for someone like you. Hurry slowly.",
+				"Short trip, but leaving the land of Papilio, your home. Make the best of it! We wish you good luck.",
+				"Hide and seek, watch out for sneaky monsters. This could be dangerous for someone like you. Hurry slowly.",
 				"Go downhill you must as your journey continues. Are you fast enough to not get caught?",
 				"Up, up and away! Are you afraid of heights little one? You better not be!",
 				"Don't fall, and you will pass. So jump, jump for your life!",
-				"The hunting! Remember, he who fights and runs away may live to fight another day.",
+				"Hunt in hills! Remember, he who fights and runs away may live to fight another day.",
 				"How amazing! Which way should you go? Some say all good things are three, you might say twice.",
 				"Enter the lair of the enemy! The end is good, everything is good. Or is it?",
 				"Final battle. Defeat the evil, or it will defeat you! Evil shall by your hands be expelled!",
