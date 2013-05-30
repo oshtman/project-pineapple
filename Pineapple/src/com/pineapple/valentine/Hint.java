@@ -15,11 +15,22 @@ public class Hint {
 
 		int lettersPerRow = 50;
 		
-		while(hint.length() > lettersPerRow){
-			String row = hint.substring(0, lettersPerRow-1);
-			int spaceIndex = row.lastIndexOf(" ");
-			temp.add(hint.substring(0, spaceIndex));
-			hint = hint.substring(spaceIndex+1, hint.length());
+		while(hint.length() > lettersPerRow || hint.contains("*")){
+			String row = hint;
+			if(hint.length() > lettersPerRow){
+				row = hint.substring(0, lettersPerRow-1);
+			}
+			Log.d("HEJ", row);
+			if(row.contains("*") && row.indexOf("endl") < lettersPerRow){
+				Log.d("HEJ", "Här var det slut");
+				int stopIndex = row.indexOf("*");
+				temp.add(hint.substring(0, stopIndex));
+				hint = hint.substring(stopIndex+1, hint.length());
+			} else {
+				int spaceIndex = row.lastIndexOf(" ");
+				temp.add(hint.substring(0, spaceIndex));
+				hint = hint.substring(spaceIndex+1, hint.length());
+			}
 		}
 		this.hint = new String[temp.size()+1];
 		for(int i = 0; i < temp.size(); i++){
