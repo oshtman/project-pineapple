@@ -248,7 +248,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					"Wow, you can see so much from up here! Actually... I see something strange over there! What is that?",
 					"Good heavens, what an ugly creature! I know we are a friendly people but you better put him out of his misery! He doesn't look like a nice monster anyways...", 
 					"May he rest in peace! Now where were we? Oh right, there's one final thing you need to know! That weapon of yours, it gets easily overheated. Watch out for that if you feel like firing for a long time! Try it!",
-					"Well, that should be everything you need to know! I hereby name you... What is that noise? Run and look, will you?",
+					"Well, that should be everything you need to know! And Valentine, you... What is that noise? Run and look, will you?",
 					"I don't know where these creatures came from but it is up to you investigate it! Go past that flag to continue your mission! Good luck!",
 					"I don't know where these creatures came from but it is up to you investigate it! Go past that flag to continue your mission! Good luck!"
 			};
