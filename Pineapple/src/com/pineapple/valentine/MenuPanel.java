@@ -102,9 +102,6 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 
-		Editor e = settings.edit();
-		e.putInt("currentLevel", 12);
-		e.commit();
 		currentLevel = settings.getInt("currentLevel", 0);
 
 		userName = (settings.getString("userName", null) == null)?"loading...":settings.getString("userName", null);

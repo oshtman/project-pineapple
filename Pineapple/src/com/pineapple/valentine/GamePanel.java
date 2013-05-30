@@ -626,6 +626,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.slowDown();
 				protagonist.faceDirection(mentor.getXPos()-protagonist.getXPos());
 				mentor.faceDirection(protagonist.getXPos()-mentor.getXPos());
+				protagonist.aim((mentor.getXPos()-protagonist.getXPos() > 0)?0:180);
 				switch(mentorDeathTimer){
 				case 25:
 					mentorMessage = new String[]{"I can't believe this. How did you become so powerful?"};
@@ -704,7 +705,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				}
 				if(mentor.getHealth() <= (0.75 - bossState * 0.25) && mentorFighting){
 					mentorFighting = false;
-					bossState++;
+					bossState+=4;
 					//Spawn enemies
 					switch(bossState){
 
