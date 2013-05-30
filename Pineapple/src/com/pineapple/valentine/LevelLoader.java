@@ -1174,8 +1174,8 @@ public class LevelLoader {
 			startPos = new int[]{45, 70};
 			finishX = 1750;
 			ground = new int[][]{
-					{-100,  258, 395, 580, 590, 600, 610, 620, 649, 725, 800, 875, 983, 1254, 1264, 1300, 1310, 1528, 1600, 1610, 2000},
-					{90,    90,  208, 208, 203, 200, 203, 208, 208, 160, 146, 160, 208, 208,  240,  240,  208,  208,  270,  275,  275 }
+					{-100,  258, 395, 580, 590, 600, 610, 620, 649, 725, 800, 875, 983, 1528, 1600, 1610, 2000},
+					{90,    90,  208, 208, 203, 200, 203, 208, 208, 160, 146, 160, 208, 208,  270,  275,  275 }
 			};			
 			//Platform 1
 			p1 = new int[][]{
@@ -1282,9 +1282,16 @@ public class LevelLoader {
 			//Hints
 			hints.add(new Hint(120, 90, "Thank you for playing Valentine's quest! Good job defeating the evil. Keep it up! Welcome to the credits. Now run along!"));
 			hints.add(new Hint(410, 208, "This game is a result of a bachelor thesis, 'Independent Project in Engineering Physics, 15c', at Uppsala University in the spring of 2013."));
-			hints.add(new Hint(620, 208, "Thanks to Martin, Sven-Erik and Henrik for your work! And thank you beta squad for testing!"));
-			hints.add(new Hint(1040, 133, "But wait, little one! Are you #1 on the leaderboard yet? If yes, well then, good for you! If not, why don't you give it a try then?"));
-			hints.add(new Hint(1730, 275, "And welcome back *//Oskar and Joar 2013-05-30"));
+			hints.add(new Hint(500, 208, "Idea and programming:*Joar Lind*Oskar Waglund"));
+			hints.add(new Hint(560, 208, "Art director:*Joar Lind"));
+			hints.add(new Hint(635, 208, "Audio engineer:*Oskar Waglund"));
+			
+			hints.add(new Hint(800, 146, "Thanks to Martin, Sven-Erik and Henrik for your work! And thank you beta squad for testing!"));
+			hints.add(new Hint(1070, 208, "A big thank you to ScoreLoop for their service!"));
+			hints.add(new Hint(1110, 208, "Additional sound effects provided by SoundBible.com."));
+
+			hints.add(new Hint(1400, 208, "But wait, little one! Are you #1 on the leaderboard yet? If yes, well then, good for you! If not, why don't you give it a try then?"));
+			hints.add(new Hint(1730, 275, "And welcome back! *//Oskar and Joar 2013-05-30"));
 		}
 	}
 
