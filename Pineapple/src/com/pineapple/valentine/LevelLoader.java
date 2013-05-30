@@ -1220,7 +1220,7 @@ public class LevelLoader {
 			hints.add(new Hint(410, 208, "This game is a result of a bachelor thesis, 'Independent Project in Engineering Physics, 15c', at the university of uppsala in the spring of 2013."));
 			hints.add(new Hint(620, 208, "Thanks to Martin Sjodin, Sven-Erik Ekstrom and Henrik Olsson for your work! And thank you betasquad for testing!"));
 			hints.add(new Hint(1040, 133, "But wait, little one! Are you NUMBER ONE on the leaderboard yet? If yes, well then, nice for you!! If not, why don't you give it a try then mate?"));
-			hints.add(new Hint(1730, 275, "And welcome back :) // Oskar and Joar 2013-05-25"));
+			hints.add(new Hint(1730, 275, "And welcome back :) // Oskar and Joar 2013-05-30"));
 		}
 	}
 
