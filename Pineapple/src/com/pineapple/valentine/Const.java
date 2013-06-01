@@ -137,6 +137,7 @@ public class Const {
 		public static final int[] leaderboardColumns = new int[]{5, 12, 65, 80, 100, 114, 128, 140};
 		public static final int leaderboardStartY = 10;
 		public static final double leaderboardRows = 20;
+		public static final int maxModes = 22;
 		
 		public static final double hintRange = 20;
 		public static final double hintSize = 15;

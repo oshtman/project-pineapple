@@ -96,7 +96,14 @@ public class LevelCompleteActivity extends BaseActivity {
 			final boolean newHighscore;
 			if(score > localHighscore){ //New local highscore
 				Editor ed = localScores.edit();
-				ed.putInt("score_"+difficulty+"_"+completedLevel, score);
+				ed.putInt("score_0_"+completedLevel, score);
+				ed.putInt("drones_0_"+completedLevel, scoreKill[0]);
+				ed.putInt("ninjas_0_"+completedLevel, scoreKill[1]);
+				ed.putInt("tanks_0_"+completedLevel, scoreKill[2]);
+				ed.putInt("health_0_"+completedLevel, health);
+				ed.putInt("mins_0_"+completedLevel, (int)(seconds/60));
+				ed.putInt("secs_0_"+completedLevel, (int)(seconds%60));
+				ed.putInt("cSecs_0_"+completedLevel, (int)((time*MainThread.updateInterval/10)%100));
 				ed.commit();
 				newHighscore = true;
 			} else {
@@ -128,7 +135,7 @@ public class LevelCompleteActivity extends BaseActivity {
 					@Override
 					public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
 						showButtons();
-						showFinish("Connection failure", "Your connection to the server failed!");
+						showFinish("New highscore!", "Your connection to the server failed! Don't worry, we've saved your score locally! It will be uploaded when you update the leaderboards.");
 					}
 				};
 				final ScoreController myScoreController = new ScoreController(observer);
