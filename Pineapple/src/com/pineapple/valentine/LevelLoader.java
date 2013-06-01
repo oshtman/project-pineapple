@@ -725,7 +725,7 @@ public class LevelLoader {
 			//Birds
 			birds.add(new Bird(finishX - 9, -55 - 41, false));
 			//Hints
-			hints.add(new Hint(80, 0, "Take the upper path. It's hard I know, ask my old legs. Upper is quicker, as you might see!*//Hint from one passed"));
+			hints.add(new Hint(80, 0, "Take the upper path. It's hard, I know, ask my old legs. Upper is quicker, as you might see!*//Hint from one passed"));
 			break;
 		case 8: //Hunt
 			//Start and finish
@@ -786,7 +786,7 @@ public class LevelLoader {
 			skeletons.add(new int[]{5400, 10});
 			//Hints
 			hints.add(new Hint(-10, 74, "You are far far away from home little one, and now you are here. Good. Keep on moving.*- The Mentor"));
-			hints.add(new Hint(3002, 26, "What a lovely place to rest. I think I am half way there. Puh, my legs! But I will recommend this place to the ones back home. Maybe I rise a sign so I find my way back here! This one!*//Old man"));
+			hints.add(new Hint(3002, 26, "What a lovely place to rest. I think I am half way there. Puh, my legs! But I will recommend this place to the ones back home. Maybe I should rise a sign so I find my way back here!*//Old man"));
 			break;
 		case 9: //How a Maze (ing)
 			//Start and finish
