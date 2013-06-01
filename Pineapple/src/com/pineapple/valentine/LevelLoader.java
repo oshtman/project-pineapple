@@ -191,12 +191,24 @@ public class LevelLoader {
 			platforms.add(p1);
 			platforms.add(p2);
 			enemies.add(new int[]{800, 670, 600, 3});
-
+			
+			trees.add(new int[]{0, 0, 2, 0});
+			rocks.add(new int[]{10, 1, 20, 0});
+			
+			trees.add(new int[]{300, 2, 0, 1});
+			
+			rocks.add(new int[]{500, 0, 26, 0});
+			rocks.add(new int[]{550, 1, 30, 0});
+			rocks.add(new int[]{590, 2, 22, 0});
+			rocks.add(new int[]{660, 3, 28, 0});
 
 			rocks.add(new int[]{1250, 3, 35, 1});
+			trees.add(new int[]{1130, 1, 1, 0});
 			trees.add(new int[]{1300, 2, 2, 0});
 			trees.add(new int[]{900, 2, 1, 0});
 
+			birds.add(new Bird(1280, 620, true));
+			
 			enemies.add(new int[]{1250, 660, 1300, 2});
 			enemies.add(new int[]{850, 680, 1000, 1});
 			enemies.add(new int[]{820, 680, 1000, 1});
