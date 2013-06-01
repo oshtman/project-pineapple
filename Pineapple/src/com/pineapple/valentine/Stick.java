@@ -1,6 +1,5 @@
 package com.pineapple.valentine;
 
-import android.util.Log;
 
 public class Stick {
 	private static final String TAG = Stick.class.getSimpleName();

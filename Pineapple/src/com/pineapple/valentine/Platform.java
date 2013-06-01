@@ -1,7 +1,7 @@
 package com.pineapple.valentine;
 
 import android.graphics.Path;
-import android.util.Log;
+
 
 public class Platform {
 	private final String TAG = Platform.class.getSimpleName();

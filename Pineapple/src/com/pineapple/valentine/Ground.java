@@ -1,6 +1,5 @@
 package com.pineapple.valentine;
 
-import android.util.Log;
 
 public class Ground {
 	private final String TAG = Ground.class.getSimpleName();

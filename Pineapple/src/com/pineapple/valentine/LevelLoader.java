@@ -2,8 +2,6 @@ package com.pineapple.valentine;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
 public class LevelLoader {
 	private final String TAG = LevelLoader.class.getSimpleName();
 

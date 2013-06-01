@@ -1,13 +1,6 @@
 package com.pineapple.valentine;
 
 import android.app.Application;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.os.AsyncTask;
-import android.util.Log;
-
-import com.example.pineapple.R;
 import com.scoreloop.client.android.core.model.Client;
 
 public class BaseApplication extends Application{

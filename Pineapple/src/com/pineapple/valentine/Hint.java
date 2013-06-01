@@ -2,7 +2,6 @@ package com.pineapple.valentine;
 
 import java.util.ArrayList;
 
-import android.util.Log;
 
 public class Hint {
 	private int x, y;
@@ -20,9 +19,7 @@ public class Hint {
 			if(hint.length() > lettersPerRow){
 				row = hint.substring(0, lettersPerRow-1);
 			}
-			Log.d("HEJ", row);
-			if(row.contains("*") && row.indexOf("endl") < lettersPerRow){
-				Log.d("HEJ", "Här var det slut");
+			if(row.contains("*") && row.indexOf("*") < lettersPerRow){
 				int stopIndex = row.indexOf("*");
 				temp.add(hint.substring(0, stopIndex));
 				hint = hint.substring(stopIndex+1, hint.length());

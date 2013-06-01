@@ -3,11 +3,9 @@ package com.pineapple.valentine;
 import java.util.ArrayList;
 
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 
 public class LevelBriefer {
 	private static final int OPEN = 0, CLOSED = 1, OPENING = 2, CLOSING = 3, SWITCHING = 4;
@@ -19,7 +17,6 @@ public class LevelBriefer {
 	private Paint background;
 	private Paint header;
 	private Paint text;
-	private Bitmap thumb;
 	private int state = CLOSED;
 	private int animationTimer = 0;
 	private int animationStop;

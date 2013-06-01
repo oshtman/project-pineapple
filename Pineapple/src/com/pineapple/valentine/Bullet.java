@@ -2,7 +2,6 @@ package com.pineapple.valentine;
 
 import java.util.ArrayList;
 
-import android.util.Log;
 
 public class Bullet {
 
@@ -16,7 +15,6 @@ public class Bullet {
 	private boolean colliding;
 	private int rotation;
 	private int type;
-	private Protagonist protagonist;
 
 	//CONSTRUCTOR
 	public Bullet(double x, double y, double angle, double bulletSpeed, Protagonist protagonist) {

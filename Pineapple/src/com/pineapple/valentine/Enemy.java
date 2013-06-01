@@ -2,11 +2,10 @@ package com.pineapple.valentine;
 
 import java.util.ArrayList;
 
-import android.util.Log;
+
 
 public class Enemy {
 
-	private static final String TAG = Enemy.class.getSimpleName();
 	private double xPos;
 	private double yPos;
 	private double xVel;
@@ -14,7 +13,6 @@ public class Enemy {
 	private double xAcc;
 	private double yAcc;
 	private double health = 1;
-	private GamePanel gp;
 	private static int baseHeight = 14;
 	private static int baseWidth = (int)(baseHeight*1.5); //Change 1.5 to ratio of bitmap
 	private int height, width;
@@ -24,7 +22,6 @@ public class Enemy {
 	private double jumpVel = -6;
 	private double jumpAcc = 0.4;
 	private double maxSpeed = 3;
-	private double slideCoefficient = 0.8;
 	private double typeAcc;
 	private boolean touchingGround;
 	private final int type;
