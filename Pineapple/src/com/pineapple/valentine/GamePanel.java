@@ -184,7 +184,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		this.level = level;
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 		effectVolume = settings.getFloat("soundVolume", 1);
-		viewStatistics = settings.getBoolean("scoring", true);
+		viewStatistics = (settings.getBoolean("scoring", true) && level != 12);
 
 		//Create game components
 		levelLoader = new LevelLoader(level);

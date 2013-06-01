@@ -64,7 +64,7 @@ public class LevelCompleteActivity extends BaseActivity {
 			e.commit();
 		}
 		TableLayout stats = (TableLayout) findViewById(R.id.tableLayout1);
-		if(settings.getBoolean("scoring", true)){
+		if(settings.getBoolean("scoring", true) && completedLevel != 12){
 			TextView dataText;
 			dataText = (TextView) findViewById(R.id.normalsKilledText);
 			dataText.setText(""+scoreKill[0]);

@@ -182,8 +182,8 @@ public class LevelBriefer {
 			for(int i = 0; i < briefingTexts.get(level).size(); i++){
 				canvas.drawText(briefingTexts.get(level).get(i), (float)((TEXT_X+x)*scaleX), (float)(i*text.getTextSize() + ((TEXT_Y+y)*scaleY)), text);
 			}
-			if(settings.getBoolean("scoring", false)){
-				canvas.drawText("Your best score: " + localScores.getInt("score_"+settings.getInt("difficulty", 0)+"_"+level, 0), (float)((TEXT_X+x)*scaleX), (float)((height+y)*scaleY-2*text.getTextSize()), text);
+			if(settings.getBoolean("scoring", false) && level != 12){
+				canvas.drawText("Your best score: " + localScores.getInt("score_0_"+level, 0), (float)((TEXT_X+x)*scaleX), (float)((height+y)*scaleY-2*text.getTextSize()), text);
 			}
 			canvas.drawText("Click the level again to start!", (float)((TEXT_X+x)*scaleX), (float)((height+y)*scaleY-text.getTextSize()), text);
 
@@ -195,8 +195,8 @@ public class LevelBriefer {
 			for(int i = 0; i < briefingTexts.get(previousLevel).size(); i++){
 				canvas.drawText(briefingTexts.get(previousLevel).get(i), (float)((TEXT_X+x)*scaleX), (float)(i*text.getTextSize() + (botY+TEXT_Y+y)*scaleY), text);
 			}
-			if(settings.getBoolean("scoring", false)){
-				canvas.drawText("Your best score: " + localScores.getInt("score_"+settings.getInt("difficulty", 0)+"_"+previousLevel, 0), (float)((TEXT_X+x)*scaleX), (float)((height+y+botY)*scaleY-2*text.getTextSize()), text);
+			if(settings.getBoolean("scoring", false) && level != 12){
+				canvas.drawText("Your best score: " + localScores.getInt("score_0_"+previousLevel, 0), (float)((TEXT_X+x)*scaleX), (float)((height+y+botY)*scaleY-2*text.getTextSize()), text);
 			}
 			canvas.drawText("Click the level again to start!", (float)((TEXT_X+x)*scaleX), (float)((height+y+botY)*scaleY-text.getTextSize()), text);
 
@@ -209,8 +209,8 @@ public class LevelBriefer {
 			for(int i = 0; i < briefingTexts.get(level).size(); i++){
 				canvas.drawText(briefingTexts.get(level).get(i), (float)((TEXT_X+x)*scaleX), (float)(i*text.getTextSize() + (topY+TEXT_Y+y)*scaleY), text);
 			}
-			if(settings.getBoolean("scoring", false)){
-				canvas.drawText("Your best score: " + localScores.getInt("score_"+settings.getInt("difficulty", 0)+"_"+level, 0), (float)((TEXT_X+x)*scaleX), (float)((height+y+topY)*scaleY-2*text.getTextSize()), text);
+			if(settings.getBoolean("scoring", false) && level != 12){
+				canvas.drawText("Your best score: " + localScores.getInt("score_0_"+level, 0), (float)((TEXT_X+x)*scaleX), (float)((height+y+topY)*scaleY-2*text.getTextSize()), text);
 			}
 			canvas.drawText("Click the level again to start!", (float)((TEXT_X+x)*scaleX), (float)((height+y+topY)*scaleY-text.getTextSize()), text);
 			break;
