@@ -19,7 +19,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -89,6 +88,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint textBackground = new Paint();
 	private static int space = 2;
 	private boolean sync = false;
+	private int updateSession = 0;
 
 	public MenuPanel(Context context) {
 		super(context);
@@ -100,13 +100,13 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		butterfly = new Butterfly(70, 73);
 		renderMatrix = new Matrix();
 		setKeepScreenOn(true);
-		
-		
-		
+
+
+
 		settings = context.getSharedPreferences("gameSettings", Context.MODE_PRIVATE);
 		localScores = context.getSharedPreferences("localScores", Context.MODE_PRIVATE);
 		currentLevel = settings.getInt("currentLevel", 0);
-		
+
 
 		userName = (settings.getString("userName", null) == null)?"loading...":settings.getString("userName", null);
 
@@ -474,7 +474,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 						if(highscoreButton.isClicked(touchX, touchY)){
 							menuState = HIGHSCORE_MENU;
 							sync = false;
-							loadHighscores();
+							updateSession++;
+							loadHighscores(updateSession);
 						}
 						break;
 					case LEVEL_MENU:
@@ -527,7 +528,8 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 						if(leaderboardButtons[UPDATE].isClicked(touchX, touchY)){
 							currentHighScoreMode = 0;
 							sync = false;
-							loadHighscores();
+							updateSession++;
+							loadHighscores(updateSession);
 						}
 						if(leaderboardButtons[LEFT].isClicked(touchX, touchY)){
 							leaderboardLevel--;
@@ -695,16 +697,58 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 		userController.submitUser();
 	}
 
-	public void loadHighscores(){
-		if(sync){
+	public void loadHighscores(final int session){
+		if(sync && session == updateSession){
 			RequestControllerObserver observer = new RequestControllerObserver() {
 
 				@Override
 				public void requestControllerDidReceiveResponse(RequestController requestController) {
-					Log.d("HEJ", "Det gick " + ((ScoresController)requestController).getScores().get(0).getResult() + " @"+currentHighScoreMode);
 					if(((ScoresController)requestController).getScores() != null){
-						Log.d("HEJ", "Det är inte null");
-						if(localScores.getInt("score_0_"+(currentHighScoreMode/2), 0) > ((ScoresController)requestController).getScores().get(0).getResult()){
+						if(session == updateSession){
+							if(localScores.getInt("score_0_"+(currentHighScoreMode/2), 0) > ((ScoresController)requestController).getScores().get(0).getResult()){
+								//Upload score to server
+								RequestControllerObserver observer = new RequestControllerObserver(){
+
+									@Override
+									public void requestControllerDidReceiveResponse(RequestController requestController) {
+
+									}
+
+									@Override
+									public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
+										((MainActivity)context).displayMessage("Error", "The score sync failed!");
+										menuState = MAIN_MENU;
+									}
+								};
+								final ScoreController myScoreController = new ScoreController(observer);
+								Score s = new Score((double)localScores.getInt("score_0_"+(currentHighScoreMode/2), 0), null);
+								Map<String, Object> context = new HashMap<String, Object>();
+								context.put("normals", localScores.getInt("drones_0_"+(currentHighScoreMode/2), 0));
+								context.put("ninjas", localScores.getInt("ninjas_0_"+(currentHighScoreMode/2), 0));
+								context.put("tanks", localScores.getInt("tanks_0_"+(currentHighScoreMode/2), 0));
+								context.put("health", localScores.getInt("health_0_"+(currentHighScoreMode/2), 0));
+								context.put("mins", localScores.getInt("mins_0_"+(currentHighScoreMode/2), 0));
+								context.put("secs", localScores.getInt("secs_0_"+(currentHighScoreMode/2), 0));
+								context.put("cSecs", localScores.getInt("cSecs_0_"+(currentHighScoreMode/2), 0));
+
+								s.setMode(currentHighScoreMode); 
+								s.setContext(context);
+								myScoreController.submitScore(s);
+
+							}
+						}
+					}
+					currentHighScoreMode+=2;
+					if(currentHighScoreMode <= Const.maxModes){
+						loadHighscores(session);
+					}
+
+				}
+
+				@Override
+				public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
+					if(session == updateSession){
+						if(localScores.getInt("score_0_"+(currentHighScoreMode/2), 0) > 0){
 							//Upload score to server
 							RequestControllerObserver observer = new RequestControllerObserver(){
 
@@ -733,61 +777,18 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 							s.setMode(currentHighScoreMode); 
 							s.setContext(context);
 							myScoreController.submitScore(s);
-
-
+						}
+						currentHighScoreMode+=2;
+						if(currentHighScoreMode <= Const.maxModes){
+							loadHighscores(session);
 						}
 					}
-					currentHighScoreMode+=2;
-					if(currentHighScoreMode <= Const.maxModes){
-						loadHighscores();
-					}
-
-				}
-
-				@Override
-				public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
-
-					if(localScores.getInt("score_0_"+(currentHighScoreMode/2), 0) > 0){
-						//Upload score to server
-						RequestControllerObserver observer = new RequestControllerObserver(){
-
-							@Override
-							public void requestControllerDidReceiveResponse(RequestController requestController) {
-
-							}
-
-							@Override
-							public void requestControllerDidFail(RequestController aRequestController, Exception anException) {
-								((MainActivity)context).displayMessage("Error", "The score sync failed!");
-								menuState = MAIN_MENU;
-							}
-						};
-						final ScoreController myScoreController = new ScoreController(observer);
-						Score s = new Score((double)localScores.getInt("score_0_"+(currentHighScoreMode/2), 0), null);
-						Map<String, Object> context = new HashMap<String, Object>();
-						context.put("normals", localScores.getInt("drones_0_"+(currentHighScoreMode/2), 0));
-						context.put("ninjas", localScores.getInt("ninjas_0_"+(currentHighScoreMode/2), 0));
-						context.put("tanks", localScores.getInt("tanks_0_"+(currentHighScoreMode/2), 0));
-						context.put("health", localScores.getInt("health_0_"+(currentHighScoreMode/2), 0));
-						context.put("mins", localScores.getInt("mins_0_"+(currentHighScoreMode/2), 0));
-						context.put("secs", localScores.getInt("secs_0_"+(currentHighScoreMode/2), 0));
-						context.put("cSecs", localScores.getInt("cSecs_0_"+(currentHighScoreMode/2), 0));
-
-						s.setMode(currentHighScoreMode); 
-						s.setContext(context);
-						myScoreController.submitScore(s);
-					}
-					currentHighScoreMode+=2;
-					if(currentHighScoreMode <= Const.maxModes){
-						loadHighscores();
-					}
-
 				}
 			};
 			ScoresController controller = new ScoresController(observer);
 			controller.setMode(currentHighScoreMode); 
 			controller.loadRangeForUser(Session.getCurrentSession().getUser());
-		} else {
+		} else if(session == updateSession){
 			if(currentHighScoreMode == 0){
 				highScoreList.clear();
 			}
@@ -795,10 +796,12 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 				@Override
 				public void requestControllerDidReceiveResponse(RequestController requestController) {
-					List<Score> retrievedScores = ((ScoresController)requestController).getScores();
-					highScoreList.add(retrievedScores);
-					currentHighScoreMode+=2;
-					loadHighscores();
+					if(session == updateSession){
+						List<Score> retrievedScores = ((ScoresController)requestController).getScores();
+						highScoreList.add(retrievedScores);
+						currentHighScoreMode+=2;
+						loadHighscores(session);
+					}
 				}
 
 				@Override
@@ -815,7 +818,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 			} else {
 				sync = true;
 				currentHighScoreMode = 0;
-				loadHighscores();
+				loadHighscores(session);
 			}
 		}
 	}

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -50,7 +49,6 @@ public class MainActivity extends BaseActivity {
 	@Override
 	public void onBackPressed() { //Override so that the player cannot go to a previous activity
 		menuPanel.back();
-		Log.d(TAG, "Back button");	
 	}
 
 	public void requestName(String currentName){

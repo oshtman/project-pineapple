@@ -1,7 +1,6 @@
 package com.pineapple.valentine;
 
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.pineapple.valentine.GamePanel;

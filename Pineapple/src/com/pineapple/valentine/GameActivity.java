@@ -5,14 +5,11 @@ import com.pineapple.valentine.GamePanel;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.View;
+
 import android.view.Window;
 import android.view.WindowManager;
 
 public class GameActivity extends BaseActivity {
-	private final String TAG = GameActivity.class.getSimpleName();
 	
 	
 	

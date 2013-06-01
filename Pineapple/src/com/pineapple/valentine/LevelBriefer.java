@@ -3,7 +3,6 @@ package com.pineapple.valentine;
 import java.util.ArrayList;
 
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -19,7 +18,6 @@ public class LevelBriefer {
 	private Paint background;
 	private Paint header;
 	private Paint text;
-	private Bitmap thumb;
 	private int state = CLOSED;
 	private int animationTimer = 0;
 	private int animationStop;
@@ -54,12 +52,12 @@ public class LevelBriefer {
 				"Let your mentor teach you how to make it in this friendly world, the land of Papilio!",
 				"Take your first trembling steps toward uncovering the secrets of the mysterious monsters.",
 				"More of the strange monsters appear out of nowhere in different forms.",
-				"Short trip, but leaving the land of Papilio, your home. Make the best of it! We wish you good luck.",
+				"Short trip, but leaving the land of Papilio, your home. Make the best of it! Good luck.",
 				"Hide and seek, watch out for sneaky monsters. This could be dangerous for someone like you. Hurry slowly.",
 				"Go downhill you must as your journey continues. Are you fast enough to not get caught?",
 				"Up, up and away! Are you afraid of heights little one? You better not be!",
 				"Don't fall, and you will pass. So jump, jump for your life!",
-				"Hunt in hills! Remember, he who fights and runs away may live to fight another day.",
+				"Hunt in the hills! Remember, he who fights and runs away may live to fight another day.",
 				"How amazing! Which way should you go? Some say all good things are three, you might say twice.",
 				"Enter the lair of the enemy! The end is good, everything is good. Or is it?",
 				"Final battle. Defeat the evil, or it will defeat you! Evil shall by your hands be expelled!",
@@ -70,11 +68,22 @@ public class LevelBriefer {
 		int lettersPerRow = 33;
 		for(int i = 0; i < rawTexts.length; i++){
 			briefingTexts.add(new ArrayList<String>());
-			while(rawTexts[i].length() > lettersPerRow){
-				String row = rawTexts[i].substring(0, lettersPerRow-1);
-				int spaceIndex = row.lastIndexOf(" ");
-				briefingTexts.get(i).add(rawTexts[i].substring(0, spaceIndex));
-				rawTexts[i] = rawTexts[i].substring(spaceIndex+1, rawTexts[i].length());
+			while(rawTexts[i].length() > lettersPerRow || rawTexts[i].contains("*")){
+				String row = rawTexts[i];
+				Log.d("HAJ", row);
+				if(rawTexts[i].length() > lettersPerRow){
+					row = rawTexts[i].substring(0, lettersPerRow-1);
+				}
+				
+				if(row.contains("*") && row.indexOf("*") < lettersPerRow){
+					int spaceIndex = row.indexOf("*");
+					briefingTexts.get(i).add(rawTexts[i].substring(0, spaceIndex));
+					rawTexts[i] = rawTexts[i].substring(spaceIndex+1, rawTexts[i].length());
+				} else {
+					int spaceIndex = row.lastIndexOf(" ");
+					briefingTexts.get(i).add(rawTexts[i].substring(0, spaceIndex));
+					rawTexts[i] = rawTexts[i].substring(spaceIndex+1, rawTexts[i].length());
+				}
 			}
 			briefingTexts.get(i).add(rawTexts[i]);
 		}

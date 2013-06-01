@@ -3,16 +3,13 @@ package com.pineapple.valentine;
 import com.example.pineapple.R;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class GameOverActivity extends BaseActivity {
-	private final String TAG = GameOverActivity.class.getSimpleName();
+
 	private int failedLevel;
 
 	@Override

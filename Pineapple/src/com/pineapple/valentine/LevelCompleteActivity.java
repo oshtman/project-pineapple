@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,14 +21,12 @@ import android.widget.TextView;
 
 import com.example.pineapple.R;
 import com.scoreloop.client.android.core.controller.RequestController;
-import com.scoreloop.client.android.core.controller.RequestControllerException;
 import com.scoreloop.client.android.core.controller.RequestControllerObserver;
 import com.scoreloop.client.android.core.controller.ScoreController;
 import com.scoreloop.client.android.core.model.Score;
 
 public class LevelCompleteActivity extends BaseActivity {
 
-	private final String TAG = LevelCompleteActivity.class.getSimpleName();
 	private boolean newLevel;
 	private int completedLevel;
 	private AlertDialog alert;

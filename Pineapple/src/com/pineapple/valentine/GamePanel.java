@@ -21,13 +21,11 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
-	private final String TAG = GamePanel.class.getSimpleName();
 	private final int INVALID_POINTER = -1;
 	public final static String LEVEL = "com.pineapple.GamePanel.LEVEL";
 	public final static String SCORE_KILL = "com.pineapple.GamePanel.SCORE_KILL";

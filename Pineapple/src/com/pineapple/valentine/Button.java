@@ -1,10 +1,8 @@
 package com.pineapple.valentine;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 public class Button {
-	private final String TAG = Button.class.getSimpleName();
 	
 	int x, y;
 	double height, width;

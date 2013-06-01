@@ -2,7 +2,6 @@ package com.pineapple.valentine;
 
 import java.util.*;
 
-import android.util.Log;
 
 public class Protagonist {
 
