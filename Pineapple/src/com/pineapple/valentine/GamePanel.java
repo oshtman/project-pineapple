@@ -3,7 +3,7 @@ package com.pineapple.valentine;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.example.pineapple.R;
+import com.pineapple.valentineGen.R;
 
 import android.app.Activity;
 import android.content.Context;
@@ -226,13 +226,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		setKeepScreenOn(true);
 
 		if(level == 0){
-			mentor = new Protagonist(10, 0, this, true);
+			mentor = new Protagonist(10, 70, this, true);
 			checkpoints = levelLoader.getCheckpoints();
 			mentorHints = new ArrayList<ArrayList<String>>();
 
 			pastCheckpointBorder = 10;
 			String[] rawHints = {
-					"Hi there, welcome to the tutorial! Let's get right into the action! You can move around by using your left stick! Why don't you give it a go?",
+					"Hi Valentine, welcome to the tutorial! Let's get right into the action! You can move around by using your left stick! Why don't you give it a go?",
 					"Good job! Believe it or not, but moving is essential to make it in this world. Come along!",
 					"You can jump by pressing up on the left stick!",
 					"Wow! You seem to have some strong legs there young one! Oh my, what a steep slope! We can slide down this for sure!",
@@ -242,7 +242,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					"Good, but shooting a gun isn't that exciting if you're not aiming at something, am I right? Let's find something to shoot!",
 					"Before we go on, do you mind getting that fruit down for me? You can use your dash to shake the tree. Jump, and when you're high enough press down on your left stick!",
 					"Thank you! Oh, looks like you woke up a bird! They always eat my crops and sing early in the morning! See if you can scare him with your gun!",
-					"..... Well, now he won't wake me up early at least! We better go before the animal rights people show up. See if you can get up on this platform!",
+					"..... Well, now he won't wake me up early at least! We better go before anyone sees us. See if you can get up on this platform!",
 					"Wow, you can see so much from up here! Actually... I see something strange over there! What is that?",
 					"Good heavens, what an ugly creature! I know we are a friendly people but you better put him out of his misery! He doesn't look like a nice monster anyways...", 
 					"May he rest in peace! Now where were we? Oh right, there's one final thing you need to know! That weapon of yours, it gets easily overheated. Watch out for that if you feel like firing for a long time! Try it!",

@@ -24,7 +24,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.TextView;
 
-import com.example.pineapple.R;
+import com.pineapple.valentineGen.R;
 import com.scoreloop.client.android.core.controller.RequestController;
 import com.scoreloop.client.android.core.controller.RequestControllerException;
 import com.scoreloop.client.android.core.controller.RequestControllerObserver;
@@ -39,7 +39,7 @@ import com.scoreloop.client.android.core.model.User;
 
 public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 	private static final String TAG = MenuPanel.class.getSimpleName();
-	public final static String LEVEL = "com.example.pineapple.LEVEL";
+	public final static String LEVEL = "com.pineapple.valentineGen.LEVEL";
 	private final int MAIN_MENU = 0;
 	private final int LEVEL_MENU = 1;
 	private final int SETTINGS_MENU = 2;

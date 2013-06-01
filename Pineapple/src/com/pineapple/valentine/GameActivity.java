@@ -1,7 +1,7 @@
 package com.pineapple.valentine;
 
-import com.example.pineapple.R;
 import com.pineapple.valentine.GamePanel;
+import com.pineapple.valentineGen.R;
 
 import android.content.Intent;
 import android.os.Bundle;

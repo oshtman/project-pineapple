@@ -3,7 +3,6 @@ package com.pineapple.valentine;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -12,11 +11,9 @@ import android.widget.EditText;
 
 @SuppressLint("NewApi")
 public class MainActivity extends BaseActivity {
-
-	private final String TAG = MainActivity.class.getSimpleName();
 	public MenuPanel menuPanel;
 	public boolean loading = true;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -25,6 +22,7 @@ public class MainActivity extends BaseActivity {
 		
 		menuPanel = new MenuPanel(this);
 		setContentView(menuPanel);
+	
 	}
 
 	public void onDestroy(){

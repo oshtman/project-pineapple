@@ -1,6 +1,6 @@
 package com.pineapple.valentine;
 
-import com.example.pineapple.R;
+import com.pineapple.valentineGen.R;
 
 import android.os.Bundle;
 import android.content.Intent;
