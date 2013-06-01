@@ -604,6 +604,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				mentorSentencesToSay = 2;
 				break;
 			}
+			if(monologTimer > 15 && monologTimer < 90){ //Dramatic camera movement
+				screenY -= (screenY + 90)/40.;
+			}
 
 		}
 		if(bossState == 4){
@@ -628,6 +631,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				protagonist.slowDown();
 				protagonist.faceDirection(mentor.getXPos()-protagonist.getXPos());
 				mentor.faceDirection(protagonist.getXPos()-mentor.getXPos());
+				protagonist.setAim((mentor.getXPos()-protagonist.getXPos())>0?0:180);
 				switch(mentorDeathTimer){
 				case 25:
 					mentorMessage = new String[]{"I can't believe this. How did you become so powerful?"};
@@ -644,28 +648,27 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					mentorSentencesToSay = 1;
 					break;
 				case 175:
-					mentorBaseX = (int)mentor.getXPos();
-					mentorBaseY = (int)mentor.getYPos();
+					protagonist.jump();
 					break;
 				}
-			} else if(mentorDeathTimer <= 200){
-				mentorBaseY -= 0.5;
-				mentor.setXPos(mentorBaseX + Math.random()*2-1);
-				mentor.setYPos(mentorBaseY + Math.random()*2-1);
-			} else if(mentorDeathTimer == 201){
+			} else if(mentorDeathTimer <= 187){
+				protagonist.accelerate(Math.signum(mentor.getXPos()-protagonist.getXPos()));
+			} else if(mentorDeathTimer == 188){
+				protagonist.down(ground, platforms);
+			} else if(mentorDeathTimer == 190){
 				mentorSM.playSound(5, effectVolume);
-				mentor.setYVel(-20);
+				mentor.setYVel(mentor.getYVel()-20);
 				keepInCave = false;
-			} else if(mentorDeathTimer == 225){
-				showHUD = true;
 				earthquake = MediaPlayer.create(getContext(), R.raw.earthquake);
 				earthquake.setLooping(true);
 				earthquake.setVolume((float)effectVolume, (float)effectVolume);
 				earthquake.start();
+				monologTimer++;
+			} else if(mentorDeathTimer == 250){
 				mentor.setXPos(-100);
 				mentor.setYPos(-200);
-				monologTimer++;
-			} else if(mentorDeathTimer > 225){
+				showHUD = true;
+			} else if(mentorDeathTimer > 192){
 				screenY += Math.random() * 4 - 2;
 				for(i = 2; i <= 15; i++){
 					ground.setY(i, (int)(6*Math.random() - 3));//Earthquake
@@ -686,9 +689,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					mentor.step(1);
 				}
 				if(mentor.collide(protagonist)){
-					if(protagonist.isDashBonus()){
-						mentor.reduceHealth(0.005);
-					} else if(!protagonist.isInvincible()){
+					if(!protagonist.isInvincible() && !protagonist.isDashBonus()){
 						protagonist.reduceHealth(0.1);
 						protagonist.setInvincible(true);
 						protagonist.setXVel(0);
@@ -717,8 +718,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						enemies.get(0).spawn();
 						enemies.get(1).spawn();
 						enemySM.playSound(0, effectVolume);
-						mentor.jump();
-						mentor.setYVel(mentor.getYVel()*1.5);
+						mentor.setYVel(-10);
 						break;
 
 					case 2: 
@@ -730,8 +730,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						enemies.get(3).spawn();
 						enemySM.playSound(0, effectVolume);
 						enemySM.playSound(2, effectVolume);
-						mentor.jump();
-						mentor.setYVel(mentor.getYVel()*1.5);
+						mentor.setYVel(-10);
 						break;
 					case 3: 
 						mentorMessage = new String[]{"I've had enough of this! Release the monsters!"};
@@ -745,8 +744,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 						enemySM.playSound(0, effectVolume);
 						enemySM.playSound(2, effectVolume);
 						enemySM.playSound(4, effectVolume);
-						mentor.jump();
-						mentor.setYVel(mentor.getYVel()*1.5);
+						mentor.setYVel(-10);
 						break;
 					case 4: //Dead
 						showHUD = false;
@@ -787,7 +785,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 		mentor.setAim((int)(180/Math.PI*Math.atan2(protagonist.getYPos() - mentor.getYPos(), protagonist.getXPos() - mentor.getXPos())));
 		if(mentor.getYVel() > 0 && !mentorFighting)
 			mentor.checkPlatform(platforms);
-		if(mentorDeathTimer < 175 || mentorDeathTimer > 200){
+		if(mentorDeathTimer < 175 || mentorDeathTimer > 188){
 			mentor.gravity();
 			mentor.move();
 		}
@@ -986,8 +984,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 
 			}
 		}
-		if(mentor != null && mentor.isTouchingGround()){
-			mentor.setYVel(-5);
+		
+		if(mentor != null && mentor.isTouchingGround() && mentor.getPlatformNumber() == protagonist.getPlatformNumber() && Math.abs(mentor.getXPos() - protagonist.getXPos()) < 30 ){
+			mentor.inAir(platforms, ground);
+			mentor.setYVel(mentor.getYVel()-5);
+			if(level == 11){
+				mentor.reduceHealth(0.03);
+			}
 		}
 		dashX = (int)protagonist.getXPos();
 		dashY = (int)(protagonist.getYPos() - protagonist.getHeight()/4);
@@ -1589,6 +1592,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			frame.setColor(Color.RED);
 		} else {
 			frame.setColor(Color.BLACK);
+		}
+		if(protagonist.getHealth() < 0){
+			protagonist.setHealth(0);
 		}
 
 		//Draw in top left corner
