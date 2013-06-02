@@ -100,6 +100,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private double touchX, touchY;
 	private boolean loading = true;
 	private boolean showHUD = true;
+	private boolean gameStarted = false;
 
 	//Boss variables
 	private boolean startedMentorMonolog, keepInCave;
@@ -450,8 +451,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 					viewStatistics = false;
 				}
 			}
-
-			this.time++; //count number of frames passed
+			if(gameStarted)
+				this.time++; //count number of frames passed
 			for(int i = 0; i < butterflies.size(); i++){ //update butterfly
 				butterflies.get(i).update();
 			}
@@ -1822,11 +1823,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	@Override
 	public boolean onTouchEvent(MotionEvent e){
 		if(!loading && showHUD){
+			if(!gameStarted)
+				gameStarted = true;
 			index = e.getActionIndex();
 			id = e.getPointerId(index);
 
 			switch(e.getActionMasked()){
-
 			case MotionEvent.ACTION_DOWN:
 				touchX = e.getX()/scaleX;
 				touchY = e.getY()/scaleY;
