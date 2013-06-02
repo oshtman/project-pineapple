@@ -1217,6 +1217,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	//Method that gets called to render the graphics
 	public void render(Canvas canvas){
 		if(loading){
+			canvas.drawColor(Color.BLACK);
 			canvas.drawText("Loading...", 0, 20, loadPaint);
 		} else {
 			//Background

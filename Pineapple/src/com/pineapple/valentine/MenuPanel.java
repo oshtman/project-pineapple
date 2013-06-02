@@ -262,6 +262,7 @@ public class MenuPanel extends SurfaceView implements SurfaceHolder.Callback{
 
 	public void render(Canvas canvas){
 		if(loading){
+			canvas.drawColor(Color.BLACK);
 			canvas.drawText("Loading...", 0, 20, loadPaint);
 		} else {
 			canvas.drawBitmap(backgroundBitmap, 0, 0, null);
