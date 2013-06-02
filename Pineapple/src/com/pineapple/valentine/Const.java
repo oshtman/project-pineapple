@@ -129,7 +129,6 @@ public class Const {
 		public static final int mumbleDelay = 250;
 		
 		public static int tutorialFruitX = 800;
-		public static int tutorialFruitY = 80;
 		public static final int tutorialFruitSize = 6;
 		
 		public static final int updateSize = 8;

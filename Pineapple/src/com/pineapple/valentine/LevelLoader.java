@@ -3,7 +3,6 @@ package com.pineapple.valentine;
 import java.util.ArrayList;
 
 public class LevelLoader {
-	private final String TAG = LevelLoader.class.getSimpleName();
 
 	//Ground arrays for level
 	private int[][] ground;

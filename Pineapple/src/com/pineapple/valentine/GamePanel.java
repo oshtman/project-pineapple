@@ -106,7 +106,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private int monologTimer, mentorDeathTimer;
 	private String[] mentorMessage;
 	private boolean mentorFighting;
-	private double mentorBaseX, mentorBaseY;
 	private int bossState = 0;
 
 	//Special tutorial variables
@@ -117,8 +116,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	private Paint textPaint;
 	private Bird bird;
 	private int timesMentorJumped, pastCheckpointBorder, lastMentorSound, mentorPlayCounter, mentorSentencesToSay;
+	private int tutorialFruitY = 80;
 	private boolean tutorialFruitUp = true;
 	private int tutorialFruitYSpeed = 0;
+	
 
 	//Ground rendering variables 
 	private int numberOfPatches, foliageSize = 2, groundThickness = 6;
@@ -229,7 +230,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			mentor = new Protagonist(10, 70, this, true);
 			checkpoints = levelLoader.getCheckpoints();
 			mentorHints = new ArrayList<ArrayList<String>>();
-
 			pastCheckpointBorder = 10;
 			String[] rawHints = {
 					"Hi Valentine, welcome to the tutorial! Let's get right into the action! You can move around by using your left stick! Why don't you give it a go?",
@@ -475,9 +475,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 				if(bird != null){
 					bird.update();
 				}
-				if(!tutorialFruitUp && Const.tutorialFruitY < 200){
+				if(!tutorialFruitUp && tutorialFruitY < 200){
 					tutorialFruitYSpeed++;
-					Const.tutorialFruitY += tutorialFruitYSpeed;
+					tutorialFruitY += tutorialFruitYSpeed;
 				}
 				if(currentCheckpoint == 8){
 					screenY += (50-screenY)/20;
@@ -1154,7 +1154,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(protagonist.getXPos() > checkpoints[currentCheckpoint] - width/4){
 				currentCheckpoint++;
 				mentorSentencesToSay = 3;
-
 			}
 			break;
 		case 8:
@@ -1183,7 +1182,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 			if(protagonist.getXPos() > checkpoints[currentCheckpoint]-width/4){
 				currentCheckpoint++;
 				mentorSentencesToSay = 3;
+				
 			}
+			break;
 		case 12:
 			if(enemies.size() == 2){
 				currentCheckpoint++;
@@ -1814,8 +1815,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback{
 	}
 
 	public void renderFruit(Canvas canvas){
-		if(Const.tutorialFruitY < 200){
-			canvas.drawBitmap(fruitBitmap, (float)((Const.tutorialFruitX-screenX)*scaleX), (float)((Const.tutorialFruitY-screenY)*scaleY), null);
+		if(tutorialFruitY < 200){
+			canvas.drawBitmap(fruitBitmap, (float)((Const.tutorialFruitX-screenX)*scaleX), (float)((tutorialFruitY-screenY)*scaleY), null);
 		}
 	}
 	@Override
